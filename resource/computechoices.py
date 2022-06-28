@@ -19,7 +19,8 @@ def do(payload, config, plugin_config, inputs):
     # Create the Dataiku SQL Executor
     conn = dataiku.core.sql.SQLExecutor2(dataset=input_dataset)
     
-    if payload.get('parameterName') == 'model_database_name':
+    #Show the existing DB names 
+    if payload.get('parameterName') == 'model_database_name' or payload.get('parameterName') == 'H2OLicense_DropDown_DB_Name':
         query = """SELECT  distinct DatabaseName FROM DBC.TablesV
                    WHERE TableKind = 'T' 
                    AND   DatabaseName NOT IN ('All', 'Crashdumps', 'DBC', 'dbcmngr',
@@ -35,6 +36,7 @@ def do(payload, config, plugin_config, inputs):
             dict = { "value" : dict_names[key].strip(), "label" : dict_names[key].strip()}
             choices.append(dict)
         return {"choices": choices}
+    
 
     if payload.get('parameterName') == 'table_name':
         mdbs_name = config.get("model_database_name")
@@ -43,6 +45,20 @@ def do(payload, config, plugin_config, inputs):
             
         print(f"mdbs_name value = {mdbs_name}")
         query = f"select TableName from DBC.TablesV WHERE TableKind = 'T' and LOWER(Databasename) = \'{mdbs_name}\' order by TableName"
+        tablesListDF = conn.query_to_df(query)
+        dict_names = tablesListDF.to_dict()["TableName"]
+        choices = []
+        for key in dict_names:
+            dict = { "value" : dict_names[key].strip(), "label" : dict_names[key].strip()}
+            choices.append(dict)
+        return {"choices": choices}
+    
+    if payload.get('parameterName') == 'H2OLicense_DropDown_Table_Name':
+        license_db_name = config.get("H2OLicense_DropDown_DB_Name")
+        if not license_db_name :
+            license_db_name = config.get("user_Typed_License_DB_Name")
+            
+        query = f"select TableName from DBC.TablesV WHERE TableKind = 'T' and LOWER(Databasename) = \'{license_db_name}\' order by TableName"
         tablesListDF = conn.query_to_df(query)
         dict_names = tablesListDF.to_dict()["TableName"]
         choices = []
@@ -71,3 +87,5 @@ def do(payload, config, plugin_config, inputs):
             dict = { "value" : dict_names[key].strip(), "label" : dict_names[key].strip()}
             choices.append(dict)
         return {"choices": choices}
+
+    

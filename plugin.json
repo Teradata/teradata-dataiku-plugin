@@ -1,5 +1,5 @@
 {
-    "id" : "Teradata",
+    "id" : "teradata",
     "version" :"2.0.0",
     "meta" : {
         "label" : "Teradata",
@@ -7,7 +7,8 @@
         "author" : "Teradata",
         "icon" : "icon-database",
         "licenseInfo" : "MIT + Apache License 2.0",
-        "url" : "https://docs.teradata.com/",
-        "tags" : ["Analytics", "Vantage",  "Teradata", "Database", "SQL", "Big Data", "Data Science", "Modeling", "Scoring"]
+        "url" : "https://www.dataiku.com/product/plugins/teradata",
+        "tags" : ["Analytics", "Vantage",  "Teradata"],
+        "supportLevel" : "PARTNER_SUPPORTED"
     }
 }

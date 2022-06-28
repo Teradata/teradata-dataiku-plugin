@@ -117,43 +117,48 @@
       // FILE_NAME: 'The name of the file to be installed',
       FILE_NAME: 'Specify the name of the input file to upload.',
       // FILE_ALIAS: 'The file alias to be used in the SQL statement',
-      FILE_ALIAS: 'The Teradata Database needs an alias for the file, and a default alias is provided. You can change the default alias value, if desired, but ensure no two aliases are the same.',
+      FILE_ALIAS: 'The Advanced SQL Engine Database needs an alias for the file, and a default alias is provided. You can change the default alias value, if desired, but ensure no two aliases are the same.',
       // FILE_LOCATION: 'The location of the file(s) to be installed, either the fully qualified path on the Teradata server, or a DSS Jupyter Notebook/Managed Folder',
-      FILE_LOCATION: 'The location from where the file will be uploaded onto the Teradata Database.',
+      FILE_LOCATION: 'The location from where the file will be uploaded onto the Advanced SQL Engine Database.',
       // FILE_ADDRESS: 'The fully qualified file location on the Teradata Server',
-      FILE_ADDRESS: 'The full path to the input file location on the Teradata Database server.',
+      FILE_ADDRESS: 'The full path to the input file location on the Advanced SQL Engine Database server.',
       // FILE_FORMAT: 'Specifies whether a file is a TEXT or BINARY file',
       FILE_FORMAT: 'Specify whether the input is a TEXT or BINARY file.',
       // REPLACE_SCRIPT: 'Specifies whether a file will always be replaced',
-      REPLACE_SCRIPT: 'Determines whether to replace an existing file on the Teradata Database or not. By default, if the box is checked and the file does not exist on the database, then the file will be installed.',
-      SCRIPT_TYPE: 'The type of script to be used typically Python or R',
+      REPLACE_SCRIPT: 'Determines whether to replace an existing file on the Advanced SQL Engine Database or not. By default, if the box is checked and the file does not exist on the database, then the file will be installed.',
+      SCRIPT_TYPE: 'Select your script language.',
       // SCRIPT_TYPE: 'Specify the script language. The plugin currently supports scripts written in R or Python.',
       OTHER_COMMAND: 'Enter the Unix command to execute your script',
       // SCRIPT_ARGUMENTS: 'The arguments for the script, place one argument per box. Click on the (+) button to add more arguments',
-      SCRIPT_ARGUMENTS: 'Specify any additional arguments, if needed by the script when executed on the command line. In case of more than one argument, click on the (+) button to specify each argument in a separate field box.',
+      SCRIPT_ARGUMENTS: 'Optional: Specify any additional input arguments, if needed by your script. Use one field per argument. Click on the [+] button to add fields. Click on the [-] button next to a field to delete it.',
       // ON: 'The ON Clause used as the input data for the script',
-      ON: 'For the STO, the ON clause specifies the columns of a Teradata Database table that are streamed as input to your script. A default ON clause is provided, and it specifies using all columns of the recipe input dataset/table. To specify a different ON clause, click the "Customize the ON clause" button to edit the ON clause field.',
+      ON: 'For the STO, the ON clause specifies the columns of a Advanced SQL Engine Database table that are streamed as input to your script. A default ON clause is provided, and it specifies using all columns of the recipe input dataset/table. To specify a different ON clause, click the "Customize the ON clause" button to edit the ON clause field.',
       // ON_CUSTOM: 'Determines whether the ON Clause should be modified',
       ON_CUSTOM: 'Enables customization of the default ON clause.',
       // HASH_BY: 'A HASH BY clause will cause the rows in the ON clause to be redistributed to AMPs based on the hash value of the column(s) specified',
-      HASH_BY: 'The HASH BY clause groups table rows by the values of the specified column names, and distributes all rows of each group to a Teradata Database Access Module Processor (AMP; processing unit). Specify the column names you would like to hash their values by. If you specify a HASH BY clause, then you can also optionally order each group rows with the LOCAL ORDER BY clause.',
+      HASH_BY: 'The HASH BY clause groups table rows by the values of the specified column names, and distributes all rows of each group to a Advanced SQL Engine Database Access Module Processor (AMP; processing unit). Specify the column names you would like to hash their values by. If you specify a HASH BY clause, then you can also optionally order each group rows with the LOCAL ORDER BY clause.',
       // PARTITION_BY: 'A PARTITION BY clause will cause the STO to be executed against specific groups (partitions) based on the column(s) specified',
-      PARTITION_BY: 'The PARTITION BY clause creates partitions of the input table data by the values of the specified column names. Specify the column names you would like to partition the table by. If you specify a PARTITION BY clause, then you can also optionally order the rows of each group with the ORDER BY clause.',
+      PARTITION_BY: 'Specify column names for the partition task. Use one field per column. Click on the [+] button to add fields. Click on the [-] button next to a field to delete it.',
       // ORDER_BY: 'An ORDER BY clause specifies the order in which values in a group (partition) are sorted',
-      ORDER_BY: 'The ORDER BY clause provides ordering of partitioned rows according to the input table columns that you specify in the clause. The ORDER BY clause can be only specified when you have specified a PARTITION BY clause, too.',
+      ORDER_BY: '[Optional] Specify column names to use their data for row ordering in the partition groups. Use one field per column. Click on the [+] button to add fields. Click on the [-] button next to a field to delete it.',
       // LOCAL_ORDER_BY: 'A LOCAL ORDER BY clause  orders the rows qualified on each AMP',
       LOCAL_ORDER_BY: 'The LOCAL ORDER BY clause provides ordering of the input table rows in the groups created with the HASH BY clause. The LOCAL ORDER BY clause can be only specified when you have specified a HASH BY clause, too.',
       // RETURNS_NAME: 'Specifies the name of the column(s) to be returned by the STO',
       RETURNS_NAME: 'Specify a name for each output argument returned by your script.',
       // RETURNS_TYPE: 'Specifies the data type of the column(s) to be returned by the STO',
-      RETURNS_TYPE:'Specify the variable type of the corresponding output argument.',
+      RETURNS_TYPE:'Check the box to include this variable in the Dataiku output dataset.',
       // SELECT_CUSTOM: 'Determines whether the SELECT (output) columns (data to be returned by the query) should be modified. Default is to SELECT all column(s) in the RETURNS clause',
-      SELECT_CUSTOM: 'The default SELECT clause used by the plugin selects all output arguments of your script. Use this option to determine whether to modify the default SELECT behavior.',
+      SELECT_CUSTOM: 'The default SELECT clause used by the plugin selects all output arguments of your script. Use this option determines whether to modify the default SELECT behavior.',
       // SELECT_COLUMNS: 'Specifies the contents of a user customized SELECT statement (data to be returned by the query)',
       SELECT_COLUMNS: 'Specify explicitly the contents of the SELECT clause.',
-      ADDITIONAL_CLAUSES: 'Specifies any additional clauses to the output such as a HAVING or QUALIFY clause'
+      ADDITIONAL_CLAUSES: 'Specifies any additional clauses to the output such as a HAVING or QUALIFY clause',
       // ADDITIONAL_CLAUSES: 'Specifies the SQL code for any additional clause to be used when invoking the STO. Examples of such clauses include DELIMITER, QUOTECHAR, etc. For more details, see Chapter 27 of the Teradata Guide "SQL Functions, Operators, Expression, and Predicates."'
-
+      INPUTS: '[Optional] If you leave blank, then your script receives as input all columns in the recipe input dataset. If your script requires only specific columns from the recipe input dataset, then click on the [+] button to add fields and specify the column names needed by your script. Specify one column name per field in the order your script expects them. Click on the [-] button next to a field to delete it.',
+      SEQUENCING_TYPE:'Select the order sequencing for the present column.',
+      WHERE:'[Optional] Specify in SQL format any conditions that your input data must satisfy (note: This option corresponds to using the WHERE clause in SQL).',
+      OUTPUT_COLUMN: 'Check the box to include this variable in the Dataiku output dataset.',
+      OUTPUT_ALL: 'By default, all output variables of your script are included in the recipe Dataiku output dataset. To include only select variables, check the corresponding boxes next to the variables you want to include.',
+      DATA_PARTITION_TYPE: 'If other than None, SCRIPT will partition the data sent to your script. In Vantage, instances of your script will execute with different data partitions as input until all partitions are exhausted. The column values option determines partitioning by means of different values in one or more columns (note: This option corresponds to using the PARTITION BY clause in SQL). The Database AMP hash option partitions data in a different way, where data are distributed to Database AMPs based on AMP hash values in one or more columns (note: This option corresponds to using the HASH BY clause in SQL).'
     }
 
     
@@ -264,13 +269,36 @@
       },
 
       addReturnClause: function() {
-          $scope.config.function.return_clause.push({});
+          $scope.config.function.return_clause.push({output:'false'});
       },
 
       removeReturnClause: function(index) {
           if (index > -1) {
               $scope.config.function.return_clause.splice(index, 1);
           }
+      },
+
+      selectAllOutput: function() {
+        if($scope.config.function.outputAll == true) {
+          for (const clause of $scope.config.function.return_clause) {
+              clause["output"] = false;
+          }
+        }
+      },
+
+      selectOneOutput: function() {
+        var found = false;
+        for (const clause of $scope.config.function.return_clause) 
+        {
+              if(clause["output"]==true) {
+                found = true;
+                break;
+              }
+        }
+        if(found)
+          $scope.config.function.outputAll = false
+        else
+          $scope.config.function.outputAll = true
       },
 
       addScriptArgument: function() {
@@ -282,6 +310,38 @@
               $scope.config.function.arguments.splice(index, 1);
           }
       },
+
+      addScriptInput: function() {
+          $scope.config.function.inputs.push({});
+      },
+
+      removeScriptInput: function(index) {
+          if (index > -1) {
+              $scope.config.function.inputs.splice(index, 1);
+          }
+      },
+
+      addPartitionBy: function() {
+          $scope.config.function.partitionbycolumns.push({"type" : "Ascending"});
+      },
+
+      removePartitionBy: function(index) {
+          if (index > -1) {
+              $scope.config.function.partitionbycolumns.splice(index, 1);
+          }
+      },
+
+
+      addPartitionColumnBy: function() {
+          $scope.config.function.partitionorderbycolumns.push({"type" : "Ascending"});
+      },
+
+      removePartitionColumnBy: function(index) {
+          if (index > -1) {
+              $scope.config.function.partitionorderbycolumns.splice(index, 1);
+          }
+      },
+
 
       onFilenameChange() {
           let filename = $scope.config.function.script_filename || '';
@@ -310,7 +370,7 @@
 
       getOriginalON() {
          
-        $scope.config.function.sql_on_clause = 'SELECT * FROM ' + $scope.config.function.input_table;
+        $scope.config.function.sql_on_clause = [];
 
       },
 
@@ -812,7 +872,7 @@
           .text('Learn more about Teradata Vantage SCRIPT Table Operator')
           .css('color', 'orange')
           .attr('target', '_blank')
-          .attr('href', 'https://info.teradata.com/download.cfm?ItemID=1013063');
+          .attr('href', 'https://docs.teradata.com/r/Teradata-VantageTM-SQL-Operators-and-User-Defined-Functions/July-2021/Table-Operators/SCRIPT');
         $a.parent().css('text-align', 'center');
 
 
@@ -932,9 +992,17 @@
         $scope.config.function = $scope.config.function || {};
         $scope.config.function.files = $scope.config.function.files || [];
         $scope.config.function.arguments = $scope.config.function.arguments || [{'value':''}];
-        $scope.config.function.return_clause = $scope.config.function.return_clause || [{'name':'','type':''}];
+        $scope.config.function.return_clause = $scope.config.function.return_clause || [{'name':'','type':'', 'output' : false}];
         fileArraySize = $scope.config.function.files.length;
-
+        $scope.config.function.inputs = $scope.config.function.inputs || [{'value':''}];
+        $scope.config.function.where = $scope.config.function.where || '';
+        $scope.config.function.partitionbycolumns = $scope.config.function.partitionbycolumns || [{'value':'','type':'Ascending'}];
+        $scope.config.function.partitionorderbycolumns = $scope.config.function.partitionorderbycolumns || [{'value':'','type':'Descending'}];
+        if ($scope.config.function.outputAll != undefined)
+          $scope.config.function.outputAll = $scope.config.function.outputAll
+        else
+          $scope.config.function.outputAll = true
+        
         $scope.communicateWithBackend();
         // if ($scope.config.function) {
         //   $scope.getFunctionMetadata($scope.config.function.name);

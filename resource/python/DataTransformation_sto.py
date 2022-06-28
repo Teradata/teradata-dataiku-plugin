@@ -22,6 +22,24 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SO
 
 FUNCTION_CATEGORY="Data Transformation"
 
+def sto_database(inputdataset):
+    if inputdataset == None:
+        return ''
+    #result =  getConnectionParamsFromDataset(output_A_datasets[0]).get('defaultDatabase', "");
+    client = dataiku.api_client()
+    connections = client.list_connections()
+    connectionName = inputdataset.get_location_info()['info']['connectionName']
+    result = None
+    if "dkuProperties" in connections[connectionName]['params']:
+        dkuProperties = connections[connectionName]['params']['dkuProperties']
+        for item in dkuProperties:
+            if item['name'] == "STO_DATABASE":
+                result = item['value']
+                break
+    if not result:
+        return ''
+    return result
+
 def getCurrentConnectionName(inputDataset):
     #input Dataset is the output of dataiku.Dataset("dataset name"
     return inputDataset.get_location_info().get('info', {}).get('connectionName',
@@ -44,6 +62,7 @@ def do(payload, config, plugin_config, inputs):
     connection = {}
     project = ''
     inputFolderLocation = None
+    inputdataset = None
     for input in inputs:
         if(input.get('role') == 'main'):
             inputtablename = input['fullName'].split('.')[1]
@@ -65,9 +84,13 @@ def do(payload, config, plugin_config, inputs):
     pynbList = filter(lambda f: not f.startswith('.'), os.listdir(pypath)) if\
         os.path.exists(pypath) else []
 
+    sto_db = sto_database(inputdataset)
+
+
     return {'inputfolder':folderpath,
             'fileList':fileList,
             'nbList':pynbList,
             'connection': connection,
+            'stoDatabase' : sto_db,
             'inputDataSets':inputDataSets ,
             'inputs': inputs}

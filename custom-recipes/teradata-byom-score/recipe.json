@@ -4,8 +4,10 @@
     "meta": {
         // label: name of the recipe as displayed, should be short
         "label": "BYOM – Scoring",
+        "author" : "Teradata",
         // description: longer string to help end users understand what this recipe does
         "description": "In-Database scoring with ML models stored in Teradata Vantage tables via the Teradata BYOM software.",
+        "tags" : ["Analytics", "Vantage",  "Teradata"],
         // icon: must be one of the FontAwesome 3.2.1 icons, complete list here at https://fontawesome.com/v3.2.1/icons/
         "icon": "icon-teradata",
         "iconColor": "orange"
@@ -13,7 +15,6 @@
 
     "kind": "PYTHON",
     
-
     // Inputs and outputs are defined by roles. In the recipe's I/O tab, the user can associate one
     // or more dataset to each input and output role.
 
@@ -77,7 +78,7 @@
       {
         "name": "H2O_Model_Type",
         "label": "H2O Model Type",
-        "description": "Select the desired h2o model type for scoring",
+        "description": "Select the desired H2O model type for scoring",
         "visibilityCondition" : "model.scoring_type == 'h2o'",
         "defaultValue": "h2o_dai",
         "type": "SELECT",
@@ -94,7 +95,7 @@
       },
       {
         "name": "PMMLPredict_database_name",
-        "label": "PMMLPredict database name",
+        "label": "Predict Function Database Name",
         "description": "Select the Database name where the BYOM PMML/H2O Predict function resides",
         "defaultValue": "mldb_db",
         "type": "SELECT",
@@ -124,7 +125,7 @@
       },
       {
         "name": "user_DBInput_Choice",
-        "label": "Model DB Name Input choice",
+        "label": "Model DB Name Input",
         "type": "SELECT",
         "description": "Choose whether to select from a list or specify the Model’s table DB Name",
         "selectChoices": [
@@ -156,7 +157,7 @@
       },
       {
         "name": "user_TBLInput_Choice",
-        "label": "Model Table Name Input choice",
+        "label": "Model Table Name Input",
         "type": "SELECT",
         "description": "Choose whether to select from a list or specify the Model’s table Name",
         "selectChoices": [
@@ -194,6 +195,78 @@
         "type": "SELECT",
         "description": "Enter the model id"
       },
+        
+      //ADDED THESE CHANGES FOR ADDING THE INTERACTIVE SUPPORT OF H2O-DIA License BEGIN
+      //Showing License DB Dropdowns
+      {
+        "name": "H2O_DIALicense_DB",
+        "label": "H2O DIA License DB Input",
+        "type": "SELECT",
+        "description": "Select the Database name where the H2O DIA License Key table resides",
+        "visibilityCondition" : "model.H2O_Model_Type == 'h2o_dai' && model.scoring_type == 'h2o'",
+        "selectChoices": [
+             {
+                  "value": "h2o_license_db_drop_down",
+                  "label": "LICENSE-DATABASE-LIST"
+             },
+             {
+                  "value": "user_license_db_choice",
+                  "label": "INPUT-LICENSE-DB-NAME"
+             }
+         ]
+      },
+      {
+        "name": "H2OLicense_DropDown_DB_Name",
+        "label": " ",
+        "getChoicesFromPython": true,
+        "type": "SELECT",
+        "description": "Enter License DataBase Name",
+        "visibilityCondition" : "model.H2O_DIALicense_DB == 'h2o_license_db_drop_down'"
+      },
+      {
+        "name": "user_Typed_License_DB_Name",
+        "label": " ",
+        "type": "STRING",
+        "description": "Enter License Table Name",
+        "defaultValue": "",
+        "visibilityCondition" : "model.H2O_DIALicense_DB == 'user_license_db_choice'"
+      },
+      //Showing License Table Dropdowns
+      {
+        "name": "H2O_DIALicense_Table",
+        "label": "H2O DIA License Table Input",
+        "type": "SELECT",
+        "description": "Select the Table name where the H2O DIA License Key table resides",
+        "visibilityCondition" : "model.H2O_Model_Type == 'h2o_dai' && model.scoring_type == 'h2o'",
+        "selectChoices": [
+             {
+                  "value": "h2o_license_table_drop_down",
+                  "label": "LICENSE-TABLE-LIST"
+             },
+             {
+                  "value": "user_license_table_choice",
+                  "label": "INPUT-LICENSE-TABLE-NAME"
+             }
+         ]
+      },
+      {
+        "name": "H2OLicense_DropDown_Table_Name",
+        "label": " ",
+        "getChoicesFromPython": true,
+        "type": "SELECT",
+        "description": "Enter License Table Name",
+        "visibilityCondition" : "model.H2O_DIALicense_Table == 'h2o_license_table_drop_down'"
+      },
+      {
+        "name": "user_Typed_License_Table_Name",
+        "label": " ",
+        "type": "STRING",
+        "description": "Enter License Table Name",
+        "defaultValue": "",
+        "visibilityCondition" : "model.H2O_DIALicense_Table == 'user_license_table_choice'"
+      },
+      //H2O-DIA License Changes ENDS here.
+
       {
          "name": "accumulate_all",
          "label" : "Accumulate All Columns",

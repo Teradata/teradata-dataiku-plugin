@@ -3,8 +3,9 @@
     // Meta data for display purposes
     "meta": {
         "label": "SCRIPT Table Operator Analysis",
-        "author": "Me",
+        "author": "Teradata",
         "description": "Run your R and Python scripts natively in Teradata Vantage with the Teradata SCRIPT Table Operator.",
+        "tags" : ["Analytics", "Vantage",  "Teradata"],
         "tags": [
             "Teradata",
             "SCRIPT Table Operator"

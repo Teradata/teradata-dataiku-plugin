@@ -12,17 +12,17 @@ NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FO
 DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. -->
 
-<link rel="stylesheet" href="/plugins/Teradata/resource/css/aster-ui.css">
-<link rel="stylesheet" href="/plugins/Teradata/resource/css/jquery-ui.css">
-<link rel="stylesheet" href="/plugins/Teradata/resource/css/jquery.tagsinput.min.css" />
-<link rel="stylesheet" href="/plugins/Teradata/resource/css/jquery.flexdatalist.min.css" />
-<link rel="stylesheet" href="/plugins/Teradata/resource/css/glyphs.css">
+<link rel="stylesheet" href="/plugins/teradata/resource/css/aster-ui.css">
+<link rel="stylesheet" href="/plugins/teradata/resource/css/jquery-ui.css">
+<link rel="stylesheet" href="/plugins/teradata/resource/css/jquery.tagsinput.min.css" />
+<link rel="stylesheet" href="/plugins/teradata/resource/css/jquery.flexdatalist.min.css" />
+<link rel="stylesheet" href="/plugins/teradata/resource/css/glyphs.css">
 <!-- <link rel="stylesheet" href="/plugins/TeradataVantageSQLEFunctionsPlugin/resource/tagsinput/bootstrap.min.css">
 <link rel="stylesheet" href="/plugins/TeradataVantageSQLEFunctionsPlugin/resource/tagsinput/bootstrap-theme.min.css">
 <link rel="stylesheet" href="/plugins/TeradataVantageSQLEFunctionsPlugin/resource/tagsinput/bootstrap-tagsinput.css"> -->
 <!-- <script src="/plugins/TeradataVantageSQLEFunctionsPlugin/resource/tagsinput/bootstrap-tagsinput-angular.js"></script> -->
-<script src="/plugins/Teradata/resource/js/jquery.tagsinput.min.js"></script>
-<script src="/plugins/Teradata/resource/js/jquery.flexdatalist.min.js"></script>
+<script src="/plugins/teradata/resource/js/jquery.tagsinput.min.js"></script>
+<script src="/plugins/teradata/resource/js/jquery.flexdatalist.min.js"></script>
 <!-- <script src="/plugins/TeradataVantageSQLEFunctionsPlugin/resource/tagsinput/bootstrap-tagsinput-angular.js"></script> -->
 
 
@@ -38,7 +38,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SO
         <select ng-model="config.function" ng-options="choice.function_alias_name for choice in choices track by choice.name" ng-change="refresh(config.function.name)"></select>
           <option  value="" disabled selected>Select a Vantage function...</option>
         </select>
-        <a href ="/plugins/Teradata/resource/documentation/DSSVantagePlugins-UserGuide.pdf" class="link1" target="_blank" download><span class="glyphicon glyphicon-question-sign"></span></a>
+        <a href ="https://www.dataiku.com/product/plugins/teradata" class="link1" target="_blank"><span class="glyphicon glyphicon-question-sign"></span></a>
 
         <!-- SKS: Add version button -->
         <button ng-click="showVersionDialog()" data-toggle="tooltip" data-container="body" data-html="true" title="See what Vantage Version you are working with.">Version &#8230</button>
@@ -113,7 +113,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SO
       <div class="tabplugin">
         <button class="tablinks" id="defaultOpen" ng-click="openTabs($event, 'tabs-required')">Required Arguments</button>
         <button class="tablinks" ng-if="hasOptionalArguments()" ng-click="openTabs($event, 'tabs-optional')">Optional Arguments</button>        
-        <button class="tablinks" ng-click="openTabs($event, 'tabs-table')">SQL Clauses</button>        
+        <button class="tablinks" ng-if="false" ng-click="openTabs($event, 'tabs-table')">SQL Clauses</button>        
         
       </div>
       <div id="tabs-required" class="plugintabcontent">

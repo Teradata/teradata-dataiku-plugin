@@ -68,38 +68,38 @@ def vantageDo():
     pre_query = None
     post_query = None
     
-    print(SEP)
+    logging.info(SEP)
     if not autocommit:
-        print("NOT AUTOCOMMIT MODE.")
-        print("Assuming TERA mode.")
+        logging.info("NOT AUTOCOMMIT MODE.")
+        logging.info("Assuming TERA mode.")
         pre_query = ["BEGIN TRANSACTION;"]
         post_query = ["END TRANSACTION;"]
         for prop in properties:
             if prop['name'] == 'TMODE':
                 if prop['value'] == 'ANSI':
-                    print("ANSI mode.")
+                    logging.info("ANSI mode.")
                     pre_query = [";"]
                     post_query = ["COMMIT WORK;"]
     
     else:
-        print("AUTOCOMMIT MODE.")
-        print("No pre- and post-query.")
-    print(SEP)
+        logging.info("AUTOCOMMIT MODE.")
+        logging.info("No pre- and post-query.")
+    logging.info(SEP)
 
     # Recipe function param
     dss_function = get_recipe_config().get('function', None)
     pp = pprint.PrettyPrinter(indent=4)
     debug = False
     if debug:
-    	print(SEP)
-    	print('DSS Function:')
-    	print(pp.pformat(dss_function))
-    	print(SEP)
+    	logging.info(SEP)
+    	logging.info('DSS Function:')
+    	logging.info(pp.pformat(dss_function))
+    	logging.info(SEP)
 
-    print(SEP)
-    print('get_recipe_config():')
-    print(pp.pformat(get_recipe_config()))
-    print(SEP)
+    logging.info(SEP)
+    logging.info('get_recipe_config():')
+    logging.info(pp.pformat(get_recipe_config()))
+    logging.info(SEP)
 
     # output dataset
     try:
@@ -127,13 +127,13 @@ def vantageDo():
 
     # Handle dropping of output tables.
     if dss_function.get('dropIfExists', False):
-        print("Preparing to drop tables.")
+        logging.info("Preparing to drop tables.")
         drop_query = dropTableStatement(outputTable)
         
-        print(SEP)
-        print("DROP query:")
-        print(drop_query)
-        print(SEP)
+        logging.info(SEP)
+        logging.info("DROP query:")
+        logging.info(drop_query)
+        logging.info(SEP)
         try:
             # dataiku's query_to_df's pre_query parameter seems to not work. This is a work-around to ensure that the 
             # "START TRANSACTION;" block applies for non-autocommit TERA mode connections.
@@ -141,15 +141,15 @@ def vantageDo():
                 executor.query_to_df(pre_query)
             executor.query_to_df(drop_query, post_queries=post_query)
         except Exception as e:
-            print(e)
+            logging.info(e)
         
         # Drop other output tables if they exist.
         drop_all_query = getDropOutputTableArgumentsStatements(dss_function.get('output_tables', []))
         
-        print(SEP)
-        print('Drop ALL Query:')
-        print(drop_all_query)
-        print(SEP)
+        logging.info(SEP)
+        logging.info('Drop ALL Query:')
+        logging.info(drop_all_query)
+        logging.info(SEP)
            
         for drop_q in drop_all_query:
             # dataiku's query_to_df's pre_query parameter seems to not work. This is a work-around to ensure that the 
@@ -162,11 +162,11 @@ def vantageDo():
 
     # SKS: Create new query based on open ended approach
     sql_generator = OpenEndedQueryGenerator(outputTable.tablename, get_recipe_config(), verbose=True)
-    print(SEP)
-    print("OpenEndedQueryGenerator query:")
+    logging.info(SEP)
+    logging.info("OpenEndedQueryGenerator query:")
     my_query = sql_generator.create_query()
-    print(my_query)
-    print(SEP)
+    logging.info(my_query)
+    logging.info(SEP)
 
         
     # Detect error
@@ -181,9 +181,9 @@ def vantageDo():
         err_str_list = err_str.split(" ")
         # trying to shorten the error for the modal in front-end
         if len(err_str_list) > 15:
-            print(SEP)
-            print(error)
-            print(SEP)
+            logging.info(SEP)
+            logging.info(error)
+            logging.info(SEP)
             new_err_str = err_str_list[:15]
             new_err_str.append("\n\n")
             new_err_str.append("...")
@@ -192,7 +192,7 @@ def vantageDo():
         else:
             raise RuntimeError(err_str)
 
-    print('Moving results to output...')
+    logging.info('Moving results to output...')
 
     # Call method for mapping Teradata types to the Dataiku types needed
     set_schema_from_vantage(outputTable.tablename, output_dataset, executor, post_query, autocommit, pre_query)
@@ -201,31 +201,31 @@ def vantageDo():
     outtables = dss_function.get('output_tables', [])
     if(outtables != []):
         tableCounter = 1
-        print('Working on output tables')
-        print(get_output_names_for_role('main'))
-        print(outtables)
+        logging.info('Working on output tables')
+        logging.info(get_output_names_for_role('main'))
+        logging.info(outtables)
         for table in outtables:
             if table.get('value') != '' and table.get('value') != None:
                 # try:
-                print('Table')
-                print(table)
+                logging.info('Table')
+                logging.info(table)
                 #Need to change this to max of split in order for multiple database or no-database table inputs
                 #Change below might fix issue 4 of Jan 4 2018 for Nico. For non-drop tables
                 try:
                     main_output_name2 = list(filter(lambda out_dataset: out_dataset.split('.')[len(out_dataset.split('.'))-1] == table.get('value').split('.')[len(table.get('value').split('.'))-1].strip('\"'),get_output_names_for_role('main')))[0]
                 except Exception as error:
-                    # print(error.message)                    
+                    # logging.info(error.message)                    
                     raise RuntimeError('Unable to find an output dataset for '+table.get('value')+ 'It may not exist as an output Dataset: '+table.get('value')+"\n\Runtime Error:"+ error.message)
-                print('Output name 2')
-                print(main_output_name2)
+                logging.info('Output name 2')
+                logging.info(main_output_name2)
                 output_dataset2 =  dataiku.Dataset(main_output_name2)   
                 # print("od2 printer")
                 tableNamePrefix = output_dataset2.get_location_info(sensitive_info=True)['info'].get('connectionParams').get('namingRule').get('tableNameDatasetNamePrefix')
                 if tableNamePrefix != None or tableNamePrefix != '':
-                    print('Table prefix is not empty:' + tableNamePrefix)
+                    logging.info('Table prefix is not empty:' + tableNamePrefix)
                 # except:
                 #     #Need to change this error
-                #     print('Error: Dataset for' + table.get('name') + ' not found')  
+                #     logging.info('Error: Dataset for' + table.get('name') + ' not found')  
                 #     raise Value  
 
                 # Call method for mapping Teradata types to the Dataiku types needed
@@ -233,7 +233,7 @@ def vantageDo():
 
                 tableCounter += 1
 
-    print('Complete!')  
+    logging.info('Complete!')  
 
 
 # Uncomment end

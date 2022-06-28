@@ -4,29 +4,31 @@ import dataiku
 from dataiku.customrecipe import *
 from teradatabyomtest import handle_models
 import json
+import logging
+
 
 model= handle_models.get_input_output(has_model_as_second_input=True)
 
-print('=========================== MODEL')
-print(model)
+logging.info('=========================== MODEL')
+logging.info(model)
 # get whatever information you need from your model here
 
 model_def = model.get_definition()
-print('================================ DEFINITION')
-print(model_def)
+logging.info('================================ DEFINITION')
+logging.info(model_def)
 # view model definition 
 
 version_id = model_def.get('activeVersion')
-print('======================================== Version ID')
-print(version_id)
+logging.info('======================================== Version ID')
+logging.info(version_id)
 
 project_key = model_def.get('projectKey')
-print('======================================== Project Key')
-print(project_key)
+logging.info('======================================== Project Key')
+logging.info(project_key)
 
 saved_model_id = model_def.get('id')
-print('======================================== Saved Model ID')
-print(saved_model_id)
+logging.info('======================================== Saved Model ID')
+logging.info(saved_model_id)
 
 import dataiku
 import pandas as pd, numpy as np
@@ -45,10 +47,10 @@ connection_name = str(get_recipe_config()["connection_name"][0])
 dss_connection_prams = client.get_connection(name=connection_name).get_info().get_params()
     
 user_param = str(dss_connection_prams['user'])
-print(user_param)
+logging.info(user_param)
     
 host_param = str(dss_connection_prams['host'])
-print(host_param)
+logging.info(host_param)
     
 password_param = str(dss_connection_prams['password'])
  
@@ -70,8 +72,8 @@ elif 'logmech' and 'tdnego' in properties_string.lower():
      logmech_param = 'TDNEGO'
 else:
      logmech_param = 'TD2'
-print('======================================== EXISTING LDAP')
-print(logmech_param)
+logging.info('======================================== EXISTING LDAP')
+logging.info(logmech_param)
 
 #encryption_param = "false"
 #if bool(get_recipe_config()["encryption"]):

@@ -19,12 +19,12 @@
 } */
 @font-face {
   font-family: 'Glyphicons Halflings';
-  src: url('/plugins/Teradata/resource/css/glyphs/glyphicons-halflings-regular.eot');
-  src: url('/plugins/Teradata/resource/css/glyphs/glyphicons-halflings-regular.eot?#iefix') format('embedded-opentype'),
-       url('/plugins/Teradata/resource/css/glyphs/glyphicons-halflings-regular.woff2') format('woff2'),
-       url('/plugins/Teradata/resource/css/glyphs/glyphicons-halflings-regular.woff') format('woff'),
-       url('/plugins/Teradata/resource/css/glyphs/glyphicons-halflings-regular.ttf') format('truetype'),
-       url('/plugins/Teradata/resource/css/glyphs/glyphicons-halflings-regular.svg#glyphicons_halflingsregular') format('svg');
+  src: url('/plugins/teradata/resource/css/glyphs/glyphicons-halflings-regular.eot');
+  src: url('/plugins/teradata/resource/css/glyphs/glyphicons-halflings-regular.eot?#iefix') format('embedded-opentype'),
+       url('/plugins/teradata/resource/css/glyphs/glyphicons-halflings-regular.woff2') format('woff2'),
+       url('/plugins/teradata/resource/css/glyphs/glyphicons-halflings-regular.woff') format('woff'),
+       url('/plugins/teradata/resource/css/glyphs/glyphicons-halflings-regular.ttf') format('truetype'),
+       url('/plugins/teradata/resource/css/glyphs/glyphicons-halflings-regular.svg#glyphicons_halflingsregular') format('svg');
 }
 
 .glyphicon {
