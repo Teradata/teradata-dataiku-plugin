@@ -601,6 +601,7 @@ removeOrderByColumn_WITHDIR: function(orderArray, orderDirArray, index) {
       showVersionDialog: function() {
            $('<div></div>').dialog({
                 modal: true,
+                width: 700,
                 title: "Version Information",
                 open: function() {
                   var markup = $scope.versionInfo;

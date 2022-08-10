@@ -333,17 +333,18 @@ def do(payload, config, plugin_config, inputs):
         category_names += ["VALIB"]
     
     choices = []
+    plugin_version_number = vantage_version_number
     for category in category_names:
-        fallback_directory = os.path.join(env, 'data', vantage_version_number, category)
+        fallback_directory = os.path.join(env, 'data', plugin_version_number, category)
     
         # Check if fallback directory exists
         if not os.path.isdir(fallback_directory):
             # Use the latest version we have if the version is not available
-            if vantage_version_number == "17.20" and os.path.isdir(os.path.join(env, 'data', "17.10", category)):
-                vantage_version_number = "17.10"
+            if plugin_version_number == "17.20" and os.path.isdir(os.path.join(env, 'data', "17.10", category)):
+                plugin_version_number = "17.10"
             else:
-                vantage_version_number = "17.05"
-            fallback_directory = os.path.join(env, 'data', vantage_version_number, category)
+                plugin_version_number = "17.05"
+            fallback_directory = os.path.join(env, 'data', plugin_version_number, category)
 
     
         # SKS : Call common code to query all JSONs of this category
@@ -353,7 +354,7 @@ def do(payload, config, plugin_config, inputs):
             if not filename.endswith(".json"):
                 continue
             function_dict = {} 
-            filepath = os.path.join(vantage_version_number, category, filename)
+            filepath = os.path.join(plugin_version_number, category, filename)
             function_dict["name"] = filename.replace(".json", "")
             function_dict["function_alias_name"] = function_dict["name"]
             function_dict["json_file_path"] = filepath
@@ -371,8 +372,9 @@ def do(payload, config, plugin_config, inputs):
         else:
             versionInfo += "Vantage Capability Not Available"
         versionInfo += "</br>" + "</br>"
-    versionInfo += "Analytics Database version: " + vantage_version_number
-
+    versionInfo += "The connected Analytics Database version is: " + vantage_version_number
+    versionInfo += "<br>"
+    versionInfo += "The present version of this plugin supports analytic functions through version: " + plugin_version_number
                 
          
     input_table_name = inputs[0]['fullName'].split('.')[1]
