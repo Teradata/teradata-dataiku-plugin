@@ -343,7 +343,7 @@ def do(payload, config, plugin_config, inputs):
                 vantage_version_number = "17.10"
             else:
                 vantage_version_number = "17.05"
-            fallback_directory = os.path.join(env, 'data', "17.10", category)
+            fallback_directory = os.path.join(env, 'data', vantage_version_number, category)
 
     
         # SKS : Call common code to query all JSONs of this category
