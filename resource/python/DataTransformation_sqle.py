@@ -374,7 +374,7 @@ def do(payload, config, plugin_config, inputs):
         versionInfo += "</br>" + "</br>"
     versionInfo += "The connected Analytics Database version is: " + vantage_version_number
     versionInfo += "<br>"
-    versionInfo += "The present version of this plugin supports analytic functions through version: " + plugin_version_number
+    versionInfo += "Present plugin supports analytic function titles released through version: " + plugin_version_number
                 
          
     input_table_name = inputs[0]['fullName'].split('.')[1]
