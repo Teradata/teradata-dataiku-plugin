@@ -1,0 +1,274 @@
+{
+    "json_schema_major_version": "1",
+    "json_schema_minor_version": "1",
+    "json_content_version": "1",
+    "function_name": "Binning VAL",
+    "function_version": "1.0",
+    "function_alias_name": "Binning VAL",
+    "function_type": "valib",
+    "function_r_name": "",
+    "short_description": "Binning allows user to perform bin coding to replace continuous numeric column with a categorical one to produce ordinal values. When the delay query is off, the input table be transformed immediately otherwise the result should be combined with other transformations and fed into a final Transform function.",
+    "long_description": "Binning allows user to perform bin coding to replace continuous numeric column with a categorical one to produce ordinal values. When the delay query is off, the input table be transformed immediately otherwise the result should be combined with other transformations and fed into a final Transform function.",
+    "input_tables": [
+        {
+            "requiredInputKind": [
+                "PartitionByNone"
+            ],
+            "isOrdered": false,
+            "partitionByOne": false,
+            "name": "input_A_role",
+            "alternateNames": [],
+            "isRequired": true,
+            "rDescription": "The dataset containing the raw information that we will perform a Binning VALIB function call",
+            "description": "The dataset containing the raw information that we will perform a Binning VALIB function call",
+            "datatype": "TABLE_ALIAS",
+            "allowsLists": false,
+            "rName": "input_A_role",
+            "useInR": true,
+            "rOrderNum": 1
+        }
+    ],
+    "argument_clauses": [
+        {
+            "defaultValue": true,
+            "name": "DelayQuery",
+            "alternateNames": [],
+            "isRequired": false,
+            "rDescription": "Choose to Delay Query or Execute Immediately",
+            "description": "Choose to Delay Query or Execute Immediately",
+            "datatype": "BOOLEAN",
+            "allowsLists": false,
+            "rName": "",
+            "useInR": true,
+            "rOrderNum": 2
+        },
+        {
+            "targetTable": [
+                "input_A_role"
+            ],
+            "checkDuplicate": false,
+            "allowedTypes": [],
+            "allowedTypeGroups": [
+                "ALL"
+            ],
+            "matchLengthOfArgument": "",
+            "allowPadding": false,
+            "name": "KeyColumns",
+            "alternateNames": [],
+            "isRequired": false,
+            "rDescription": "",
+            "description": "",
+            "datatype": "COLUMNS",
+            "allowsLists": true,
+            "rName": "exclude",
+            "useInR": true,
+            "rOrderNum": 3
+        },
+        {
+            "permittedValues": [
+                "Bins",
+                "Bins with Boundaries",
+                "Boundaries",
+                "Quantiles",
+                "Width"
+            ],
+            "defaultValue": "bins",
+            "isOutputColumn": false,
+            "name": "BinStyle",
+            "alternateNames": [],
+            "isRequired": false,
+            "rDescription": "",
+            "description": "",
+            "datatype": "STRING",
+            "allowsLists": false,
+            "rName": "mavgtype",
+            "useInR": true,
+            "rOrderNum": 4
+        },
+        {
+            "permittedValues": [
+                "b1",
+                "b2",
+                "b3"
+            ],
+            "defaultValue": "",
+            "isOutputColumn": false,
+            "name": "BoundariesOption",
+            "alternateNames": [],
+            "isRequired": false,
+            "rDescription": "",
+            "description": "",
+            "datatype": "STRING",
+            "allowsLists": false,
+            "rName": "mavgtype",
+            "useInR": true,
+            "rOrderNum": 5
+        },
+        {
+            "defaultValue": 10,
+            "allowNaN": false,
+            "name": "BinCodeTransformationValue",
+            "alternateNames": [],
+            "isRequired": false,
+            "rDescription": "",
+            "description": "",
+            "datatype": "INTEGER",
+            "allowsLists": false,
+            "rName": "window.size",
+            "useInR": true,
+            "rOrderNum": 6
+        },
+        {
+            "permittedValues": [
+                "upperbound",
+                "lowerbound",
+                "upperbound and lowerbound"
+            ],
+            "defaultValue": "",
+            "isOutputColumn": false,
+            "name": "BincodeBounds",
+            "alternateNames": [],
+            "isRequired": false,
+            "rDescription": "Choose to remap the lowerbound, upperbound, or both.",
+            "description": "Choose to remap the lowerbound, upperbound, or both.",
+            "datatype": "STRING",
+            "allowsLists": false,
+            "rName": "mavgtype",
+            "useInR": true,
+            "rOrderNum": 7
+        },
+        {
+            "defaultValue": 0,
+            "allowNaN": false,
+            "name": "LowerboundValuesTo",
+            "alternateNames": [],
+            "isRequired": false,
+            "rDescription": "Specifies the minimum boundary value for the style.",
+            "description": "Specifies the minimum boundary value for the style.",
+            "datatype": "INTEGER",
+            "allowsLists": false,
+            "rName": "window.size",
+            "useInR": true,
+            "rOrderNum": 8
+        },
+        {
+            "defaultValue": 1,
+            "allowNaN": false,
+            "name": "UpperboundValuesTo",
+            "alternateNames": [],
+            "isRequired": false,
+            "rDescription": "Specifies the maximum boundary value for the style.",
+            "description": "Specifies the maximum boundary value for the style.",
+            "datatype": "INTEGER",
+            "allowsLists": false,
+            "rName": "window.size",
+            "useInR": true,
+            "rOrderNum": 9
+        },
+        {
+            "permittedValues": [],
+            "isOutputColumn": true,
+            "name": "ColumnRenameMapping",
+            "alternateNames": [],
+            "isRequired": false,
+            "rDescription": "",
+            "description": "",
+            "datatype": "STRING",
+            "allowsLists": true,
+            "rName": "output.column",
+            "useInR": true,
+            "rOrderNum": 10
+        },
+        {
+            "permittedValues": [
+                "None",
+                "Literal",
+                "Mean",
+                "Median",
+                "Mode",
+                "Median without Mean"
+            ],
+            "defaultValue": "",
+            "isOutputColumn": false,
+            "name": "Nullstyle",
+            "alternateNames": [],
+            "isRequired": false,
+            "rDescription": "",
+            "description": "",
+            "datatype": "STRING",
+            "allowsLists": false,
+            "rName": "mavgtype",
+            "useInR": true,
+            "rOrderNum": 11
+        },
+        {
+            "defaultValue": 0,
+            "allowNaN": false,
+            "name": "FillNAValue",
+            "alternateNames": [],
+            "isRequired": false,
+            "rDescription": "",
+            "description": "",
+            "datatype": "DOUBLE PRECISION",
+            "allowsLists": false,
+            "rName": "",
+            "useInR": true,
+            "rOrderNum": 12
+        }
+    ],
+    "name_map": {
+        "Binning": "binning",
+        "DelayQuery": "binning_delayquery",
+        "KeyColumns": "binning_key_columns",
+        "BinStyle": "binning_style1",
+        "BoundariesOption": "binning_boundaries_option1",
+        "BinCodeTransformationValue": "binning_value1",
+        "BincodeBounds": "binning_bincode1_bound_mode",
+        "LowerboundValuesTo": "binning_bincode1_lower_value",
+        "UpperboundValuesTo": "binning_bincode1_upper_value",
+        "ColumnRenameMapping": "binning_map",
+        "Nullstyle": "binning_nullstyle1",
+        "FillNAValue": "binning_fillna_value1"
+    },
+    "type_map": {
+        "Binning": "SEPARATOR",
+        "DelayQuery": "BOOLEAN",
+        "KeyColumns": "COLUMNS",
+        "BinStyle": "SELECT",
+        "BoundariesOption": "SELECT",
+        "BinCodeTransformationValue": "INT",
+        "BincodeBounds": "SELECT",
+        "LowerboundValuesTo": "INT",
+        "UpperboundValuesTo": "INT",
+        "ColumnRenameMapping": "MAP",
+        "Nullstyle": "SELECT",
+        "FillNAValue": "DOUBLE"
+    },
+    "choices_map": {
+        "BinStyle": {
+            "Bins": "bins",
+            "Bins with Boundaries": "binswithboundaries",
+            "Boundaries": "boundaries",
+            "Quantiles": "quantiles",
+            "Width": "width"
+        },
+        "BoundariesOption": {
+            "b1": "b1",
+            "b2": "b2",
+            "b3": "b3"
+        },
+        "BincodeBounds": {
+            "upperbound": "upperbound",
+            "lowerbound": "lowerbound",
+            "upperbound and lowerbound": "upperbound_and_lowerbound"
+        },
+        "Nullstyle": {
+            "None": "None",
+            "Literal": "literal",
+            "Mean": "mean",
+            "Median": "median",
+            "Mode": "mode",
+            "Median without Mean": "medianwithoutaveraging"
+        }
+    }
+}

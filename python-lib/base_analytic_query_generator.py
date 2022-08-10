@@ -33,7 +33,7 @@ class BaseAnalyticQueryGenerator():
     def __init__(self, func_alias_name, function_name, func_input_arg_sql_names, func_input_table_view_query, func_input_dataframe_type,
                  func_input_distribution, func_input_partition_by_cols, func_input_order_by_cols,
                  func_other_arg_sql_names, func_other_args_values, func_other_arg_json_datatypes,
-                 func_output_args_sql_names, func_output_args_values, func_type="FFE",
+                 func_output_args_sql_names, func_output_args_values, func_input_local_order, func_type="FFE",
                  engine="ENGINE_ML", configure_column_casesensitive_handler=True, exec_input_node=None, verbose=False):
         """
         AnalyticalQueryGenerator constructor, to create a map-reduce object, for
@@ -108,6 +108,7 @@ class BaseAnalyticQueryGenerator():
             print("func_other_arg_json_datatypes=", func_other_arg_json_datatypes)
             print("func_output_args_sql_names=", func_output_args_sql_names)
             print("func_output_args_values=", func_output_args_values)
+            print("func_input_local_order=", func_input_local_order)
             print("func_type=", func_type)
             print("engine=", engine)
             print("teradata_analytic_lib--------------------------------")
@@ -128,6 +129,7 @@ class BaseAnalyticQueryGenerator():
         self.__func_other_arg_json_datatypes = func_other_arg_json_datatypes
         self.__func_output_args_sql_names = func_output_args_sql_names
         self.__func_output_args_values = func_output_args_values
+        self.__func_input_local_order = func_input_local_order
         self.__func_type = func_type
         self.__SELECT_STMT_FMT = "SELECT * FROM {} as sqlmr"
         self.__QUERY_SIZE = self.__get_string_size(self.__SELECT_STMT_FMT) + 20
@@ -157,7 +159,7 @@ class BaseAnalyticQueryGenerator():
         print(keyword)
 
         """
-        TERADATA_RESERVED_WORDS = ["INPUT", "THRESHOLD", "CHECK", "SUMMARY", "HASH", "METHOD"]
+        TERADATA_RESERVED_WORDS = ["INPUT", "THRESHOLD", "CHECK", "SUMMARY", "HASH", "METHOD","TYPE"]
         if keyword.upper() in TERADATA_RESERVED_WORDS:
             if self.__verbose:
                 print("teradata_analytic_lib: ", "keyword=", keyword, "_quote_arg", self._quote_arg(keyword, "\"", False))
@@ -215,7 +217,7 @@ class BaseAnalyticQueryGenerator():
         elif table_ref_type == "QUERY":
             returnSql = "{0} ({1})".format(returnSql, table_ref)
         else:
-            #TODO raise # Error
+            # Not a TABLE or QUERY
             ""
 
         if alias is not None:
@@ -353,10 +355,13 @@ class BaseAnalyticQueryGenerator():
             # Order clause information
             order_col = self.__func_input_order_by_cols[index]
 
+            # Order by type information - local order by or order by
+            local_order_by_type = self.__func_input_local_order[index] if self.__func_input_local_order else False
+
             # Get the Partition clause for the input argument.
             partition_clause = self.__gen_sqlmr_input_partition_clause(distribution, partition_col)
             # Get the Order clause for the input argument.
-            order_clause = self.__gen_sqlmr_input_order_clause(order_col)
+            order_clause = self.__gen_sqlmr_input_order_clause(order_col,local_order_by_type)
 
             if table_ref_type == "TABLE":
                 # If table reference type is "TABLE", then let's use the table name in the query.
@@ -412,24 +417,34 @@ class BaseAnalyticQueryGenerator():
 
         return " ".join(args_sql_str)
 
-    def __gen_sqlmr_input_order_clause(self, column_order):
+    def __gen_sqlmr_input_order_clause(self, column_order, local_order_by_type):
         """
         Private function to generate complete order by clause for input function arguments.
-        For Example, Order By col2
+        For Example,
+            Order By col2
 
-        @param column_order: Column to be used in ORDER BY clause. If this is "NA_character_" no ORDER BY clause is generated.
+        PARAMETERS:
+            column_order - Column to be used in ORDER BY clause. If this is "NA_character_"
+                            no ORDER BY clause is generated.
 
-        @return: Order By clause, as shown in example here.
+            local_order_by_type - Specifies whether to generate LOCAL ORDER BY or not. When
+                                  set to True, function generates LOCAL ORDER BY, otherwise
+                                  function generates ORDER BY clause.
 
-        @see:
-        other_arg_sql = self.__gen_sqlmr_input_order_clause("col2")
+        RETURNS:
+            Order By clause, as shown in example here.
 
-        # Output is as shown in example in description.
+        RAISES:
+
+        EXAMPLES:
+            other_arg_sql = self.__gen_sqlmr_input_order_clause("col2")
+            # Output is as shown in example in description.
 
         """
         if column_order == "NA_character_" or column_order is None:
           return ""
-        args_sql_str = "\n\tORDER BY {}".format(column_order)
+        local_order = "LOCAL" if local_order_by_type else ""
+        args_sql_str = "\n\t{} ORDER BY {}".format(local_order, column_order)
 
         # Get the length of the ORDER clause.
         self.__QUERY_SIZE = self.__QUERY_SIZE + self.__get_string_size(args_sql_str)
@@ -459,11 +474,13 @@ class BaseAnalyticQueryGenerator():
             args_sql_str = "\n\tPARTITION BY {0}".format(column)
         elif distribution == "DIMENSION":
             args_sql_str = "\n\tDIMENSION"
+        elif distribution == "HASH" and column is not None:
+            args_sql_str = "\n\t HASH BY {0}".format(column)
         elif distribution == "NONE":
             return ""
         else:
             return ""
-            # TODO raise error "invalid distribution type"
+            # invalid distribution type
 
         # Get the length of the PARTITION clause.
         self.__QUERY_SIZE = self.__QUERY_SIZE + self.__get_string_size(args_sql_str)

@@ -1,0 +1,170 @@
+{
+    "json_schema_major_version": "1",
+    "json_schema_minor_version": "1",
+    "json_content_version": "1",
+    "function_name": "Sigmoid VAL",
+    "function_version": "1.0",
+    "function_alias_name": "Sigmoid VAL",
+    "function_type": "valib",
+    "function_r_name": "",
+    "short_description": "Sigmoid transformation allows rescaling of continuous numeric data in a more sophisticated way than the Rescaling transformation function. In a Sigmoid transformation, a numeric column is transformed using a type of sigmoid or s-shaped function. When the delay query is off, the input table be transformed immediately otherwise the result should be combined with other transformations and fed into a final Transform function.",
+    "long_description": "Sigmoid transformation allows rescaling of continuous numeric data in a more sophisticated way than the Rescaling transformation function. In a Sigmoid transformation, a numeric column is transformed using a type of sigmoid or s-shaped function. When the delay query is off, the input table be transformed immediately otherwise the result should be combined with other transformations and fed into a final Transform function.",
+    "input_tables": [
+        {
+            "requiredInputKind": [
+                "PartitionByNone"
+            ],
+            "isOrdered": false,
+            "partitionByOne": false,
+            "name": "input_A_role",
+            "alternateNames": [],
+            "isRequired": true,
+            "rDescription": "The dataset containing the raw information that we will perform a sigmoid VALIB function call",
+            "description": "The dataset containing the raw information that we will perform a sigmoid VALIB function call",
+            "datatype": "TABLE_ALIAS",
+            "allowsLists": false,
+            "rName": "input_A_role",
+            "useInR": true,
+            "rOrderNum": 1
+        }
+    ],
+    "argument_clauses": [
+        {
+            "defaultValue": true,
+            "name": "DelayQuery",
+            "alternateNames": [],
+            "isRequired": false,
+            "rDescription": "Choose to Delay Query or Execute Immediately",
+            "description": "Choose to Delay Query or Execute Immediately",
+            "datatype": "BOOLEAN",
+            "allowsLists": false,
+            "rName": "",
+            "useInR": true,
+            "rOrderNum": 2
+        },
+        {
+            "targetTable": [
+                "input_A_role"
+            ],
+            "checkDuplicate": false,
+            "allowedTypes": [],
+            "allowedTypeGroups": [
+                "ALL"
+            ],
+            "matchLengthOfArgument": "",
+            "allowPadding": false,
+            "name": "KeyColumns",
+            "alternateNames": [],
+            "isRequired": false,
+            "rDescription": "",
+            "description": "",
+            "datatype": "COLUMNS",
+            "allowsLists": true,
+            "rName": "exclude",
+            "useInR": true,
+            "rOrderNum": 3
+        },
+        {
+            "permittedValues": [
+                "None",
+                "Literal",
+                "Mean",
+                "Median",
+                "Mode",
+                "Median without Mean"
+            ],
+            "defaultValue": "None",
+            "isOutputColumn": false,
+            "name": "Nullstyle",
+            "alternateNames": [],
+            "isRequired": false,
+            "rDescription": "",
+            "description": "",
+            "datatype": "STRING",
+            "allowsLists": false,
+            "rName": "mavgtype",
+            "useInR": true,
+            "rOrderNum": 4
+        },
+        {
+            "defaultValue": 0,
+            "allowNaN": false,
+            "name": "FillNAValue",
+            "alternateNames": [],
+            "isRequired": false,
+            "rDescription": "",
+            "description": "",
+            "datatype": "DOUBLE PRECISION",
+            "allowsLists": false,
+            "rName": "",
+            "useInR": true,
+            "rOrderNum": 5
+        },
+        {
+            "permittedValues": [
+                "logit",
+                "modifiedlogit",
+                "tanh"
+            ],
+            "defaultValue": "logit",
+            "isOutputColumn": false,
+            "name": "Style",
+            "alternateNames": [],
+            "isRequired": false,
+            "rDescription": "",
+            "description": "",
+            "datatype": "STRING",
+            "allowsLists": false,
+            "rName": "mavgtype",
+            "useInR": true,
+            "rOrderNum": 6
+        },
+        {
+            "permittedValues": [],
+            "isOutputColumn": true,
+            "name": "ColumnRenameMapping",
+            "alternateNames": [],
+            "isRequired": false,
+            "rDescription": "",
+            "description": "",
+            "datatype": "STRING",
+            "allowsLists": true,
+            "rName": "output.column",
+            "useInR": true,
+            "rOrderNum": 7
+        }
+    ],
+    "name_map": {
+        "Sigmoid": "sigmoid",
+        "DelayQuery": "sigmoid_delayquery",
+        "KeyColumns": "sigmoid_key_columns",
+        "Nullstyle": "sigmoid_nullstyle1",
+        "FillNAValue": "sigmoid_fillna_value1",
+        "Style": "sigmoid_style1",
+        "ColumnRenameMapping": "sigmoid_map"
+    },
+    "type_map": {
+        "Sigmoid": "SEPARATOR",
+        "DelayQuery": "BOOLEAN",
+        "KeyColumns": "COLUMNS",
+        "Nullstyle": "SELECT",
+        "FillNAValue": "DOUBLE",
+        "Style": "SELECT",
+        "ColumnRenameMapping": "MAP"
+    },
+    "choices_map": {
+        "Nullstyle": {
+            "None": "None",
+            "Literal": "literal",
+            "Mean": "mean",
+            "Median": "median",
+            "Mode": "mode",
+            "Median without Mean": "medianwithoutaveraging"
+        },
+        "Style": {
+            "logit": "logit",
+            "modifiedlogit": "modifiedlogit",
+            "tanh": "tanh"
+        }
+    }
+}

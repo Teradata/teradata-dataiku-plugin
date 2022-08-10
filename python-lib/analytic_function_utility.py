@@ -93,7 +93,8 @@ def get_all_functions(query_engine_wrapper, fallback_directory, category_name = 
     if not lst:
         # In this case VCT doesnt exist, so use JSONs on filesystem with the appropriate version
         lst = os.listdir(fallback_directory)
-        lst = [x.replace(".json", "") for x in lst if x.index(".json") != -1]
+        lst.sort()
+        lst = [file_name.replace(".json", "") for file_name in lst if file_name.index(".json") != -1]
     return lst
     
 
@@ -257,10 +258,12 @@ def get_all_function_jsons(query_engine_wrapper, fallback_directory, category_na
             result = []
       
 
-    if len(result)==0:
+    if len(result)==0 and os.path.isdir(fallback_directory):
         # In this case VCT doesnt exist, so use JSONs on filesystem with the appropriate version and function name
         logging.info("teradata_analytic_lib: fallback_directory=", fallback_directory)
-        for filename in os.listdir(fallback_directory):
+        fallback_files = os.listdir(fallback_directory)
+        fallback_files.sort()
+        for filename in fallback_files:
             if not filename.endswith(".json"):
                 continue 
             file_name = os.path.join(fallback_directory, filename)

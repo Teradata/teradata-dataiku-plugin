@@ -28,7 +28,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SO
     <div class="control-group">
       <label class="control-label">Function Name</label>
       <div class="controls">
-        <p>SCRIPT Table Operator (STO)</p>
+        <p class="inner-label">SCRIPT Table Operator (STO)</p>
         <a href ="https://www.dataiku.com/product/plugins/teradata" class="link1" target="_blank"><span class="glyphicon glyphicon-question-sign"></span></a>
         <!-- <a href="#" class="link1" data-toggle="modal" data-target="#basicModal"><span class="glyphicon glyphicon-question-sign"></span></a> -->
       </div>
@@ -37,7 +37,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SO
     <div class="control-group">
       <label class="control-label">Description</label>
       <div class="controls" style="max-width: 40%; text-align: justify">
-        <p>The SCRIPT Table Operator enables users to run Python and R scripts natively in the Advanced SQL Engine Database nodes.</p>
+        <p class="inner-label">The SCRIPT Table Operator enables users to run Python and R scripts natively in the Advanced SQL Engine Database nodes.</p>
       </div>
     </div>
 
@@ -85,7 +85,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SO
                     <select id="ScriptFileLocation" ng-model="config.function.script_location" data-container="body" ng-change="onFileLocationChange()" data-placement="right"
                       data-html="true" data-toggle="tooltip" title="{{ getArgumentDescription('FILE_LOCATION') }}">
                       <option value="" selected>No file to upload</option>
-                      <option value="sz" selected>Vantage Server</option>
+                      <option value="sz" selected>Teradata Vantage Server</option>
                       <option value="cz" selected>Dataiku Managed Folder</option>
                     </select>
                   </div>

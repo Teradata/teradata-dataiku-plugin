@@ -1,0 +1,313 @@
+{
+    "json_schema_major_version": "1",
+    "json_schema_minor_version": "1",
+    "json_content_version": "1",
+    "function_name": "Parametric Test VAL",
+    "function_version": "1.0",
+    "function_alias_name": "Parametric Test VAL",
+    "function_type": "valib",
+    "function_r_name": "",
+    "short_description": "Parametric tests make assumptions about the data, such as the observations being normally distributed. This can be verified with a test of normality prior to executing a parametric test.",
+    "long_description": "Parametric tests make assumptions about the data, such as the observations being normally distributed. This can be verified with a test of normality prior to executing a parametric test.",
+    "input_tables": [
+        {
+            "requiredInputKind": [
+                "PartitionByNone"
+            ],
+            "isOrdered": false,
+            "partitionByOne": false,
+            "name": "input_A_role",
+            "alternateNames": [],
+            "isRequired": true,
+            "rDescription": "what input A means",
+            "description": "what input A means",
+            "datatype": "TABLE_ALIAS",
+            "allowsLists": false,
+            "rName": "input_A_role",
+            "useInR": true,
+            "rOrderNum": 1
+        }
+    ],
+    "argument_clauses": [
+        {
+            "targetTable": [
+                "input_A_role"
+            ],
+            "checkDuplicate": false,
+            "allowedTypes": [],
+            "allowedTypeGroups": [
+                "ALL"
+            ],
+            "matchLengthOfArgument": "",
+            "allowPadding": false,
+            "name": "DependentColumn",
+            "alternateNames": [],
+            "isRequired": false,
+            "rDescription": "Specifies the name of the column representing the dependent variable in an F-Test.",
+            "description": "Specifies the name of the column representing the dependent variable in an F-Test.",
+            "datatype": "COLUMNS",
+            "allowsLists": false,
+            "rName": "exclude",
+            "useInR": true,
+            "rOrderNum": 2,
+            "requiredLength": 1
+        },
+        {
+            "targetTable": [
+                "input_A_role"
+            ],
+            "checkDuplicate": false,
+            "allowedTypes": [],
+            "allowedTypeGroups": [
+                "ALL"
+            ],
+            "matchLengthOfArgument": "",
+            "allowPadding": false,
+            "name": "Columns",
+            "alternateNames": [],
+            "isRequired": false,
+            "rDescription": "Specifies the name(s) of the column(s) representing independent variables to be analyzed in a F-Test N-Way with Equal Cell Counts analysis.",
+            "description": "Specifies the name(s) of the column(s) representing independent variables to be analyzed in a F-Test N-Way with Equal Cell Counts analysis.",
+            "datatype": "COLUMNS",
+            "allowsLists": true,
+            "rName": "exclude",
+            "useInR": true,
+            "rOrderNum": 3
+        },
+        {
+            "defaultValue": false,
+            "name": "Fallback",
+            "alternateNames": [],
+            "isRequired": false,
+            "rDescription": "Specifies whether the FALLBACK is requested as in the output result or not.",
+            "description": "Specifies whether the FALLBACK is requested as in the output result or not.",
+            "datatype": "BOOLEAN",
+            "allowsLists": false,
+            "rName": "",
+            "useInR": true,
+            "rOrderNum": 4
+        },
+        {
+            "targetTable": [
+                "input_A_role"
+            ],
+            "checkDuplicate": false,
+            "allowedTypes": [],
+            "allowedTypeGroups": [
+                "ALL"
+            ],
+            "matchLengthOfArgument": "",
+            "allowPadding": false,
+            "name": "FirstColumn",
+            "alternateNames": [],
+            "isRequired": false,
+            "rDescription": "Specifies the name of the column representing the first variable to analyze for a T-test. For an F-Test, specifies the name of the column representing the first independent variable in the analysis.",
+            "description": "Specifies the name of the column representing the first variable to analyze for a T-test. For an F-Test, specifies the name of the column representing the first independent variable in the analysis.",
+            "datatype": "COLUMNS",
+            "allowsLists": false,
+            "rName": "exclude",
+            "useInR": true,
+            "rOrderNum": 5,
+            "requiredLength": 1
+        },
+        {
+            "permittedValues": [],
+            "isOutputColumn": true,
+            "name": "FirstColumnValues",
+            "alternateNames": [],
+            "isRequired": false,
+            "rDescription": "Required for a 2-way F-Test with Unequal Cell Counts. Specifies a list of the 'first_column' values to be included in the analysis. E.g. type each number as seperate entries for example 1, 2, 3, 4.",
+            "description": "Required for a 2-way F-Test with Unequal Cell Counts. Specifies a list of the 'first_column' values to be included in the analysis. E.g. type each number as seperate entries for example 1, 2, 3, 4.",
+            "datatype": "STRING",
+            "allowsLists": true,
+            "rName": "output.column",
+            "useInR": true,
+            "rOrderNum": 6
+        },
+        {
+            "targetTable": [
+                "input_A_role"
+            ],
+            "checkDuplicate": false,
+            "allowedTypes": [],
+            "allowedTypeGroups": [
+                "ALL"
+            ],
+            "matchLengthOfArgument": "",
+            "allowPadding": false,
+            "name": "SecondColumn",
+            "alternateNames": [],
+            "isRequired": false,
+            "rDescription": "Specifies the name of the column representing the second variable to analyze.",
+            "description": "Specifies the name of the column representing the second variable to analyze.",
+            "datatype": "COLUMNS",
+            "allowsLists": false,
+            "rName": "exclude",
+            "useInR": true,
+            "rOrderNum": 7,
+            "requiredLength": 1
+        },
+        {
+            "permittedValues": [],
+            "isOutputColumn": true,
+            "name": "SecondColumnValues",
+            "alternateNames": [],
+            "isRequired": false,
+            "rDescription": "Required for a 2-way F-Test with Unequal Cell Counts. Specifies a list of the 'second_column' values to be included in the analysis. E.g. type each number as seperate entries for example 1, 2, 3, 4.",
+            "description": "Required for a 2-way F-Test with Unequal Cell Counts. Specifies a list of the 'second_column' values to be included in the analysis. E.g. type each number as seperate entries for example 1, 2, 3, 4.",
+            "datatype": "STRING",
+            "allowsLists": true,
+            "rName": "output.column",
+            "useInR": true,
+            "rOrderNum": 8
+        },
+        {
+            "permittedValues": [
+                "T Test",
+                "F Test N Way",
+                "F Test 2 Way"
+            ],
+            "defaultValue": "t",
+            "isOutputColumn": false,
+            "name": "Style",
+            "alternateNames": [],
+            "isRequired": false,
+            "rDescription": "Specifies the test style.",
+            "description": "Specifies the test style.",
+            "datatype": "STRING",
+            "allowsLists": false,
+            "rName": "mavgtype",
+            "useInR": true,
+            "rOrderNum": 9
+        },
+        {
+            "defaultValue": false,
+            "name": "EqualVariance",
+            "alternateNames": [],
+            "isRequired": false,
+            "rDescription": "Specifies whether the variance of the two samples (columns) is assumed to be equal.",
+            "description": "Specifies whether the variance of the two samples (columns) is assumed to be equal.",
+            "datatype": "BOOLEAN",
+            "allowsLists": false,
+            "rName": "",
+            "useInR": true,
+            "rOrderNum": 10
+        },
+        {
+            "targetTable": [
+                "input_A_role"
+            ],
+            "checkDuplicate": false,
+            "allowedTypes": [],
+            "allowedTypeGroups": [
+                "ALL"
+            ],
+            "matchLengthOfArgument": "",
+            "allowPadding": false,
+            "name": "GroupColumns",
+            "alternateNames": [],
+            "isRequired": false,
+            "rDescription": "Specifies the name(s) of the column(s) for grouping so that a separate result is produced for each value or combination of values in the specified column or columns.",
+            "description": "Specifies the name(s) of the column(s) for grouping so that a separate result is produced for each value or combination of values in the specified column or columns.",
+            "datatype": "COLUMNS",
+            "allowsLists": true,
+            "rName": "exclude",
+            "useInR": true,
+            "rOrderNum": 11
+        },
+        {
+            "defaultValue": false,
+            "name": "AllowDuplicates",
+            "alternateNames": [],
+            "isRequired": false,
+            "rDescription": "Specifies whether duplicates are allowed in the output or not.",
+            "description": "Specifies whether duplicates are allowed in the output or not.",
+            "datatype": "BOOLEAN",
+            "allowsLists": false,
+            "rName": "",
+            "useInR": true,
+            "rOrderNum": 12
+        },
+        {
+            "defaultValue": false,
+            "name": "Paired",
+            "alternateNames": [],
+            "isRequired": false,
+            "rDescription": "Specifies whether the first and second column values are matched with each other.",
+            "description": "Specifies whether the first and second column values are matched with each other.",
+            "datatype": "BOOLEAN",
+            "allowsLists": false,
+            "rName": "",
+            "useInR": true,
+            "rOrderNum": 13
+        },
+        {
+            "defaultValue": 0.05,
+            "allowNaN": false,
+            "name": "ProbabilityThreshold",
+            "alternateNames": [],
+            "isRequired": false,
+            "rDescription": "Specifies the threshold probability, i.e., 'alpha' probability, below which the null hypothesis is rejected.",
+            "description": "Specifies the threshold probability, i.e., 'alpha' probability, below which the null hypothesis is rejected.",
+            "datatype": "DOUBLE PRECISION",
+            "allowsLists": false,
+            "rName": "",
+            "useInR": true,
+            "rOrderNum": 14
+        },
+        {
+            "defaultValue": false,
+            "name": "SecondColumnIndicatesAnalysisCategories",
+            "alternateNames": [],
+            "isRequired": false,
+            "rDescription": "Specifies whether the second column is used to indicate there are two analysis categories",
+            "description": "Specifies whether the second column is used to indicate there are two analysis categories",
+            "datatype": "BOOLEAN",
+            "allowsLists": false,
+            "rName": "",
+            "useInR": true,
+            "rOrderNum": 15
+        }
+    ],
+    "name_map": {
+        "ParametricTest": "parametric_test",
+        "DependentColumn": "parametric_test_dependent_column",
+        "Columns": "parametric_test_columns",
+        "Fallback": "parametric_test_fallback",
+        "FirstColumn": "parametric_test_first_column",
+        "FirstColumnValues": "parametric_test_first_column_values",
+        "SecondColumn": "parametric_test_second_column",
+        "SecondColumnValues": "parametric_test_second_column_values",
+        "Style": "parametric_test_style",
+        "EqualVariance": "parametric_test_equal_variance",
+        "GroupColumns": "parametric_test_group_columns",
+        "AllowDuplicates": "parametric_test_allow_duplicates",
+        "Paired": "parametric_test_paired",
+        "ProbabilityThreshold": "parametric_test_probability_threshold",
+        "SecondColumnIndicatesAnalysisCategories": "parametric_test_with_indicator"
+    },
+    "type_map": {
+        "ParametricTest": "SEPARATOR",
+        "DependentColumn": "COLUMN",
+        "Columns": "COLUMNS",
+        "Fallback": "BOOLEAN",
+        "FirstColumn": "COLUMN",
+        "FirstColumnValues": "STRINGS",
+        "SecondColumn": "COLUMN",
+        "SecondColumnValues": "STRINGS",
+        "Style": "SELECT",
+        "EqualVariance": "BOOLEAN",
+        "GroupColumns": "COLUMNS",
+        "AllowDuplicates": "BOOLEAN",
+        "Paired": "BOOLEAN",
+        "ProbabilityThreshold": "DOUBLE",
+        "SecondColumnIndicatesAnalysisCategories": "BOOLEAN"
+    },
+    "choices_map": {
+        "Style": {
+            "T Test": "t",
+            "F Test N Way": "fnway",
+            "F Test 2 Way": "f2way"
+        }
+    }
+}

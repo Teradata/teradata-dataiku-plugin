@@ -1,0 +1,200 @@
+{
+    "json_schema_major_version": "1",
+    "json_schema_minor_version": "1",
+    "json_content_version": "1",
+    "function_name": "One Hot Encoder VAL",
+    "function_version": "1.0",
+    "function_alias_name": "One Hot Encoder VAL",
+    "function_type": "valib",
+    "function_r_name": "",
+    "short_description": "One hot encoding is useful when a categorical data element must be re-expressed as one or more numeric data elements, creating a binary numeric field for each categorical data value. When the delay query is off, the input table be transformed immediately otherwise the result should be combined with other transformations and fed into a final Transform function.",
+    "long_description": "One hot encoding is useful when a categorical data element must be re-expressed as one or more numeric data elements, creating a binary numeric field for each categorical data value. When the delay query is off, the input table be transformed immediately otherwise the result should be combined with other transformations and fed into a final Transform function.",
+    "input_tables": [
+        {
+            "requiredInputKind": [
+                "PartitionByNone"
+            ],
+            "isOrdered": false,
+            "partitionByOne": false,
+            "name": "input_A_role",
+            "alternateNames": [],
+            "isRequired": true,
+            "rDescription": "The dataset containing the raw information that we will perform a Designing VALIB function call",
+            "description": "The dataset containing the raw information that we will perform a Designing VALIB function call",
+            "datatype": "TABLE_ALIAS",
+            "allowsLists": false,
+            "rName": "input_A_role",
+            "useInR": true,
+            "rOrderNum": 1
+        }
+    ],
+    "argument_clauses": [
+        {
+            "defaultValue": true,
+            "name": "DelayQuery",
+            "alternateNames": [],
+            "isRequired": false,
+            "rDescription": "Choose to Delay Query or Execute Immediately",
+            "description": "Choose to Delay Query or Execute Immediately",
+            "datatype": "BOOLEAN",
+            "allowsLists": false,
+            "rName": "",
+            "useInR": true,
+            "rOrderNum": 2
+        },
+        {
+            "targetTable": [
+                "input_A_role"
+            ],
+            "checkDuplicate": false,
+            "allowedTypes": [],
+            "allowedTypeGroups": [
+                "ALL"
+            ],
+            "matchLengthOfArgument": "",
+            "allowPadding": false,
+            "name": "KeyColumns",
+            "alternateNames": [],
+            "isRequired": false,
+            "rDescription": "",
+            "description": "",
+            "datatype": "COLUMNS",
+            "allowsLists": true,
+            "rName": "exclude",
+            "useInR": true,
+            "rOrderNum": 3
+        },
+        {
+            "permittedValues": [
+                "Dummy",
+                "Contrast"
+            ],
+            "defaultValue": "dummycode",
+            "isOutputColumn": false,
+            "name": "DesignStyle",
+            "alternateNames": [],
+            "isRequired": false,
+            "rDescription": "",
+            "description": "",
+            "datatype": "STRING",
+            "allowsLists": false,
+            "rName": "mavgtype",
+            "useInR": true,
+            "rOrderNum": 4
+        },
+        {
+            "defaultValue": 10,
+            "allowNaN": false,
+            "name": "DesignCodeTransformationValue",
+            "alternateNames": [],
+            "isRequired": false,
+            "rDescription": "",
+            "description": "",
+            "datatype": "INTEGER",
+            "allowsLists": false,
+            "rName": "window.size",
+            "useInR": true,
+            "rOrderNum": 5
+        },
+        {
+            "permittedValues": [],
+            "isOutputColumn": true,
+            "name": "ColumnRenameMapping",
+            "alternateNames": [],
+            "isRequired": false,
+            "rDescription": "",
+            "description": "",
+            "datatype": "STRING",
+            "allowsLists": true,
+            "rName": "output.column",
+            "useInR": true,
+            "rOrderNum": 6
+        },
+        {
+            "permittedValues": [],
+            "isOutputColumn": true,
+            "name": "Values",
+            "alternateNames": [],
+            "isRequired": false,
+            "rDescription": "",
+            "description": "",
+            "datatype": "STRING",
+            "allowsLists": true,
+            "rName": "output.column",
+            "useInR": true,
+            "rOrderNum": 7
+        },
+        {
+            "permittedValues": [
+                "None",
+                "Literal",
+                "Mean",
+                "Median",
+                "Mode",
+                "Median without Mean"
+            ],
+            "defaultValue": "",
+            "isOutputColumn": false,
+            "name": "Nullstyle",
+            "alternateNames": [],
+            "isRequired": false,
+            "rDescription": "",
+            "description": "",
+            "datatype": "STRING",
+            "allowsLists": false,
+            "rName": "mavgtype",
+            "useInR": true,
+            "rOrderNum": 8
+        },
+        {
+            "defaultValue": 0,
+            "allowNaN": false,
+            "name": "FillNAValue",
+            "alternateNames": [],
+            "isRequired": false,
+            "rDescription": "",
+            "description": "",
+            "datatype": "DOUBLE PRECISION",
+            "allowsLists": false,
+            "rName": "",
+            "useInR": true,
+            "rOrderNum": 9
+        }
+    ],
+    "name_map": {
+        "OneHotEncoder": "onehotencoder",
+        "DelayQuery": "onehotencoder_delayquery",
+        "KeyColumns": "onehotencoder_key_columns",
+        "DesignStyle": "onehotencoder_style1",
+        "DesignCodeTransformationValue": "onehotencoder_value1",
+        "ColumnRenameMapping": "onehotencoder_map",
+        "Values": "onehotencoder_values",
+        "Nullstyle": "onehotencoder_nullstyle1",
+        "FillNAValue": "onehotencoder_fillna_value1"
+    },
+    "type_map": {
+        "OneHotEncoder": "SEPARATOR",
+        "DelayQuery": "BOOLEAN",
+        "KeyColumns": "COLUMNS",
+        "DesignStyle": "SELECT",
+        "DesignCodeTransformationValue": "INT",
+        "ColumnRenameMapping": "MAP",
+        "Values": "STRINGS",
+        "Nullstyle": "SELECT",
+        "FillNAValue": "DOUBLE"
+    },
+    "choices_map": {
+        "DesignStyle": {
+            "Dummy": "dummycode",
+            "Contrast": "contrastcode"
+        },
+        "Nullstyle": {
+            "None": "None",
+            "Literal": "literal",
+            "Mean": "mean",
+            "Median": "median",
+            "Mode": "mode",
+            "Median without Mean": "medianwithoutaveraging"
+        }
+    }
+}

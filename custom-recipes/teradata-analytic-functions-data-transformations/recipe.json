@@ -2,9 +2,9 @@
 {
     // Meta data for display purposes
     "meta" : {
-        "label" : "Analytic Functions – Data Transformation",
+        "label" : "Teradata Analytic Functions",
         "author" : "Teradata",
-        "description": "Provides access to Teradata Vantage Advanced SQL Engine data transformation functions.",
+        "description": "Dataiku interfaces for a broad variety of in-Database advanced analytic functions.",
         "tags" : ["Analytics", "Vantage",  "Teradata"],
         // icon: must be one of the FontAwesome 3.2.1 icons, complete list here at https://fontawesome.com/v3.2.1/icons/
         "icon": "icon-teradata",
@@ -24,7 +24,15 @@
         {
             "name": "main",
             "arity": "NARY",
+            "label": "Input",
             "required": true,
+            "acceptsDataset": true
+        },
+        {
+            "name": "input_B_role",
+            "label": "Optional",
+            "arity": "NARY",
+            "required": false,
             "acceptsDataset": true
         }
     ],
@@ -62,7 +70,7 @@
             "type": "STRING",
             "description": "Category from Teradata Vantage Machine Learning Engine Analytic Function Reference",
             "mandatory" : true,
-            "defaultValue": "Data Transformation"
+            "defaultValue": "SQLE;VALIB"
         }
     ],
 

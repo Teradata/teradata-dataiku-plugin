@@ -1,0 +1,184 @@
+{
+    "json_schema_major_version": "1",
+    "json_schema_minor_version": "1",
+    "json_content_version": "1",
+    "function_name": "Derive VAL",
+    "function_version": "1.0",
+    "function_alias_name": "Derive VAL",
+    "function_type": "valib",
+    "function_r_name": "",
+    "short_description": "The Derive transformation requires the free-form transformation be specified as a formula using the following operators, arguments, and functions: +, -, **, *, /, %, (, ), x, y, z, abs, exp, ln, log, sqrt. When the delay query is off, the input table be transformed immediately otherwise the result should be combined with other transformations and fed into a final Transform function.",
+    "long_description": "The Derive transformation requires the free-form transformation be specified as a formula using the following operators, arguments, and functions: +, -, **, *, /, %, (, ), x, y, z, abs, exp, ln, log, sqrt. When the delay query is off, the input table be transformed immediately otherwise the result should be combined with other transformations and fed into a final Transform function.",
+    "input_tables": [
+        {
+            "requiredInputKind": [
+                "PartitionByNone"
+            ],
+            "isOrdered": false,
+            "partitionByOne": false,
+            "name": "input_A_role",
+            "alternateNames": [],
+            "isRequired": true,
+            "rDescription": "The dataset containing the raw information that we will perform a Derive VALIB function call",
+            "description": "The dataset containing the raw information that we will perform a Derive VALIB function call",
+            "datatype": "TABLE_ALIAS",
+            "allowsLists": false,
+            "rName": "input_A_role",
+            "useInR": true,
+            "rOrderNum": 1
+        }
+    ],
+    "argument_clauses": [
+        {
+            "defaultValue": true,
+            "name": "DelayQuery",
+            "alternateNames": [],
+            "isRequired": false,
+            "rDescription": "Choose to Delay Query or Execute Immediately",
+            "description": "Choose to Delay Query or Execute Immediately",
+            "datatype": "BOOLEAN",
+            "allowsLists": false,
+            "rName": "",
+            "useInR": true,
+            "rOrderNum": 2
+        },
+        {
+            "targetTable": [
+                "input_A_role"
+            ],
+            "checkDuplicate": false,
+            "allowedTypes": [],
+            "allowedTypeGroups": [
+                "ALL"
+            ],
+            "matchLengthOfArgument": "",
+            "allowPadding": false,
+            "name": "KeyColumns",
+            "alternateNames": [],
+            "isRequired": false,
+            "rDescription": "",
+            "description": "",
+            "datatype": "COLUMNS",
+            "allowsLists": true,
+            "rName": "exclude",
+            "useInR": true,
+            "rOrderNum": 3
+        },
+        {
+            "permittedValues": [],
+            "isOutputColumn": true,
+            "name": "Formula",
+            "alternateNames": [],
+            "isRequired": false,
+            "rDescription": "Specifies the free-form transformation required for Derive. E.g. x+y+z (in which case 3 key columns are selected).",
+            "description": "Specifies the free-form transformation required for Derive. E.g. x+y+z (in which case 3 key columns are selected).",
+            "datatype": "STRING",
+            "allowsLists": false,
+            "rName": "output.column",
+            "useInR": true,
+            "rOrderNum": 4
+        },
+        {
+            "targetTable": [
+                "input_A_role"
+            ],
+            "checkDuplicate": false,
+            "allowedTypes": [],
+            "allowedTypeGroups": [
+                "ALL"
+            ],
+            "matchLengthOfArgument": "",
+            "allowPadding": false,
+            "name": "ArgumentsColumns",
+            "alternateNames": [],
+            "isRequired": false,
+            "rDescription": "",
+            "description": "",
+            "datatype": "COLUMNS",
+            "allowsLists": true,
+            "rName": "exclude",
+            "useInR": true,
+            "rOrderNum": 5
+        },
+        {
+            "permittedValues": [],
+            "isOutputColumn": true,
+            "name": "OutputColumnName",
+            "alternateNames": [],
+            "isRequired": false,
+            "rDescription": "",
+            "description": "",
+            "datatype": "STRING",
+            "allowsLists": false,
+            "rName": "output.column",
+            "useInR": true,
+            "rOrderNum": 6
+        },
+        {
+            "permittedValues": [
+                "None",
+                "Literal",
+                "Mean",
+                "Median",
+                "Mode",
+                "Median without Mean"
+            ],
+            "defaultValue": "None",
+            "isOutputColumn": false,
+            "name": "Nullstyle",
+            "alternateNames": [],
+            "isRequired": false,
+            "rDescription": "",
+            "description": "",
+            "datatype": "STRING",
+            "allowsLists": false,
+            "rName": "mavgtype",
+            "useInR": true,
+            "rOrderNum": 7
+        },
+        {
+            "defaultValue": 0,
+            "allowNaN": false,
+            "name": "FillNAValue",
+            "alternateNames": [],
+            "isRequired": false,
+            "rDescription": "",
+            "description": "",
+            "datatype": "DOUBLE PRECISION",
+            "allowsLists": false,
+            "rName": "",
+            "useInR": true,
+            "rOrderNum": 8
+        }
+    ],
+    "name_map": {
+        "Derive": "derive",
+        "DelayQuery": "derive_delayquery",
+        "KeyColumns": "derive_key_columns",
+        "Formula": "derive_formula",
+        "ArgumentsColumns": "derive_arguments_columns",
+        "OutputColumnName": "derive_outputname",
+        "Nullstyle": "derive_nullstyle1",
+        "FillNAValue": "derive_fillna_value1"
+    },
+    "type_map": {
+        "Derive": "SEPARATOR",
+        "DelayQuery": "BOOLEAN",
+        "KeyColumns": "COLUMNS",
+        "Formula": "STRING",
+        "ArgumentsColumns": "COLUMNS",
+        "OutputColumnName": "STRING",
+        "Nullstyle": "SELECT",
+        "FillNAValue": "DOUBLE"
+    },
+    "choices_map": {
+        "Nullstyle": {
+            "None": "None",
+            "Literal": "literal",
+            "Mean": "mean",
+            "Median": "median",
+            "Mode": "mode",
+            "Median without Mean": "medianwithoutaveraging"
+        }
+    }
+}

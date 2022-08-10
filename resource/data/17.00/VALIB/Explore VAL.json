@@ -1,0 +1,303 @@
+{
+    "json_schema_major_version": "1",
+    "json_schema_minor_version": "1",
+    "json_content_version": "1",
+    "function_name": "Explore VAL",
+    "function_version": "1.0",
+    "function_alias_name": "Explore VAL",
+    "function_type": "valib",
+    "function_r_name": "",
+    "short_description": "Performs basic statistical analysis and stores results from four fundamental types of analysis based on simplified versions of the Descriptive Statistics analysis (frequency, histogram, statistics, values). There are 4 required output tables they must be specified with these names in this order: frequency_output, histogram_output, statistics_output, values_output; additional datasets can be added in the Dataiku Input/Output tab.",
+    "long_description": "Performs basic statistical analysis and stores results from four fundamental types of analysis based on simplified versions of the Descriptive Statistics analysis (frequency, histogram, statistics, values). There are 4 required output tables they must be specified with these names in this order: frequency_output, histogram_output, statistics_output, values_output; additional datasets can be added in the Dataiku Input/Output tab.",
+    "input_tables": [
+        {
+            "requiredInputKind": [
+                "PartitionByNone"
+            ],
+            "isOrdered": false,
+            "partitionByOne": false,
+            "name": "input_A_role",
+            "alternateNames": [],
+            "isRequired": true,
+            "rDescription": "what input A means",
+            "description": "what input A means",
+            "datatype": "TABLE_ALIAS",
+            "allowsLists": false,
+            "rName": "input_A_role",
+            "useInR": true,
+            "rOrderNum": 1
+        }
+    ],
+    "argument_clauses": [
+        {
+            "targetTable": [
+                "input_A_role"
+            ],
+            "checkDuplicate": false,
+            "allowedTypes": [],
+            "allowedTypeGroups": [
+                "ALL"
+            ],
+            "matchLengthOfArgument": "",
+            "allowPadding": false,
+            "name": "Columns",
+            "alternateNames": [],
+            "isRequired": false,
+            "rDescription": "",
+            "description": "",
+            "datatype": "COLUMNS",
+            "allowsLists": true,
+            "rName": "exclude",
+            "useInR": true,
+            "rOrderNum": 2
+        },
+        {
+            "defaultValue": 10,
+            "allowNaN": false,
+            "name": "Bins",
+            "alternateNames": [],
+            "isRequired": false,
+            "rDescription": "",
+            "description": "",
+            "datatype": "INTEGER",
+            "allowsLists": false,
+            "rName": "window.size",
+            "useInR": true,
+            "rOrderNum": 3
+        },
+        {
+            "permittedValues": [
+                "bins",
+                "quantiles"
+            ],
+            "defaultValue": "bins",
+            "isOutputColumn": false,
+            "name": "BinStyle",
+            "alternateNames": [],
+            "isRequired": false,
+            "rDescription": "",
+            "description": "",
+            "datatype": "STRING",
+            "allowsLists": false,
+            "rName": "mavgtype",
+            "useInR": true,
+            "rOrderNum": 4
+        },
+        {
+            "defaultValue": 10000,
+            "allowNaN": false,
+            "name": "MaximumNumberofCombinedValues",
+            "alternateNames": [],
+            "isRequired": false,
+            "rDescription": "",
+            "description": "",
+            "datatype": "INTEGER",
+            "allowsLists": false,
+            "rName": "window.size",
+            "useInR": true,
+            "rOrderNum": 5
+        },
+        {
+            "defaultValue": 100,
+            "allowNaN": false,
+            "name": "MaximumNumberofUniqueCharacterValues",
+            "alternateNames": [],
+            "isRequired": false,
+            "rDescription": "",
+            "description": "",
+            "datatype": "INTEGER",
+            "allowsLists": false,
+            "rName": "window.size",
+            "useInR": true,
+            "rOrderNum": 6
+        },
+        {
+            "defaultValue": 20,
+            "allowNaN": false,
+            "name": "MaximumNumberofUniqueDateorNumericValues",
+            "alternateNames": [],
+            "isRequired": false,
+            "rDescription": "",
+            "description": "",
+            "datatype": "INTEGER",
+            "allowsLists": false,
+            "rName": "window.size",
+            "useInR": true,
+            "rOrderNum": 7
+        },
+        {
+            "defaultValue": 10,
+            "allowNaN": false,
+            "name": "MinimumNumberofRows",
+            "alternateNames": [],
+            "isRequired": false,
+            "rDescription": "",
+            "description": "",
+            "datatype": "INTEGER",
+            "allowsLists": false,
+            "rName": "window.size",
+            "useInR": true,
+            "rOrderNum": 8
+        },
+        {
+            "defaultValue": true,
+            "name": "RestrictFrequency",
+            "alternateNames": [],
+            "isRequired": false,
+            "rDescription": "",
+            "description": "",
+            "datatype": "BOOLEAN",
+            "allowsLists": false,
+            "rName": "",
+            "useInR": true,
+            "rOrderNum": 9
+        },
+        {
+            "defaultValue": 1,
+            "allowNaN": false,
+            "name": "RestrictThreshold",
+            "alternateNames": [],
+            "isRequired": false,
+            "rDescription": "",
+            "description": "",
+            "datatype": "INTEGER",
+            "allowsLists": false,
+            "rName": "window.size",
+            "useInR": true,
+            "rOrderNum": 10
+        },
+        {
+            "permittedValues": [
+                "population",
+                "sample"
+            ],
+            "defaultValue": "population",
+            "isOutputColumn": false,
+            "name": "StatisticalMethod",
+            "alternateNames": [],
+            "isRequired": false,
+            "rDescription": "",
+            "description": "",
+            "datatype": "STRING",
+            "allowsLists": false,
+            "rName": "mavgtype",
+            "useInR": true,
+            "rOrderNum": 11
+        },
+        {
+            "permittedValues": [
+                "all",
+                "count",
+                "minimum",
+                "maximum",
+                "mean",
+                "standarddeviation",
+                "skewness",
+                "kurtosis",
+                "standarderror",
+                "coefficientofvariance",
+                "variance",
+                "sum",
+                "uncorrectedsumofsquares",
+                "correctedsumofsquares"
+            ],
+            "defaultValue": "",
+            "isOutputColumn": false,
+            "name": "StatisticalOptions",
+            "alternateNames": [],
+            "isRequired": false,
+            "rDescription": "",
+            "description": "",
+            "datatype": "STRING",
+            "allowsLists": true,
+            "rName": "mavgtype",
+            "useInR": true,
+            "rOrderNum": 12
+        },
+        {
+            "defaultValue": false,
+            "name": "Distinct",
+            "alternateNames": [],
+            "isRequired": false,
+            "rDescription": "",
+            "description": "",
+            "datatype": "BOOLEAN",
+            "allowsLists": false,
+            "rName": "",
+            "useInR": true,
+            "rOrderNum": 13
+        },
+        {
+            "permittedValues": [],
+            "isOutputColumn": true,
+            "name": "Filter",
+            "alternateNames": [],
+            "isRequired": false,
+            "rDescription": "Specifies the clause to filter rows selected for analysis within Explore. E.g. income > 0 (where income is an input column).",
+            "description": "Specifies the clause to filter rows selected for analysis within Explore. E.g. income > 0 (where income is an input column).",
+            "datatype": "STRING",
+            "allowsLists": false,
+            "rName": "output.column",
+            "useInR": true,
+            "rOrderNum": 14
+        }
+    ],
+    "name_map": {
+        "Explore": "explore",
+        "Columns": "explore_columns",
+        "Bins": "explore_bins",
+        "BinStyle": "explore_bin_style",
+        "MaximumNumberofCombinedValues": "explore_max_comb_values",
+        "MaximumNumberofUniqueCharacterValues": "explore_max_unique_char_values",
+        "MaximumNumberofUniqueDateorNumericValues": "explore_max_unique_num_values",
+        "MinimumNumberofRows": "explore_min_comb_rows",
+        "RestrictFrequency": "explore_restrict_freq",
+        "RestrictThreshold": "explore_restrict_threshold",
+        "StatisticalMethod": "explore_statistical_method",
+        "StatisticalOptions": "explore_stats_options",
+        "Distinct": "explore_distinct",
+        "Filter": "explore_filter"
+    },
+    "type_map": {
+        "Explore": "SEPARATOR",
+        "Columns": "COLUMNS",
+        "Bins": "INT",
+        "BinStyle": "SELECT",
+        "MaximumNumberofCombinedValues": "INT",
+        "MaximumNumberofUniqueCharacterValues": "INT",
+        "MaximumNumberofUniqueDateorNumericValues": "INT",
+        "MinimumNumberofRows": "INT",
+        "RestrictFrequency": "BOOLEAN",
+        "RestrictThreshold": "INT",
+        "StatisticalMethod": "SELECT",
+        "StatisticalOptions": "MULTISELECT",
+        "Distinct": "BOOLEAN",
+        "Filter": "STRING"
+    },
+    "choices_map": {
+        "BinStyle": {
+            "bins": "bins",
+            "quantiles": "quantiles"
+        },
+        "StatisticalMethod": {
+            "population": "population",
+            "sample": "sample"
+        },
+        "StatisticalOptions": {
+            "all": "all",
+            "count": "count",
+            "minimum": "minimum",
+            "maximum": "maximum",
+            "mean": "mean",
+            "standarddeviation": "standarddeviation",
+            "skewness": "skewness",
+            "kurtosis": "kurtosis",
+            "standarderror": "standarderror",
+            "coefficientofvariance": "coefficientofvariance",
+            "variance": "variance",
+            "sum": "sum",
+            "uncorrectedsumofsquares": "uncorrectedsumofsquares",
+            "correctedsumofsquares": "correctedsumofsquares"
+        }
+    }
+}

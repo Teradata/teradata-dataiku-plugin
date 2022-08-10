@@ -27,32 +27,57 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SO
 
 
 <div id="main-container">
-
+  
   <div ng-controller="TeradataVantageController">
 
     <div class="control-group">
-      <label class="control-label">Function Name</label>
+
+    <!-- search filters -->
+    <table style="width:100%">
+      <tr>
+        <td style="width:150px;"><label class="unselectable">
+          <input type="checkbox" checked id="filter_sqle">&nbsp&nbspAnalytics Database</label></td>
+        <td style="width:150px;"><label class="unselectable">
+          <input type="checkbox" checked id="filter_valib">&nbsp&nbspVAL</label></td>
+        <td>
+          <div>
+
+              <!-- SKS: Add version button -->
+              <button type="button" ng-click="showVersionDialog()" data-toggle="tooltip" data-container="body" data-html="true" 
+              title="Reports the Analytics Database version of your connection.">Version</button>
+              <!-- SKS: Add query button -->
+              <button type="button" ng-click="showQueryDialog()" data-toggle="tooltip" data-container="body" data-html="true" 
+              title="See what your output query will look like.">Query</button>
+              <!-- SKS: Documentation Icon -->
+              <a href ="https://www.dataiku.com/product/plugins/teradata" class="link1" target="_blank">
+                <span class="glyphicon glyphicon-question-sign"></span>
+              </a>
+          </div>
+        </td>
+      </tr>
+    </table>
+    
+    <label class="control-label">Function Name</label>
       <div class="controls">
         <!-- <select ng-model="config.function" ng-options="cleanName(choice.name) for choice in choices track by choice.name" ng-change="refresh(config.function.name)"> -->
         <!-- Replaced above with function_alias_name -->
-        <select ng-model="config.function" ng-options="choice.function_alias_name for choice in choices track by choice.name" ng-change="refresh(config.function.name)"></select>
-          <option  value="" disabled selected>Select a Vantage function...</option>
+        <select id="main_function_name" ng-model="config.function" ng-options="choice.function_alias_name for choice in choices track by choice.name" ng-change="refresh(config.function.name)"></select>
+          <option  value="" disabled selected></option>
         </select>
-        <a href ="https://www.dataiku.com/product/plugins/teradata" class="link1" target="_blank"><span class="glyphicon glyphicon-question-sign"></span></a>
 
-        <!-- SKS: Add version button -->
-        <button ng-click="showVersionDialog()" data-toggle="tooltip" data-container="body" data-html="true" title="See what Vantage Version you are working with.">Version &#8230</button>
-        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        <input type="text" list="available_functions" placeholder="Select a Vantage function..." id="current_function_name">
+        </input>
+        <datalist name="available_functions" id="available_functions"  >
+        </datalist>
+        
+
+        
+
+        
         <!-- SKS: Add JSON button 
         <button ng-click="showJSONDialog()" data-toggle="tooltip" data-container="body" data-html="true" title="See what the input JSON looks like."><img width=30 height=16 src="/plugins/TeradataVantageSQLEFunctionsPlugin/resource/img/json_icon.png"></button>
         -->
 
-        <!-- SKS: Arrow image 
-        <img width=30 height=16 src="/plugins/TeradataVantageSQLEFunctionsPlugin/resource/img/arrow.png">
-        -->
-
-        <!-- SKS: Add query button -->
-        <button ng-click="showQueryDialog()" data-toggle="tooltip" data-container="body" data-html="true" title="See what your output query will look like.">Query &#8230</button>
         <!-- &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
         SKS: Add explanation button 
         <button ng-click="showExplainDialog()" data-toggle="tooltip" data-container="body" data-html="true" title="See an explanation of your SQL query."><img width=30 height=16 src="/plugins/TeradataVantageSQLEFunctionsPlugin/resource/img/explain_icon.png"></button>
@@ -73,7 +98,15 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SO
       <div class="controls" style="max-width: 40%; text-align: justify">
         {{ getFunctionDescription() }}
       </div>
+      <label ng-show=" config.function.name.includes('VAL') && valDatabase=='' " style="color:red;display: inline-block">
+              Error: To use this VAL function, specify first a database name for the VAL_DATABASE custom property in your connection settings. 
+      </label>
+      <label ng-show=" config.function.name.includes('VAL') && defaultDatabase=='' " style="color:orange;display: inline-block">
+              Warning: To avoid errors, you must either (a) specify a default database in your connection, or (b) specify schema(s) in the input Dataset(s) settings.
+      </label>
     </div>
+
+
 
     <!-- <div class="control-group" ng-if="hasNativeJSON(config.function.name)"> -->
       <!-- <label class="control-label">Drop Output Table If Exists</label> -->
@@ -111,9 +144,9 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SO
 
   
       <div class="tabplugin">
-        <button class="tablinks" id="defaultOpen" ng-click="openTabs($event, 'tabs-required')">Required Arguments</button>
-        <button class="tablinks" ng-if="hasOptionalArguments()" ng-click="openTabs($event, 'tabs-optional')">Optional Arguments</button>        
-        <button class="tablinks" ng-if="false" ng-click="openTabs($event, 'tabs-table')">SQL Clauses</button>        
+        <button type="button" class="tablinks" id="defaultOpen" ng-click="openTabs($event, 'tabs-required')">Required Arguments</button>
+        <button type="button" class="tablinks" ng-if="hasOptionalArguments()" ng-click="openTabs($event, 'tabs-optional')">Optional Arguments</button>        
+        <button type="button" class="tablinks" ng-if="false" ng-click="openTabs($event, 'tabs-table')">SQL Clauses</button>        
         
       </div>
       <div id="tabs-required" class="plugintabcontent">
@@ -150,36 +183,34 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SO
                   </select>
 
                   <!-- Aliased Input Table Partition if multiple-->
-                <div class="inner-cell" ng-if="item.inputKindChoices.length > 1">
-                  <p class="inner-label">Partition Type </p>
-                  <select required ng-model="item.kind" ng-options="kind for kind in item.inputKindChoices">
-                      <option value="" selected>--No Selection--</option>
-                  </select>
-                </div>
 
-                <!-- Input Kind Empty -->
-                <div class="inner-cell" ng-if="item.inputKindChoices.length == 0">
-                  <p class="inner-label">Partition Type </p>
-                  <select ng-model="item.kind">
-                      <option value="" selected>Unpartitioned</option>
-                      <option value="PartitionByKey">PartitionByKey</option>
-                      <option value="PartitionByAny">PartitionByAny</option>
-                      <option value="PartitionByOne">PartitionByOne</option>
+                <div class="inner-cell" ng-if="item.inputKindChoices.length > 1">
+                  <p class="inner-label">Data Partition Option </p>
+                  <select ng-model="item.kind" data-container="body" data-toggle="tooltip" title="{{ getToolTip('DATA_PARTITION_TYPE') }}" data-placement="right">
+                      <option value="None">None</option>
+                      <option value="PartitionByKey">Partition</option>
+                      <option value="HashByKey">Hash</option>
+                      <option ng-if="item.inputKindChoices.includes('Dimension')" value="Dimension">Dimension</option>
                   </select>
                 </div>
 
                 <!-- Aliased Input Table Partition if Key-->
-                <div class="inner-cell" ng-show="'PartitionByKey' == item.kind">
-                  <p class="inner-label">Partition by 
+                <div class="inner-cell" ng-show="item.kind.includes('ByKey')">
+                  <p class="inner-label" ng-show="item.kind == 'PartitionByKey'">Partition by 
                       <button style="border:none;background:none;" ng-init="item.partitionAttributes = initializeColumnArray(item.partitionAttributes)" ng-click="addPartitionByColumn_TEST(item.partitionAttributes)" title="Add Partition Column">
                         <span class="glyphicon glyphicon-plus-sign orange"></span></button>
                   </p>
-                  <div ng-if="'PartitionByKey' == item.kind" ng-repeat="col in item.partitionAttributes track by $index ">
-                      <span ng-show="'PartitionByKey' == item.kind">PARTITION BY column {{$index+1}}</span>
+                  <p class="inner-label" ng-show="item.kind == 'HashByKey'">Hash by 
+                      <button style="border:none;background:none;" ng-init="item.partitionAttributes = initializeColumnArray(item.partitionAttributes)" ng-click="addPartitionByColumn_TEST(item.partitionAttributes)" title="Add Partition Column">
+                        <span class="glyphicon glyphicon-plus-sign orange"></span></button>
+                  </p>
+                  <div ng-show="item.kind.includes('ByKey')" ng-repeat="col in item.partitionAttributes track by $index ">
+                      <span ng-show="'PartitionByKey' == item.kind">Column {{$index+1}}</span>
+                      <span ng-show="'HashByKey' == item.kind">Column {{$index+1}}</span>
                       <div>
                           <select  required ng-model="item.partitionAttributes[$index]"
                           ng-options="column.name as column.name + ' (' + (column.type || 'Column') + ')' for column in inputschemas[item.value]"
-                          data-html="true" title="<b>(Ctrl+Click to multi-select)</b>" data-toggle="tooltip" data-container="body"
+                          data-html="true" title="{{ getToolTip(item.kind != 'HashByKey' ? 'PARTITION_BY' : 'HASH_BY') }}" data-toggle="tooltip" data-container="body"
                           data-placement="right">
                           <option value="" selected>--No Selection--</option>
                         </select>
@@ -191,23 +222,23 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SO
                     </div>
                 </div>
                 <!-- Aliased Input Table Order isOrdered-->
-                <div class="inner-cell">
-                  <p class="inner-label">Order by
+                <div ng-hide="item.kind=='PartitionByNone'" class="inner-cell">
+                  <p class="inner-label" ng-show="item.kind.includes('ByKey')">Order by
                       <button style="border:none;background:none;" ng-init="item.orderByColumn = initializeColumnArray(item.orderByColumn); item.orderByColumnDirection = initializeColumnArray(item.orderByColumnDirection)" ng-click="addOrderByColumn_WITHDIR(item.orderByColumn, item.orderByColumnDirection)" title="Add Order BY Column"><span class="glyphicon glyphicon-plus-sign orange"></span></button>
-                  </p>
+                  </p> 
                   <!-- IS Ordered -->
-                    <div ng-if="item.isOrdered" ng-repeat="col in item.orderByColumn track by $index ">
-                        <span ng-show="item.isOrdered">ORDER BY column {{$index+1}}</span>          
+                    <div ng-if="item.isOrdered && item.kind.includes('ByKey')" ng-repeat="col in item.orderByColumn track by $index ">
+                        <span ng-show="item.isOrdered">Column {{$index+1}}</span>          
                         <div >
                             <select required ng-model="item.orderByColumn[$index]"
                             ng-options="column.name as column.name + ' (' + (column.type || 'Column') + ')' for column in inputschemas[item.value]"
-                            data-html="true" title="<b>Select an ORDER BY Column</b>" data-toggle="tooltip" data-container="body"
+                            title="{{ getToolTip(item.kind != 'HashByKey' ? 'ORDER_BY' : 'LOCAL_ORDER_BY') }}" data-toggle="tooltip" data-container="body"
                             data-placement="right">
                             <option value="" selected>--No Selection--</option>
                           </select>
                           <span>
                             <select class="orderbyselect" ng-model="item.orderByColumnDirection[$index]"                            
-                            title="<b>Select which direction the of this ORDER BY Clause</b>" data-toggle="tooltip" data-container="body"
+                            title="{{getToolTip('SEQUENCING_TYPE')}}" data-toggle="tooltip" data-container="body"
                             data-placement="right">                            
                             <option value="" selected>ASC</option>
                             <option value="DESC">DESC</option>
@@ -220,18 +251,18 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SO
                         </div>                   
                     </div>
                   <!-- Is Not Ordered -->
-                    <div ng-if="!item.isOrdered" ng-repeat="col in item.orderByColumn track by $index ">
-                      <span ng-show="!item.isOrdered">ORDER BY column {{$index+1}}</span>                        
+                    <div ng-if="!item.isOrdered && item.kind.includes('ByKey')" ng-repeat="col in item.orderByColumn track by $index ">
+                      <span ng-show="!item.isOrdered">Column {{$index+1}}</span>                        
                       <div >
                           <select ng-model="item.orderByColumn[$index]"
                           ng-options="column.name as column.name + ' (' + (column.type || 'Column') + ')' for column in inputschemas[item.value]"
-                          data-html="true" title="<b>Select an ORDER BY Column</b>" data-toggle="tooltip" data-container="body"
+                          title="{{ getToolTip(item.kind != 'HashByKey' ? 'ORDER_BY' : 'LOCAL_ORDER_BY') }}" data-toggle="tooltip" data-container="body"
                           data-placement="right">
                           <option value="" selected>--No Selection--</option>
                         </select>
                         <span>
                           <select class="orderbyselect" ng-model="item.orderByColumnDirection[$index]"                            
-                          title="<b>Select which direction the of this ORDER BY Clause</b>" data-toggle="tooltip" data-container="body"
+                          title="{{getToolTip('SEQUENCING_TYPE')}}" data-toggle="tooltip" data-container="body"
                           data-placement="right">                            
                           <option value="" selected>ASC</option>
                           <option value="DESC">DESC</option>
@@ -249,13 +280,13 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SO
               </td>
             </tr>
             <!-- Is Ordered -->
-            <tr ng-if="config.function.isOrdered && shouldShowPartitionOrderFields(config.function.unaliased_inputs)">
+            <tr ng-if="config.function.isOrdered && shouldShowPartitionOrderFields(config.function.unaliased_inputs) && item.kind.includes('ByKey')">
               <td>ORDER BY Column
                   <button style="border:none;background:none;" ng-click="addOrderByColumn()" title="Add ORDER BY Column"><span class="glyphicon glyphicon-plus-sign orange"></span></button>
               </td>
               <td>
                   <div ng-repeat="col in config.function.orderByColumn track by $index ">
-                      <span>ORDER BY column {{$index+1}}</span>                    
+                      <span>Column {{$index+1}}</span>                    
                       <div>
                           <select required ng-model="config.function.orderByColumn[$index]"
                           ng-options="column.name as column.name + ' (' + (column.type || 'Column') + ')' for column in getSchemaOfUnaliasedInputs(config.function.unaliased_inputs)"
@@ -359,7 +390,9 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SO
                     <option value="" selected>--No Selection--</option>
                   </select> -->
 
-                  <input required type='text'
+                  <input required type='text' 
+                  ng-change=" item.value = validateColumnName(item, item.value, getSchema(item, config.function.required_input, config.function.unaliased_inputs, config.function.arguments)) "
+                  ng-model-options="{updateOn : 'change'}"
                   placeholder='Add Parameter'                     
                   list='item{{item.name}}'    
                   ng-if="(item.datatype == 'COLUMN_NAMES' || item.datatype == 'COLUMNS') && !item.allowsLists && !getPermittedValuesWithName(item)"
@@ -412,6 +445,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SO
 
                     </select>                       -->
                     <input required type='text'
+                  ng-change=" item.value[$index] = validateColumnName(item, item.value[$index], getSchema(item, config.function.required_input, config.function.unaliased_inputs, config.function.arguments)) "
+                  ng-model-options="{updateOn : 'change'}"
                   placeholder='Add Parameter'                     
                   list='item{{item.name}}'                      
                   data-toggle="tooltip" 
@@ -426,7 +461,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SO
                   </datalist>
 
 
-                    <button style="border:none;background: none;" ng-if="item.value.length > 1" ng-click="removeColumnArgument(item,$index)" title="Remove RETURNS Column">
+                    <button style="border:none;background: none;" ng-if="item.value.length > 1" ng-click="removeColumnArgument(item,$index)" title="Remove Column">
                       <span class="glyphicon glyphicon-minus-sign orange"></span>
                     </button>
                   </div>
@@ -492,19 +527,11 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SO
                   <!-- Input Kind Required -->
                 <div class="inner-cell" ng-if="item.inputKindChoices.length > 1">
                   <p class="inner-label">Partition Type </p>
-                  <select required ng-model="item.kind" ng-options="kind for kind in item.inputKindChoices">
-                      <option value="" selected>--No Selection--</option>
-                  </select>
-                </div>
-
-                <!-- Input Kind Empty -->
-                <div class="inner-cell" ng-if="item.inputKindChoices.length == 0">
-                  <p class="inner-label">Partition Type </p>
                   <select ng-model="item.kind">
-                      <option value="" selected>Unpartitioned</option>
-                      <option value="PartitionByKey">PartitionByKey</option>
-                      <option value="PartitionByAny">PartitionByAny</option>
-                      <option value="PartitionByOne">PartitionByOne</option>
+                      <option value="None">None</option>
+                      <option value="PartitionByKey">Partition</option>
+                      <option value="HashByKey">Hash</option>
+                      <option ng-if="item.inputKindChoices.includes('Dimension')" value="Dimension">Dimension</option>
                   </select>
                 </div>
 
@@ -825,36 +852,25 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SO
                     <option value="" selected>--No Selection--</option>
                   </select>
                   
-                  <!-- Input Kind Required -->
-                <div class="inner-cell" ng-if="item.inputKindChoices.length > 1">
-                  <p class="inner-label">Partition Type </p>
-                  <select required ng-model="item.kind" ng-options="kind for kind in item.inputKindChoices">
-                      <option value="" selected>--No Selection--</option>
-                  </select>
-                </div>
-                <!-- Input Kind Empty -->
-                <div class="inner-cell" ng-if="item.inputKindChoices.length == 0">
-                  <p class="inner-label">Partition Type </p>
-                  <select ng-model="item.kind">
-                      <option value="" selected>Unpartitioned</option>
-                      <option value="PartitionByKey">PartitionByKey</option>
-                      <option value="PartitionByAny">PartitionByAny</option>
-                      <option value="PartitionByOne">PartitionByOne</option>
-                  </select>
-                </div>
 
-                <div class="inner-cell" ng-show="'PartitionByKey' == item.kind">
-                  <p class="inner-label">Partition by
+                <div class="inner-cell" ng-show="item.kind.includes('ByKey')">
+                  <p class="inner-label" ng-show="item.kind == 'PartitionByKey'">Partition by
                       <button style="border:none;background:none;" ng-init="item.partitionAttributes = initializeColumnArrayOptional(item.partitionAttributes)"ng-click="addPartitionByColumn_TEST(item.partitionAttributes)" title="Add Partition Column">
                         <span class="glyphicon glyphicon-plus-sign orange"></span>
                       </button>
                   </p>
-                   <div ng-repeat="col in item.partitionAttributes track by $index ">
-                      <span>PARTITION BY column {{$index+1}}</span>                        
+                  <p class="inner-label" ng-show="item.kind == 'HashByKey'">Hash by 
+                      <button style="border:none;background:none;" ng-init="item.partitionAttributes = initializeColumnArrayOptional(item.partitionAttributes)" ng-click="addPartitionByColumn_TEST(item.partitionAttributes)" title="Add Partition Column">
+                        <span class="glyphicon glyphicon-plus-sign orange"></span></button>
+                  </p>
+                  <div ng-show="item.kind.includes('ByKey')" ng-repeat="col in item.partitionAttributes track by $index ">
+                      <span ng-show="'PartitionByKey' == item.kind">Column {{$index+1}}</span>
+                      <span ng-show="'HashByKey' == item.kind">Column {{$index+1}}</span>
                       <div>
+
                           <select ng-model="item.partitionAttributes[$index]"
                           ng-options="column.name as column.name + ' (' + (column.type || 'Column') + ')' for column in inputschemas[item.value]"
-                          data-html="true" title="<b>(Ctrl+Click to multi-select)</b>" data-toggle="tooltip" data-container="body"
+                          data-html="true" title="{{ getToolTip(item.kind != 'HashByKey' ? 'PARTITION_BY' : 'HASH_BY') }}" data-toggle="tooltip" data-container="body"
                           data-placement="right">
                           <option value="" selected>--No Selection--</option>
                         </select>
@@ -877,13 +893,13 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SO
                         <div>
                             <select ng-model="item.orderByColumn[$index]"
                             ng-options="column.name as column.name + ' (' + (column.type || 'Column') + ')' for column in inputschemas[item.value]"
-                            data-html="true" title="<b>Select ORDER BY Column</b>" data-toggle="tooltip" data-container="body"
+                            title="{{ getToolTip(item.kind != 'HashByKey' ? 'ORDER_BY' : 'LOCAL_ORDER_BY') }}" data-toggle="tooltip" data-container="body"
                             data-placement="right">
                             <option value="" selected>--No Selection--</option>
                           </select>
                           <span>
                           <select class="orderbyselect"  ng-model="item.orderByColumnDirection[$index]"                            
-                          title="<b>Select which direction the of this ORDER BY Clause</b>" data-toggle="tooltip" data-container="body"
+                          title="{{getToolTip('SEQUENCING_TYPE')}}" data-toggle="tooltip" data-container="body"
                           data-placement="right">                          
                           <option value="" selected>ASC</option>
                           <option value="DESC">DESC</option>
@@ -900,7 +916,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SO
               </td>
             </tr>
             <!-- Output tables -->
-            <tr ng-repeat="item in config.function.output_tables" ng-model="config.function.output_tables" ng-if="!item.isRequired">
+            <tr ng-show="false" ng-repeat="item in config.function.output_tables" ng-model="config.function.output_tables" ng-if="!item.isRequired">
               <td style="text-transform: capitalize">{{ getArgumentFormattedName(item.name) }}</td>
               <td>
                 <input type="text" ng-model="item.value" ng-if="(['STRING','DOUBLE','INTEGER','DRIVER','SQLEXPR', 'LONG', 'DOUBLE PRECISION'].indexOf(item.datatype) >= 0 || (item.datatype == 'TABLE_NAME' && isArgumentOutputTable(item))) && !item.allowsLists && !getPermittedValuesWithName(item)"
@@ -954,6 +970,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SO
                   </select> -->
 
                   <input type='text'
+                  ng-change=" item.value = validateColumnName(item, item.value, getSchema(item, config.function.required_input, config.function.unaliased_inputs, config.function.arguments)) "
+                  ng-model-options="{updateOn : 'change'}"
                   placeholder='Add Parameter'                     
                   list='item{{item.name}}'    
                   ng-if="(item.datatype == 'COLUMN_NAMES' || item.datatype == 'COLUMNS') && !item.allowsLists && !getPermittedValuesWithName(item)"
@@ -980,6 +998,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SO
                     </select>          -->
                     
                     <input type='text'
+                  ng-change=" item.value[$index] = validateColumnName(item, item.value[$index], getSchema(item, config.function.required_input, config.function.unaliased_inputs, config.function.arguments)) "
+                  ng-model-options="{updateOn : 'change'}"
                   placeholder='Add Parameter'                     
                   list='item{{item.name}}'    
                   ng-if="(item.datatype == 'COLUMN_NAMES' || item.datatype == 'COLUMNS') && item.allowsLists && !getPermittedValuesWithName(item)"
@@ -1064,21 +1084,14 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SO
                     </select>
                     
                     <!-- Input Kind Required -->
-                  <div class="inner-cell" ng-if="item.inputKindChoices.length > 1">
-                    <p class="inner-label">Partition Type </p>
-                    <select required ng-model="item.kind" ng-options="kind for kind in item.inputKindChoices">
-                        <option value="" selected>--No Selection--</option>
-                    </select>
-                  </div>
 
-                  <!-- Input Kind Empty -->
-                <div class="inner-cell" ng-if="item.inputKindChoices.length == 0">
+                <div class="inner-cell" ng-if="item.inputKindChoices.length > 1">
                   <p class="inner-label">Partition Type </p>
                   <select ng-model="item.kind">
-                      <option value="" selected>Unpartitioned</option>
-                      <option value="PartitionByKey">PartitionByKey</option>
-                      <option value="PartitionByAny">PartitionByAny</option>
-                      <option value="PartitionByOne">PartitionByOne</option>
+                      <option value="None">None</option>
+                      <option value="PartitionByKey">Partition</option>
+                      <option value="HashByKey">Hash</option>
+                      <option ng-if="item.inputKindChoices.includes('Dimension')" value="Dimension">Dimension</option>
                   </select>
                 </div>
         
@@ -1139,7 +1152,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SO
                 </td>
               </tr>
               <!-- Output tables -->
-              <tr ng-repeat="item in config.function.partnerFunction.output_tables" ng-model="config.function.partnerFunction.output_tables" ng-if="!item.isRequired">
+              <tr ng-show="false" ng-repeat="item in config.function.partnerFunction.output_tables" ng-model="config.function.partnerFunction.output_tables" ng-if="!item.isRequired">
                 <td style="text-transform: capitalize">{{ getArgumentFormattedName(item.name) }}</td>
                 <td>
                   <input type="text" ng-model="item.value" ng-if="(['STRING','DOUBLE','INTEGER','DRIVER','SQLEXPR', 'LONG', 'DOUBLE PRECISION'].indexOf(item.datatype) >= 0 || (item.datatype == 'TABLE_NAME' && isArgumentOutputTable(item))) && !item.allowsLists && !getPermittedValuesWithName(item)"
@@ -1184,7 +1197,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SO
                     data-placement="right" ng-options="column.name as column.tableName + '.' + column.name + ' (' + (column.type || 'Column') + ')' for column in getSchema(item, config.function.partnerFunction.required_input, config.function.partnerFunction.unaliased_inputs, config.function.partnerFunction.arguments)">
                       <option value="" selected>--No Selection--</option>
                     </select> -->
-                    <input type='text'
+                    <input type='text' 
                   placeholder='Add Parameter'                     
                   list='item{{item.name}}'    
                   ng-if="(item.datatype == 'COLUMN_NAMES' || item.datatype == 'COLUMNS') && !item.allowsLists && !getPermittedValuesWithName(item)"
@@ -1210,7 +1223,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SO
                           <option value="" selected>--No Selection--</option>
                       </select>                       -->
 
-                      <input type='text'
+                      <input type='text' 
                       placeholder='Add Parameter'                     
                       list='item{{item.name}}{{$index}}'    
                       ng-if="(item.datatype == 'COLUMN_NAMES' || item.datatype == 'COLUMNS') && item.allowsLists && !getPermittedValuesWithName(item)"

@@ -1,0 +1,233 @@
+{
+    "json_schema_major_version": "1",
+    "json_schema_minor_version": "1",
+    "json_content_version": "1",
+    "function_name": "Histogram VAL",
+    "function_version": "1.0",
+    "function_alias_name": "Histogram VAL",
+    "function_type": "valib",
+    "function_r_name": "",
+    "short_description": "Histogram analysis reveals the distribution of continuous numeric or date values in a column. Histogram analysis is also referred to as binning because it counts the occurrence of values in a series of numeric ranges called bins.",
+    "long_description": "Histogram analysis reveals the distribution of continuous numeric or date values in a column. Histogram analysis is also referred to as binning because it counts the occurrence of values in a series of numeric ranges called bins.",
+    "input_tables": [
+        {
+            "requiredInputKind": [
+                "PartitionByNone"
+            ],
+            "isOrdered": false,
+            "partitionByOne": false,
+            "name": "input_A_role",
+            "alternateNames": [],
+            "isRequired": true,
+            "rDescription": "what input A means",
+            "description": "what input A means",
+            "datatype": "TABLE_ALIAS",
+            "allowsLists": false,
+            "rName": "input_A_role",
+            "useInR": true,
+            "rOrderNum": 1
+        }
+    ],
+    "argument_clauses": [
+        {
+            "targetTable": [
+                "input_A_role"
+            ],
+            "checkDuplicate": false,
+            "allowedTypes": [],
+            "allowedTypeGroups": [
+                "ALL"
+            ],
+            "matchLengthOfArgument": "",
+            "allowPadding": false,
+            "name": "InputColumns",
+            "alternateNames": [],
+            "isRequired": true,
+            "rDescription": "Specifies the name(s) of the column(s) to analyze.",
+            "description": "Specifies the name(s) of the column(s) to analyze.",
+            "datatype": "COLUMNS",
+            "allowsLists": true,
+            "rName": "exclude",
+            "useInR": true,
+            "rOrderNum": 2
+        },
+        {
+            "defaultValue": 10,
+            "allowNaN": false,
+            "name": "Bins",
+            "alternateNames": [],
+            "isRequired": false,
+            "rDescription": "Specifies the number of equal width bins to create.",
+            "description": "Specifies the number of equal width bins to create.",
+            "datatype": "INTEGER",
+            "allowsLists": false,
+            "rName": "window.size",
+            "useInR": true,
+            "rOrderNum": 3
+        },
+        {
+            "permittedValues": [],
+            "isOutputColumn": true,
+            "name": "BinsWithBoundaries",
+            "alternateNames": [],
+            "isRequired": false,
+            "rDescription": "Specifies the number of bins spanning a range specified by the minimum and maximum values. E.g. if you want 5 bins ranging from 0 to 200, type in seperate entries with the different numbers (5, 0 , 200).",
+            "description": "Specifies the number of bins spanning a range specified by the minimum and maximum values. E.g. if you want 5 bins ranging from 0 to 200, type in seperate entries with the different numbers (5, 0 , 200).",
+            "datatype": "STRING",
+            "allowsLists": true,
+            "rName": "output.column",
+            "useInR": true,
+            "rOrderNum": 4
+        },
+        {
+            "permittedValues": [],
+            "isOutputColumn": true,
+            "name": "Boundaries",
+            "alternateNames": [],
+            "isRequired": false,
+            "rDescription": "Specifies the boundaries that define the bins. E.g. if you want two boundaries then type for example {0, 50000, 100000, 150000} and {0, 50, 100} as seperate entries.",
+            "description": "Specifies the boundaries that define the bins. E.g. if you want two boundaries then type for example {0, 50000, 100000, 150000} and {0, 50, 100} as seperate entries.",
+            "datatype": "STRING",
+            "allowsLists": true,
+            "rName": "output.column",
+            "useInR": true,
+            "rOrderNum": 5
+        },
+        {
+            "defaultValue": 10,
+            "allowNaN": false,
+            "name": "Quantiles",
+            "alternateNames": [],
+            "isRequired": false,
+            "rDescription": "Specifies the number of approximately equally populated bins to create.",
+            "description": "Specifies the number of approximately equally populated bins to create.",
+            "datatype": "INTEGER",
+            "allowsLists": false,
+            "rName": "window.size",
+            "useInR": true,
+            "rOrderNum": 6
+        },
+        {
+            "defaultValue": 0,
+            "allowNaN": false,
+            "name": "Widths",
+            "alternateNames": [],
+            "isRequired": false,
+            "rDescription": "Specifies the width of the bins to create.",
+            "description": "Specifies the width of the bins to create.",
+            "datatype": "INTEGER",
+            "allowsLists": false,
+            "rName": "window.size",
+            "useInR": true,
+            "rOrderNum": 7
+        },
+        {
+            "targetTable": [
+                "input_A_role"
+            ],
+            "checkDuplicate": false,
+            "allowedTypes": [],
+            "allowedTypeGroups": [
+                "ALL"
+            ],
+            "matchLengthOfArgument": "",
+            "allowPadding": false,
+            "name": "OverlayColumns",
+            "alternateNames": [],
+            "isRequired": false,
+            "rDescription": "Specifies a categorical variable with only a few values.",
+            "description": "Specifies a categorical variable with only a few values.",
+            "datatype": "COLUMNS",
+            "allowsLists": true,
+            "rName": "exclude",
+            "useInR": true,
+            "rOrderNum": 8
+        },
+        {
+            "targetTable": [
+                "input_A_role"
+            ],
+            "checkDuplicate": false,
+            "allowedTypes": [],
+            "allowedTypeGroups": [
+                "ALL"
+            ],
+            "matchLengthOfArgument": "",
+            "allowPadding": false,
+            "name": "StatisticsColumns",
+            "alternateNames": [],
+            "isRequired": false,
+            "rDescription": "Specifies a list of numeric columns/aliases for which simple statistics are calculated (minimum, maximum, mean and standard deviation) in each bin.",
+            "description": "Specifies a list of numeric columns/aliases for which simple statistics are calculated (minimum, maximum, mean and standard deviation) in each bin.",
+            "datatype": "COLUMNS",
+            "allowsLists": true,
+            "rName": "exclude",
+            "useInR": true,
+            "rOrderNum": 9
+        },
+        {
+            "permittedValues": [
+                "basic",
+                "crosstab"
+            ],
+            "defaultValue": "basic",
+            "isOutputColumn": false,
+            "name": "HistogramStyle",
+            "alternateNames": [],
+            "isRequired": false,
+            "rDescription": "Specifies the histogram style to use for analysis.",
+            "description": "Specifies the histogram style to use for analysis.",
+            "datatype": "STRING",
+            "allowsLists": false,
+            "rName": "mavgtype",
+            "useInR": true,
+            "rOrderNum": 10
+        },
+        {
+            "permittedValues": [],
+            "isOutputColumn": true,
+            "name": "Filter",
+            "alternateNames": [],
+            "isRequired": false,
+            "rDescription": "Specifies the clause to filter rows selected for analysis within Histogram. E.g. income > 0 (where income is an input column).",
+            "description": "Specifies the clause to filter rows selected for analysis within Histogram. E.g. income > 0 (where income is an input column).",
+            "datatype": "STRING",
+            "allowsLists": false,
+            "rName": "output.column",
+            "useInR": true,
+            "rOrderNum": 11
+        }
+    ],
+    "name_map": {
+        "Histogram": "histogram",
+        "InputColumns": "histogram_columns",
+        "Bins": "histogram_bins",
+        "BinsWithBoundaries": "histogram_bins_with_boundaries",
+        "Boundaries": "histogram_boundaries",
+        "Quantiles": "histogram_quantiles",
+        "Widths": "histogram_widths",
+        "OverlayColumns": "histogram_overlay_columns",
+        "StatisticsColumns": "histogram_stats_columns",
+        "HistogramStyle": "histogram_hist_style",
+        "Filter": "histogram_filter"
+    },
+    "type_map": {
+        "Histogram": "SEPARATOR",
+        "InputColumns": "COLUMNS",
+        "Bins": "INT",
+        "BinsWithBoundaries": "STRINGS",
+        "Boundaries": "STRINGS",
+        "Quantiles": "INT",
+        "Widths": "INT",
+        "OverlayColumns": "COLUMNS",
+        "StatisticsColumns": "COLUMNS",
+        "HistogramStyle": "SELECT",
+        "Filter": "STRING"
+    },
+    "choices_map": {
+        "HistogramStyle": {
+            "basic": "basic",
+            "crosstab": "crosstab"
+        }
+    }
+}

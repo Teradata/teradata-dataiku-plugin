@@ -59,8 +59,13 @@ input_A_names = get_input_names_for_role('main')
 # The dataset objects themselves can then be created like this:
 input_A_datasets = [dataiku.Dataset(name) for name in input_A_names]
 
-# To  retrieve the datasets of an input role named 'input_A' as an array of dataset names:
-input_B_names = get_input_names_for_role('sto_scripts')
+# To  retrieve the datasets of an input role named 'input_B_names' as an array of dataset names:
+script_role = 'language_scripts'
+input_B_names = get_input_names_for_role(script_role)
+if not input_B_names:
+    # backward compatible support
+    script_role = 'sto_scripts'
+    input_B_names = get_input_names_for_role(script_role)
 
 # The dataset objects themselves can then be created like this:
 input_B_datasets = [dataiku.Dataset(name) for name in input_B_names]
@@ -103,24 +108,7 @@ import pandas as pd, numpy as np
 import os
 from dataiku import pandasutils as pdu
 from dataiku.core.sql import SQLExecutor2
-
-def verifyTableName(tableName):
-    # Must not be empty
-    # Must not contain a double quote
-    # Otherwise raise exception
-    if tableName and '"' not in tableName:
-        return '"'+tableName+'"'
-    else:
-        raise Exception('Illegal Table Name', tableName)
-
-def verifyColumnName(columnName):
-    # Must not be empty
-    # Must not contain a double quote
-    # Otherwise raise exception
-    if columnName and '"' not in columnName:
-        return '"'+columnName+'"'
-    else:
-        raise Exception('Illegal Column Name', columnName)
+from verifyTableColumns import *
 
 
 def executor_query(executor, query_string):
@@ -133,8 +121,8 @@ def executor_query2(executor, query_string, pre_queries):
     return executor.query_to_df(query_string, pre_queries)
 
 
-#DataIku Managed Folder Handler (Specifically sto_scripts as of now)
-handle = dataiku.Folder("sto_scripts") if input_B_names else None
+#DataIku Managed Folder Handler (Specifically language_scripts as of now)
+handle = dataiku.Folder(script_role) if input_B_names else None
 
 
 logging.info('Getting STO Database')
@@ -241,6 +229,8 @@ scriptArguments = ', '.join(x.get('value', '')
 additionalFiles = function_config.get('files')
 
 
+
+
 def getHashClause(hasharg):
     return hasharg and ('\n             HASH BY {hasharg}'.format(hasharg=hasharg))
 def getPartitionClause(partitionarg):
@@ -257,77 +247,158 @@ def getAdditionalClauses(arg):
 
 def getSelectInstalledFileQuery(databasename, fileAlias):
     return """select * from dbc.tables
-where databasename = '{dataset}'
-and TableName = '{table}'
-and TableKind = 'Z';""".format(dataset=databasename, table=fileAlias)
+where databasename = {dataset}
+and TableName = {table}
+and TableKind = 'Z';""".format(dataset=verifyDatabaseName(databasename, single_quotes=True), table=verifyTableName(fileAlias, single_quotes=True))
+
+def verifyReturnClause(returnClause):
+    # return clause should not have any quotes
+    if returnClause and ('"' not in returnClause) and ("'" not in returnClause):
+        return returnClause
+    else:
+        raise Exception('Illegal Return clause', returnClause)
+
+def verifyPartitionClause(partitionbycolumns):
+    # verify that each column name is valid
+    if(partitionOrHash == 'part'):
+        partitionClause = []
+        for d in partitionbycolumns:
+            if not d["value"]:
+                continue
+            partitionClause.append(verifyColumnName(d["value"]))
+        partitionClause = ", ".join(partitionClause)
+        partitionClause = getPartitionClause(partitionClause)
+    else:
+        partitionClause = ''
+    return partitionClause
+    
+def verifyOrderClause(partitionorderbycolumns):
+    # verify that each column name is valid
+    if(partitionOrHash == 'part'):
+        orderClause = []
+        for d in partitionorderbycolumns:
+            if not d["value"]:
+                continue
+            sequence = "ASC"
+            if d["type"] == "Descending":
+                sequence = "DESC"
+            orderClause.append(verifyColumnName(d["value"]) + " " + sequence)
+        orderClause = ", ".join(orderClause)
+        orderClause = getOrderClause(orderClause)
+    else:
+        orderClause = '' 
+    return orderClause
+
+def verifyHashClause(partitionbycolumns):
+    # verify that each column name is valid
+    if(partitionOrHash == 'hash'):
+        hashClause = []
+        for d in function_config.get('partitionbycolumns', ''):
+            if not d["value"]:
+                continue
+            hashClause.append(verifyColumnName(d["value"]))
+        hashClause = ", ".join(hashClause)
+        hashClause = getHashClause(hashClause)
+    else:
+        hashClause = ''
+    return hashClause
+    
+def verifyLocalOrderClause(partitionorderbycolumns):
+    # verify that each column name is valid
+    if(partitionOrHash == 'hash'):
+        localOrderByClause = []
+        for d in function_config.get('partitionorderbycolumns', ''):
+            if not d["value"]:
+                continue
+            sequence = "ASC"
+            if d["type"] == "Descending":
+                sequence = "DESC"
+            localOrderByClause.append(verifyColumnName(d["value"]) + " " + sequence)
+        localOrderByClause = ", ".join(localOrderByClause)
+        localOrderByClause = getLocalOrderClause(localOrderByClause)
+    else:
+        localOrderByClause = '' 
+    return localOrderByClause
+
+def verifyWhereClause(whereClause):
+    # No quotes single or double or semicolons
+    if whereClause != "":
+        if (";" in whereClause) or ("'" in whereClause) or ('"' in whereClause):
+            raise Exception('Invalid Clause', whereClause)
+        else:
+            whereClause = "WHERE " + whereClause
+    return whereClause
+
+def verifyOnClause(inputs):
+    onClause = []
+    for d in inputs:
+        if d.get("value", ""):
+            onClause.append(d["value"])
+    if onClause:
+        onClause = ",".join(onClause)
+    else:
+        onClause = "*"
+    if not onClause == "*":
+        onClause_InputList = onClause.split(",")
+        onClause_OutputList = []
+        for clause in onClause_InputList:
+            onClause_OutputList.append(verifyColumnName(clause))
+        onClause = ",".join(onClause_OutputList)
+    return onClause
+
+def verifyInputTable(inputTable):
+    inputTable = verifyTableName(inputTable)
+    inputSchema = input_A_datasets[0].get_config()['params']['schema']
+    if inputSchema != "":
+        inputTable = inputSchema + "." + inputTable
+    else:
+        # now check if there is a default database
+        defaultDatabase =  getConnectionParamsFromDataset(input_A_datasets[0]).get('defaultDatabase', "");
+        if defaultDatabase != "":
+            inputTable = defaultDatabase + "." + inputTable
+    return inputTable
+
+
+def verifySelectClause(output_all, return_clause):
+    # Vverify all column names are valid
+    selectClause = "*"
+    if not output_all:
+        selectClause = []
+        for d in return_clause:
+            if d.get("name", "") and d.get("output", False):
+                selectClause.append(verifyColumnName(d["name"]))
+        if selectClause:
+            selectClause = ",".join(selectClause)
+        else:
+            selectClause = "*"
+    return selectClause
+
+def verifyScriptCommand():
+    script_command = ''
+    # search path should have no quotes
+    if ('"' in searchPath) or ("'" in searchPath):
+        raise Exception('Illegal Search Path', searchPath)
+    # script file name should have no quotes
+    if ('"' in scriptFileName) or ("'" in scriptFileName):
+        raise Exception('Illegal Script File Name', scriptFileName)
+    # script arguments should have no quotes
+    if ('"' in scriptArguments) or ("'" in scriptArguments):
+        raise Exception('Illegal Script Arguments', scriptArguments)
+    if commandType != 'r':
+        script_command = """'export PATH; tdpython3 ./"""+searchPath+"""/"""+scriptFileName+""" """+scriptArguments+"""'"""
+    elif commandType == 'r':
+        script_command = """'R --vanilla ./"""+searchPath+"""/"""+scriptFileName+""" """+scriptArguments+"""'"""
+    return script_command
 
 
 
-if(partitionOrHash == 'part'):
-    logging.info('Partition')
-    
-    partitionClause = []
-    for d in function_config.get('partitionbycolumns', ''):
-        if not d["value"]:
-            continue
-        partitionClause.append(verifyColumnName(d["value"]))
-    partitionClause = ", ".join(partitionClause)
-    partitionClause = getPartitionClause(partitionClause)
-    
-    orderClause = []
-    for d in function_config.get('partitionorderbycolumns', ''):
-        if not d["value"]:
-            continue
-        sequence = "ASC"
-        if d["type"] == "Descending":
-            sequence = "DESC"
-        orderClause.append(verifyColumnName(d["value"]) + " " + sequence)
-    orderClause = ", ".join(orderClause)
-    orderClause = getOrderClause(orderClause)
-
-    hashClause = ''
-    localOrderByClause = ''
-elif(partitionOrHash == 'hash'):
-    logging.info('Hash')
-    
-    hashClause = []
-    for d in function_config.get('partitionbycolumns', ''):
-        if not d["value"]:
-            continue
-        hashClause.append(verifyColumnName(d["value"]))
-    hashClause = ", ".join(hashClause)
-    hashClause = getHashClause(hashClause)
-    
-    localOrderByClause = []
-    for d in function_config.get('partitionorderbycolumns', ''):
-        if not d["value"]:
-            continue
-        sequence = "ASC"
-        if d["type"] == "Descending":
-            sequence = "DESC"
-        localOrderByClause.append(verifyColumnName(d["value"]) + " " + sequence)
-    localOrderByClause = ", ".join(localOrderByClause)
-    localOrderByClause = getLocalOrderClause(localOrderByClause)
-
-    partitionClause = ''
-    orderClause = ''
-else: 
-    logging.info('No Partition/Hash')
-    hashClause = ''
-    localOrderByClause = ''
-    partitionClause = ''
-    orderClause = ''
-    
+partitionbycolumns = function_config.get('partitionbycolumns', '')
+partitionorderbycolumns = function_config.get('partitionorderbycolumns', '')
 
 
 logging.info('Building STO Script Command')
-script_command = ''
-if commandType != 'r':
-    script_command = """'export PATH; tdpython3 ./"""+searchPath+"""/"""+scriptFileName+""" """+scriptArguments+"""'"""
-elif commandType == 'r':
-    script_command = """'R --vanilla ./"""+searchPath+"""/"""+scriptFileName+""" """+scriptArguments+"""'"""
 
-logging.info("""Script Command: """+script_command)
+logging.info("""Script Command: """+verifyScriptCommand())
 
 # select query
 logging.info('Building Database Query')
@@ -399,72 +470,36 @@ logging.info(output_A_names[0])
 
 # Gather inputs to generate onClause
 inputs = function_config.get('inputs', "")
-onClause = []
-for d in inputs:
-    if d.get("value", ""):
-        onClause.append(d["value"])
-if onClause:
-    onClause = ",".join(onClause)
-else:
-    onClause = "*"
-if not onClause == "*":
-    onClause_InputList = onClause.split(",")
-    onClause_OutputList = []
-    for clause in onClause_InputList:
-        onClause_OutputList.append(verifyColumnName(clause))
-    onClause = ",".join(onClause_OutputList)
+
+
 whereClause = function_config.get('where', "")
-if whereClause != "":
-    if ";" in whereClause or "'" in whereClause or '"' in whereClause:
-        raise Exception('Invalid Clause', whereClause)
-    else:
-        whereClause = "WHERE " + whereClause
-        
 
 # gather ouputs to build selectClause
-selectClause = "*"
-if not function_config.get('outputAll', True):
-    selectClause = []
-    for d in function_config.get('return_clause'):
-        if d.get("name", "") and d.get("output", False):
-            selectClause.append(verifyColumnName(d["name"]))
-    if selectClause:
-        selectClause = ",".join(selectClause)
-    else:
-        selectClause = "*"
+return_clause = function_config.get('return_clause', "")
+output_all = function_config.get('outputAll', True)
+
 
 # Prefix the input table with the correct database
 inputTable = function_config.get('input_table')
-input_table = verifyTableName(inputTable)
-inputSchema = input_A_datasets[0].get_config()['params']['schema']
-if inputSchema != "":
-    inputTable = inputSchema + "." + inputTable
-else:
-    # now check if there is a default database
-    defaultDatabase =  getConnectionParamsFromDataset(input_A_datasets[0]).get('defaultDatabase', "");
-    if defaultDatabase != "":
-        inputTable = defaultDatabase + "." + inputTable
+
 
 
 STOQuery = """SELECT {selectClause}
 FROM SCRIPT (ON (SELECT {onClause} FROM {inputTable} {whereClause}){hashClause}{localOrderClause}{partitionClause}{orderClause}
              SCRIPT_COMMAND({script_command})
              RETURNS ('{returnClause}')
-            ) {additionalClauses};""".\
-            format(tabletype=function_config.get('table_type', ''),
-                   inputTable=inputTable,
-                   searchPath=searchPath,
-                   outputTable=outputTable,
-                   selectClause=selectClause,
-                   onClause=onClause,
-                   whereClause=whereClause,
-                   script_command=script_command,
-                   hashClause=hashClause,
-                   partitionClause=partitionClause,
-                   orderClause=orderClause,
-                   localOrderClause=localOrderByClause,
-                   returnClause=returnClause,
-                   additionalClauses=getAdditionalClauses(function_config.get('add_clauses','')))
+            );""".\
+            format(inputTable=verifyInputTable(inputTable),
+                   outputTable=outputTable, # Not verified as not user specificed, instead it is from Dataiku output data set information
+                   selectClause=verifySelectClause(output_all, return_clause),
+                   onClause=verifyOnClause(inputs),
+                   whereClause=verifyWhereClause(whereClause),
+                   script_command=verifyScriptCommand(),
+                   hashClause=verifyHashClause(partitionbycolumns),
+                   partitionClause=verifyPartitionClause(partitionbycolumns),
+                   orderClause=verifyOrderClause(partitionorderbycolumns),
+                   localOrderClause=verifyLocalOrderClause(partitionorderbycolumns),
+                   returnClause=verifyReturnClause(returnClause))
 
 def getSelectTableQuery(databasename, fileAlias):
     return """select * from dbc.tables

@@ -39,8 +39,8 @@ def get_vantage_version(query_engine_wrapper):
     vantage_version = None
 
     # SKS create query where you get back vantage version
-    query_string = "SELECT InfoData FROM pm.versionInfo WHERE InfoKey = 'RELEASE' (NOT CASESPECIFIC)"
-    # SKS print query
+    query_string = "SELECT InfoData FROM DBC.DBCInfoV where InfoKey = 'VERSION'"
+    # SKS log query
     logging.info("teradata_analytic_lib: SQL Version Query", query_string)
 
     # SKS execute query and recieve panda result
@@ -59,15 +59,19 @@ def get_vantage_version(query_engine_wrapper):
 
 
     if vantage_version is None:
-        vantage_version = "vantage1.3" # TODO: Should this be 1.0 or 1.3
-    elif "vantage 1.1" in vantage_version.lower().replace(" ", ""):
-        vantage_version = "vantage1.1"
-    elif "mlengine9.0" in vantage_version.lower().replace(" ", ""):
-        vantage_version = "vantage1.3"
-    elif "mlengine08.10" in vantage_version.lower().replace(" ", ""):
-        vantage_version = "vantage2.0"
+        vantage_version = "17.05" 
+    elif "16.20" in vantage_version.lower().replace(" ", ""):
+        vantage_version = "16.20"
+    elif "17.00" in vantage_version.lower().replace(" ", ""):
+        vantage_version = "17.00"
+    elif "17.05" in vantage_version.lower().replace(" ", ""):
+        vantage_version = "17.05"
+    elif "17.10" in vantage_version.lower().replace(" ", ""):
+        vantage_version = "17.10"
+    elif "17.20" in vantage_version.lower().replace(" ", ""):
+        vantage_version = "17.20"
     else:
-        vantage_version = "vantage1.3"  # TODO: Should this be 1.0 or 1.3
+        vantage_version = "17.05"
 
     logging.info("teradata_analytic_lib: Vantage version number", vantage_version)
 

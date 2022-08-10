@@ -1,0 +1,119 @@
+{
+    "json_schema_major_version": "1",
+    "json_schema_minor_version": "1",
+    "json_content_version": "1",
+    "function_name": "Values VAL",
+    "function_version": "1.0",
+    "function_alias_name": "Values VAL",
+    "function_type": "valib",
+    "function_r_name": "",
+    "short_description": "Use Values analysis as the first type of analysis performed on unknown data. Values analysis determines the nature and quality of the data.",
+    "long_description": "Use Values analysis as the first type of analysis performed on unknown data. Values analysis determines the nature and quality of the data.",
+    "input_tables": [
+        {
+            "requiredInputKind": [
+                "PartitionByNone"
+            ],
+            "isOrdered": false,
+            "partitionByOne": false,
+            "name": "input_A_role",
+            "alternateNames": [],
+            "isRequired": true,
+            "rDescription": "what input A means",
+            "description": "what input A means",
+            "datatype": "TABLE_ALIAS",
+            "allowsLists": false,
+            "rName": "input_A_role",
+            "useInR": true,
+            "rOrderNum": 1
+        }
+    ],
+    "argument_clauses": [
+        {
+            "targetTable": [
+                "input_A_role"
+            ],
+            "checkDuplicate": false,
+            "allowedTypes": [],
+            "allowedTypeGroups": [
+                "ALL"
+            ],
+            "matchLengthOfArgument": "",
+            "allowPadding": false,
+            "name": "InputColumns",
+            "alternateNames": [],
+            "isRequired": true,
+            "rDescription": "Specifies the name(s) of the column(s) to analyze.",
+            "description": "Specifies the name(s) of the column(s) to analyze.",
+            "datatype": "COLUMNS",
+            "allowsLists": true,
+            "rName": "exclude",
+            "useInR": true,
+            "rOrderNum": 2
+        },
+        {
+            "targetTable": [
+                "input_A_role"
+            ],
+            "checkDuplicate": false,
+            "allowedTypes": [],
+            "allowedTypeGroups": [
+                "ALL"
+            ],
+            "matchLengthOfArgument": "",
+            "allowPadding": false,
+            "name": "GroupByColumns",
+            "alternateNames": [],
+            "isRequired": false,
+            "rDescription": "Specifies the name(s) of column(s) to perform separate analysis for each group.",
+            "description": "Specifies the name(s) of column(s) to perform separate analysis for each group.",
+            "datatype": "COLUMNS",
+            "allowsLists": true,
+            "rName": "exclude",
+            "useInR": true,
+            "rOrderNum": 3
+        },
+        {
+            "defaultValue": false,
+            "name": "Distinct",
+            "alternateNames": [],
+            "isRequired": false,
+            "rDescription": "Specifies whether to select unique values count for each selected column.",
+            "description": "Specifies whether to select unique values count for each selected column.",
+            "datatype": "BOOLEAN",
+            "allowsLists": false,
+            "rName": "",
+            "useInR": true,
+            "rOrderNum": 4
+        },
+        {
+            "permittedValues": [],
+            "isOutputColumn": true,
+            "name": "Filter",
+            "alternateNames": [],
+            "isRequired": false,
+            "rDescription": "Specifies the clause to filter rows selected for analysis within Values. E.g. income > 0 (where income is an input column).",
+            "description": "Specifies the clause to filter rows selected for analysis within Values. E.g. income > 0 (where income is an input column).",
+            "datatype": "STRING",
+            "allowsLists": false,
+            "rName": "output.column",
+            "useInR": true,
+            "rOrderNum": 5
+        }
+    ],
+    "name_map": {
+        "Values": "values",
+        "InputColumns": "values_columns",
+        "GroupByColumns": "values_group_columns",
+        "Distinct": "values_distinct",
+        "Filter": "values_filter"
+    },
+    "type_map": {
+        "Values": "SEPARATOR",
+        "InputColumns": "COLUMNS",
+        "GroupByColumns": "COLUMNS",
+        "Distinct": "BOOLEAN",
+        "Filter": "STRING"
+    },
+    "choices_map": {}
+}

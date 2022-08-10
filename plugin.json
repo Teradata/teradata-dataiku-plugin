@@ -1,9 +1,9 @@
 {
     "id" : "teradata",
-    "version" :"2.0.0",
+    "version" :"2.1.0",
     "meta" : {
         "label" : "Teradata",
-        "description" : "Enables pushing a variety of tasks and operations into Teradata Vantage systems for SQL-less, scaled Analytics.",
+        "description" : "Enables pushing a variety of tasks and operations into the Teradata Vantage Data and Analytics Platform for SQL-less, scaled Analytics.",
         "author" : "Teradata",
         "icon" : "icon-database",
         "licenseInfo" : "MIT + Apache License 2.0",

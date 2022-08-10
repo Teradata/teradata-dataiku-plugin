@@ -1,0 +1,130 @@
+{
+    "json_schema_major_version": "1",
+    "json_schema_minor_version": "1",
+    "json_content_version": "1",
+    "function_name": "Linear Regression Predict VAL",
+    "function_version": "1.0",
+    "function_alias_name": "Linear Regression Predict VAL",
+    "function_type": "valib",
+    "function_r_name": "",
+    "short_description": "Linear Regression Scoring is the application of a Linear Regression model to an input data that contains the same independent variable columns contained in the model.Linear regression model evaluation begins with scoring a DataFrame that includes the actual values of the dependent variable. There is an additional required input table that specifies the model used by the VALIB LinReg function; additional datasets can be added in the Dataiku Input/Output tab.",
+    "long_description": "Linear Regression Scoring is the application of a Linear Regression model to an input data that contains the same independent variable columns contained in the model.Linear regression model evaluation begins with scoring a DataFrame that includes the actual values of the dependent variable. There is an additional required input table that specifies the model used by the VALIB LinReg function; additional datasets can be added in the Dataiku Input/Output tab.",
+    "input_tables": [
+        {
+            "requiredInputKind": [
+                "PartitionByNone"
+            ],
+            "isOrdered": false,
+            "partitionByOne": false,
+            "name": "input_A_role",
+            "alternateNames": [],
+            "isRequired": true,
+            "rDescription": "what input A means",
+            "description": "what input A means",
+            "datatype": "TABLE_ALIAS",
+            "allowsLists": false,
+            "rName": "input_A_role",
+            "useInR": true,
+            "rOrderNum": 1
+        },
+        {
+            "requiredInputKind": [
+                "PartitionByNone"
+            ],
+            "isOrdered": false,
+            "partitionByOne": false,
+            "name": "linear_regression",
+            "alternateNames": [],
+            "isRequired": true,
+            "rDescription": "",
+            "description": "",
+            "datatype": "TABLE_ALIAS",
+            "allowsLists": false,
+            "rName": "linear_regression",
+            "useInR": true,
+            "rOrderNum": 2
+        }
+    ],
+    "argument_clauses": [
+        {
+            "targetTable": [
+                "input_A_role"
+            ],
+            "checkDuplicate": false,
+            "allowedTypes": [],
+            "allowedTypeGroups": [
+                "ALL"
+            ],
+            "matchLengthOfArgument": "",
+            "allowPadding": false,
+            "name": "IndexColumns",
+            "alternateNames": [],
+            "isRequired": false,
+            "rDescription": "Specifies the name(s) of the column(s) representing the primary index of the score output.",
+            "description": "Specifies the name(s) of the column(s) representing the primary index of the score output.",
+            "datatype": "COLUMNS",
+            "allowsLists": true,
+            "rName": "exclude",
+            "useInR": true,
+            "rOrderNum": 3
+        },
+        {
+            "targetTable": [
+                "input_A_role"
+            ],
+            "checkDuplicate": false,
+            "allowedTypes": [],
+            "allowedTypeGroups": [
+                "ALL"
+            ],
+            "matchLengthOfArgument": "",
+            "allowPadding": false,
+            "name": "ResponseColumn",
+            "alternateNames": [],
+            "isRequired": false,
+            "rDescription": "Specifies the name of the predicted value column.",
+            "description": "Specifies the name of the predicted value column.",
+            "datatype": "COLUMNS",
+            "allowsLists": false,
+            "rName": "exclude",
+            "useInR": true,
+            "rOrderNum": 4,
+            "requiredLength": 1
+        },
+        {
+            "targetTable": [
+                "input_A_role"
+            ],
+            "checkDuplicate": false,
+            "allowedTypes": [],
+            "allowedTypeGroups": [
+                "ALL"
+            ],
+            "matchLengthOfArgument": "",
+            "allowPadding": false,
+            "name": "Accumulate",
+            "alternateNames": [],
+            "isRequired": false,
+            "rDescription": "Specifies the name(s) of the column(s) from the input to retain in the output.",
+            "description": "Specifies the name(s) of the column(s) from the input to retain in the output.",
+            "datatype": "COLUMNS",
+            "allowsLists": true,
+            "rName": "exclude",
+            "useInR": true,
+            "rOrderNum": 5
+        }
+    ],
+    "name_map": {
+        "LinearRegressionPredict": "linreg2",
+        "IndexColumns": "linreg2_index_columns",
+        "ResponseColumn": "linreg2_response_column",
+        "Accumulate": "linreg2_accumulate"
+    },
+    "type_map": {
+        "LinearRegressionPredict": "SEPARATOR",
+        "IndexColumns": "COLUMNS",
+        "ResponseColumn": "COLUMN",
+        "Accumulate": "COLUMNS"
+    },
+    "choices_map": {}
+}

@@ -39,7 +39,7 @@ unit-tests:
 
 integration-tests:
 	@echo "[START] Running integration tests..."
-	# TODO add integration tests
+	# No integration tests
 	@echo "[SUCCESS] Running integration tests: Done!"
 
 tests: unit-tests integration-tests

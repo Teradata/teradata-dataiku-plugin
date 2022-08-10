@@ -22,6 +22,11 @@
     color:blue;
 }
 
+/* Color of the description */
+p:not(.inner-label) {
+   color:rgb(180,180,180); 
+}
+
 #main-container {
     overflow: hidden !important;
     min-height: 50vh !important;
@@ -397,4 +402,24 @@ div.inner-cell {
 .orderbyselect{
     max-width:80px;            
 }
+
+#main_function_name {
+    width:600px;
+    display: none;
+}
+#current_function_name {
+    width:600px;
+}
+
+/* Do  ot allow item to be selected by user */
+.unselectable {
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+
 

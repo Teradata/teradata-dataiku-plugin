@@ -1,0 +1,331 @@
+{
+    "json_schema_major_version": "1",
+    "json_schema_minor_version": "1",
+    "json_content_version": "1",
+    "function_name": "Rank Test VAL",
+    "function_version": "1.0",
+    "function_alias_name": "Rank Test VAL",
+    "function_type": "valib",
+    "function_r_name": "",
+    "short_description": "Statistical tests of this type calculate statistics based on the rank of variables rather than variable values. In general, data that are ranked and ordinal may be analyzed by these tests.",
+    "long_description": "Statistical tests of this type calculate statistics based on the rank of variables rather than variable values. In general, data that are ranked and ordinal may be analyzed by these tests.",
+    "input_tables": [
+        {
+            "requiredInputKind": [
+                "PartitionByNone"
+            ],
+            "isOrdered": false,
+            "partitionByOne": false,
+            "name": "input_A_role",
+            "alternateNames": [],
+            "isRequired": true,
+            "rDescription": "what input A means",
+            "description": "what input A means",
+            "datatype": "TABLE_ALIAS",
+            "allowsLists": false,
+            "rName": "input_A_role",
+            "useInR": true,
+            "rOrderNum": 1
+        }
+    ],
+    "argument_clauses": [
+        {
+            "permittedValues": [
+                "Mann-Whitney Test",
+                "Friedman Test",
+                "Wilcoxon Test"
+            ],
+            "defaultValue": "mw",
+            "isOutputColumn": false,
+            "name": "Style",
+            "alternateNames": [],
+            "isRequired": false,
+            "rDescription": "Specifies the test style.",
+            "description": "Specifies the test style.",
+            "datatype": "STRING",
+            "allowsLists": false,
+            "rName": "mavgtype",
+            "useInR": true,
+            "rOrderNum": 2
+        },
+        {
+            "targetTable": [
+                "input_A_role"
+            ],
+            "checkDuplicate": false,
+            "allowedTypes": [],
+            "allowedTypeGroups": [
+                "ALL"
+            ],
+            "matchLengthOfArgument": "",
+            "allowPadding": false,
+            "name": "BlockColumn",
+            "alternateNames": [],
+            "isRequired": false,
+            "rDescription": "Specifies the name of the column representing blocks.",
+            "description": "Specifies the name of the column representing blocks.",
+            "datatype": "COLUMNS",
+            "allowsLists": false,
+            "rName": "exclude",
+            "useInR": true,
+            "rOrderNum": 3,
+            "requiredLength": 1
+        },
+        {
+            "targetTable": [
+                "input_A_role"
+            ],
+            "checkDuplicate": false,
+            "allowedTypes": [],
+            "allowedTypeGroups": [
+                "ALL"
+            ],
+            "matchLengthOfArgument": "",
+            "allowPadding": false,
+            "name": "DependentColumn",
+            "alternateNames": [],
+            "isRequired": false,
+            "rDescription": "Specifies the name of the column representing the dependent variable.",
+            "description": "Specifies the name of the column representing the dependent variable.",
+            "datatype": "COLUMNS",
+            "allowsLists": false,
+            "rName": "exclude",
+            "useInR": true,
+            "rOrderNum": 4,
+            "requiredLength": 1
+        },
+        {
+            "targetTable": [
+                "input_A_role"
+            ],
+            "checkDuplicate": false,
+            "allowedTypes": [],
+            "allowedTypeGroups": [
+                "ALL"
+            ],
+            "matchLengthOfArgument": "",
+            "allowPadding": false,
+            "name": "Columns",
+            "alternateNames": [],
+            "isRequired": false,
+            "rDescription": "Specifies the name(s) of the categorical column(s) representing independent variables.",
+            "description": "Specifies the name(s) of the categorical column(s) representing independent variables.",
+            "datatype": "COLUMNS",
+            "allowsLists": true,
+            "rName": "exclude",
+            "useInR": true,
+            "rOrderNum": 5
+        },
+        {
+            "defaultValue": false,
+            "name": "Fallback",
+            "alternateNames": [],
+            "isRequired": false,
+            "rDescription": "Specifies whether the FALLBACK is requested as in the output result or not.",
+            "description": "Specifies whether the FALLBACK is requested as in the output result or not.",
+            "datatype": "BOOLEAN",
+            "allowsLists": false,
+            "rName": "",
+            "useInR": true,
+            "rOrderNum": 6
+        },
+        {
+            "targetTable": [
+                "input_A_role"
+            ],
+            "checkDuplicate": false,
+            "allowedTypes": [],
+            "allowedTypeGroups": [
+                "ALL"
+            ],
+            "matchLengthOfArgument": "",
+            "allowPadding": false,
+            "name": "FirstColumn",
+            "alternateNames": [],
+            "isRequired": false,
+            "rDescription": "Specifies the name of the column that represents the first sample variable.",
+            "description": "Specifies the name of the column that represents the first sample variable.",
+            "datatype": "COLUMNS",
+            "allowsLists": false,
+            "rName": "exclude",
+            "useInR": true,
+            "rOrderNum": 7,
+            "requiredLength": 1
+        },
+        {
+            "targetTable": [
+                "input_A_role"
+            ],
+            "checkDuplicate": false,
+            "allowedTypes": [],
+            "allowedTypeGroups": [
+                "ALL"
+            ],
+            "matchLengthOfArgument": "",
+            "allowPadding": false,
+            "name": "SecondColumn",
+            "alternateNames": [],
+            "isRequired": false,
+            "rDescription": "Specifies the name of the column that represents the second sample variable.",
+            "description": "Specifies the name of the column that represents the second sample variable.",
+            "datatype": "COLUMNS",
+            "allowsLists": false,
+            "rName": "exclude",
+            "useInR": true,
+            "rOrderNum": 8,
+            "requiredLength": 1
+        },
+        {
+            "targetTable": [
+                "input_A_role"
+            ],
+            "checkDuplicate": false,
+            "allowedTypes": [],
+            "allowedTypeGroups": [
+                "ALL"
+            ],
+            "matchLengthOfArgument": "",
+            "allowPadding": false,
+            "name": "GroupColumns",
+            "alternateNames": [],
+            "isRequired": false,
+            "rDescription": "Specifies the name(s) of the column(s) for grouping so that a separate result is produced for each value or combination of values in the specified column or columns.",
+            "description": "Specifies the name(s) of the column(s) for grouping so that a separate result is produced for each value or combination of values in the specified column or columns.",
+            "datatype": "COLUMNS",
+            "allowsLists": true,
+            "rName": "exclude",
+            "useInR": true,
+            "rOrderNum": 9
+        },
+        {
+            "defaultValue": false,
+            "name": "IncludeZero",
+            "alternateNames": [],
+            "isRequired": false,
+            "rDescription": "Specifies whether to discard cases with zero differences or not.",
+            "description": "Specifies whether to discard cases with zero differences or not.",
+            "datatype": "BOOLEAN",
+            "allowsLists": false,
+            "rName": "",
+            "useInR": true,
+            "rOrderNum": 10
+        },
+        {
+            "defaultValue": false,
+            "name": "Independent",
+            "alternateNames": [],
+            "isRequired": false,
+            "rDescription": "Specifies whether variation of the Mann-Whitney test should be performed or not.",
+            "description": "Specifies whether variation of the Mann-Whitney test should be performed or not.",
+            "datatype": "BOOLEAN",
+            "allowsLists": false,
+            "rName": "",
+            "useInR": true,
+            "rOrderNum": 11
+        },
+        {
+            "defaultValue": false,
+            "name": "AllowDuplicates",
+            "alternateNames": [],
+            "isRequired": false,
+            "rDescription": "Specifies whether duplicates are allowed in the output or not.",
+            "description": "Specifies whether duplicates are allowed in the output or not.",
+            "datatype": "BOOLEAN",
+            "allowsLists": false,
+            "rName": "",
+            "useInR": true,
+            "rOrderNum": 12
+        },
+        {
+            "defaultValue": false,
+            "name": "SingleTail",
+            "alternateNames": [],
+            "isRequired": false,
+            "rDescription": "Specifies whether to request single-tailed test or not, otherwise two-tailed is requested.",
+            "description": "Specifies whether to request single-tailed test or not, otherwise two-tailed is requested.",
+            "datatype": "BOOLEAN",
+            "allowsLists": false,
+            "rName": "",
+            "useInR": true,
+            "rOrderNum": 13
+        },
+        {
+            "defaultValue": 0.05,
+            "allowNaN": false,
+            "name": "ProbabilityThreshold",
+            "alternateNames": [],
+            "isRequired": false,
+            "rDescription": "Specifies the threshold probability, i.e., 'alpha' probability, below which the null hypothesis is rejected.",
+            "description": "Specifies the threshold probability, i.e., 'alpha' probability, below which the null hypothesis is rejected.",
+            "datatype": "DOUBLE PRECISION",
+            "allowsLists": false,
+            "rName": "",
+            "useInR": true,
+            "rOrderNum": 14
+        },
+        {
+            "targetTable": [
+                "input_A_role"
+            ],
+            "checkDuplicate": false,
+            "allowedTypes": [],
+            "allowedTypeGroups": [
+                "ALL"
+            ],
+            "matchLengthOfArgument": "",
+            "allowPadding": false,
+            "name": "TreatmentColumn",
+            "alternateNames": [],
+            "isRequired": false,
+            "rDescription": "Specifies the name of the column representing the independent categorical variable.",
+            "description": "Specifies the name of the column representing the independent categorical variable.",
+            "datatype": "COLUMNS",
+            "allowsLists": false,
+            "rName": "exclude",
+            "useInR": true,
+            "rOrderNum": 15,
+            "requiredLength": 1
+        }
+    ],
+    "name_map": {
+        "RankTest": "rank_test",
+        "Style": "rank_test_style",
+        "BlockColumn": "rank_test_block_column",
+        "DependentColumn": "rank_test_dependent_column",
+        "Columns": "rank_test_columns",
+        "Fallback": "rank_test_fallback",
+        "FirstColumn": "rank_test_first_column",
+        "SecondColumn": "rank_test_second_column",
+        "GroupColumns": "rank_test_group_columns",
+        "IncludeZero": "rank_test_include_zero",
+        "Independent": "rank_test_independent",
+        "AllowDuplicates": "rank_test_allow_duplicates",
+        "SingleTail": "rank_test_single_tail",
+        "ProbabilityThreshold": "rank_test_probability_threshold",
+        "TreatmentColumn": "rank_test_treatment_column"
+    },
+    "type_map": {
+        "RankTest": "SEPARATOR",
+        "Style": "SELECT",
+        "BlockColumn": "COLUMN",
+        "DependentColumn": "COLUMN",
+        "Columns": "COLUMNS",
+        "Fallback": "BOOLEAN",
+        "FirstColumn": "COLUMN",
+        "SecondColumn": "COLUMN",
+        "GroupColumns": "COLUMNS",
+        "IncludeZero": "BOOLEAN",
+        "Independent": "BOOLEAN",
+        "AllowDuplicates": "BOOLEAN",
+        "SingleTail": "BOOLEAN",
+        "ProbabilityThreshold": "DOUBLE",
+        "TreatmentColumn": "COLUMN"
+    },
+    "choices_map": {
+        "Style": {
+            "Mann-Whitney Test": "mw",
+            "Friedman Test": "friedman",
+            "Wilcoxon Test": "wilcoxon"
+        }
+    }
+}

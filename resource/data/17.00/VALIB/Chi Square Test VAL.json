@@ -1,0 +1,232 @@
+{
+    "json_schema_major_version": "1",
+    "json_schema_minor_version": "1",
+    "json_content_version": "1",
+    "function_name": "Chi Square Test VAL",
+    "function_version": "1.0",
+    "function_alias_name": "Chi Square Test VAL",
+    "function_type": "valib",
+    "function_r_name": "",
+    "short_description": "Statistical tests of this type are based on a matrix of frequencies or counts. A frequency pattern that is non-random is sought in the matrix.",
+    "long_description": "Statistical tests of this type are based on a matrix of frequencies or counts. A frequency pattern that is non-random is sought in the matrix.",
+    "input_tables": [
+        {
+            "requiredInputKind": [
+                "PartitionByNone"
+            ],
+            "isOrdered": false,
+            "partitionByOne": false,
+            "name": "input_A_role",
+            "alternateNames": [],
+            "isRequired": true,
+            "rDescription": "what input A means",
+            "description": "what input A means",
+            "datatype": "TABLE_ALIAS",
+            "allowsLists": false,
+            "rName": "input_A_role",
+            "useInR": true,
+            "rOrderNum": 1
+        }
+    ],
+    "argument_clauses": [
+        {
+            "targetTable": [
+                "input_A_role"
+            ],
+            "checkDuplicate": false,
+            "allowedTypes": [],
+            "allowedTypeGroups": [
+                "ALL"
+            ],
+            "matchLengthOfArgument": "",
+            "allowPadding": false,
+            "name": "DependentColumn",
+            "alternateNames": [],
+            "isRequired": false,
+            "rDescription": "Specifies the name of the numeric column representing dependent variable.",
+            "description": "Specifies the name of the numeric column representing dependent variable.",
+            "datatype": "COLUMNS",
+            "allowsLists": false,
+            "rName": "exclude",
+            "useInR": true,
+            "rOrderNum": 2,
+            "requiredLength": 1
+        },
+        {
+            "targetTable": [
+                "input_A_role"
+            ],
+            "checkDuplicate": false,
+            "allowedTypes": [],
+            "allowedTypeGroups": [
+                "ALL"
+            ],
+            "matchLengthOfArgument": "",
+            "allowPadding": false,
+            "name": "Columns",
+            "alternateNames": [],
+            "isRequired": false,
+            "rDescription": "Specifies the name(s) of the categorical column(s) representing independent variables.",
+            "description": "Specifies the name(s) of the categorical column(s) representing independent variables.",
+            "datatype": "COLUMNS",
+            "allowsLists": true,
+            "rName": "exclude",
+            "useInR": true,
+            "rOrderNum": 3
+        },
+        {
+            "defaultValue": false,
+            "name": "Fallback",
+            "alternateNames": [],
+            "isRequired": false,
+            "rDescription": "Specifies whether the FALLBACK is requested.",
+            "description": "Specifies whether the FALLBACK is requested.",
+            "datatype": "BOOLEAN",
+            "allowsLists": false,
+            "rName": "",
+            "useInR": true,
+            "rOrderNum": 4
+        },
+        {
+            "permittedValues": [
+                "Chi Square Test",
+                "Median"
+            ],
+            "defaultValue": "chisq",
+            "isOutputColumn": false,
+            "name": "Style",
+            "alternateNames": [],
+            "isRequired": false,
+            "rDescription": "Specifies the test style.",
+            "description": "Specifies the test style.",
+            "datatype": "STRING",
+            "allowsLists": false,
+            "rName": "mavgtype",
+            "useInR": true,
+            "rOrderNum": 5
+        },
+        {
+            "targetTable": [
+                "input_A_role"
+            ],
+            "checkDuplicate": false,
+            "allowedTypes": [],
+            "allowedTypeGroups": [
+                "ALL"
+            ],
+            "matchLengthOfArgument": "",
+            "allowPadding": false,
+            "name": "FirstColumn",
+            "alternateNames": [],
+            "isRequired": false,
+            "rDescription": "Specifies the name(s) of the column(s) representing the first of variable pairs for analysis.",
+            "description": "Specifies the name(s) of the column(s) representing the first of variable pairs for analysis.",
+            "datatype": "COLUMNS",
+            "allowsLists": true,
+            "rName": "exclude",
+            "useInR": true,
+            "rOrderNum": 6
+        },
+        {
+            "targetTable": [
+                "input_A_role"
+            ],
+            "checkDuplicate": false,
+            "allowedTypes": [],
+            "allowedTypeGroups": [
+                "ALL"
+            ],
+            "matchLengthOfArgument": "",
+            "allowPadding": false,
+            "name": "SecondColumn",
+            "alternateNames": [],
+            "isRequired": false,
+            "rDescription": "Specifies the name(s) of the column(s) representing the second of variable pairs for analysis.",
+            "description": "Specifies the name(s) of the column(s) representing the second of variable pairs for analysis.",
+            "datatype": "COLUMNS",
+            "allowsLists": true,
+            "rName": "exclude",
+            "useInR": true,
+            "rOrderNum": 7
+        },
+        {
+            "targetTable": [
+                "input_A_role"
+            ],
+            "checkDuplicate": false,
+            "allowedTypes": [],
+            "allowedTypeGroups": [
+                "ALL"
+            ],
+            "matchLengthOfArgument": "",
+            "allowPadding": false,
+            "name": "GroupColumns",
+            "alternateNames": [],
+            "isRequired": false,
+            "rDescription": "Specifies the name(s) of the column(s) for grouping so that a separate result is produced for each value or combination of values in the specified column or columns.",
+            "description": "Specifies the name(s) of the column(s) for grouping so that a separate result is produced for each value or combination of values in the specified column or columns.",
+            "datatype": "COLUMNS",
+            "allowsLists": true,
+            "rName": "exclude",
+            "useInR": true,
+            "rOrderNum": 8
+        },
+        {
+            "defaultValue": false,
+            "name": "AllowDuplicates",
+            "alternateNames": [],
+            "isRequired": false,
+            "rDescription": "Specifies whether duplicates are allowed in the output or not.",
+            "description": "Specifies whether duplicates are allowed in the output or not.",
+            "datatype": "BOOLEAN",
+            "allowsLists": false,
+            "rName": "",
+            "useInR": true,
+            "rOrderNum": 9
+        },
+        {
+            "defaultValue": 0.05,
+            "allowNaN": false,
+            "name": "ProbabilityThreshold",
+            "alternateNames": [],
+            "isRequired": false,
+            "rDescription": "Specifies the threshold probability, i.e., 'alpha' probability, below which the null hypothesis is rejected.",
+            "description": "Specifies the threshold probability, i.e., 'alpha' probability, below which the null hypothesis is rejected.",
+            "datatype": "DOUBLE PRECISION",
+            "allowsLists": false,
+            "rName": "",
+            "useInR": true,
+            "rOrderNum": 10
+        }
+    ],
+    "name_map": {
+        "ChiSquareTest": "chi_square",
+        "DependentColumn": "chi_square_dependent_column",
+        "Columns": "chi_square_columns",
+        "Fallback": "chi_square_fallback",
+        "Style": "chi_square_style",
+        "FirstColumn": "chi_square_first_columns",
+        "SecondColumn": "chi_square_second_columns",
+        "GroupColumns": "chi_square_group_columns",
+        "AllowDuplicates": "chi_square_allow_duplicates",
+        "ProbabilityThreshold": "chi_square_probability_threshold"
+    },
+    "type_map": {
+        "ChiSquareTest": "SEPARATOR",
+        "DependentColumn": "COLUMN",
+        "Columns": "COLUMNS",
+        "Fallback": "BOOLEAN",
+        "Style": "SELECT",
+        "FirstColumn": "COLUMNS",
+        "SecondColumn": "COLUMNS",
+        "GroupColumns": "COLUMNS",
+        "AllowDuplicates": "BOOLEAN",
+        "ProbabilityThreshold": "DOUBLE"
+    },
+    "choices_map": {
+        "Style": {
+            "Chi Square Test": "chisq",
+            "Median": "median"
+        }
+    }
+}

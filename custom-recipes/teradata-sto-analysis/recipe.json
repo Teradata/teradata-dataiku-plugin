@@ -2,9 +2,9 @@
 {
     // Meta data for display purposes
     "meta": {
-        "label": "SCRIPT Table Operator Analysis",
+        "label": "In-Vantage Scripting",
         "author": "Teradata",
-        "description": "Run your R and Python scripts natively in Teradata Vantage with the Teradata SCRIPT Table Operator.",
+        "description": "Run your Python and R scripts natively in the Analytics Database with Table Operator objects.",
         "tags" : ["Analytics", "Vantage",  "Teradata"],
         "tags": [
             "Teradata",
@@ -28,7 +28,7 @@
             "acceptsDataset": true
         },
         {
-            "name": "sto_scripts",
+            "name": "language_scripts",
             "label": "Script Folder (Optional). Choose the Managed Folder that contains your script.",
             "arity": "UNARY",
             "required": false,

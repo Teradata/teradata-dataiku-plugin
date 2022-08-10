@@ -3,18 +3,66 @@ import dataiku
 from dataiku.customrecipe import *
 import pandas as pd
 import logging
+from verifyTableColumns import *
 
-def verifyTableName(tableName):
-    # Must not be empty or have a double quote
-    # Otherwise raise exception
-    if tableName and '"' not in tableName:
-        return tableName
-    else:
-        raise Exception('Illegal Table Name', tableName)
 
 # Inputs and outputs are defined by roles. In the recipe's I/O tab, the user can associate one
 # or more dataset to each input and output role.
 # Roles need to be defined in recipe.json, in the inputRoles and outputRoles fields.
+
+def verifyModelName(modelName):
+    # Model names should not be empty
+    # Model names should never have any form of quotes
+    # Return with single quotes as used as literal expression
+    if modelName and ('"' not in modelName) and ("'" not in modelName):
+        return "'"+modelName+"'"
+    else:
+        raise Exception('Illegal Model Name', modelName)
+    
+def verifyOverwriteCache(overwrite_cache, model_name):
+    result = ""
+    # verify by checking model name
+    if bool(overwrite_cache):
+        result = f"OverwriteCachedModel({verifyModelName(model_name)})"
+    return result
+
+def verifyModelOutputValues(modeloutputfields_values):
+    modeloutputfield_list = modeloutputfields_values.split(',')
+    stripped_list = []
+    for i in range(len(modeloutputfield_list)):
+        # value names should not have quotes in them
+        value = modeloutputfield_list[i].strip()
+        if ('"' in value) or ("'" in value):
+            raise Exception('Illegal Value Name', value)
+        stripped_list.append(value)
+    def listToString(s): 
+        str1 =""
+        for ele in range(len(s)):  
+            str1 += s[ele] + " "
+        return str1 
+    modeloutputfields_values = listToString(stripped_list).strip().replace(" ","\',\'")
+    return f"ModelOutputFields('{modeloutputfields_values}')"
+
+
+def verifyAccumulate(columnNames):
+    # Handle special case
+    if columnNames == "*":
+        return "Accumulate('*')"
+    # column names must be not empty
+    if not columnNames:
+        raise Exception('Illegal Accumulate Columns', columnNames)
+    lst = columnNames.split(',')
+    quoted_list = []
+    # check all columns are valid
+    for columnName in lst:
+        # verify and quote column name
+        columnName = verifyColumnName(columnName, single_quotes=True)
+        quoted_list.append(columnName)
+    # return the quoted columns
+    accumulate = ",".join(quoted_list)
+    return f"Accumulate({accumulate})"
+
+
 
 # To  retrieve the datasets of an input role named 'input_A' as an array of dataset names:
 input_dataset_name = get_input_names_for_role('input_dataset')[0]
@@ -42,60 +90,36 @@ elif userTBLInputChoice == 'user_tbl_choice':
 
   
 model_name = str(get_recipe_config()["model_name"])
-    
+
 accumulate_all = bool(get_recipe_config()["accumulate_all"])
 modeloutputfields_user = bool(get_recipe_config()["modeloutputfields_user"])
 predict_func_dbname = str(get_recipe_config()["PMMLPredict_database_name"])
-
+overwrite_cache = get_recipe_config()["overwrite_cache"]
+modeloutputfields_values = str(get_recipe_config().get("modeloutputfields_values", ""))
+    
 if predict_func_dbname == 'user_choice':
     PMMLPredict_db = str(get_recipe_config()["BYOM_Predict_User_DB"])
 else:
     PMMLPredict_db = "mldb"
+ 
 
-# Verify table names are valid
-database_name = verifyTableName(database_name)
-table_name = verifyTableName(table_name)   
-PMMLPredict_db = verifyTableName(PMMLPredict_db)
-predict_func_dbname = verifyTableName(predict_func_dbname)
-   
-
-if modeloutputfields_user == True:
-    modeloutputfields_values = str(get_recipe_config()["modeloutputfields_values"])
-
-    modeloutputfield_list = modeloutputfields_values.split(',')
-    stripped_list = []
-    for i in range(len(modeloutputfield_list)):
-        stripped_list.append(modeloutputfield_list[i].strip())
-    def listToString(s): 
-        str1 =""
-        for ele in range(len(s)):  
-            str1 += s[ele] + " "
-        return str1 
-    modeloutputfields_values = listToString(stripped_list).strip().replace(" ","\',\'")
 
 if accumulate_all == True:
     accumulate = '*'
 if accumulate_all == False:
-    accumulate = str(get_recipe_config()["accumulate_column_names"])
-    accumulate = accumulate[2:]
-    accumulate = accumulate[:-2]
+    accumulate_column_names = get_recipe_config().get("accumulate_column_names", [])
+    # convert list to a comma seperated string
+    accumulate = ",".join(accumulate_column_names)
 
-
-
-overwrite_cache = ""
-
-if bool(get_recipe_config()["overwrite_cache"]):
-    overwrite_cache = f"OverwriteCachedModel('{model_name}')"
 
 conn =  SQLExecutor2(dataset = input_dataset)
 
-    
 
 if scoring_type == 'dataiku':
     if modeloutputfields_user == False:
-        query = f"SELECT * FROM {PMMLPredict_db}.PMMLPredict ( ON (select * from \"{database_name}\".\"{testing_dataset}\") AS InputTable ON (SELECT * FROM \"{database_name}\".\"{table_name}\" WHERE model_id = '{model_name}') AS ModelTable DIMENSION USING Accumulate ('{accumulate}') {overwrite_cache})AS td;"
+        query = f"SELECT * FROM {verifyDatabaseName(PMMLPredict_db)}.PMMLPredict ( ON (select * from {verifyDatabaseName(database_name)}.\"{testing_dataset}\") AS InputTable ON (SELECT * FROM {verifyDatabaseName(database_name)}.{verifyTableName(table_name)} WHERE model_id = {verifyModelName(model_name)}) AS ModelTable DIMENSION USING {verifyAccumulate(accumulate)} {verifyOverwriteCache(overwrite_cache, model_name)})AS td;"
     else:
-        query = f"SELECT * FROM {PMMLPredict_db}.PMMLPredict ( ON (select * from \"{database_name}\".\"{testing_dataset}\") AS InputTable ON (SELECT * FROM \"{database_name}\".\"{table_name}\" WHERE model_id = '{model_name}') AS ModelTable DIMENSION USING Accumulate ('{accumulate}') ModelOutputFields('{modeloutputfields_values}') {overwrite_cache})AS td;"
+        query = f"SELECT * FROM {verifyDatabaseName(PMMLPredict_db)}.PMMLPredict ( ON (select * from {verifyDatabaseName(database_name)}.\"{testing_dataset}\") AS InputTable ON (SELECT * FROM {verifyDatabaseName(database_name)}.{verifyTableName(table_name)} WHERE model_id = {verifyModelName(model_name)}) AS ModelTable DIMENSION USING {verifyAccumulate(accumulate)} {verifyModelOutputValues(modeloutputfields_values)} {verifyOverwriteCache(overwrite_cache, model_name)})AS td;"
     predicted = conn.query_to_df(query)
     
 if scoring_type == 'h2o':
@@ -117,20 +141,16 @@ if scoring_type == 'h2o':
         elif dia_license_Table_inputType == 'h2o_license_table_drop_down':
             dia_license_table_name = str(get_recipe_config()["H2OLicense_DropDown_Table_Name"])
 
-        # Verify table names are valid
-        dia_license_db_name = verifyTableName(dia_license_db_name)
-        dia_license_table_name = verifyTableName(dia_license_table_name)
- 
         
         if modeloutputfields_user == False:
-            query = f"SELECT * FROM {PMMLPredict_db}.H2OPredict ( ON (select * from \"{database_name}\".\"{testing_dataset}\") AS InputTable ON (SELECT model_id, model, \"{dia_license_db_name}\".\"{dia_license_table_name}\".license FROM \"{database_name}\".\"{table_name}\" WHERE model_id = '{model_name}') AS ModelTable DIMENSION USING Accumulate ('{accumulate}') ModelType ('DAI') {overwrite_cache})AS td;"
+            query = f"SELECT * FROM {verifyDatabaseName(PMMLPredict_db)}.H2OPredict ( ON (select * from {verifyDatabaseName(database_name)}.\"{testing_dataset}\") AS InputTable ON (SELECT model_id, model, {verifyDatabaseName(dia_license_db_name)}.{verifyDatabaseName(dia_license_table_name)}.license FROM {verifyDatabaseName(database_name)}.{verifyTableName(table_name)} WHERE model_id = {verifyModelName(model_name)}) AS ModelTable DIMENSION USING {verifyAccumulate(accumulate)} ModelType ('DAI') {verifyOverwriteCache(overwrite_cache, model_name)})AS td;"
         else:
-            query = f"SELECT * FROM {PMMLPredict_db}.H2OPredict ( ON (select * from \"{database_name}\".\"{testing_dataset}\") AS InputTable ON (SELECT model_id, model, \"{dia_license_db_name}\".\"{dia_license_table_name}\".license FROM \"{database_name}\".\"{table_name}\" WHERE model_id = '{model_name}') AS ModelTable DIMENSION USING Accumulate ('{accumulate}') ModelType ('DAI') ModelOutputFields('{modeloutputfields_values}') {overwrite_cache})AS td;"
+            query = f"SELECT * FROM {verifyDatabaseName(PMMLPredict_db)}.H2OPredict ( ON (select * from {verifyDatabaseName(database_name)}.\"{testing_dataset}\") AS InputTable ON (SELECT model_id, model, {verifyDatabaseName(dia_license_db_name)}.{verifyDatabaseName(dia_license_table_name)}.license FROM {verifyDatabaseName(database_name)}.{verifyTableName(table_name)} WHERE model_id = {verifyModelName(model_name)}) AS ModelTable DIMENSION USING {verifyAccumulate(accumulate)} ModelType ('DAI') {verifyModelOutputValues(modeloutputfields_values)} {verifyOverwriteCache(overwrite_cache, model_name)})AS td;"
     else:
         if modeloutputfields_user == False:
-            query = f"SELECT * FROM {PMMLPredict_db}.H2OPredict ( ON (select * from \"{database_name}\".\"{testing_dataset}\") AS InputTable ON (SELECT model_id, model FROM \"{database_name}\".\"{table_name}\" WHERE model_id = '{model_name}') AS ModelTable DIMENSION USING Accumulate ('{accumulate}') {overwrite_cache})AS td;"
+            query = f"SELECT * FROM {verifyDatabaseName(PMMLPredict_db)}.H2OPredict ( ON (select * from {verifyDatabaseName(database_name)}.\"{testing_dataset}\") AS InputTable ON (SELECT model_id, model FROM {verifyDatabaseName(database_name)}.{verifyTableName(table_name)} WHERE model_id = {verifyModelName(model_name)}) AS ModelTable DIMENSION USING {verifyAccumulate(accumulate)} {verifyOverwriteCache(overwrite_cache, model_name)})AS td;"
         else:
-            query = f"SELECT * FROM {PMMLPredict_db}.H2OPredict ( ON (select * from \"{database_name}\".\"{testing_dataset}\") AS InputTable ON (SELECT model_id, model FROM \"{database_name}\".\"{table_name}\" WHERE model_id = '{model_name}') AS ModelTable DIMENSION USING Accumulate ('{accumulate}') ModelOutputFields('{modeloutputfields_values}') {overwrite_cache})AS td;"
+            query = f"SELECT * FROM {verifyDatabaseName(PMMLPredict_db)}.H2OPredict ( ON (select * from {verifyDatabaseName(database_name)}.\"{testing_dataset}\") AS InputTable ON (SELECT model_id, model FROM {verifyDatabaseName(database_name)}.{verifyTableName(table_name)} WHERE model_id = {verifyModelName(model_name)}) AS ModelTable DIMENSION USING {verifyAccumulate(accumulate)} {verifyModelOutputValues(modeloutputfields_values)} {verifyOverwriteCache(overwrite_cache, model_name)})AS td;"
     predicted = conn.query_to_df(query)
     
 logging.info(f"Prediction Query ==> {query}")

@@ -113,6 +113,33 @@
       INPUT_TABLE_ALTERNATIVE: 'INPUT_TABLE'
     }
 
+    const ARGUMENT_TITLES = {
+      // HASH_BY: 'A HASH BY clause will cause the rows in the ON clause to be redistributed to AMPs based on the hash value of the column(s) specified',
+      HASH_BY: 'The HASH BY clause groups table rows by the values of the specified column names, and distributes all rows of each group to a Analytics Database Access Module Processor (AMP; processing unit). Specify the column names you would like to hash their values by. If you specify a HASH BY clause, then you can also optionally order each group rows with the LOCAL ORDER BY clause.',
+      // PARTITION_BY: 'A PARTITION BY clause will cause the STO to be executed against specific groups (partitions) based on the column(s) specified',
+      PARTITION_BY: 'Specify column names for the partition task. Use one field per column. Click on the [+] button to add fields. Click on the [-] button next to a field to delete it.',
+      // ORDER_BY: 'An ORDER BY clause specifies the order in which values in a group (partition) are sorted',
+      ORDER_BY: '[Optional] Specify column names to use their data for row ordering in the partition groups. Use one field per column. Click on the [+] button to add fields. Click on the [-] button next to a field to delete it.',
+      // LOCAL_ORDER_BY: 'A LOCAL ORDER BY clause  orders the rows qualified on each AMP',
+      LOCAL_ORDER_BY: 'The LOCAL ORDER BY clause provides ordering of the input table rows in the groups created with the HASH BY clause. The LOCAL ORDER BY clause can be only specified when you have specified a HASH BY clause, too.',
+      // RETURNS_NAME: 'Specifies the name of the column(s) to be returned by the STO',
+      RETURNS_NAME: 'Specify a name for each output argument returned by your recipe.',
+      // RETURNS_TYPE: 'Specifies the data type of the column(s) to be returned by the STO',
+      RETURNS_TYPE:'Check the box to include this variable in the Dataiku output dataset.',
+      // SELECT_CUSTOM: 'Determines whether the SELECT (output) columns (data to be returned by the query) should be modified. Default is to SELECT all column(s) in the RETURNS clause',
+      SELECT_CUSTOM: 'The default SELECT clause used by the plugin selects all output arguments of your recipe. Use this option determines whether to modify the default SELECT behavior.',
+      // SELECT_COLUMNS: 'Specifies the contents of a user customized SELECT statement (data to be returned by the query)',
+      SELECT_COLUMNS: 'Specify explicitly the contents of the SELECT clause.',
+      INPUTS: '[Optional] If you leave blank, then your recipe receives as input all columns in the recipe input dataset. If your recipe requires only specific columns from the recipe input dataset, then click on the [+] button to add fields and specify the column names needed by your recipe. Specify one column name per field in the order your recipe expects them. Click on the [-] button next to a field to delete it.',
+      SEQUENCING_TYPE:'Select the order sequencing for the present column.',
+      WHERE:'[Optional] Specify in SQL format any conditions that your input data must satisfy (note: This option corresponds to using the WHERE clause in SQL).',
+      OUTPUT_COLUMN: 'Check the box to include this variable in the Dataiku output dataset.',
+      OUTPUT_ALL: 'By default, all output variables of your recipe are included in the recipe Dataiku output dataset. To include only select variables, check the corresponding boxes next to the variables you want to include.',
+      DATA_PARTITION_TYPE: 'If other than None, the recipe will execute with different data partitions. The column values option determines partitioning by means of different values in one or more columns (note: This option corresponds to using the PARTITION BY clause in SQL). The Hash option partitions data in a different way, where data are distributed to Database AMPs based on AMP hash values in one or more columns (note: This option corresponds to using the HASH BY clause in SQL).'
+   
+    }
+
+
     /** Regex for locating HTML entities. */
     const ENTITY_REGEX = /[\u00A0-\u9999<>\&]/gim
 
@@ -127,7 +154,7 @@
     }
 
     $.extend($scope, {
-
+      getToolTip: function(key) { return ARGUMENT_TITLES[key];},
       /**
        * Shows a dialog.
        * 
@@ -183,9 +210,11 @@
         // Get JSON from dictionary
         var numChoices = $scope.choices.length;
         var data = undefined;
-        for(var i=0; i<numChoices; ++i) {
+        var i = 0;
+        var choice = undefined;
+        for(i=0; i<numChoices; ++i) {
           // Find the choice for the selectedFunction 
-          var choice = $scope.choices[i]
+          choice = $scope.choices[i]
           if(selectedFunction  == choice["function_alias_name"]) {
               // Check if it has original_json
               if("json_contents" in choice) {
@@ -193,13 +222,69 @@
                   data = choice["json_contents"]
                   break 
               }
+              break
           }
         }
 
+        // If JSON contents are not available then call python to load the JSON contents
         if(data == undefined) {
-          alert("ERROR: Could not find JSON for " + selectedFunction);
+          var json_path = choice["json_file_path"]
+          $scope.callPythonDo({"load_json":json_path}).then(
+                    data => {
+                          var result = data['result'];
+                          // Update the dictionary
+                          for(let key in result) {
+                              if(key == "name" || key == "function_alias_name")
+                                continue;
+                              $scope.choices[i][key] = result[key]
+                              if($scope.config.function[key] == undefined)
+                                $scope.config.function[key] = result[key]
+                          }
+                          
+                          data = $scope.choices[i]["json_contents"]
+                          $scope.updateUiBasedOnJsonContents(data, selectedFunction, shouldSetDefaults)
+                          // SKS: activate the UI (copied from original code path)
+                          $scope.preprocessMetadata(false);
+                          // Update current function name in UI
+                          $("#current_function_name").val($scope.config.function.name);
+                          $scope.activateUi();
+                        },
+                  () => { }
+                  ).then(
+                    () => { 
+                            // Do nothing
+                          },
+                    () => {}
+                  );
+          return
         }
 
+        if(data == undefined) {
+          $('<div></div>').dialog({
+                  modal: true,
+                  width: 400,
+                  height: 220,
+                  title: "Error",
+                  open: function() {
+                    var markup = "<b style='color:red;'> Could not find " + selectedFunction + ". Your plugin may need to be updated to a later version.</b>";
+                    $(this).html(markup);
+                  },
+                  buttons: {
+                    Ok: function() {
+                      $( this ).dialog( "close" );
+                    }
+                  }   
+              }).css("font-size", "12px"); 
+            return;
+        }
+
+        // JSON contents were available so load 
+        $scope.updateUiBasedOnJsonContents(data, selectedFunction, shouldSetDefaults)
+
+      },
+
+  updateUiBasedOnJsonContents: function (data, selectedFunction, shouldSetDefaults) {
+        
         // strip json vulnerability protection prefix
         data = data.replace(")]}',\n", '');
         data = data.replace(/: Infinity/g, ': "Infinity"');
@@ -220,14 +305,23 @@
         console_log(data)
 
         functionMetadata = data;
-        // console_log('Function Metadata MR Test');
-        // console_log(functionMetadata);
-        // console_log($scope.config.function)
+        
         functionVersion = functionMetadata.function_version;
         // PARTITION BY BLANK
         $scope.config.function.partitionAttributes = $scope.config.function.partitionAttributes || [''];
         $scope.config.function.orderByColumn = $scope.config.function.orderByColumn || [''];
         // $scope.config.function.orderByColumnDirection = $scope.config.function.orderByColumnDirection || []
+        
+        // Store the function type
+        if(data.function_type == undefined) {
+          $scope.config.function_type = "sql"
+        }
+        else {
+          $scope.config.function_type = data.function_type
+          
+        }
+
+
         $scope.preprocessDescriptions();
         $scope.preprocessMetadata(shouldSetDefaults);
         $scope.activateTabs();
@@ -548,13 +642,17 @@ removeOrderByColumn_WITHDIR: function(orderArray, orderDirArray, index) {
                                 modal: true,
                                 width: 600,
                                 height: 400,
-                                title: "Open-ended Output SQL",
+                                title: "SQL Query",
                                 open: function() {
                                   var markup = data['result'];
+                                  markup = markup.replaceAll("{", '<i class="keyword2">&#123;')
+                                  markup = markup.replaceAll("}", '&#125;</i>')
                                   markup = markup.replaceAll(/\bCREATE TABLE\b/g, '<b class="keyword1">CREATE TABLE</b>');
                                   markup = markup.replaceAll(/\bSELECT\b/g, '<b class="keyword1">SELECT</b>');
                                   markup = markup.replaceAll(/\bFROM\b/g, '<b class="keyword1">FROM</b>');
                                   markup = markup.replaceAll(/\bPARTITION BY\b/g, '<b class="keyword2">PARTITION BY</b>');
+                                  markup = markup.replaceAll(/\bHASH BY\b/g, '<b class="keyword2">HASH BY</b>');
+                                  markup = markup.replaceAll(/\bLOCAL ORDER BY\b/g, '<b class="keyword2">LOCAL ORDER BY</b>');
                                   markup = markup.replaceAll(/\bORDER BY\b/g, '<b class="keyword2">ORDER BY</b>');
                                   markup = markup.replaceAll(/\bDIMENSION\b/g, '<b class="keyword1">DIMENSION</b>');
                                   markup = markup.replaceAll(/\bWHERE\b/g, '<b class="keyword1">WHERE</b>');
@@ -566,6 +664,7 @@ removeOrderByColumn_WITHDIR: function(orderArray, orderDirArray, index) {
                                   markup = markup.replaceAll(/\bUSING\b/g, '<b class="keyword1">USING</b>');
                                   markup = markup.replaceAll(/\bON\b/g, '<b class="keyword2">ON</b>');
                                   markup = markup.replaceAll(/\bAS\b/g, '<b class="keyword2">AS</b>');
+                                  markup = markup.replaceAll(/\bCALL\b/g, '<b class="keyword1">CALL</b>');
                                   markup = markup.replaceAll('\n', '<br>');
                                   $(this).html(markup);
                                 },
@@ -642,33 +741,33 @@ removeOrderByColumn_WITHDIR: function(orderArray, orderDirArray, index) {
           let argument = $scope.getArgumentWithName(name);
           if (argument) {
             if (argument.lowerBound.toString().toLowerCase().indexOf("infinity") != -1)
-              return "";
+              return "-1000000";
             return argument.lowerBound.toString();
           }
-          return "";
+          return "-1000000";
       },
       getUpperBoundValuesWithName: function (item) {
           let name = item.name;
           let argument = $scope.getArgumentWithName(name);
           if (argument) {
             if (argument.upperBound.toString().toLowerCase().indexOf("infinity") != -1)
-              return "";
+              return "1000000";
             return argument.upperBound.toString();
           }
-          return "";
+          return "1000000";
       },
       getStepRangeValuesWithName: function (item) {
           let name = item.name;
           let argument = $scope.getArgumentWithName(name);
           if (argument) {
             if (argument.lowerBound.toString().toLowerCase().indexOf("infinity") != -1)
-              return "";
+              return "0.01";
             if (argument.upperBound.toString().toLowerCase().indexOf("infinity") != -1)
-              return "";
+              return "0.01";
             return ((argument.upperBound-argument.lowerBound)/100.0).toString();
           }
           // Set the step size to have 100 intervals
-          return "";
+          return "0.01";
       },
 
       // SKS: Added Default Value
@@ -693,11 +792,22 @@ removeOrderByColumn_WITHDIR: function(orderArray, orderDirArray, index) {
           return permittedvalues;
       },
 
+
+      validateColumnName: function (item, value, schema) {
+        for(var i in schema) {
+            if(schema[i].name == value) {
+              return value;
+            }
+        }
+        // Column Name not found
+        return ""
+      },
+
       getArgumentDescriptionWithName: function (name) {
           let argument = $scope.getArgumentWithName(name);
 
           // SKS: Add Upper/Lower Bound to description
-          if (argument && ['DOUBLE','INTEGER', 'LONG', 'DOUBLE PRECISION'].indexOf(argument.datatype) >= 0) {
+          if (argument && ['DOUBLE','INTEGER', 'LONG', 'DOUBLE PRECISION'].indexOf(argument.datatype) >= 0 && argument.lowerBound != undefined && argument.upperBound != undefined) {
             return argument.description + "</br>" + "<p style='color:red;'> Lower bound="+argument.lowerBound+ "</br>Upper Bound="+argument.upperBound +"</p>"
           }
 
@@ -749,12 +859,12 @@ removeOrderByColumn_WITHDIR: function(orderArray, orderDirArray, index) {
           : []
 
       },
-      // TODO: FIX THIS
+
       findTableNameInArgumentsList: function (argumentsList, tableNameAlias) {
         //Get alternate names
         var tableNameAliases = [];
         // tableNameAliases.push(tableNameAlias);
-        //TODO: Change naming
+        
         tableNameAliases = tableNameAlias;
         if (!functionMetadata) {
           return [''];
@@ -850,7 +960,7 @@ removeOrderByColumn_WITHDIR: function(orderArray, orderDirArray, index) {
           // var tableAliasList = 
 
           // const isAliased = KEYS.INPUT_TABLE !== targetTableAlias;
-          // TODO: Look into this
+          
           if (aliasedInputsList !== []) {
             isAliasedInputsPopulated = true;
             console_log('Into Alias Inputs');
@@ -1207,12 +1317,33 @@ removeOrderByColumn_WITHDIR: function(orderArray, orderDirArray, index) {
 
                     // SKS: Extend scope from python dictionary results
                     $.extend($scope, data)
+                    
+                    $('#filter_sqle').click(function() {
+                        $scope.updateAvailableFunctions();
+                    });
+                    
+
+                    $('#filter_valib').click(function() {
+                        $scope.updateAvailableFunctions();
+                    });
+
+                    $scope.updateAvailableFunctions();
+                  
+                    $( "#current_function_name" ).change(function() {
+                      // Update the hidden Menu which triggers the change in the model
+                      $("#main_function_name").val($("#current_function_name").val())
+                      $("#main_function_name").trigger('change')
+                    });
+
                     // SKS: Set flag to True (after backend returns result)
                     isBackendDictReady = true;
+                    
                     // SKS: and getFunctionMetadata Call function again
                     $scope.getFunctionMetadata($scope.config.function.name, !$scope.config.function);
                     // SKS: activate the UI (copied from original code path)
                     $scope.preprocessMetadata(true);
+                    // Update current function name in UI
+                    $("#current_function_name").val($scope.config.function.name);
                   },
           () => { }
         ).then(
@@ -1225,6 +1356,34 @@ removeOrderByColumn_WITHDIR: function(orderArray, orderDirArray, index) {
         );
 
       },
+
+      updateAvailableFunctions: function() {
+        var function_options = { };
+        var numChoices = $scope.choices.length;
+        for(var i=0; i<numChoices; ++i) {
+          var choice = $scope.choices[i];
+          var function_name = choice["function_alias_name"];
+          function_options[function_name] = choice["keyword"];
+        }
+
+        $("#available_functions").empty();
+        $.each(function_options, function(function_name, keyword)
+        {
+            
+            if((keyword == "VALIB" && $("#filter_valib").is(':checked')) ||
+                (keyword == "SQLE"  && $("#filter_sqle").is(':checked'))) 
+            {
+
+                $("<option/>", {
+                  value: function_name,
+                  text: function_name
+                  }).appendTo("#available_functions");
+            }
+        });
+
+      },          
+
+                    
 
       /**
        * Activates the tabbing functionality of this recipe.
@@ -1342,13 +1501,30 @@ removeOrderByColumn_WITHDIR: function(orderArray, orderDirArray, index) {
               // console_log($scope.config.test_model);
           });
 
+
             $('input.teradata-tags').tagsInput({
               interactive: true,
               unique: false,
               onChange: x => $(x).trigger('change'),
+              onAddTag: function(tagName) {
+                // Remove Double Quotes from List (aka Tags)
+                if(tagName.includes('"')) {
+                  $(this).removeTag(tagName);
+                }
+              },
               defaultText: 'add param',
               delimiter: SEPARATOR
             });
+
+            // Do not allow quotes on inputs
+            $("input").keypress(function(e){
+                var c = String.fromCharCode(e.which);
+                if(c == '"') {
+                  return false;
+                }
+                return true;
+            });
+
           } catch (e) {console.error('activateMultiTagsInput: ' + e); }
     	  });
       },
@@ -1375,11 +1551,25 @@ removeOrderByColumn_WITHDIR: function(orderArray, orderDirArray, index) {
       activateCosmeticImprovements: function () {
 
         const $a = $('.mainPane > div:first > div:first > div.recipe-settings-section2 > a');
+
+        var doc_link;
+        try 
+        {
+          if($scope.config.function.name.includes('VAL'))
+            doc_link = 'https://docs.teradata.com/r/Vantage-Analytics-Library-User-Guide/January-2022';
+          else
+            doc_link = 'https://docs.teradata.com/r/Teradata-VantageTM-Advanced-SQL-Engine-Analytic-Functions/June-2022';
+        } 
+        catch (e) {
+          doc_link = 'https://docs.teradata.com';
+        }
+        
+
         $a
-          .text('Teradata Vantage Analytic Functions\nLearn more about Teradata Vantage')
+          .text('Learn more about Teradata Vantage Analytic Functions')
           .css('color', 'orange')
           .attr('target', '_blank')
-          .attr('href', 'https://docs.teradata.com/');
+          .attr('href', doc_link);
         $a.html($a.html().replace(/\n/g,'<br/>'));
         $a.parent().css('text-align', 'center');
         $('#main-container > div > div:nth-child(1) > div > select')[0].value = '';
@@ -1418,7 +1608,8 @@ removeOrderByColumn_WITHDIR: function(orderArray, orderDirArray, index) {
       },
 
       cleanKind: function (rawKind) {
-
+        if(rawKind==='PartitionByNone')
+          return '';
         return rawKind ? `(${rawKind})` : ''
 
       },
@@ -1526,7 +1717,6 @@ removeOrderByColumn_WITHDIR: function(orderArray, orderDirArray, index) {
         $scope.communicateWithBackend();
         if ($scope.config.function) {
           $scope.getFunctionMetadata($scope.config.function.name, !$scope.config.function);
-          
         }
         
         $scope.preprocessMetadata(false);
@@ -1546,7 +1736,6 @@ removeOrderByColumn_WITHDIR: function(orderArray, orderDirArray, index) {
        * Initializes this plugin.
        */
       refresh: function (selectedFunction) {
-
         $scope.getFunctionMetadata(selectedFunction, true);
         $scope.preprocessMetadata(true);
         // document.getElementById("defaultOpen").click();

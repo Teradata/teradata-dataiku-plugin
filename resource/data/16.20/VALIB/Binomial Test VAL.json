@@ -1,0 +1,242 @@
+{
+    "json_schema_major_version": "1",
+    "json_schema_minor_version": "1",
+    "json_content_version": "1",
+    "function_name": "Binomial Test VAL",
+    "function_version": "1.0",
+    "function_alias_name": "Binomial Test VAL",
+    "function_type": "valib",
+    "function_r_name": "",
+    "short_description": "In a binomial test, there are assumed to be N independent trials, each with two possible outcomes, each of equal probability. You can choose to perform a binomial test, in which the sign of the difference between a first and second column is analyzed, or a sign test, in which the sign of a single column is analyzed.",
+    "long_description": "In a binomial test, there are assumed to be N independent trials, each with two possible outcomes, each of equal probability. You can choose to perform a binomial test, in which the sign of the difference between a first and second column is analyzed, or a sign test, in which the sign of a single column is analyzed.",
+    "input_tables": [
+        {
+            "requiredInputKind": [
+                "PartitionByNone"
+            ],
+            "isOrdered": false,
+            "partitionByOne": false,
+            "name": "input_A_role",
+            "alternateNames": [],
+            "isRequired": true,
+            "rDescription": "what input A means",
+            "description": "what input A means",
+            "datatype": "TABLE_ALIAS",
+            "allowsLists": false,
+            "rName": "input_A_role",
+            "useInR": true,
+            "rOrderNum": 1
+        }
+    ],
+    "argument_clauses": [
+        {
+            "targetTable": [
+                "input_A_role"
+            ],
+            "checkDuplicate": false,
+            "allowedTypes": [],
+            "allowedTypeGroups": [
+                "ALL"
+            ],
+            "matchLengthOfArgument": "",
+            "allowPadding": false,
+            "name": "FirstColumn",
+            "alternateNames": [],
+            "isRequired": true,
+            "rDescription": "Specifies the name of the column to analyze.",
+            "description": "Specifies the name of the column to analyze.",
+            "datatype": "COLUMNS",
+            "allowsLists": false,
+            "rName": "exclude",
+            "useInR": true,
+            "rOrderNum": 2,
+            "requiredLength": 1
+        },
+        {
+            "targetTable": [
+                "input_A_role"
+            ],
+            "checkDuplicate": false,
+            "allowedTypes": [],
+            "allowedTypeGroups": [
+                "ALL"
+            ],
+            "matchLengthOfArgument": "",
+            "allowPadding": false,
+            "name": "SecondColumn",
+            "alternateNames": [],
+            "isRequired": true,
+            "rDescription": "Specifies the name of the column representing the second variable to analyze.",
+            "description": "Specifies the name of the column representing the second variable to analyze.",
+            "datatype": "COLUMNS",
+            "allowsLists": false,
+            "rName": "exclude",
+            "useInR": true,
+            "rOrderNum": 3,
+            "requiredLength": 1
+        },
+        {
+            "targetTable": [
+                "input_A_role"
+            ],
+            "checkDuplicate": false,
+            "allowedTypes": [],
+            "allowedTypeGroups": [
+                "ALL"
+            ],
+            "matchLengthOfArgument": "",
+            "allowPadding": false,
+            "name": "GroupColumns",
+            "alternateNames": [],
+            "isRequired": false,
+            "rDescription": "Specifies the name(s) of the column(s) for grouping so that a separate result is produced for each value or combination of values in the specified column or columns.",
+            "description": "Specifies the name(s) of the column(s) for grouping so that a separate result is produced for each value or combination of values in the specified column or columns.",
+            "datatype": "COLUMNS",
+            "allowsLists": true,
+            "rName": "exclude",
+            "useInR": true,
+            "rOrderNum": 4
+        },
+        {
+            "defaultValue": 0.5,
+            "allowNaN": false,
+            "name": "BinomialProbability",
+            "alternateNames": [],
+            "isRequired": false,
+            "rDescription": "Specifies the binomial probability to use for Binomial Test.",
+            "description": "Specifies the binomial probability to use for Binomial Test.",
+            "datatype": "DOUBLE PRECISION",
+            "allowsLists": false,
+            "rName": "",
+            "useInR": true,
+            "rOrderNum": 5
+        },
+        {
+            "defaultValue": false,
+            "name": "SingleTail",
+            "alternateNames": [],
+            "isRequired": false,
+            "rDescription": "Specifies whether to request single-tailed test or not. When False, a two-tailed test is requested.",
+            "description": "Specifies whether to request single-tailed test or not. When False, a two-tailed test is requested.",
+            "datatype": "BOOLEAN",
+            "allowsLists": false,
+            "rName": "",
+            "useInR": true,
+            "rOrderNum": 6
+        },
+        {
+            "permittedValues": [
+                "Zero",
+                "Positive",
+                "Negative"
+            ],
+            "defaultValue": "negative",
+            "isOutputColumn": false,
+            "name": "ExactMatches",
+            "alternateNames": [],
+            "isRequired": false,
+            "rDescription": "Specifies the category to place exact matches in.",
+            "description": "Specifies the category to place exact matches in.",
+            "datatype": "STRING",
+            "allowsLists": false,
+            "rName": "mavgtype",
+            "useInR": true,
+            "rOrderNum": 7
+        },
+        {
+            "defaultValue": false,
+            "name": "Fallback",
+            "alternateNames": [],
+            "isRequired": false,
+            "rDescription": "Specifies whether the FALLBACK is requested.",
+            "description": "Specifies whether the FALLBACK is requested.",
+            "datatype": "BOOLEAN",
+            "allowsLists": false,
+            "rName": "",
+            "useInR": true,
+            "rOrderNum": 8
+        },
+        {
+            "defaultValue": false,
+            "name": "AllowDuplicates",
+            "alternateNames": [],
+            "isRequired": false,
+            "rDescription": "Specifies whether duplicates are allowed in the output or not.",
+            "description": "Specifies whether duplicates are allowed in the output or not.",
+            "datatype": "BOOLEAN",
+            "allowsLists": false,
+            "rName": "",
+            "useInR": true,
+            "rOrderNum": 9
+        },
+        {
+            "permittedValues": [
+                "Binomial",
+                "Sign"
+            ],
+            "defaultValue": "binomial",
+            "isOutputColumn": false,
+            "name": "Style",
+            "alternateNames": [],
+            "isRequired": false,
+            "rDescription": "Specifies the test style.",
+            "description": "Specifies the test style.",
+            "datatype": "STRING",
+            "allowsLists": false,
+            "rName": "mavgtype",
+            "useInR": true,
+            "rOrderNum": 10
+        },
+        {
+            "defaultValue": 0.05,
+            "allowNaN": false,
+            "name": "ProbabilityThreshold",
+            "alternateNames": [],
+            "isRequired": false,
+            "rDescription": "Specifies the threshold probability, i.e., 'alpha' probability, below which the null hypothesis is rejected.",
+            "description": "Specifies the threshold probability, i.e., 'alpha' probability, below which the null hypothesis is rejected.",
+            "datatype": "DOUBLE PRECISION",
+            "allowsLists": false,
+            "rName": "",
+            "useInR": true,
+            "rOrderNum": 11
+        }
+    ],
+    "name_map": {
+        "BinomialTest": "binomial_test",
+        "FirstColumn": "binomial_first_column",
+        "SecondColumn": "binomial_second_column",
+        "GroupColumns": "binomial_group_columns",
+        "BinomialProbability": "binomial_prob",
+        "SingleTail": "binomial_single_tail",
+        "ExactMatches": "binomial_exact_matches",
+        "Fallback": "binomial_fallback",
+        "AllowDuplicates": "binomial_allow_duplicates",
+        "Style": "binomial_style",
+        "ProbabilityThreshold": "binomial_probability_threshold"
+    },
+    "type_map": {
+        "BinomialTest": "SEPARATOR",
+        "FirstColumn": "COLUMN",
+        "SecondColumn": "COLUMN",
+        "GroupColumns": "COLUMNS",
+        "BinomialProbability": "DOUBLE",
+        "SingleTail": "BOOLEAN",
+        "ExactMatches": "SELECT",
+        "Fallback": "BOOLEAN",
+        "AllowDuplicates": "BOOLEAN",
+        "Style": "SELECT",
+        "ProbabilityThreshold": "DOUBLE"
+    },
+    "choices_map": {
+        "ExactMatches": {
+            "Zero": "zero",
+            "Positive": "positive",
+            "Negative": "negative"
+        },
+        "Style": {
+            "Binomial": "binomial",
+            "Sign": "sign"
+        }
+    }
+}

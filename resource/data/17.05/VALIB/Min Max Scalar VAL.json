@@ -1,0 +1,202 @@
+{
+    "json_schema_major_version": "1",
+    "json_schema_minor_version": "1",
+    "json_content_version": "1",
+    "function_name": "Min Max Scalar VAL",
+    "function_version": "1.0",
+    "function_alias_name": "Min Max Scalar VAL",
+    "function_type": "valib",
+    "function_r_name": "",
+    "short_description": "MinMaxScalar allows rescaling that limits the upper and lower boundaries of the data in a continuous numeric column using a linear rescaling function based on maximum and minimum data values. When the delay query is off, the input table be transformed immediately otherwise the result should be combined with other transformations and fed into a final Transform function.",
+    "long_description": "MinMaxScalar allows rescaling that limits the upper and lower boundaries of the data in a continuous numeric column using a linear rescaling function based on maximum and minimum data values. When the delay query is off, the input table be transformed immediately otherwise the result should be combined with other transformations and fed into a final Transform function.",
+    "input_tables": [
+        {
+            "requiredInputKind": [
+                "PartitionByNone"
+            ],
+            "isOrdered": false,
+            "partitionByOne": false,
+            "name": "input_A_role",
+            "alternateNames": [],
+            "isRequired": true,
+            "rDescription": "The dataset containing the raw information that we will perform a Min Max Scalar VALIB function call",
+            "description": "The dataset containing the raw information that we will perform a Min Max Scalar VALIB function call",
+            "datatype": "TABLE_ALIAS",
+            "allowsLists": false,
+            "rName": "input_A_role",
+            "useInR": true,
+            "rOrderNum": 1
+        }
+    ],
+    "argument_clauses": [
+        {
+            "defaultValue": true,
+            "name": "DelayQuery",
+            "alternateNames": [],
+            "isRequired": false,
+            "rDescription": "Choose to Delay Query or Execute Immediately",
+            "description": "Choose to Delay Query or Execute Immediately",
+            "datatype": "BOOLEAN",
+            "allowsLists": false,
+            "rName": "",
+            "useInR": true,
+            "rOrderNum": 2
+        },
+        {
+            "targetTable": [
+                "input_A_role"
+            ],
+            "checkDuplicate": false,
+            "allowedTypes": [],
+            "allowedTypeGroups": [
+                "ALL"
+            ],
+            "matchLengthOfArgument": "",
+            "allowPadding": false,
+            "name": "KeyColumns",
+            "alternateNames": [],
+            "isRequired": false,
+            "rDescription": "",
+            "description": "",
+            "datatype": "COLUMNS",
+            "allowsLists": true,
+            "rName": "exclude",
+            "useInR": true,
+            "rOrderNum": 3
+        },
+        {
+            "permittedValues": [
+                "upperbound",
+                "lowerbound",
+                "upperbound and lowerbound"
+            ],
+            "defaultValue": "",
+            "isOutputColumn": false,
+            "name": "RescaleboundsValuesFrom",
+            "alternateNames": [],
+            "isRequired": false,
+            "rDescription": "Choose to rescale the lowerbound, upperbound, or both.",
+            "description": "Choose to rescale the lowerbound, upperbound, or both.",
+            "datatype": "STRING",
+            "allowsLists": false,
+            "rName": "mavgtype",
+            "useInR": true,
+            "rOrderNum": 4
+        },
+        {
+            "defaultValue": 0,
+            "allowNaN": false,
+            "name": "RescaleboundsLowerboundValuesTo",
+            "alternateNames": [],
+            "isRequired": false,
+            "rDescription": "Specifies the lowerbound value required for rescaling the numeric data.",
+            "description": "Specifies the lowerbound value required for rescaling the numeric data.",
+            "datatype": "INTEGER",
+            "allowsLists": false,
+            "rName": "window.size",
+            "useInR": true,
+            "rOrderNum": 5
+        },
+        {
+            "defaultValue": 1,
+            "allowNaN": false,
+            "name": "RescaleboundsUpperboundValuesTo",
+            "alternateNames": [],
+            "isRequired": false,
+            "rDescription": "Specifies the upperbound value required for rescaling the numeric data.",
+            "description": "Specifies the upperbound value required for rescaling the numeric data.",
+            "datatype": "INTEGER",
+            "allowsLists": false,
+            "rName": "window.size",
+            "useInR": true,
+            "rOrderNum": 6
+        },
+        {
+            "permittedValues": [],
+            "isOutputColumn": true,
+            "name": "ColumnRenameMapping",
+            "alternateNames": [],
+            "isRequired": false,
+            "rDescription": "",
+            "description": "",
+            "datatype": "STRING",
+            "allowsLists": true,
+            "rName": "output.column",
+            "useInR": true,
+            "rOrderNum": 7
+        },
+        {
+            "permittedValues": [
+                "None",
+                "Literal",
+                "Mean",
+                "Median",
+                "Mode",
+                "Median without Mean"
+            ],
+            "defaultValue": "",
+            "isOutputColumn": false,
+            "name": "Nullstyle",
+            "alternateNames": [],
+            "isRequired": false,
+            "rDescription": "",
+            "description": "",
+            "datatype": "STRING",
+            "allowsLists": false,
+            "rName": "mavgtype",
+            "useInR": true,
+            "rOrderNum": 8
+        },
+        {
+            "defaultValue": 0,
+            "allowNaN": false,
+            "name": "FillNAValue",
+            "alternateNames": [],
+            "isRequired": false,
+            "rDescription": "",
+            "description": "",
+            "datatype": "DOUBLE PRECISION",
+            "allowsLists": false,
+            "rName": "",
+            "useInR": true,
+            "rOrderNum": 9
+        }
+    ],
+    "name_map": {
+        "MinMaxScalar": "minmaxscalar",
+        "DelayQuery": "minmaxscalar_delayquery",
+        "KeyColumns": "minmaxscalar_key_columns",
+        "RescaleboundsValuesFrom": "minmaxscalar_rescale1_bound_mode",
+        "RescaleboundsLowerboundValuesTo": "minmaxscalar_rescale1_lower_value",
+        "RescaleboundsUpperboundValuesTo": "minmaxscalar_rescale1_upper_value",
+        "ColumnRenameMapping": "minmaxscalar_map",
+        "Nullstyle": "minmaxscalar_nullstyle1",
+        "FillNAValue": "minmaxscalar_fillna_value1"
+    },
+    "type_map": {
+        "MinMaxScalar": "SEPARATOR",
+        "DelayQuery": "BOOLEAN",
+        "KeyColumns": "COLUMNS",
+        "RescaleboundsValuesFrom": "SELECT",
+        "RescaleboundsLowerboundValuesTo": "INT",
+        "RescaleboundsUpperboundValuesTo": "INT",
+        "ColumnRenameMapping": "MAP",
+        "Nullstyle": "SELECT",
+        "FillNAValue": "DOUBLE"
+    },
+    "choices_map": {
+        "RescaleboundsValuesFrom": {
+            "upperbound": "upperbound",
+            "lowerbound": "lowerbound",
+            "upperbound and lowerbound": "upperbound_and_lowerbound"
+        },
+        "Nullstyle": {
+            "None": "None",
+            "Literal": "literal",
+            "Mean": "mean",
+            "Median": "median",
+            "Mode": "mode",
+            "Median without Mean": "medianwithoutaveraging"
+        }
+    }
+}

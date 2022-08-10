@@ -1,0 +1,129 @@
+{
+    "json_schema_major_version": "1",
+    "json_schema_minor_version": "1",
+    "json_content_version": "1",
+    "function_name": "K Means VAL",
+    "function_version": "1.0",
+    "function_alias_name": "K Means VAL",
+    "function_type": "valib",
+    "function_r_name": "",
+    "short_description": "The function performs fast K-Means clustering algorithm and returns cluster means and averages. Specifically, the rows associated with positive cluster IDs in output contain the average values of each of the clustered columns and the count for each cluster ID. The rows associated with negative cluster IDs contain the variance of each of the clustered columns for each cluster ID. There is an additional optional input table that specifies the dataset containing clustering output; additional datasets can be added in the Dataiku Input/Output tab.",
+    "long_description": "The function performs fast K-Means clustering algorithm and returns cluster means and averages. Specifically, the rows associated with positive cluster IDs in output contain the average values of each of the clustered columns and the count for each cluster ID. The rows associated with negative cluster IDs contain the variance of each of the clustered columns for each cluster ID. There is an additional optional input table that specifies the dataset containing clustering output; additional datasets can be added in the Dataiku Input/Output tab.",
+    "input_tables": [
+        {
+            "requiredInputKind": [
+                "PartitionByNone"
+            ],
+            "isOrdered": false,
+            "partitionByOne": false,
+            "name": "input_A_role",
+            "alternateNames": [],
+            "isRequired": true,
+            "rDescription": "what input A means",
+            "description": "what input A means",
+            "datatype": "TABLE_ALIAS",
+            "allowsLists": false,
+            "rName": "input_A_role",
+            "useInR": true,
+            "rOrderNum": 1
+        },
+        {
+            "requiredInputKind": [
+                "PartitionByNone"
+            ],
+            "isOrdered": false,
+            "partitionByOne": false,
+            "name": "centroids_data",
+            "alternateNames": [],
+            "isRequired": false,
+            "rDescription": "",
+            "description": "",
+            "datatype": "TABLE_ALIAS",
+            "allowsLists": false,
+            "rName": "centroids_data",
+            "useInR": true,
+            "rOrderNum": 2
+        }
+    ],
+    "argument_clauses": [
+        {
+            "targetTable": [
+                "input_A_role"
+            ],
+            "checkDuplicate": false,
+            "allowedTypes": [],
+            "allowedTypeGroups": [
+                "ALL"
+            ],
+            "matchLengthOfArgument": "",
+            "allowPadding": false,
+            "name": "InputColumns",
+            "alternateNames": [],
+            "isRequired": true,
+            "rDescription": "Specifies the name(s) of the column(s) to be used in clustering.",
+            "description": "Specifies the name(s) of the column(s) to be used in clustering.",
+            "datatype": "COLUMNS",
+            "allowsLists": true,
+            "rName": "exclude",
+            "useInR": true,
+            "rOrderNum": 3
+        },
+        {
+            "defaultValue": 3,
+            "allowNaN": false,
+            "name": "Centers",
+            "alternateNames": [],
+            "isRequired": false,
+            "rDescription": "Specifies the number of clusters to be contained in the cluster model.",
+            "description": "Specifies the number of clusters to be contained in the cluster model.",
+            "datatype": "INTEGER",
+            "allowsLists": false,
+            "rName": "window.size",
+            "useInR": true,
+            "rOrderNum": 4
+        },
+        {
+            "defaultValue": 50,
+            "allowNaN": false,
+            "name": "MaximumIterations",
+            "alternateNames": [],
+            "isRequired": false,
+            "rDescription": "Specifies the maximum number of iterations to perform during clustering.",
+            "description": "Specifies the maximum number of iterations to perform during clustering.",
+            "datatype": "INTEGER",
+            "allowsLists": false,
+            "rName": "window.size",
+            "useInR": true,
+            "rOrderNum": 5
+        },
+        {
+            "defaultValue": 0.001,
+            "allowNaN": false,
+            "name": "Threshold",
+            "alternateNames": [],
+            "isRequired": false,
+            "rDescription": "Specifies the value which determines if the algorithm has converged based on how much the cluster centroids change from one iteration to the next.",
+            "description": "Specifies the value which determines if the algorithm has converged based on how much the cluster centroids change from one iteration to the next.",
+            "datatype": "DOUBLE PRECISION",
+            "allowsLists": false,
+            "rName": "",
+            "useInR": true,
+            "rOrderNum": 6
+        }
+    ],
+    "name_map": {
+        "KMeans": "kmeans",
+        "InputColumns": "kmeans_columns",
+        "Centers": "kmeans_centers",
+        "MaximumIterations": "kmeans_max_iter",
+        "Threshold": "kmeans_threshold"
+    },
+    "type_map": {
+        "KMeans": "SEPARATOR",
+        "InputColumns": "COLUMNS",
+        "Centers": "INT",
+        "MaximumIterations": "INT",
+        "Threshold": "DOUBLE"
+    },
+    "choices_map": {}
+}

@@ -1,0 +1,218 @@
+{
+    "json_schema_major_version": "1",
+    "json_schema_minor_version": "1",
+    "json_content_version": "1",
+    "function_name": "Frequency VAL",
+    "function_version": "1.0",
+    "function_alias_name": "Frequency VAL",
+    "function_type": "valib",
+    "function_r_name": "",
+    "short_description": "Frequency analysis counts the occurrences of individual data values in columns that contain categorical data. Frequency analysis is useful in understanding the meaning of a particular data element and can point out the need to recode some of the data values found, either permanently or in the course of building an analytic data set.",
+    "long_description": "Frequency analysis counts the occurrences of individual data values in columns that contain categorical data. Frequency analysis is useful in understanding the meaning of a particular data element and can point out the need to recode some of the data values found, either permanently or in the course of building an analytic data set.",
+    "input_tables": [
+        {
+            "requiredInputKind": [
+                "PartitionByNone"
+            ],
+            "isOrdered": false,
+            "partitionByOne": false,
+            "name": "input_A_role",
+            "alternateNames": [],
+            "isRequired": true,
+            "rDescription": "what input A means",
+            "description": "what input A means",
+            "datatype": "TABLE_ALIAS",
+            "allowsLists": false,
+            "rName": "input_A_role",
+            "useInR": true,
+            "rOrderNum": 1
+        }
+    ],
+    "argument_clauses": [
+        {
+            "targetTable": [
+                "input_A_role"
+            ],
+            "checkDuplicate": false,
+            "allowedTypes": [],
+            "allowedTypeGroups": [
+                "ALL"
+            ],
+            "matchLengthOfArgument": "",
+            "allowPadding": false,
+            "name": "InputColumns",
+            "alternateNames": [],
+            "isRequired": true,
+            "rDescription": "Specifies the name(s) of the column(s) to analyze.",
+            "description": "Specifies the name(s) of the column(s) to analyze.",
+            "datatype": "COLUMNS",
+            "allowsLists": true,
+            "rName": "exclude",
+            "useInR": true,
+            "rOrderNum": 2
+        },
+        {
+            "defaultValue": false,
+            "name": "CumulativeOption",
+            "alternateNames": [],
+            "isRequired": false,
+            "rDescription": "Specifies whether to include rank, cumulative count, and cumulative percent information for each frequency value.",
+            "description": "Specifies whether to include rank, cumulative count, and cumulative percent information for each frequency value.",
+            "datatype": "BOOLEAN",
+            "allowsLists": false,
+            "rName": "",
+            "useInR": true,
+            "rOrderNum": 3
+        },
+        {
+            "defaultValue": 0,
+            "allowNaN": false,
+            "name": "TopFrequencyValues",
+            "alternateNames": [],
+            "isRequired": false,
+            "rDescription": "Specifies the number of frequency values to include.",
+            "description": "Specifies the number of frequency values to include.",
+            "datatype": "INTEGER",
+            "allowsLists": false,
+            "rName": "window.size",
+            "useInR": true,
+            "rOrderNum": 4
+        },
+        {
+            "defaultValue": 0.0,
+            "allowNaN": false,
+            "name": "MinimumPercentage",
+            "alternateNames": [],
+            "isRequired": false,
+            "rDescription": "Specifies a value to determine whether to include only frequency values that occur a minimum percentage of the time.",
+            "description": "Specifies a value to determine whether to include only frequency values that occur a minimum percentage of the time.",
+            "datatype": "DOUBLE PRECISION",
+            "allowsLists": false,
+            "rName": "",
+            "useInR": true,
+            "rOrderNum": 5
+        },
+        {
+            "permittedValues": [
+                "basic",
+                "pairwise",
+                "crosstab"
+            ],
+            "defaultValue": "basic",
+            "isOutputColumn": false,
+            "name": "Style",
+            "alternateNames": [],
+            "isRequired": false,
+            "rDescription": "Specifies the frequency style for the analysis.",
+            "description": "Specifies the frequency style for the analysis.",
+            "datatype": "STRING",
+            "allowsLists": false,
+            "rName": "mavgtype",
+            "useInR": true,
+            "rOrderNum": 6
+        },
+        {
+            "targetTable": [
+                "input_A_role"
+            ],
+            "checkDuplicate": false,
+            "allowedTypes": [],
+            "allowedTypeGroups": [
+                "ALL"
+            ],
+            "matchLengthOfArgument": "",
+            "allowPadding": false,
+            "name": "PairwiseColumns",
+            "alternateNames": [],
+            "isRequired": false,
+            "rDescription": "Specifies the columns to be paired up with the frequency columns.",
+            "description": "Specifies the columns to be paired up with the frequency columns.",
+            "datatype": "COLUMNS",
+            "allowsLists": true,
+            "rName": "exclude",
+            "useInR": true,
+            "rOrderNum": 7
+        },
+        {
+            "targetTable": [
+                "input_A_role"
+            ],
+            "checkDuplicate": false,
+            "allowedTypes": [],
+            "allowedTypeGroups": [
+                "ALL"
+            ],
+            "matchLengthOfArgument": "",
+            "allowPadding": false,
+            "name": "StatisticsColumns",
+            "alternateNames": [],
+            "isRequired": false,
+            "rDescription": "Specifies the name(s) of column(s) for which the minimum, maximum, mean value, and standard deviation are included in the result with the values computed over the rows corresponding to the individual values of the frequency columns.",
+            "description": "Specifies the name(s) of column(s) for which the minimum, maximum, mean value, and standard deviation are included in the result with the values computed over the rows corresponding to the individual values of the frequency columns.",
+            "datatype": "COLUMNS",
+            "allowsLists": true,
+            "rName": "exclude",
+            "useInR": true,
+            "rOrderNum": 8
+        },
+        {
+            "permittedValues": [],
+            "isOutputColumn": true,
+            "name": "Filter",
+            "alternateNames": [],
+            "isRequired": false,
+            "rDescription": "Specifies the clause to filter rows selected for analysis within Frequency. E.g. income > 0 (where income is an input column).",
+            "description": "Specifies the clause to filter rows selected for analysis within Frequency. E.g. income > 0 (where income is an input column).",
+            "datatype": "STRING",
+            "allowsLists": false,
+            "rName": "output.column",
+            "useInR": true,
+            "rOrderNum": 9
+        },
+        {
+            "permittedValues": [],
+            "isOutputColumn": true,
+            "name": "AggregatedFilter",
+            "alternateNames": [],
+            "isRequired": false,
+            "rDescription": "Specifies the clause to restrict returned aggregations. E.g. xpct > 1 (where xpct is an input column).",
+            "description": "Specifies the clause to restrict returned aggregations. E.g. xpct > 1 (where xpct is an input column).",
+            "datatype": "STRING",
+            "allowsLists": false,
+            "rName": "output.column",
+            "useInR": true,
+            "rOrderNum": 10
+        }
+    ],
+    "name_map": {
+        "Frequency": "frequency",
+        "InputColumns": "frequency_columns",
+        "CumulativeOption": "frequency_cumulative_option",
+        "TopFrequencyValues": "frequency_top_n",
+        "MinimumPercentage": "frequency_min_percentage",
+        "Style": "frequency_style",
+        "PairwiseColumns": "frequency_pairwise_columns",
+        "StatisticsColumns": "frequency_stats_columns",
+        "Filter": "frequency_filter_where",
+        "AggregatedFilter": "frequency_agg_filter"
+    },
+    "type_map": {
+        "Frequency": "SEPARATOR",
+        "InputColumns": "COLUMNS",
+        "CumulativeOption": "BOOLEAN",
+        "TopFrequencyValues": "INT",
+        "MinimumPercentage": "DOUBLE",
+        "Style": "SELECT",
+        "PairwiseColumns": "COLUMNS",
+        "StatisticsColumns": "COLUMNS",
+        "Filter": "STRING",
+        "AggregatedFilter": "STRING"
+    },
+    "choices_map": {
+        "Style": {
+            "basic": "basic",
+            "pairwise": "pairwise",
+            "crosstab": "crosstab"
+        }
+    }
+}

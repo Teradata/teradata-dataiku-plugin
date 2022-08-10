@@ -1,0 +1,169 @@
+{
+    "json_schema_major_version": "1",
+    "json_schema_minor_version": "1",
+    "json_content_version": "1",
+    "function_name": "Decision Tree Predict VAL",
+    "function_version": "1.0",
+    "function_alias_name": "Decision Tree Predict VAL",
+    "function_type": "valib",
+    "function_r_name": "",
+    "short_description": "The Predict function predicts the values of the dependent variable in test data. There is an additional required input table that specifies the model used by the VALIB DecisionTree function; additional datasets can be added in the Dataiku Input/Output tab.",
+    "long_description": "The Predict function predicts the values of the dependent variable in test data. There is an additional required input table that specifies the model used by the VALIB DecisionTree function; additional datasets can be added in the Dataiku Input/Output tab.",
+    "input_tables": [
+        {
+            "requiredInputKind": [
+                "PartitionByNone"
+            ],
+            "isOrdered": false,
+            "partitionByOne": false,
+            "name": "input_A_role",
+            "alternateNames": [],
+            "isRequired": true,
+            "rDescription": "what input A means",
+            "description": "what input A means",
+            "datatype": "TABLE_ALIAS",
+            "allowsLists": false,
+            "rName": "input_A_role",
+            "useInR": true,
+            "rOrderNum": 1
+        },
+        {
+            "requiredInputKind": [
+                "PartitionByNone"
+            ],
+            "isOrdered": false,
+            "partitionByOne": false,
+            "name": "decisiontree",
+            "alternateNames": [],
+            "isRequired": true,
+            "rDescription": "",
+            "description": "",
+            "datatype": "TABLE_ALIAS",
+            "allowsLists": false,
+            "rName": "decisiontree",
+            "useInR": true,
+            "rOrderNum": 2
+        }
+    ],
+    "argument_clauses": [
+        {
+            "defaultValue": false,
+            "name": "IncludeConfidence",
+            "alternateNames": [],
+            "isRequired": false,
+            "rDescription": "Specifies whether the output DataFrame contain a column indicating how likely it is, for a particular leaf node on the tree, that the prediction is correct.",
+            "description": "Specifies whether the output DataFrame contain a column indicating how likely it is, for a particular leaf node on the tree, that the prediction is correct.",
+            "datatype": "BOOLEAN",
+            "allowsLists": false,
+            "rName": "",
+            "useInR": true,
+            "rOrderNum": 3
+        },
+        {
+            "targetTable": [
+                "input_A_role"
+            ],
+            "checkDuplicate": false,
+            "allowedTypes": [],
+            "allowedTypeGroups": [
+                "ALL"
+            ],
+            "matchLengthOfArgument": "",
+            "allowPadding": false,
+            "name": "TargetedValue",
+            "alternateNames": [],
+            "isRequired": false,
+            "rDescription": "Specifies whether the result output DataFrame contain a column indicating how likely it is, for a particular leaf node and targeted value of a predicted result with only two values, that the prediction is correct.",
+            "description": "Specifies whether the result output DataFrame contain a column indicating how likely it is, for a particular leaf node and targeted value of a predicted result with only two values, that the prediction is correct.",
+            "datatype": "COLUMNS",
+            "allowsLists": true,
+            "rName": "exclude",
+            "useInR": true,
+            "rOrderNum": 4
+        },
+        {
+            "targetTable": [
+                "input_A_role"
+            ],
+            "checkDuplicate": false,
+            "allowedTypes": [],
+            "allowedTypeGroups": [
+                "ALL"
+            ],
+            "matchLengthOfArgument": "",
+            "allowPadding": false,
+            "name": "IndexColumns",
+            "alternateNames": [],
+            "isRequired": false,
+            "rDescription": "Specifies one or more different columns for the primary index of the result output DataFrame.",
+            "description": "Specifies one or more different columns for the primary index of the result output DataFrame.",
+            "datatype": "COLUMNS",
+            "allowsLists": true,
+            "rName": "exclude",
+            "useInR": true,
+            "rOrderNum": 5
+        },
+        {
+            "targetTable": [
+                "input_A_role"
+            ],
+            "checkDuplicate": false,
+            "allowedTypes": [],
+            "allowedTypeGroups": [
+                "ALL"
+            ],
+            "matchLengthOfArgument": "",
+            "allowPadding": false,
+            "name": "ResponseColumn",
+            "alternateNames": [],
+            "isRequired": false,
+            "rDescription": "Specifies the name of the predicted value column. If this argument is not specified, the name of the dependent column in 'data' DataFrame is used.",
+            "description": "Specifies the name of the predicted value column. If this argument is not specified, the name of the dependent column in 'data' DataFrame is used.",
+            "datatype": "COLUMNS",
+            "allowsLists": false,
+            "rName": "exclude",
+            "useInR": true,
+            "rOrderNum": 6,
+            "requiredLength": 1
+        },
+        {
+            "targetTable": [
+                "input_A_role"
+            ],
+            "checkDuplicate": false,
+            "allowedTypes": [],
+            "allowedTypeGroups": [
+                "ALL"
+            ],
+            "matchLengthOfArgument": "",
+            "allowPadding": false,
+            "name": "Accumulate",
+            "alternateNames": [],
+            "isRequired": false,
+            "rDescription": "Specifies one or more columns from the 'data' DataFrame that can be passed to the result output DataFrame.",
+            "description": "Specifies one or more columns from the 'data' DataFrame that can be passed to the result output DataFrame.",
+            "datatype": "COLUMNS",
+            "allowsLists": true,
+            "rName": "exclude",
+            "useInR": true,
+            "rOrderNum": 7
+        }
+    ],
+    "name_map": {
+        "DecisionTreePredict": "decision_tree2",
+        "IncludeConfidence": "decision_tree2_include_confidence",
+        "TargetedValue": "decision_tree2_targeted_value",
+        "IndexColumns": "decision_tree2_index_columns",
+        "ResponseColumn": "decision_tree2_response_column",
+        "Accumulate": "decision_tree2_accumulate"
+    },
+    "type_map": {
+        "DecisionTreePredict": "SEPARATOR",
+        "IncludeConfidence": "BOOLEAN",
+        "TargetedValue": "COLUMNS",
+        "IndexColumns": "COLUMNS",
+        "ResponseColumn": "COLUMN",
+        "Accumulate": "COLUMNS"
+    },
+    "choices_map": {}
+}

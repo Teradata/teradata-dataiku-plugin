@@ -1,0 +1,219 @@
+{
+    "json_schema_major_version": "1",
+    "json_schema_minor_version": "1",
+    "json_content_version": "1",
+    "function_name": "Logistic Regression Evaluate VAL",
+    "function_version": "1.0",
+    "function_alias_name": "Logistic Regression Evaluate VAL",
+    "function_type": "valib",
+    "function_r_name": "",
+    "short_description": "Logistic Regression function model can be passed to this function to generate evaluation reports. There is an additional required input table that specifies the model used by the VALIB LogReg function; additional datasets can be added in the Dataiku Input/Output tab.",
+    "long_description": "Logistic Regression function model can be passed to this function to generate evaluation reports. There is an additional required input table that specifies the model used by the VALIB LogReg function; additional datasets can be added in the Dataiku Input/Output tab.",
+    "input_tables": [
+        {
+            "requiredInputKind": [
+                "PartitionByNone"
+            ],
+            "isOrdered": false,
+            "partitionByOne": false,
+            "name": "input_A_role",
+            "alternateNames": [],
+            "isRequired": true,
+            "rDescription": "what input A means",
+            "description": "what input A means",
+            "datatype": "TABLE_ALIAS",
+            "allowsLists": false,
+            "rName": "input_A_role",
+            "useInR": true,
+            "rOrderNum": 1
+        },
+        {
+            "requiredInputKind": [
+                "PartitionByNone"
+            ],
+            "isOrdered": false,
+            "partitionByOne": false,
+            "name": "logreg",
+            "alternateNames": [],
+            "isRequired": true,
+            "rDescription": "",
+            "description": "",
+            "datatype": "TABLE_ALIAS",
+            "allowsLists": false,
+            "rName": "logreg",
+            "useInR": true,
+            "rOrderNum": 2
+        }
+    ],
+    "argument_clauses": [
+        {
+            "targetTable": [
+                "input_A_role"
+            ],
+            "checkDuplicate": false,
+            "allowedTypes": [],
+            "allowedTypeGroups": [
+                "ALL"
+            ],
+            "matchLengthOfArgument": "",
+            "allowPadding": false,
+            "name": "EstimateColumn",
+            "alternateNames": [],
+            "isRequired": true,
+            "rDescription": "Specifies the name of a column in the score output containing the estimated value of the dependent variable (column).",
+            "description": "Specifies the name of a column in the score output containing the estimated value of the dependent variable (column).",
+            "datatype": "COLUMNS",
+            "allowsLists": false,
+            "rName": "exclude",
+            "useInR": true,
+            "rOrderNum": 3,
+            "requiredLength": 1
+        },
+        {
+            "targetTable": [
+                "input_A_role"
+            ],
+            "checkDuplicate": false,
+            "allowedTypes": [],
+            "allowedTypeGroups": [
+                "ALL"
+            ],
+            "matchLengthOfArgument": "",
+            "allowPadding": false,
+            "name": "IndexColumns",
+            "alternateNames": [],
+            "isRequired": false,
+            "rDescription": "Specifies the name(s) of the column(s) representing the primary index of the score output",
+            "description": "Specifies the name(s) of the column(s) representing the primary index of the score output",
+            "datatype": "COLUMNS",
+            "allowsLists": true,
+            "rName": "exclude",
+            "useInR": true,
+            "rOrderNum": 4
+        },
+        {
+            "targetTable": [
+                "input_A_role"
+            ],
+            "checkDuplicate": false,
+            "allowedTypes": [],
+            "allowedTypeGroups": [
+                "ALL"
+            ],
+            "matchLengthOfArgument": "",
+            "allowPadding": false,
+            "name": "ProbabilityColumn",
+            "alternateNames": [],
+            "isRequired": false,
+            "rDescription": "Specifies the name of a column in the score output containing the probability that the dependent value is equal to the response value.",
+            "description": "Specifies the name of a column in the score output containing the probability that the dependent value is equal to the response value.",
+            "datatype": "COLUMNS",
+            "allowsLists": false,
+            "rName": "exclude",
+            "useInR": true,
+            "rOrderNum": 5,
+            "requiredLength": 1
+        },
+        {
+            "targetTable": [
+                "input_A_role"
+            ],
+            "checkDuplicate": false,
+            "allowedTypes": [],
+            "allowedTypeGroups": [
+                "ALL"
+            ],
+            "matchLengthOfArgument": "",
+            "allowPadding": false,
+            "name": "Accumulate",
+            "alternateNames": [],
+            "isRequired": false,
+            "rDescription": "Specifies the name(s) of the column(s) from the input to retain in the output.",
+            "description": "Specifies the name(s) of the column(s) from the input to retain in the output.",
+            "datatype": "COLUMNS",
+            "allowsLists": true,
+            "rName": "exclude",
+            "useInR": true,
+            "rOrderNum": 6
+        },
+        {
+            "defaultValue": 0.5,
+            "allowNaN": false,
+            "name": "ProbabilityThreshold",
+            "alternateNames": [],
+            "isRequired": false,
+            "rDescription": "Specifies the probability threshold value.",
+            "description": "Specifies the probability threshold value.",
+            "datatype": "DOUBLE PRECISION",
+            "allowsLists": false,
+            "rName": "",
+            "useInR": true,
+            "rOrderNum": 7
+        },
+        {
+            "defaultValue": 0.0,
+            "allowNaN": false,
+            "name": "StartThreshold",
+            "alternateNames": [],
+            "isRequired": false,
+            "rDescription": "Specifies the beginning threshold value utilized in the Multi-Threshold Success output.",
+            "description": "Specifies the beginning threshold value utilized in the Multi-Threshold Success output.",
+            "datatype": "DOUBLE PRECISION",
+            "allowsLists": false,
+            "rName": "",
+            "useInR": true,
+            "rOrderNum": 8
+        },
+        {
+            "defaultValue": 0.0,
+            "allowNaN": false,
+            "name": "EndThreshold",
+            "alternateNames": [],
+            "isRequired": false,
+            "rDescription": "Specifies the ending threshold value utilized in the Multi-Threshold Success output.",
+            "description": "Specifies the ending threshold value utilized in the Multi-Threshold Success output.",
+            "datatype": "DOUBLE PRECISION",
+            "allowsLists": false,
+            "rName": "",
+            "useInR": true,
+            "rOrderNum": 9
+        },
+        {
+            "defaultValue": 0.0,
+            "allowNaN": false,
+            "name": "IncrementThreshold",
+            "alternateNames": [],
+            "isRequired": false,
+            "rDescription": "Specifies the difference in threshold values between adjacent rows in the Multi-Threshold Success output.",
+            "description": "Specifies the difference in threshold values between adjacent rows in the Multi-Threshold Success output.",
+            "datatype": "DOUBLE PRECISION",
+            "allowsLists": false,
+            "rName": "",
+            "useInR": true,
+            "rOrderNum": 10
+        }
+    ],
+    "name_map": {
+        "LogisticRegressionEvaluate": "logreg2",
+        "EstimateColumn": "logreg2_estimate_column",
+        "IndexColumns": "logreg2_index_columns",
+        "ProbabilityColumn": "logreg2_prob_column",
+        "Accumulate": "logreg2_accumulate",
+        "ProbabilityThreshold": "logreg2_prob_threshold",
+        "StartThreshold": "logreg2_start_threshold",
+        "EndThreshold": "logreg2_end_threshold",
+        "IncrementThreshold": "logreg2_increment_threshold"
+    },
+    "type_map": {
+        "LogisticRegressionEvaluate": "SEPARATOR",
+        "EstimateColumn": "COLUMN",
+        "IndexColumns": "COLUMNS",
+        "ProbabilityColumn": "COLUMN",
+        "Accumulate": "COLUMNS",
+        "ProbabilityThreshold": "DOUBLE",
+        "StartThreshold": "DOUBLE",
+        "EndThreshold": "DOUBLE",
+        "IncrementThreshold": "DOUBLE"
+    },
+    "choices_map": {}
+}

@@ -1,0 +1,350 @@
+{
+    "json_schema_major_version": "1",
+    "json_schema_minor_version": "1",
+    "json_content_version": "1",
+    "function_name": "Principal Component Analysis VAL",
+    "function_version": "1.0",
+    "function_alias_name": "Principal Component Analysis VAL",
+    "function_type": "valib",
+    "function_r_name": "",
+    "short_description": "In PCA Analysis, a set of variables (denoted by columns) is reduced to a smaller number of factors that account for most of the variance in the variables. This can be useful in reducing the number of variables by converting them to factors, or in gaining insight into the nature of the variables when they are used for further data analysis.",
+    "long_description": "In PCA Analysis, a set of variables (denoted by columns) is reduced to a smaller number of factors that account for most of the variance in the variables. This can be useful in reducing the number of variables by converting them to factors, or in gaining insight into the nature of the variables when they are used for further data analysis.",
+    "input_tables": [
+        {
+            "requiredInputKind": [
+                "PartitionByNone"
+            ],
+            "isOrdered": false,
+            "partitionByOne": false,
+            "name": "input_A_role",
+            "alternateNames": [],
+            "isRequired": true,
+            "rDescription": "what input A means",
+            "description": "what input A means",
+            "datatype": "TABLE_ALIAS",
+            "allowsLists": false,
+            "rName": "input_A_role",
+            "useInR": true,
+            "rOrderNum": 1
+        }
+    ],
+    "argument_clauses": [
+        {
+            "targetTable": [
+                "input_A_role"
+            ],
+            "checkDuplicate": false,
+            "allowedTypes": [],
+            "allowedTypeGroups": [
+                "ALL"
+            ],
+            "matchLengthOfArgument": "",
+            "allowPadding": false,
+            "name": "InputColumns",
+            "alternateNames": [],
+            "isRequired": true,
+            "rDescription": "Specifies the name(s) of the column(s) representing the variables used in building a PCA analysis model.",
+            "description": "Specifies the name(s) of the column(s) representing the variables used in building a PCA analysis model.",
+            "datatype": "COLUMNS",
+            "allowsLists": true,
+            "rName": "exclude",
+            "useInR": true,
+            "rOrderNum": 2
+        },
+        {
+            "targetTable": [
+                "input_A_role"
+            ],
+            "checkDuplicate": false,
+            "allowedTypes": [],
+            "allowedTypeGroups": [
+                "ALL"
+            ],
+            "matchLengthOfArgument": "",
+            "allowPadding": false,
+            "name": "GroupByColumns",
+            "alternateNames": [],
+            "isRequired": false,
+            "rDescription": "Specifies the name(s) of the input column(s) dividing the input DataFrame 'data' into partitions, one for each combination of values in the group by columns.",
+            "description": "Specifies the name(s) of the input column(s) dividing the input DataFrame 'data' into partitions, one for each combination of values in the group by columns.",
+            "datatype": "COLUMNS",
+            "allowsLists": true,
+            "rName": "exclude",
+            "useInR": true,
+            "rOrderNum": 3
+        },
+        {
+            "defaultValue": 30.0,
+            "allowNaN": false,
+            "name": "ConditionIndexThreshold",
+            "alternateNames": [],
+            "isRequired": false,
+            "rDescription": "Specifies the condition index threshold parameter to generate Near Dependency Report.",
+            "description": "Specifies the condition index threshold parameter to generate Near Dependency Report.",
+            "datatype": "DOUBLE PRECISION",
+            "allowsLists": false,
+            "rName": "",
+            "useInR": true,
+            "rOrderNum": 4
+        },
+        {
+            "defaultValue": 1.0,
+            "allowNaN": false,
+            "name": "MinimumEigenvalue",
+            "alternateNames": [],
+            "isRequired": false,
+            "rDescription": "Specifies the minimum eigen value to include factors for.",
+            "description": "Specifies the minimum eigen value to include factors for.",
+            "datatype": "DOUBLE PRECISION",
+            "allowsLists": false,
+            "rName": "",
+            "useInR": true,
+            "rOrderNum": 5
+        },
+        {
+            "permittedValues": [
+                "equamax",
+                "prthomax",
+                "parsimax",
+                "quartimax",
+                "varimax",
+                "biquartimin",
+                "covarimin",
+                "orthomin",
+                "quartimin",
+                "None"
+            ],
+            "defaultValue": "None",
+            "isOutputColumn": false,
+            "name": "RotationType",
+            "alternateNames": [],
+            "isRequired": false,
+            "rDescription": "Specifies the rotation type among various schemes for rotating factors for possibly better results.",
+            "description": "Specifies the rotation type among various schemes for rotating factors for possibly better results.",
+            "datatype": "STRING",
+            "allowsLists": false,
+            "rName": "mavgtype",
+            "useInR": true,
+            "rOrderNum": 6
+        },
+        {
+            "defaultValue": 0.0,
+            "allowNaN": false,
+            "name": "Gamma",
+            "alternateNames": [],
+            "isRequired": false,
+            "rDescription": "Specifies the gamma value to be set when 'orthomax' or 'orthomin' is used in 'rotation_type' argument.",
+            "description": "Specifies the gamma value to be set when 'orthomax' or 'orthomin' is used in 'rotation_type' argument.",
+            "datatype": "DOUBLE PRECISION",
+            "allowsLists": false,
+            "rName": "",
+            "useInR": true,
+            "rOrderNum": 7
+        },
+        {
+            "defaultValue": false,
+            "name": "MatrixInput",
+            "alternateNames": [],
+            "isRequired": false,
+            "rDescription": "Specifies whether the input DataFrame is an extended sum-of-squares-and-cross-products (ESSCP) matrix built by the Matrix() VALIB function.",
+            "description": "Specifies whether the input DataFrame is an extended sum-of-squares-and-cross-products (ESSCP) matrix built by the Matrix() VALIB function.",
+            "datatype": "BOOLEAN",
+            "allowsLists": false,
+            "rName": "",
+            "useInR": true,
+            "rOrderNum": 8
+        },
+        {
+            "permittedValues": [
+                "correlation",
+                "covariance"
+            ],
+            "defaultValue": "correlation",
+            "isOutputColumn": false,
+            "name": "MatrixType",
+            "alternateNames": [],
+            "isRequired": false,
+            "rDescription": "Specifies type of matrix for processing affecting measure and score scaling.",
+            "description": "Specifies type of matrix for processing affecting measure and score scaling.",
+            "datatype": "STRING",
+            "allowsLists": false,
+            "rName": "mavgtype",
+            "useInR": true,
+            "rOrderNum": 9
+        },
+        {
+            "defaultValue": false,
+            "name": "XMLReport",
+            "alternateNames": [],
+            "isRequired": false,
+            "rDescription": "Specifies whether to produce an XML report showing columns that are collinear as part of the output or not.",
+            "description": "Specifies whether to produce an XML report showing columns that are collinear as part of the output or not.",
+            "datatype": "BOOLEAN",
+            "allowsLists": false,
+            "rName": "",
+            "useInR": true,
+            "rOrderNum": 10
+        },
+        {
+            "defaultValue": 0.5,
+            "allowNaN": false,
+            "name": "VariancePercentThreshold",
+            "alternateNames": [],
+            "isRequired": false,
+            "rDescription": "Specifies the variance proportion threshold parameter to generate Near Dependency Report.",
+            "description": "Specifies the variance proportion threshold parameter to generate Near Dependency Report.",
+            "datatype": "DOUBLE PRECISION",
+            "allowsLists": false,
+            "rName": "",
+            "useInR": true,
+            "rOrderNum": 11
+        },
+        {
+            "defaultValue": false,
+            "name": "PrimeFactorLoadings",
+            "alternateNames": [],
+            "isRequired": false,
+            "rDescription": "Specifies whether to generate Prime Factor Loadings Report in which rows are variables and columns are factors, matching each variable with the factor that has the biggest absolute loading value with.",
+            "description": "Specifies whether to generate Prime Factor Loadings Report in which rows are variables and columns are factors, matching each variable with the factor that has the biggest absolute loading value with.",
+            "datatype": "BOOLEAN",
+            "allowsLists": false,
+            "rName": "",
+            "useInR": true,
+            "rOrderNum": 12
+        },
+        {
+            "defaultValue": false,
+            "name": "PrimeFactorVariableswithLoadingsReport",
+            "alternateNames": [],
+            "isRequired": false,
+            "rDescription": "Specifies whether to generate Prime Factor Variables with Loadings Report, equivalent to Prime Factor Variables Report with the addition of loading values that determined the relationship between factors and variables.",
+            "description": "Specifies whether to generate Prime Factor Variables with Loadings Report, equivalent to Prime Factor Variables Report with the addition of loading values that determined the relationship between factors and variables.",
+            "datatype": "BOOLEAN",
+            "allowsLists": false,
+            "rName": "",
+            "useInR": true,
+            "rOrderNum": 13
+        },
+        {
+            "defaultValue": false,
+            "name": "PrimeFactorVariablesReport",
+            "alternateNames": [],
+            "isRequired": false,
+            "rDescription": "Specifies whether to generate Prime Factor Variables Report in which rows are variables and columns are factors, matching variables with their prime factors, and if a threshold is used, possibly other than prime factors.",
+            "description": "Specifies whether to generate Prime Factor Variables Report in which rows are variables and columns are factors, matching variables with their prime factors, and if a threshold is used, possibly other than prime factors.",
+            "datatype": "BOOLEAN",
+            "allowsLists": false,
+            "rName": "",
+            "useInR": true,
+            "rOrderNum": 14
+        },
+        {
+            "permittedValues": [
+                "Load Threshold",
+                "Percent Threshold",
+                "None"
+            ],
+            "defaultValue": "None",
+            "isOutputColumn": false,
+            "name": "LoadorPercentThreshold",
+            "alternateNames": [],
+            "isRequired": false,
+            "rDescription": "Choose whether to have a Load Threshold or a Percent Threshold.",
+            "description": "Choose whether to have a Load Threshold or a Percent Threshold.",
+            "datatype": "STRING",
+            "allowsLists": false,
+            "rName": "mavgtype",
+            "useInR": true,
+            "rOrderNum": 15
+        },
+        {
+            "defaultValue": 0.0,
+            "allowNaN": false,
+            "name": "LoadThreshold",
+            "alternateNames": [],
+            "isRequired": false,
+            "rDescription": "Specifies a threshold factor loading value.",
+            "description": "Specifies a threshold factor loading value.",
+            "datatype": "DOUBLE PRECISION",
+            "allowsLists": false,
+            "rName": "",
+            "useInR": true,
+            "rOrderNum": 16
+        },
+        {
+            "defaultValue": 0.0,
+            "allowNaN": false,
+            "name": "PercentThreshold",
+            "alternateNames": [],
+            "isRequired": false,
+            "rDescription": "Specifies a threshold percent.",
+            "description": "Specifies a threshold percent.",
+            "datatype": "DOUBLE PRECISION",
+            "allowsLists": false,
+            "rName": "",
+            "useInR": true,
+            "rOrderNum": 17
+        }
+    ],
+    "name_map": {
+        "PrincipalComponentsAnalysis": "pca",
+        "InputColumns": "pca_columns",
+        "GroupByColumns": "pca_group_columns",
+        "ConditionIndexThreshold": "pca_cond_ind_threshold",
+        "MinimumEigenvalue": "pca_min_eigen",
+        "RotationType": "pca_rotation_type",
+        "Gamma": "pca_gamma",
+        "MatrixInput": "pca_matrix_input",
+        "MatrixType": "pca_matrix_type",
+        "XMLReport": "pca_near_dep_report",
+        "VariancePercentThreshold": "pca_variance_prop_threshold",
+        "PrimeFactorLoadings": "pca_load_report",
+        "PrimeFactorVariableswithLoadingsReport": "pca_vars_load_report",
+        "PrimeFactorVariablesReport": "pca_vars_report",
+        "LoadorPercentThreshold": "pca_load_or_percent",
+        "LoadThreshold": "pca_load_threshold",
+        "PercentThreshold": "pca_percent_threshold"
+    },
+    "type_map": {
+        "PrincipalComponentsAnalysis": "SEPARATOR",
+        "InputColumns": "COLUMNS",
+        "GroupByColumns": "COLUMNS",
+        "ConditionIndexThreshold": "DOUBLE",
+        "MinimumEigenvalue": "DOUBLE",
+        "RotationType": "SELECT",
+        "Gamma": "DOUBLE",
+        "MatrixInput": "BOOLEAN",
+        "MatrixType": "SELECT",
+        "XMLReport": "BOOLEAN",
+        "VariancePercentThreshold": "DOUBLE",
+        "PrimeFactorLoadings": "BOOLEAN",
+        "PrimeFactorVariableswithLoadingsReport": "BOOLEAN",
+        "PrimeFactorVariablesReport": "BOOLEAN",
+        "LoadorPercentThreshold": "SELECT",
+        "LoadThreshold": "DOUBLE",
+        "PercentThreshold": "DOUBLE"
+    },
+    "choices_map": {
+        "RotationType": {
+            "equamax": "equamax",
+            "prthomax": "orthomax",
+            "parsimax": "parsimax",
+            "quartimax": "quartimax",
+            "varimax": "varimax",
+            "biquartimin": "biquartimin",
+            "covarimin": "covarimin",
+            "orthomin": "orthomin",
+            "quartimin": "quartimin",
+            "None": "None"
+        },
+        "MatrixType": {
+            "correlation": "correlation",
+            "covariance": "covariance"
+        },
+        "LoadorPercentThreshold": {
+            "Load Threshold": "load_threshold",
+            "Percent Threshold": "percent_threshold",
+            "None": "None"
+        }
+    }
+}

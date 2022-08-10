@@ -1,17 +1,16 @@
 # Teradata Plugin
 
-A collection of recipes that interface Teradata Vantage in-Database analytic tools to Dataiku users.
+A collection of recipes that interface in-Database analytic tools of the Teradata Vantage Data and Analytics Platform to Dataiku users.
 
 
 ## Scope Of The Plugin
 
-The Teradata plugin enhances Dataiku's built-in interaction capabilities with Teradata Vantage systems. The plugin provides visual recipes for scaled, in-Database Analytics with your Vantage data. The present version of the plugin features the following recipes:
+The Teradata plugin enhances Dataiku's built-in interaction capabilities with Teradata Vantage.  The plugin provides visual recipes for scaled, in-Database Analytics with data that you keep in the Teradata Vantage Analytics Database.  The present version of the plugin features the following recipes:
 
-* Analytic Functions - Data Transformation
-* Analytic Functions - Time Series Analysis
+* Teradata Analytic Functions
 * BYOM - Model Export to Vantage
 * BYOM - Scoring
-* SCRIPT Table Operator Analysis
+* In-Vantage Scripting
 
 
 ## Requirements
@@ -20,8 +19,8 @@ For complete details, please see the Teradata plugin user guide under the [offic
 
 To use the Teradata plugin:
 
-* You will need access credentials to establish a connection to a target Vantage Advanced SQL Engine.
-* To connect to a Vantage Advanced SQL Engine, the [Teradata JDBC Driver](https://downloads.teradata.com/download/connectivity/jdbc-driver). Version 16.20 or later is required.
+* You will need access credentials to establish a connection to a target Teradata Vantage Analytics Database.
+* To connect to an Analytics Database, the [Teradata JDBC Driver](https://downloads.teradata.com/download/connectivity/jdbc-driver). Version 16.20 or later is required.
 
 
 ## Installation
@@ -44,6 +43,6 @@ For additional information, see the following links on docs.teradata.com:
 
 1. [Teradata Vantage User Guide](https://docs.teradata.com/r/Teradata-VantageTM-User-Guide/March-2022).
 2. [Advanced SQL Engine Analytic Functions Overview](https://docs.teradata.com/r/Teradata-VantageTM-Advanced-SQL-Engine-Analytic-Functions/July-2021/Introduction-to-Teradata-Vantage/Advanced-SQL-Engine-Analytic-Functions-Overview).
-3. [Teradata Vantage Advanced SQL Engine Analytic Functions](https://docs.teradata.com/r/Teradata-VantageTM-Advanced-SQL-Engine-Analytic-Functions/July-2021).
+3. [Teradata Vantage Analytic Functions](https://docs.teradata.com/r/Teradata-VantageTM-Advanced-SQL-Engine-Analytic-Functions/July-2021).
 4. [BYOM Documentation](https://docs.teradata.com/r/Teradata-VantageTM-Bring-Your-Own-Model-User-Guide/October-2021).
 5. Teradata Orange Book Series: “R And Python Analytics with the SCRIPT Table Operator”. The direct [PDF link](https://docs.teradata.com/v/u/Orange-Book/R-and-Python-Analytics-with-SCRIPT-Table-Operator-Orange-Book-4.3.2) has restricted access to Teradata customers and partners; sign-in is needed.

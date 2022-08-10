@@ -1,8 +1,16 @@
 # Teradata Plugin Changelog
 
-## Version 2.0.0 (June 2022)
+## Version 2.1.0 (August 2022)
 
 Current version
+
+* Support for VAL functions.
+* Merging of Analytic and VAL functions into single recipe.
+* Code refactoring in the Analytic Functions recipes.
+* Renaming of "SCRIPT Table Operator Analysis" recipe into "In-Vantage Scripting".
+* Bug fixes.
+
+## Version 2.0.0 (June 2022)
 
 * Integration of all former plugins into the unified Teradata plugin.
 * Code refactoring in the Analytic Functions recipes.

@@ -1,0 +1,183 @@
+{
+    "json_schema_major_version": "1",
+    "json_schema_minor_version": "1",
+    "json_content_version": "1",
+    "function_name": "Decision Tree VAL",
+    "function_version": "1.0",
+    "function_alias_name": "Decision Tree VAL",
+    "function_type": "valib",
+    "function_r_name": "",
+    "short_description": "The Gain Ratio Extreme Decision Tree function performs decision tree modeling and returns a teradataml DataFrame containing one row with two columns.",
+    "long_description": "The Gain Ratio Extreme Decision Tree function performs decision tree modeling and returns a teradataml DataFrame containing one row with two columns.",
+    "input_tables": [
+        {
+            "requiredInputKind": [
+                "PartitionByNone"
+            ],
+            "isOrdered": false,
+            "partitionByOne": false,
+            "name": "input_A_role",
+            "alternateNames": [],
+            "isRequired": true,
+            "rDescription": "what input A means",
+            "description": "what input A means",
+            "datatype": "TABLE_ALIAS",
+            "allowsLists": false,
+            "rName": "input_A_role",
+            "useInR": true,
+            "rOrderNum": 1
+        }
+    ],
+    "argument_clauses": [
+        {
+            "targetTable": [
+                "input_A_role"
+            ],
+            "checkDuplicate": false,
+            "allowedTypes": [],
+            "allowedTypeGroups": [
+                "ALL"
+            ],
+            "matchLengthOfArgument": "",
+            "allowPadding": false,
+            "name": "InputColumns",
+            "alternateNames": [],
+            "isRequired": true,
+            "rDescription": "Specifies the name(s) of the column(s) to be used in decision tree building",
+            "description": "Specifies the name(s) of the column(s) to be used in decision tree building",
+            "datatype": "COLUMNS",
+            "allowsLists": true,
+            "rName": "exclude",
+            "useInR": true,
+            "rOrderNum": 2
+        },
+        {
+            "targetTable": [
+                "input_A_role"
+            ],
+            "checkDuplicate": false,
+            "allowedTypes": [],
+            "allowedTypeGroups": [
+                "ALL"
+            ],
+            "matchLengthOfArgument": "",
+            "allowPadding": false,
+            "name": "ResponseColumns",
+            "alternateNames": [],
+            "isRequired": true,
+            "rDescription": "Specifies the name of a column whose values are being predicted.",
+            "description": "Specifies the name of a column whose values are being predicted.",
+            "datatype": "COLUMNS",
+            "allowsLists": false,
+            "rName": "exclude",
+            "useInR": true,
+            "rOrderNum": 3,
+            "requiredLength": 1
+        },
+        {
+            "permittedValues": [
+                "gainratio"
+            ],
+            "defaultValue": "gainratio",
+            "isOutputColumn": false,
+            "name": "Algorithm",
+            "alternateNames": [],
+            "isRequired": false,
+            "rDescription": "Specifies the name of the algorithm that the decision tree uses during building.",
+            "description": "Specifies the name of the algorithm that the decision tree uses during building.",
+            "datatype": "STRING",
+            "allowsLists": false,
+            "rName": "mavgtype",
+            "useInR": true,
+            "rOrderNum": 4
+        },
+        {
+            "defaultValue": false,
+            "name": "Binning",
+            "alternateNames": [],
+            "isRequired": false,
+            "rDescription": "Specifies whether to perform binning on the continuous independent variables automatically.",
+            "description": "Specifies whether to perform binning on the continuous independent variables automatically.",
+            "datatype": "BOOLEAN",
+            "allowsLists": false,
+            "rName": "",
+            "useInR": true,
+            "rOrderNum": 5
+        },
+        {
+            "defaultValue": 100,
+            "allowNaN": false,
+            "name": "MaximumDepth",
+            "alternateNames": [],
+            "isRequired": false,
+            "rDescription": "Specifies the maximum number of levels the tree can grow.",
+            "description": "Specifies the maximum number of levels the tree can grow.",
+            "datatype": "INTEGER",
+            "allowsLists": false,
+            "rName": "window.size",
+            "useInR": true,
+            "rOrderNum": 6
+        },
+        {
+            "defaultValue": 0,
+            "allowNaN": false,
+            "name": "NumberofSplits",
+            "alternateNames": [],
+            "isRequired": false,
+            "rDescription": "Specifies how far the decision tree can be split.",
+            "description": "Specifies how far the decision tree can be split.",
+            "datatype": "INTEGER",
+            "allowsLists": false,
+            "rName": "window.size",
+            "useInR": true,
+            "rOrderNum": 7
+        },
+        {
+            "permittedValues": [
+                "gainratio",
+                "None"
+            ],
+            "defaultValue": "gainratio",
+            "isOutputColumn": false,
+            "name": "Pruning",
+            "alternateNames": [],
+            "isRequired": false,
+            "rDescription": "Specifies the style of pruning to use after the tree is fully built.",
+            "description": "Specifies the style of pruning to use after the tree is fully built.",
+            "datatype": "STRING",
+            "allowsLists": false,
+            "rName": "mavgtype",
+            "useInR": true,
+            "rOrderNum": 8
+        }
+    ],
+    "name_map": {
+        "DecisionTree": "decision_tree",
+        "InputColumns": "decision_tree_columns",
+        "ResponseColumns": "decision_tree_response_column",
+        "Algorithm": "decision_tree_algorithm",
+        "Binning": "decision_tree_binning",
+        "MaximumDepth": "decision_tree_max_depth",
+        "NumberOfSplits": "decision_tree_num_splits",
+        "Pruning": "decision_tree_pruning"
+    },
+    "type_map": {
+        "DecisionTree": "SEPARATOR",
+        "InputColumns": "COLUMNS",
+        "ResponseColumns": "COLUMN",
+        "Algorithm": "SELECT",
+        "Binning": "BOOLEAN",
+        "MaximumDepth": "INT",
+        "NumberofSplits": "INT",
+        "Pruning": "SELECT"
+    },
+    "choices_map": {
+        "Algorithm": {
+            "gainratio": "gainratio"
+        },
+        "Pruning": {
+            "gainratio": "gainratio",
+            "None": "None"
+        }
+    }
+}

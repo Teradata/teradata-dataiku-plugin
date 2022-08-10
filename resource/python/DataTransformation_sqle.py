@@ -1,23 +1,3 @@
-import dataiku
-# from dataiku import os
-import json
-import logging
-import pprint
-import os
-
-from dataiku.customrecipe import get_recipe_resource
-# SKS: Import vantage version number
-import sys
-sys.path.append('../../python-lib')
-import vantage_version
-# SKS Open Query Generator
-from open_ended_query_generator import OpenEndedQueryGenerator
-from query_engine_wrapper import QueryEngineWrapper
-from analytic_function_utility import get_all_function_jsons
-
-# SKD import pandas for set max column width
-import pandas as pd
-
 # -*- coding: utf-8 -*-
 
 '''
@@ -36,8 +16,49 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 '''
 
+import dataiku
+# from dataiku import os
+import json
+import logging
+import pprint
+import os
+
+from dataiku.customrecipe import get_recipe_resource
+# SKS: Import vantage version number
+import sys
+sys.path.append('../../python-lib')
+import vantage_version
+# SKS Open Query Generator
+from open_ended_query_generator import OpenEndedQueryGenerator
+from query_engine_wrapper import QueryEngineWrapper
+
+# Valib functions
+from valib_executor import *
+
+# SKD import pandas for set max column width
+import pandas as pd
+
+
 FUNCTION_CATEGORY="Data Transformation"
 PARTNER_LIST=["EvaluateNamedEntityFinderRow","LinRegMatrix"]
+
+def get_val_default_database(inputdataset):
+    if inputdataset == None:
+        return '', ''
+    client = dataiku.api_client()
+    connections = client.list_connections()
+    connectionName = inputdataset.get_location_info()['info']['connectionName']
+    defaultDatabase = ''
+    if 'defaultDatabase' in connections[connectionName]['params']:
+        defaultDatabase = connections[connectionName]['params']['defaultDatabase']
+    valDatabase = ''
+    if "dkuProperties" in connections[connectionName]['params']:
+        dkuProperties = connections[connectionName]['params']['dkuProperties']
+        for item in dkuProperties:
+            if item['name'] == "VAL_DATABASE":
+                valDatabase = item['value']
+                break
+    return valDatabase, defaultDatabase
 
 # Subclass of query engine wrapper implemented with a Dataiku SQLExecutor2
 # An instance of this class will be created when we use the functions in analytic_function_utility and vantage_version
@@ -54,7 +75,175 @@ class DataikuQueryEngineWrapper(QueryEngineWrapper):
     def row_value(self, row, column_name):
         return row[1][column_name]
 
+def load_json(json_dict, inputs):
+    try:
 
+        f = json_dict
+        d = {
+            "name":"",
+            "function_alias_name":"",
+            "output_tables":"",
+            "arguments":"",
+            "asterarguments":"",
+            "partitionInputKind":[],
+            "partitionAttributes":"",
+            "isOrdered":False,
+            "orderByColumn":"",
+            "hasInputTable":False,
+            "isQueryMode": False,
+            "queries": [],
+            "hasNativeJSON": True,
+            "function_type" : ""
+        }
+        
+        keys = f.keys()
+
+        # SKS Return the original JSON contents in the dictionary
+        d["json_contents"] = json.dumps(f)
+
+        # function type used for valib extension
+        d["function_type"] = f.get("function_type", "")
+
+        
+        # Get the function name and alias name, and use the function name as the alias name if the latter does not exist.
+        d["name"] = f.get("function_name", "")
+        d["function_alias_name"] = f.get("function_alias_name", f.get("function_name", ""))
+        
+        unaliased_inputs = {'desc':{}, 'values':[], 'count':0}
+        required_inputs = []
+        # Run through all the input tables of the function.
+        if "input_tables" in keys:
+            d["hasInputTable"] = True
+            input_table_list = f["input_tables"]
+            num_input_tables = 0
+            for table in input_table_list:
+                required_input_dict = {"isRequired": True, "partitionAttributes":"", "orderByColumn": ""}
+                required_input_dict['isRequired'] = table.get('isRequired', True) # Assume required unless specified False.
+                required_input_dict['isOrdered'] = table.get('isOrdered', False) # Assume unordered unless specified True.
+                required_input_dict['alternateNames'] = table.get('alternateNames', []) # Assume no alternate names unless specified.
+                
+                requiredInputKind = table.get("requiredInputKind", [])
+                if (type(requiredInputKind) == list and len(requiredInputKind) == 1 and requiredInputKind[0] == "PartitionByKey") or requiredInputKind == []:
+                    requiredInputKind = ["PartitionByKey", "HashByKey", "None"]
+
+                #requiredInputKind = table.get("requiredInputKind", ["PartitionByAny"]) # All element of the requiredInputKind list.
+                partitionByKey = requiredInputKind[0] if requiredInputKind else "" # partitionByKey is the first element of the requiredInputKind list.
+                if 'partitionByOne' in table.keys() and table['partitionByOne']:
+                    if 'partitionByOneInclusive' in table.keys() and table['partitionByOneInclusive']:  # Checks if partitionByOneInclusive is a key.
+                        requiredInputKind.append("PartitionByOne") # If it is a key, we append PartitionByOne to the inputKindChoices.
+                    else:
+                        partitionByKey = "PartitionByOne" # If partitionByOneInclusive is not a key, we override the partitionByKey to be partitionByOne.
+                required_input_dict['kind'] = partitionByKey
+                required_input_dict['inputKindChoices'] = requiredInputKind
+                
+                # Check if the table is named (= required input) or not (unaliased input).
+                if 'name' in table.keys() or ('Dimension' in table.get('requiredInputKind',[]) and 0 < unaliased_inputs.get('count',0)):
+                    required_input_dict['name'] = table.get('name', 'Dimension')
+                    required_input_dict['value'] = ""
+                    # Set the Table Value if single Input case for first Table Property
+                    if len(inputs) == 1 and num_input_tables == 0:
+                        required_input_dict['value'] = inputs[0]['fullName'].split('.')[1]
+                    required_inputs.append(required_input_dict)
+                else:
+                    unaliased_inputs['count'] += 1
+                    d["isOrdered"] = table.get("isOrdered", False)
+                    if 'partitionByOne' in table.keys() and table['partitionByOne']:
+                        d['partitionInputKind'] = ['PartitionByOne']
+                    else:
+                        d['partitionInputKind'] = table.get("requiredInputKind", [])
+                num_input_tables += 1
+                        
+        d["required_input"] = required_inputs
+        d["unaliased_inputs"] = unaliased_inputs
+        
+        # Run through all output tables.
+        if 'output_tables' in keys:
+            ot = []
+            out_table_list = f["output_tables"]
+            for table in out_table_list:
+                outtbl = {"name":"","isRequired":"","value":"", "datatype": "", "allowsLists":True}
+                if table.get('alternateNames', []):
+                    outtbl["name"] = table.get('alternateNames', [''])[0]
+                outtbl["name"] = table.get("name", "")
+                outtbl["isRequired"] = table.get("isRequired", False)
+                outtbl["datatype"] = table.get("datatype", "")
+
+                # SKS: Add upper and lower bounds
+                outtbl["lowerBound"] = table.get("lowerBound", "")
+                outtbl["upperBound"] = table.get("upperBound", "")
+
+                # fixes future problem where the type in JSON is both numeric and string
+                #if outtbl["datatype"].contains("STRING") and outtbl["datatype"] != "STRING":
+                #    outtbl["datatype"] = "STRING"
+
+                outtbl["allowsLists"] = table.get("allowsLists", True)
+                outtbl["targetTable"] = table.get("targetTable", [])
+                outtbl["isOutputTable"] = table.get("isOutputTable", False)
+                outtbl["permittedValues"] = table.get("permittedValues", [])
+                if 'defaultValue' in table:
+                    outtbl["value"] = defaultValuesFromArg(table)
+                    # SKS: 
+                    outtbl["defaultValue"] = outtbl["value"]
+                ot.append(outtbl)
+            d["output_tables"] = ot
+        
+        # Similar to output tables.
+        if 'argument_clauses' in keys:
+            args = []
+            arg_lst = f['argument_clauses']
+            for argument in arg_lst:
+                arg = {"name":"","isRequired":"","value":"", "datatype": "", "allowsLists":True}
+                if argument.get('alternateNames', []):
+                    arg["name"] = argument.get('alternateNames', [''])[0]
+                arg["name"] = argument.get("name", "")
+                arg["isRequired"] = argument.get("isRequired", False)
+                arg["datatype"] = argument.get("datatype", "")
+                if type(arg["datatype"]) != str:
+                    arg["datatype"] = "STRING"
+                arg["datatype"] = arg["datatype"].upper()
+                if arg["datatype"] == "NUMERIC":
+                    arg["datatype"] = "DOUBLE PRECISION"
+                if arg["datatype"] == "COLUMN":
+                    arg["datatype"] = "COLUMNS"
+
+
+                # SKS: Add upper and lower bounds
+                arg["lowerBound"] = str(argument.get("lowerBound", ""))
+                arg["upperBound"] = str(argument.get("upperBound", ""))
+
+                # SKS: fixes future problem where the type in JSON is both numeric and string
+                #if arg["datatype"].contains("STRING") and arg["datatype"] != "STRING":
+                #    arg["datatype"] = "STRING"
+
+
+                arg["allowsLists"] = argument.get("allowsLists", True)
+                arg["targetTable"] = argument.get("targetTable", [])
+                arg["isOutputTable"] = argument.get("isOutputTable", False)
+                arg["permittedValues"] = argument.get("permittedValues", [])
+                if 'defaultValue' in argument:
+                    arg["value"] = defaultValuesFromArg(argument)
+                    # SKS: Added Default Value for frontend to use as well
+                    arg["defaultValue"] = arg["value"]
+                # arg["inNative"] = True # Setting to True because all files should be native and not MLE.
+                args.append(arg)
+            d['arguments'] = args
+            # f_native = json.loads(open('%s/data/%s' % (os.getenv("DKU_CUSTOM_RESOURCE_FOLDER"), f.get("native"))).read())
+            f_native = f
+            keys_native = f_native.keys()
+            if 'argument_clauses' in keys_native:
+                a_n = []
+                arg_lst_native = f_native['argument_clauses']
+                for argument_native in arg_lst_native:
+                    arg_n = {}
+                    arg_n["alternateNames"] = argument_native.get("alternateNames", [""])[0] if argument_native.get("alternateNames", []) else ""
+                    arg_n["name"] = argument_native.get("name", "")
+                    a_n.append(arg_n)                                                           
+                args = inNativeCheck(args, a_n)
+        return d
+        
+    except ValueError:
+        logging.info("%s is not a valid json file." % file_name)
+   
 
 def getConnectionParamsFromDataset(inputDataset):
     return inputDataset.get_location_info(sensitive_info=True)['info']
@@ -71,9 +260,20 @@ def do(payload, config, plugin_config, inputs):
     
     # SKS : in order to show the query results in the UI front-end button
     if "query" in payload:
-        # create a open_ended_query_generator pass in "output" for the output_table_name argument and 'config' as the config_json
-        sql_generator = OpenEndedQueryGenerator('output', config)
-        result = sql_generator.create_query()
+
+        # Valib
+        try:
+            dss_function = config.get('function', None)
+            if dss_function and 'function_type' in dss_function and dss_function['function_type'] == "valib":
+                json_contents = json.loads(dss_function["json_contents"])
+                result = valib_execution(json_contents, dss_function, valib_query_wrapper=None)
+                return {'result' : result}
+
+            # create a open_ended_query_generator pass in "output" for the output_table_name argument and 'config' as the config_json
+            sql_generator = OpenEndedQueryGenerator('output', config)
+            result = sql_generator.create_query()
+        except:
+            result = "No query present to report."
         return {'result' : result}
 
     #SKS: Test code to check if I can run a query against the capability table
@@ -103,28 +303,62 @@ def do(payload, config, plugin_config, inputs):
         except:
             return {'result' : "Error"}
 
-
-    # SKS create query where you get back JSON for only selected category
-    
     # Recipe inputs
     #env = os.getenv("DKU_CUSTOM_RESOURCE_FOLDER")
     env = get_recipe_resource()
     
+    # The purpose of this will be given a filepath load in the JSON as json_dict 
+    if "load_json" in payload:
+        try:
+            json_file_path = payload["load_json"]
+            json_file_path = os.path.join(env, 'data', json_file_path)
+            with open(json_file_path) as f:
+                result = load_json(json.load(f), inputs)
+                return {'result' : result}
+        except:
+            return {'result' : "Error"}
+
+
     # SKS Should there be other plugin names?
     plugin_name = "Advanced SQL Engine Functions"
     if env.find("MLE") != -1:
         plugin_name = "Advanced MLE Engine Functions"
 
-    category_name = config["category"]
-    fallback_directory = env + '/data/' + vantage_version_number + "/" + category_name
+
+    #category_names = config["category"].split(";")
+    category_names = []
+    if "SQLE" not in category_names:
+        category_names += ["SQLE"]
+    if "VALIB" not in category_names:
+        category_names += ["VALIB"]
     
-    # Check if fallback directory exists
-    if not os.path.isdir(fallback_directory):
-        # Use the latest version we have if the version is not available
-        fallback_directory = env + '/data/vantage2.0/' + category_name
+    choices = []
+    for category in category_names:
+        fallback_directory = os.path.join(env, 'data', vantage_version_number, category)
     
-    # SKS : Call common code to query all JSONs of this category
-    json_function_array, sql_query_worked = get_all_function_jsons( DataikuQueryEngineWrapper(executor), fallback_directory, category_name=category_name, plugin_name=plugin_name)
+        # Check if fallback directory exists
+        if not os.path.isdir(fallback_directory):
+            # Use the latest version we have if the version is not available
+            if vantage_version_number == "17.20" and os.path.isdir(os.path.join(env, 'data', "17.10", category)):
+                vantage_version_number = "17.10"
+            else:
+                vantage_version_number = "17.05"
+            fallback_directory = os.path.join(env, 'data', "17.10", category)
+
+    
+        # SKS : Call common code to query all JSONs of this category
+        fallback_files = os.listdir(fallback_directory)
+        fallback_files.sort()
+        for filename in fallback_files:
+            if not filename.endswith(".json"):
+                continue
+            function_dict = {} 
+            filepath = os.path.join(vantage_version_number, category, filename)
+            function_dict["name"] = filename.replace(".json", "")
+            function_dict["function_alias_name"] = function_dict["name"]
+            function_dict["json_file_path"] = filepath
+            function_dict["keyword"] = category
+            choices.append(function_dict)
 
 
     # SKS : caluclate the versionInfo used in the version dialog
@@ -137,173 +371,10 @@ def do(payload, config, plugin_config, inputs):
         else:
             versionInfo += "Vantage Capability Not Available"
         versionInfo += "</br>" + "</br>"
-    versionInfo += "Vantage Version: " + vantage_version_number
-
-    # Add Extra Version Info
-    try:
-        extra_version_query =  "SELECT InfoData FROM DBC.DBCInfoV where InfoKey = 'VERSION'"
-        extra_version_query_result = executor.query_to_df(extra_version_query)
-        for row in extra_version_query_result.iterrows():
-            vantage_version_extra = row[1]["InfoData"]
-            versionInfo += "</br>" + vantage_version_extra
-            print("Vantage Version = ", vantage_version_extra)
-            break
-    except:
-        print("Vantage Version Error Occured.")
-        pass
+    versionInfo += "Analytics Database version: " + vantage_version_number
 
                 
-
-    choices = []
-    
-    # SKS : Iterate over all json's in array
-    for json_dict in json_function_array:
-        try:
-
-            f = json_dict
-            d = {
-                "name":"",
-                "function_alias_name":"",
-                "output_tables":"",
-                "arguments":"",
-                "asterarguments":"",
-                "partitionInputKind":[],
-                "partitionAttributes":"",
-                "isOrdered":False,
-                "orderByColumn":"",
-                "hasInputTable":False,
-                "isQueryMode": False,
-                "queries": [],
-                "hasNativeJSON": True
-            }
-            
-            keys = f.keys()
-
-            # SKS Return the original JSON contents in the dictionary
-            d["json_contents"] = json.dumps(f)
-            
-            # Get the function name and alias name, and use the function name as the alias name if the latter does not exist.
-            d["name"] = f.get("function_name", "")
-            d["function_alias_name"] = f.get("function_alias_name", f.get("function_name", ""))
-            
-            unaliased_inputs = {'desc':{}, 'values':[], 'count':0}
-            required_inputs = []
-            # Run through all the input tables of the function.
-            if "input_tables" in keys:
-                d["hasInputTable"] = True
-                input_table_list = f["input_tables"]
-                for table in input_table_list:
-                    required_input_dict = {"isRequired": True, "partitionAttributes":"", "orderByColumn": ""}
-                    required_input_dict['isRequired'] = table.get('isRequired', True) # Assume required unless specified False.
-                    required_input_dict['isOrdered'] = table.get('isOrdered', False) # Assume unordered unless specified True.
-                    required_input_dict['alternateNames'] = table.get('alternateNames', []) # Assume no alternate names unless specified.
-                    
-                    requiredInputKind = table.get("requiredInputKind", []) # All element of the requiredInputKind list.
-                    partitionByKey = requiredInputKind[0] if requiredInputKind else "" # partitionByKey is the first element of the requiredInputKind list.
-                    if 'partitionByOne' in table.keys() and table['partitionByOne']:
-                        if 'partitionByOneInclusive' in table.keys() and table['partitionByOneInclusive']:  # Checks if partitionByOneInclusive is a key.
-                            requiredInputKind.append("PartitionByOne") # If it is a key, we append PartitionByOne to the inputKindChoices.
-                        else:
-                            partitionByKey = "PartitionByOne" # If partitionByOneInclusive is not a key, we override the partitionByKey to be partitionByOne.
-                    required_input_dict['kind'] = partitionByKey
-                    required_input_dict['inputKindChoices'] = requiredInputKind
-                    
-                    # Check if the table is named (= required input) or not (unaliased input).
-                    if 'name' in table.keys() or ('Dimension' in table.get('requiredInputKind',[]) and 0 < unaliased_inputs.get('count',0)):
-                        required_input_dict['name'] = table.get('name', 'Dimension')
-                        required_input_dict['value'] = ""
-                        required_inputs.append(required_input_dict)
-                    else:
-                        unaliased_inputs['count'] += 1
-                        d["isOrdered"] = table.get("isOrdered", False)
-                        if 'partitionByOne' in table.keys() and table['partitionByOne']:
-                            d['partitionInputKind'] = ['PartitionByOne']
-                        else:
-                            d['partitionInputKind'] = table.get("requiredInputKind", [])
-                            
-            d["required_input"] = required_inputs
-            d["unaliased_inputs"] = unaliased_inputs
-            
-            # Run through all output tables.
-            if 'output_tables' in keys:
-                ot = []
-                out_table_list = f["output_tables"]
-                for table in out_table_list:
-                    outtbl = {"name":"","isRequired":"","value":"", "datatype": "", "allowsLists":True}
-                    if table.get('alternateNames', []):
-                        outtbl["name"] = table.get('alternateNames', [''])[0]
-                    outtbl["name"] = table.get("name", "")
-                    outtbl["isRequired"] = table.get("isRequired", False)
-                    outtbl["datatype"] = table.get("datatype", "")
-
-                    # SKS: Add upper and lower bounds
-                    outtbl["lowerBound"] = table.get("lowerBound", "")
-                    outtbl["upperBound"] = table.get("upperBound", "")
-
-                    # fixes future problem where the type in JSON is both numeric and string
-                    #if outtbl["datatype"].contains("STRING") and outtbl["datatype"] != "STRING":
-                    #    outtbl["datatype"] = "STRING"
-
-                    outtbl["allowsLists"] = table.get("allowsLists", True)
-                    outtbl["targetTable"] = table.get("targetTable", [])
-                    outtbl["isOutputTable"] = table.get("isOutputTable", False)
-                    outtbl["permittedValues"] = table.get("permittedValues", [])
-                    if 'defaultValue' in table:
-                        outtbl["value"] = defaultValuesFromArg(table)
-                        # SKS: 
-                        outtbl["defaultValue"] = outtbl["value"]
-                    ot.append(outtbl)
-                d["output_tables"] = ot
-            
-            # Similar to output tables.
-            if 'argument_clauses' in keys:
-                args = []
-                arg_lst = f['argument_clauses']
-                for argument in arg_lst:
-                    arg = {"name":"","isRequired":"","value":"", "datatype": "", "allowsLists":True}
-                    if argument.get('alternateNames', []):
-                        arg["name"] = argument.get('alternateNames', [''])[0]
-                    arg["name"] = argument.get("name", "")
-                    arg["isRequired"] = argument.get("isRequired", False)
-                    arg["datatype"] = argument.get("datatype", "")
-
-                    # SKS: Add upper and lower bounds
-                    arg["lowerBound"] = str(argument.get("lowerBound", ""))
-                    arg["upperBound"] = str(argument.get("upperBound", ""))
-
-                    # SKS: fixes future problem where the type in JSON is both numeric and string
-                    #if arg["datatype"].contains("STRING") and arg["datatype"] != "STRING":
-                    #    arg["datatype"] = "STRING"
-
-
-                    arg["allowsLists"] = argument.get("allowsLists", True)
-                    arg["targetTable"] = argument.get("targetTable", [])
-                    arg["isOutputTable"] = argument.get("isOutputTable", False)
-                    arg["permittedValues"] = argument.get("permittedValues", [])
-                    if 'defaultValue' in argument:
-                        arg["value"] = defaultValuesFromArg(argument)
-                        # SKS: Added Default Value for frontend to use as well
-                        arg["defaultValue"] = arg["value"]
-                    # arg["inNative"] = True # Setting to True because all files should be native and not MLE.
-                    args.append(arg)
-                d['arguments'] = args
-                # f_native = json.loads(open('%s/data/%s' % (os.getenv("DKU_CUSTOM_RESOURCE_FOLDER"), f.get("native"))).read())
-                f_native = f
-                keys_native = f_native.keys()
-                if 'argument_clauses' in keys_native:
-                    a_n = []
-                    arg_lst_native = f_native['argument_clauses']
-                    for argument_native in arg_lst_native:
-                        arg_n = {}
-                        arg_n["alternateNames"] = argument_native.get("alternateNames", [""])[0] if argument_native.get("alternateNames", []) else ""
-                        arg_n["name"] = argument_native.get("name", "")
-                        a_n.append(arg_n)                                                           
-                    args = inNativeCheck(args, a_n)
-            choices.append(d)
-            
-        except ValueError:
-            logging.info("%s is not a valid json file." % file_name)
-            
+         
     input_table_name = inputs[0]['fullName'].split('.')[1]
     input_dataset =  dataiku.Dataset(input_table_name)
     schema = input_dataset.read_schema()
@@ -313,7 +384,7 @@ def do(payload, config, plugin_config, inputs):
         inputtablename = inputdataset['fullName'].split('.')[1]
         inputdataset = dataiku.Dataset(inputtablename)
         inputschemas[inputtablename] = inputdataset.read_schema()
-
+    
     connection = getConnectionParamsFromDataset(input_dataset)
     aafschema = ([property.get('value', '') for property in connection.\
                   get('connectionParams', {}).get('properties', {})
@@ -323,12 +394,16 @@ def do(payload, config, plugin_config, inputs):
     # inputschemas = None
     # aafschema = None
     
+    val_db, default_db = get_val_default_database(inputdataset)
+
     print('I am done')
     return {'choices' : choices,
             'schema': schema,
             'inputs': inputs,
             'inputschemas': inputschemas,
             'aafschema': aafschema,
+            'valDatabase' : val_db,
+            'defaultDatabase' : default_db,
             'versionInfo' : versionInfo}
 
 def isMultipleTagsInput(item):
@@ -350,8 +425,10 @@ def defaultValuesFromArg(item):
     :param item: Table argument.
     """
     defaultvalues = item.get('defaultValue', '')    
-    if not item['isRequired'] and item["datatype"] != 'BOOLEAN':
-        return ""
+    
+    # SKS : Always have defaults
+    #if not item['isRequired'] and item["datatype"] != 'BOOLEAN':
+    #    return ""
     
     if isMultipleTagsInput(item) and isinstance(defaultvalues, (list, tuple)):
         DELIMITER = chr(0)

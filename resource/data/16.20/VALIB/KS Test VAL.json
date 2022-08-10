@@ -1,0 +1,190 @@
+{
+    "json_schema_major_version": "1",
+    "json_schema_minor_version": "1",
+    "json_content_version": "1",
+    "function_name": "KS Test VAL",
+    "function_version": "1.0",
+    "function_alias_name": "KS Test VAL",
+    "function_type": "valib",
+    "function_r_name": "",
+    "short_description": "Statistical tests of this type attempt to determine the likelihood that two distribution functions represent the same distribution.",
+    "long_description": "Statistical tests of this type attempt to determine the likelihood that two distribution functions represent the same distribution.",
+    "input_tables": [
+        {
+            "requiredInputKind": [
+                "PartitionByNone"
+            ],
+            "isOrdered": false,
+            "partitionByOne": false,
+            "name": "input_A_role",
+            "alternateNames": [],
+            "isRequired": true,
+            "rDescription": "what input A means",
+            "description": "what input A means",
+            "datatype": "TABLE_ALIAS",
+            "allowsLists": false,
+            "rName": "input_A_role",
+            "useInR": true,
+            "rOrderNum": 1
+        }
+    ],
+    "argument_clauses": [
+        {
+            "targetTable": [
+                "input_A_role"
+            ],
+            "checkDuplicate": false,
+            "allowedTypes": [],
+            "allowedTypeGroups": [
+                "ALL"
+            ],
+            "matchLengthOfArgument": "",
+            "allowPadding": false,
+            "name": "DependentColumn",
+            "alternateNames": [],
+            "isRequired": true,
+            "rDescription": "Specifies the name of the numeric column that is tested to have a normal distribution.",
+            "description": "Specifies the name of the numeric column that is tested to have a normal distribution.",
+            "datatype": "COLUMNS",
+            "allowsLists": false,
+            "rName": "exclude",
+            "useInR": true,
+            "rOrderNum": 2,
+            "requiredLength": 1
+        },
+        {
+            "targetTable": [
+                "input_A_role"
+            ],
+            "checkDuplicate": false,
+            "allowedTypes": [],
+            "allowedTypeGroups": [
+                "ALL"
+            ],
+            "matchLengthOfArgument": "",
+            "allowPadding": false,
+            "name": "Columns",
+            "alternateNames": [],
+            "isRequired": false,
+            "rDescription": "Specifies a categorical variable with two values that indicate the distribution to which the 'dependent_column' belongs.",
+            "description": "Specifies a categorical variable with two values that indicate the distribution to which the 'dependent_column' belongs.",
+            "datatype": "COLUMNS",
+            "allowsLists": true,
+            "rName": "exclude",
+            "useInR": true,
+            "rOrderNum": 3
+        },
+        {
+            "defaultValue": false,
+            "name": "Fallback",
+            "alternateNames": [],
+            "isRequired": false,
+            "rDescription": "Specifies whether the FALLBACK is requested as in the output result or not.",
+            "description": "Specifies whether the FALLBACK is requested as in the output result or not.",
+            "datatype": "BOOLEAN",
+            "allowsLists": false,
+            "rName": "",
+            "useInR": true,
+            "rOrderNum": 4
+        },
+        {
+            "permittedValues": [
+                "Kolmogorov-Smirnov Test",
+                "Lilliefors Test",
+                "Shapiro-Wilk Test",
+                "D'Agostino and Pearson Test",
+                "Smirnov Test"
+            ],
+            "defaultValue": "ks",
+            "isOutputColumn": false,
+            "name": "Style",
+            "alternateNames": [],
+            "isRequired": false,
+            "rDescription": "Specifies the test style.",
+            "description": "Specifies the test style.",
+            "datatype": "STRING",
+            "allowsLists": false,
+            "rName": "mavgtype",
+            "useInR": true,
+            "rOrderNum": 5
+        },
+        {
+            "targetTable": [
+                "input_A_role"
+            ],
+            "checkDuplicate": false,
+            "allowedTypes": [],
+            "allowedTypeGroups": [
+                "ALL"
+            ],
+            "matchLengthOfArgument": "",
+            "allowPadding": false,
+            "name": "GroupColumns",
+            "alternateNames": [],
+            "isRequired": false,
+            "rDescription": "Specifies the name(s) of the column(s) for grouping so that a separate result is produced for each value or combination of values in the specified column or columns.",
+            "description": "Specifies the name(s) of the column(s) for grouping so that a separate result is produced for each value or combination of values in the specified column or columns.",
+            "datatype": "COLUMNS",
+            "allowsLists": true,
+            "rName": "exclude",
+            "useInR": true,
+            "rOrderNum": 6
+        },
+        {
+            "defaultValue": false,
+            "name": "AllowDuplicates",
+            "alternateNames": [],
+            "isRequired": false,
+            "rDescription": "Specifies whether duplicates are allowed in the output or not.",
+            "description": "Specifies whether duplicates are allowed in the output or not.",
+            "datatype": "BOOLEAN",
+            "allowsLists": false,
+            "rName": "",
+            "useInR": true,
+            "rOrderNum": 7
+        },
+        {
+            "defaultValue": 0.05,
+            "allowNaN": false,
+            "name": "ProbabilityThreshold",
+            "alternateNames": [],
+            "isRequired": false,
+            "rDescription": "Specifies the threshold probability, i.e., 'alpha' probability, below which the null hypothesis is rejected.",
+            "description": "Specifies the threshold probability, i.e., 'alpha' probability, below which the null hypothesis is rejected.",
+            "datatype": "DOUBLE PRECISION",
+            "allowsLists": false,
+            "rName": "",
+            "useInR": true,
+            "rOrderNum": 8
+        }
+    ],
+    "name_map": {
+        "Kolmogorov-SmirnovTest": "ks_test",
+        "DependentColumn": "ks_test_dependent_column",
+        "Columns": "ks_test_columns",
+        "Fallback": "ks_test_fallback",
+        "Style": "ks_test_style",
+        "GroupColumns": "ks_test_group_columns",
+        "AllowDuplicates": "ks_test_allow_duplicates",
+        "ProbabilityThreshold": "ks_test_probability_threshold"
+    },
+    "type_map": {
+        "Kolmogorov-SmirnovTest": "SEPARATOR",
+        "DependentColumn": "COLUMN",
+        "Columns": "COLUMNS",
+        "Fallback": "BOOLEAN",
+        "Style": "SELECT",
+        "GroupColumns": "COLUMNS",
+        "AllowDuplicates": "BOOLEAN",
+        "ProbabilityThreshold": "DOUBLE"
+    },
+    "choices_map": {
+        "Style": {
+            "Kolmogorov-Smirnov Test": "ks",
+            "Lilliefors Test": "l",
+            "Shapiro-Wilk Test": "sw",
+            "D'Agostino and Pearson Test": "p",
+            "Smirnov Test": "s"
+        }
+    }
+}

@@ -1,0 +1,185 @@
+{
+    "json_schema_major_version": "1",
+    "json_schema_minor_version": "1",
+    "json_content_version": "1",
+    "function_name": "Label Encoder VAL",
+    "function_version": "1.0",
+    "function_alias_name": "Label Encoder VAL",
+    "function_type": "valib",
+    "function_r_name": "",
+    "short_description": "Label encoding a categorical data column is done to re-express existing values of a column (variable) into a new coding scheme or to correct data quality problems and focus an analysis of a particular value. It allows for mapping individual values, NULL values, or any number of remaining values (ELSE option) to a new value, a NULL value or the same value.  When the delay query is off, the input table be transformed immediately otherwise the result should be combined with other transformations and fed into a final Transform function.",
+    "long_description": "Label encoding a categorical data column is done to re-express existing values of a column (variable) into a new coding scheme or to correct data quality problems and focus an analysis of a particular value. It allows for mapping individual values, NULL values, or any number of remaining values (ELSE option) to a new value, a NULL value or the same value.  When the delay query is off, the input table be transformed immediately otherwise the result should be combined with other transformations and fed into a final Transform function.",
+    "input_tables": [
+        {
+            "requiredInputKind": [
+                "PartitionByNone"
+            ],
+            "isOrdered": false,
+            "partitionByOne": false,
+            "name": "input_A_role",
+            "alternateNames": [],
+            "isRequired": true,
+            "rDescription": "The dataset containing the raw information that we will perform a Label Encoder VALIB function call",
+            "description": "The dataset containing the raw information that we will perform a Label Encoder VALIB function call",
+            "datatype": "TABLE_ALIAS",
+            "allowsLists": false,
+            "rName": "input_A_role",
+            "useInR": true,
+            "rOrderNum": 1
+        }
+    ],
+    "argument_clauses": [
+        {
+            "defaultValue": true,
+            "name": "DelayQuery",
+            "alternateNames": [],
+            "isRequired": false,
+            "rDescription": "Choose to Delay Query or Execute Immediately",
+            "description": "Choose to Delay Query or Execute Immediately",
+            "datatype": "BOOLEAN",
+            "allowsLists": false,
+            "rName": "",
+            "useInR": true,
+            "rOrderNum": 2
+        },
+        {
+            "targetTable": [
+                "input_A_role"
+            ],
+            "checkDuplicate": false,
+            "allowedTypes": [],
+            "allowedTypeGroups": [
+                "ALL"
+            ],
+            "matchLengthOfArgument": "",
+            "allowPadding": false,
+            "name": "KeyColumns",
+            "alternateNames": [],
+            "isRequired": false,
+            "rDescription": "",
+            "description": "",
+            "datatype": "COLUMNS",
+            "allowsLists": true,
+            "rName": "exclude",
+            "useInR": true,
+            "rOrderNum": 3
+        },
+        {
+            "targetTable": [
+                "input_A_role"
+            ],
+            "checkDuplicate": false,
+            "allowedTypes": [],
+            "allowedTypeGroups": [
+                "ALL"
+            ],
+            "matchLengthOfArgument": "",
+            "allowPadding": false,
+            "name": "Columns",
+            "alternateNames": [],
+            "isRequired": false,
+            "rDescription": "",
+            "description": "",
+            "datatype": "COLUMNS",
+            "allowsLists": true,
+            "rName": "exclude",
+            "useInR": true,
+            "rOrderNum": 4
+        },
+        {
+            "permittedValues": [],
+            "isOutputColumn": true,
+            "name": "RecodeValuesMapping",
+            "alternateNames": [],
+            "isRequired": false,
+            "rDescription": "",
+            "description": "",
+            "datatype": "STRING",
+            "allowsLists": true,
+            "rName": "output.column",
+            "useInR": true,
+            "rOrderNum": 5
+        },
+        {
+            "permittedValues": [],
+            "isOutputColumn": true,
+            "name": "RecodeOther",
+            "alternateNames": [],
+            "isRequired": false,
+            "rDescription": "",
+            "description": "",
+            "datatype": "STRING",
+            "allowsLists": false,
+            "rName": "output.column",
+            "useInR": true,
+            "rOrderNum": 6,
+            "defaultValue": "NULL"
+        },
+        {
+            "permittedValues": [
+                "None",
+                "Literal",
+                "Mean",
+                "Median",
+                "Mode",
+                "Median without Mean"
+            ],
+            "defaultValue": "None",
+            "isOutputColumn": false,
+            "name": "Nullstyle",
+            "alternateNames": [],
+            "isRequired": false,
+            "rDescription": "",
+            "description": "",
+            "datatype": "STRING",
+            "allowsLists": false,
+            "rName": "mavgtype",
+            "useInR": true,
+            "rOrderNum": 7
+        },
+        {
+            "defaultValue": 0,
+            "allowNaN": false,
+            "name": "FillNAValue",
+            "alternateNames": [],
+            "isRequired": false,
+            "rDescription": "",
+            "description": "",
+            "datatype": "DOUBLE PRECISION",
+            "allowsLists": false,
+            "rName": "",
+            "useInR": true,
+            "rOrderNum": 8
+        }
+    ],
+    "name_map": {
+        "Labelencoder": "labelencoder",
+        "DelayQuery": "labelencoder_delayquery",
+        "KeyColumns": "labelencoder_key_columns",
+        "Columns": "labelencoder_columns1",
+        "RecodeValuesMapping": "labelencoder_map",
+        "RecodeOther": "labelencoder_recodeother",
+        "Nullstyle": "labelencoder_nullstyle1",
+        "FillNAValue": "labelencoder_fillna_value1"
+    },
+    "type_map": {
+        "Labelencoder": "SEPARATOR",
+        "DelayQuery": "BOOLEAN",
+        "KeyColumns": "COLUMNS",
+        "Columns": "COLUMNS",
+        "RecodeValuesMapping": "MAP",
+        "RecodeOther": "STRING",
+        "Nullstyle": "SELECT",
+        "FillNAValue": "DOUBLE"
+    },
+    "choices_map": {
+        "Nullstyle": {
+            "None": "None",
+            "Literal": "literal",
+            "Mean": "mean",
+            "Median": "median",
+            "Mode": "mode",
+            "Median without Mean": "medianwithoutaveraging"
+        }
+    }
+}

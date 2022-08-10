@@ -20,7 +20,6 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SO
 # SKS : Import 
 from base_analytic_query_generator import BaseAnalyticQueryGenerator
 
-# TODO: comment!!    
 def strip_quotes(input_string):
     lst =  input_string.split(",")
     for index in range(len(lst)):
@@ -68,6 +67,7 @@ class OpenEndedQueryGenerator():
         func_other_arg_sql_names= []
         func_input_dataframe_type= []
         func_input_distribution= []
+        func_input_local_order = []
         func_type= 'FFE'
         engine= 'ENGINE_SQL'
 
@@ -86,19 +86,28 @@ class OpenEndedQueryGenerator():
                 continue
 
             # SKS : Need this otherwise it won't show up, but of course the "AS" name needs to be unique
-            input_name = "\"" + "input" + str(input_num) + "\""
+            if "name" in req_input:
+                # Added for support of 17.10 functions
+                input_name = "\"" + req_input["name"] + "\""
+            else:
+                input_name = "\"" + "input" + str(input_num) + "\""
+
             if ('alternateNames' in req_input) and (req_input["alternateNames"] != []):
                 input_name = str(req_input["alternateNames"]).strip('[]').replace("'", '"')
             func_input_arg_sql_names.append(input_name)
             input_num += 1
 
-            func_input_table_view_query.append(req_input["value"])
+            input_table_name = req_input["value"]
+            if ("inputtables" in self._config_json["function"]) and (input_table_name in self._config_json["function"]["inputtables"]):
+                # Use the full table name
+                input_table_name = self._config_json["function"]["inputtables"][input_table_name]
+            input_table_name = "\"" + input_table_name + "\""
+            func_input_table_view_query.append(input_table_name)
 
             # SKS : loop through the partition attributes and append according to the type of partition
             partition_by = []
             for i in range(len(req_input["partitionAttributes"])):
-                if req_input['kind'] == 'PartitionByKey':
-                    # TODO: List should be string of things
+                if req_input['kind'] == 'PartitionByKey' or req_input['kind'] == 'HashByKey':
                     partition_by.append(req_input["partitionAttributes"][i])
                 elif req_input['kind'] == 'PartitionByAny':
                     partition_by.append("ANY")
@@ -119,18 +128,33 @@ class OpenEndedQueryGenerator():
                 if ("orderByColumnDirection" in req_input) and (req_input["orderByColumnDirection"][i] != ""):
                     order_info += " " + req_input["orderByColumnDirection"][i]
                 order_by.append(order_info)
+
+            # Dimension or None should never have order/local order by
+            if req_input['kind'].lower() == 'dimension' or req_input['kind'].lower() == 'none':
+                order_by = []
+
             if len(order_by)>0:
+                if req_input['kind'] == 'HashByKey':
+                    func_input_local_order.append(True)
+                else:
+                    func_input_local_order.append(False)
+
                 func_input_order_by_cols.append(", ".join(order_by))
             else:
+                func_input_local_order.append(False)
                 func_input_order_by_cols.append(None)
 
-            # SKS TODO Is this always TABLE?
+            # Currently Always a TABLE
             func_input_dataframe_type.append('TABLE')
 
-            # SKS TODO: How/When do you set DIMENSION vs FACT?
+                
             # 'inputKindChoices': ['Dimension'],
             if req_input['kind'].lower() == 'dimension':
                 func_input_distribution.append('DIMENSION')
+            elif req_input['kind'].lower() == 'none':
+                func_input_distribution.append('NONE')
+            elif req_input['kind'].lower() == 'hashbykey':
+                func_input_distribution.append('HASH')
             else:
                 func_input_distribution.append('FACT')
             
@@ -140,30 +164,44 @@ class OpenEndedQueryGenerator():
             # SKS : if the value attribute is not included in arg, we do not need to do anything
             if 'value' not in arg:
                 continue
-            # SKS : if the defaultValue exists and is equivalent to the value attribute then we don't want that to be 
-            # explicilty included in the sql creation
-            if ('defaultValue' in arg) and (arg['value'] == arg['defaultValue']):
-                continue
-            # SKS : for columns, ignore columns that are empty
-            if ('defaultValue' in arg) and (arg['datatype'] == 'COLUMNS') and arg['defaultValue'] == '' and (arg['value'] == [""] or arg['value'] == []):
-                continue
-            # SKS : if the value is None then ignore
-            if arg['value'] == None:
-                continue
-            # SKS Boolean check - deal with when default value is not a string but value is a string
-            if ('defaultValue' in arg) and arg['datatype'] == 'BOOLEAN' and arg['defaultValue']==False and type(arg['value']) == str and arg['value'].lower()=='false':
-                continue
-            if ('defaultValue' in arg) and arg['datatype'] == 'BOOLEAN' and arg['defaultValue']==True and type(arg['value']) == str and arg['value'].lower()=='true':
-                continue
+            # SKS : if the defaultValue exists and is equivalent to the value attribute then we don't want that to be explicilty included in the sql creation 
+            # UNLESS it is a mandatory for boolean
+            if (arg['value'] == '') and (arg['datatype'] == 'BOOLEAN') and ('isRequired' in arg) and arg['isRequired']:
+                if ('defaultValue' in arg) and arg['defaultValue']:
+                    arg['value'] = 'True'
+                else:
+                    arg['value'] = 'False'
+            else:
+                if ('defaultValue' in arg) and (arg['value'] == arg['defaultValue']):
+                    continue
+                # SKS : for columns, ignore columns that are empty
+                if ('defaultValue' in arg) and (arg['datatype'] == 'COLUMNS') and arg['defaultValue'] == '' and (arg['value'] == [""] or arg['value'] == []):
+                    continue
+                # SKS : if the value is None then ignore
+                if arg['value'] == None:
+                    continue
+                # SKS Boolean check - deal with when default value is not a string but value is a string
+                if ('defaultValue' in arg) and arg['datatype'] == 'BOOLEAN' and arg['defaultValue']==False and type(arg['value']) == str and arg['value'].lower()=='false':
+                    continue
+                if ('defaultValue' in arg) and arg['datatype'] == 'BOOLEAN' and arg['defaultValue']==True and type(arg['value']) == str and arg['value'].lower()=='true':
+                    continue
 
-            # SKS : if the value is something other than empty string we want to accrodingly update some of the arguments 
+            # SKS : if the value is something other than empty string we want to accordingly update some of the arguments 
             if arg['value'] != '':
                 func_other_arg_sql_names.append(arg['name'].upper())
                 func_other_arg_json_datatypes.append(arg['datatype'])
 
                 # SKS : we need to account for the different types of arguments and in order for the arguments to appear the same 
                 # as the original sql query, we need to accordingly change to fit this criteria 
-                if arg['datatype'] == 'STRING' and ('\x00' in arg['value']):
+                if arg['datatype'] == 'INTEGER' and ((type(arg['value']) == str or type(arg['value']) == list) and ('\x00' in arg['value']) or arg.get("allowsLists", False)):
+                    numbers = ",".join(arg['value'].split('\x00'))
+                    func_other_args_values.append(numbers)
+                    continue
+                elif arg['datatype'] == 'INTEGER' :
+                    number = int(arg['value'])
+                    func_other_args_values.append(number)
+                    continue
+                elif arg['datatype'] == 'STRING' and ('\x00' in arg['value']):
                     # HACK for Npath: two cases - if it is an npath argument without quotes then call strip_quotes function
                     string_value = str(arg['value'].split('\x00')).strip('[]')
                     if arg['name'].upper() in npath_non_quoted_args:
@@ -177,7 +215,7 @@ class OpenEndedQueryGenerator():
                 elif arg['datatype'] == 'DOUBLE PRECISION' and type(arg['value']) == str:
                     # SKS: Fix issues when JSON have bug that it is double precision by value is a string!
                     func_other_args_values.append(float(arg['value']))
-                # HACK for Npath to account for all its arguments that don't need quotations 
+                # Account for arguments that don't need quotations 
                 elif arg['name'].upper() in npath_non_quoted_args:
                     func_other_args_values.append(str(arg['value']))
                 else:
@@ -199,7 +237,7 @@ class OpenEndedQueryGenerator():
         query_string_gen_unpack = BaseAnalyticQueryGenerator(func_alias_name, function_name, func_input_arg_sql_names, func_input_table_view_query, func_input_dataframe_type,
                              func_input_distribution, func_input_partition_by_cols, func_input_order_by_cols,
                              func_other_arg_sql_names, func_other_args_values, func_other_arg_json_datatypes,
-                             func_output_args_sql_names, func_output_args_values, func_type,
+                             func_output_args_sql_names, func_output_args_values, func_input_local_order, func_type,
                              engine, self._verbose)
         base_query = query_string_gen_unpack._gen_sqlmr_select_stmt_sql()
 

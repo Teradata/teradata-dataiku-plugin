@@ -19,7 +19,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SO
 # Pretty-printing of Dictionaries.
 import pprint
 import logging
-
+import json
 import dataiku
 from dataiku import Dataset
 from dataiku.customrecipe import *
@@ -30,17 +30,23 @@ from querybuilderfacade import *
 from inputtableinfo import *
 from outputtableinfo import *
 
-# SKS : Import 
+# SQLE functions via Open ended query generation
 from open_ended_query_generator import OpenEndedQueryGenerator
 from vantage_schema import set_schema_from_vantage
 
+# Valib functions
+from teradata_valib import *
+
+
 def vantageDo():
+
     """
     Takes the parameters set by the user from the UI, creates the query, and then executes it.
     """
     # Formatting options.
     SEP_LENGTH = 80
     SEP = "=" * SEP_LENGTH
+    pp = pprint.PrettyPrinter(indent=4)
     
     # Recipe inputs
     main_input_name = get_input_names_for_role('main')[0]
@@ -54,9 +60,79 @@ def vantageDo():
     client = dataiku.api_client()
     projectkey = main_input_name.split('.')[0]
     project = client.get_project(projectkey)
+    connections = client.list_connections()
+
+    recipe_config = get_recipe_config()
+
+    # Datasets
+    input_table_names = []
+    output_table_names = []
+    try:
+        # Map dataset names to table names
+        inputtables = {}
+        inputschemas = {}
+        datasetnames = {}
+        input_names = get_input_names()
+        for input_name in input_names:
+            inputDataset = dataiku.Dataset(input_name)
+            user_table_name = input_name.split('.')[1]
+            connectionInfo = inputDataset.get_location_info()['info']
+            connectionName = connectionInfo['connectionName']
+            defaultDatabase = inputDataset.get_config()['params'].get('schema', '')
+            if not defaultDatabase:
+                defaultDatabase = connections[connectionName]['params']['defaultDatabase']
+            full_table_name = connectionInfo['table']
+            inputtables[user_table_name] = full_table_name
+            inputschemas[user_table_name] = defaultDatabase
+            datasetnames[user_table_name] = input_name
+        recipe_config["function"]["inputtables"] = inputtables
+
+        # generate parameter inputs tables map: name, datasetName, table and schema
+        required_inputs = recipe_config["function"]["required_input"]
+        for required_input in required_inputs:
+            user_table_name = ""
+            if "value" in required_input:
+                user_table_name = required_input["value"]
+            if user_table_name == "":
+                if ("isRequired" in required_input) and required_input["isRequired"]:
+                    raise RuntimeError("Input is missing - " + required_input["name"])
+                # No input set by user, so keep empty
+                input_table_names.append({})
+                continue
+            full_table_name = inputtables[user_table_name]
+            defaultDatabase = inputschemas[user_table_name]
+            table_map = {}
+            table_map["name"] = user_table_name
+            table_map["table"] = full_table_name
+            table_map["schema"] = defaultDatabase
+            table_map["datasetName"] = datasetnames[user_table_name]
+            input_table_names.append(table_map)
+        recipe_config["function"]["input_table_names"] = input_table_names
+
+        # generate parameter output tables map: name, datasetName, table and schema
+        for output_name in get_output_names_for_role('main'):
+            outputDataset = dataiku.Dataset(output_name)
+            user_table_name = output_name.split('.')[1]
+            connectionInfo = outputDataset.get_location_info()['info']
+            connectionName = connectionInfo['connectionName']
+            defaultDatabase = inputDataset.get_config()['params'].get('schema', '')
+            if not defaultDatabase:
+                defaultDatabase = connections[connectionName]['params']['defaultDatabase']
+            full_table_name = connectionInfo['table']
+            table_map = {}
+            table_map["name"] = user_table_name
+            table_map["table"] = full_table_name
+            table_map["schema"] = defaultDatabase
+            table_map["datasetName"] = output_name
+            output_table_names.append(table_map)
+        recipe_config["function"]["output_table_names"] = output_table_names
+
+    except Exception as error:
+        raise RuntimeError("""Error obtaining connection settings from one of the input tables."""                           
+                           """ This plugin only supports Teradata tables.""")
+
     
     # Connection properties.
-    # TODO: Handle Input and Output Table connection properties.
     properties = input_dataset.get_location_info(sensitive_info=True)['info'].get('connectionParams').get('properties')
     autocommit = input_dataset.get_location_info(sensitive_info=True)['info'].get('connectionParams').get('autocommitMode')
     
@@ -87,8 +163,6 @@ def vantageDo():
     logging.info(SEP)
 
     # Recipe function param
-    dss_function = get_recipe_config().get('function', None)
-    pp = pprint.PrettyPrinter(indent=4)
     debug = False
     if debug:
     	logging.info(SEP)
@@ -98,32 +172,23 @@ def vantageDo():
 
     logging.info(SEP)
     logging.info('get_recipe_config():')
-    logging.info(pp.pformat(get_recipe_config()))
+    logging.info(pp.pformat(recipe_config))
     logging.info(SEP)
+
+
+    # VALIB     
+    dss_function = recipe_config.get('function', None)
+    if dss_function and 'function_type' in dss_function and dss_function['function_type'] == "valib":
+        dataiku_valib_execution(dss_function, connections, connectionName, executor, autocommit, pre_query, post_query, output_table_names)
+        return
 
     # output dataset
     try:
         outputTable = outputtableinfo(output_dataset.get_location_info()['info'], main_output_name,
-                                  get_recipe_config() or {})
+                                  recipe_config or {})
     except Exception as error:
         raise RuntimeError("""Error obtaining connection settings for output table."""                           
                            """ This plugin only supports Teradata tables.""")
-
-
-    # input datasets
-    try:
-        main_input_names = get_input_names_for_role('main')
-        inputTables = []
-        for inputname in main_input_names:
-            inconnectioninfo = dataiku.Dataset(inputname).get_location_info()['info']
-            inTable = inputtableinfo(inconnectioninfo, inputname, dss_function)
-            inputTables.append(inTable)
-
-    except Exception as error:
-        raise RuntimeError("""Error obtaining connection settings from one of the input tables."""                           
-                           """ This plugin only supports Teradata tables.""")
-
-
 
     # Handle dropping of output tables.
     if dss_function.get('dropIfExists', False):
@@ -160,8 +225,8 @@ def vantageDo():
 
 
 
-    # SKS: Create new query based on open ended approach
-    sql_generator = OpenEndedQueryGenerator(outputTable.tablename, get_recipe_config(), verbose=True)
+    # Create new query based on open ended approach
+    sql_generator = OpenEndedQueryGenerator(outputTable.tablename, recipe_config, verbose=True)
     logging.info(SEP)
     logging.info("OpenEndedQueryGenerator query:")
     my_query = sql_generator.create_query()
@@ -178,19 +243,10 @@ def vantageDo():
         executor.query_to_df(my_query, post_queries=post_query)
     except Exception as error:
         err_str = str(error)
-        err_str_list = err_str.split(" ")
-        # trying to shorten the error for the modal in front-end
-        if len(err_str_list) > 15:
-            logging.info(SEP)
-            logging.info(error)
-            logging.info(SEP)
-            new_err_str = err_str_list[:15]
-            new_err_str.append("\n\n")
-            new_err_str.append("...")
-            new_err_str = " ".join(new_err_str)
-            raise RuntimeError(new_err_str)
-        else:
-            raise RuntimeError(err_str)
+        index = err_str.index("[Teradata Database]")
+        if index != -1:
+            err_str = err_str[index:]
+        raise RuntimeError(err_str)
 
     logging.info('Moving results to output...')
 
@@ -219,7 +275,7 @@ def vantageDo():
                 logging.info('Output name 2')
                 logging.info(main_output_name2)
                 output_dataset2 =  dataiku.Dataset(main_output_name2)   
-                # print("od2 printer")
+                # logging.info("od2 logging.infoer")
                 tableNamePrefix = output_dataset2.get_location_info(sensitive_info=True)['info'].get('connectionParams').get('namingRule').get('tableNameDatasetNamePrefix')
                 if tableNamePrefix != None or tableNamePrefix != '':
                     logging.info('Table prefix is not empty:' + tableNamePrefix)

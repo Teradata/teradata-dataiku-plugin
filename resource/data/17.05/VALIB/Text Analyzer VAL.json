@@ -1,0 +1,94 @@
+{
+    "json_schema_major_version": "1",
+    "json_schema_minor_version": "1",
+    "json_content_version": "1",
+    "function_name": "Text Analyzer VAL",
+    "function_version": "1.0",
+    "function_alias_name": "Text Analyzer VAL",
+    "function_type": "valib",
+    "function_r_name": "",
+    "short_description": "The TextAnalyzer function analyzes character data and distinguishes if the field is a numeric type, date, time, timestamp, or character data and returns two output DataFrames, one containing the analysis results and the second one containing the column data type matrix having the progression of data type through the series of steps",
+    "long_description": "The TextAnalyzer function analyzes character data and distinguishes if the field is a numeric type, date, time, timestamp, or character data and returns two output DataFrames, one containing the analysis results and the second one containing the column data type matrix having the progression of data type through the series of steps",
+    "input_tables": [
+        {
+            "requiredInputKind": [
+                "PartitionByNone"
+            ],
+            "isOrdered": false,
+            "partitionByOne": false,
+            "name": "input_A_role",
+            "alternateNames": [],
+            "isRequired": true,
+            "rDescription": "what input A means",
+            "description": "what input A means",
+            "datatype": "TABLE_ALIAS",
+            "allowsLists": false,
+            "rName": "input_A_role",
+            "useInR": true,
+            "rOrderNum": 1
+        }
+    ],
+    "argument_clauses": [
+        {
+            "targetTable": [
+                "input_A_role"
+            ],
+            "checkDuplicate": false,
+            "allowedTypes": [],
+            "allowedTypeGroups": [
+                "ALL"
+            ],
+            "matchLengthOfArgument": "",
+            "allowPadding": false,
+            "name": "InputColumns",
+            "alternateNames": [],
+            "isRequired": true,
+            "rDescription": "Specifies the name(s) of the column(s) to analyze.",
+            "description": "Specifies the name(s) of the column(s) to analyze.",
+            "datatype": "COLUMNS",
+            "allowsLists": true,
+            "rName": "exclude",
+            "useInR": true,
+            "rOrderNum": 2
+        },
+        {
+            "defaultValue": true,
+            "name": "NumericAnalysis",
+            "alternateNames": [],
+            "isRequired": false,
+            "rDescription": "Specifies whether to process specific numeric types.",
+            "description": "Specifies whether to process specific numeric types.",
+            "datatype": "BOOLEAN",
+            "allowsLists": false,
+            "rName": "",
+            "useInR": true,
+            "rOrderNum": 3
+        },
+        {
+            "defaultValue": false,
+            "name": "UnicodeAnalysis",
+            "alternateNames": [],
+            "isRequired": false,
+            "rDescription": "Specifies whether a column declared to contain Unicode characters actually contains only Latin characters.",
+            "description": "Specifies whether a column declared to contain Unicode characters actually contains only Latin characters.",
+            "datatype": "BOOLEAN",
+            "allowsLists": false,
+            "rName": "",
+            "useInR": true,
+            "rOrderNum": 4
+        }
+    ],
+    "name_map": {
+        "TextAnalyzer": "textanalyzer",
+        "InputColumns": "textanalyzer_columns",
+        "NumericAnalysis": "textanalyzer_analyze_numerics",
+        "UnicodeAnalysis": "textanalyzer_analyze_unicode"
+    },
+    "type_map": {
+        "TextAnalyzer": "SEPARATOR",
+        "InputColumns": "COLUMNS",
+        "NumericAnalysis": "BOOLEAN",
+        "UnicodeAnalysis": "BOOLEAN"
+    },
+    "choices_map": {}
+}

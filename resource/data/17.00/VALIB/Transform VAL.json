@@ -1,0 +1,81 @@
+{
+    "json_schema_major_version": "1",
+    "json_schema_minor_version": "1",
+    "json_content_version": "1",
+    "function_name": "Transform VAL",
+    "function_version": "1.0",
+    "function_alias_name": "Transform VAL",
+    "function_type": "valib",
+    "function_r_name": "",
+    "short_description": "The Variable Transformation analysis reads a teradataml DataFrame and produces an output containing transformed columns. The input should be a combined table with however many transformations (using Dataiku's stack visual recipe).",
+    "long_description": "The Variable Transformation analysis reads a teradataml DataFrame and produces an output containing transformed columns. The input should be a combined table with however many transformations (using Dataiku's stack visual recipe).",
+    "input_tables": [
+        {
+            "requiredInputKind": [
+                "PartitionByNone"
+            ],
+            "isOrdered": false,
+            "partitionByOne": false,
+            "name": "input_A_role",
+            "alternateNames": [],
+            "isRequired": true,
+            "rDescription": "The dataset containing the raw information that we will perform a transform VALIB function call",
+            "description": "The dataset containing the raw information that we will perform a transform VALIB function call",
+            "datatype": "TABLE_ALIAS",
+            "allowsLists": false,
+            "rName": "input_A_role",
+            "useInR": true,
+            "rOrderNum": 1
+        },
+        {
+            "requiredInputKind": [
+                "PartitionByNone"
+            ],
+            "isOrdered": false,
+            "partitionByOne": false,
+            "name": "input_B_role",
+            "alternateNames": [],
+            "isRequired": false,
+            "rDescription": "",
+            "description": "",
+            "datatype": "TABLE_ALIAS",
+            "allowsLists": false,
+            "rName": "input_B_role",
+            "useInR": true,
+            "rOrderNum": 2
+        }
+    ],
+    "argument_clauses": [
+        {
+            "targetTable": [
+                "input_A_role"
+            ],
+            "checkDuplicate": false,
+            "allowedTypes": [],
+            "allowedTypeGroups": [
+                "ALL"
+            ],
+            "matchLengthOfArgument": "",
+            "allowPadding": false,
+            "name": "KeyColumns",
+            "alternateNames": [],
+            "isRequired": false,
+            "rDescription": "",
+            "description": "",
+            "datatype": "COLUMNS",
+            "allowsLists": true,
+            "rName": "exclude",
+            "useInR": true,
+            "rOrderNum": 3
+        }
+    ],
+    "name_map": {
+        "Transform": "transform",
+        "KeyColumns": "transform_key_columns"
+    },
+    "type_map": {
+        "Transform": "SEPARATOR",
+        "KeyColumns": "COLUMNS"
+    },
+    "choices_map": {}
+}

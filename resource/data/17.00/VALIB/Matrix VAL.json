@@ -1,0 +1,183 @@
+{
+    "json_schema_major_version": "1",
+    "json_schema_minor_version": "1",
+    "json_content_version": "1",
+    "function_name": "Matrix VAL",
+    "function_version": "1.0",
+    "function_alias_name": "Matrix VAL",
+    "function_type": "valib",
+    "function_r_name": "",
+    "short_description": "Matrix builds an extended sum-of-squares-and-cross-products (ESSCP) matrix or other derived matrix type from a teradataml DataFrame. The purpose of building a matrix depends on the type of matrix built.",
+    "long_description": "Matrix builds an extended sum-of-squares-and-cross-products (ESSCP) matrix or other derived matrix type from a teradataml DataFrame. The purpose of building a matrix depends on the type of matrix built.",
+    "input_tables": [
+        {
+            "requiredInputKind": [
+                "PartitionByNone"
+            ],
+            "isOrdered": false,
+            "partitionByOne": false,
+            "name": "input_A_role",
+            "alternateNames": [],
+            "isRequired": true,
+            "rDescription": "what input A means",
+            "description": "what input A means",
+            "datatype": "TABLE_ALIAS",
+            "allowsLists": false,
+            "rName": "input_A_role",
+            "useInR": true,
+            "rOrderNum": 1
+        }
+    ],
+    "argument_clauses": [
+        {
+            "targetTable": [
+                "input_A_role"
+            ],
+            "checkDuplicate": false,
+            "allowedTypes": [],
+            "allowedTypeGroups": [
+                "ALL"
+            ],
+            "matchLengthOfArgument": "",
+            "allowPadding": false,
+            "name": "InputColumns",
+            "alternateNames": [],
+            "isRequired": true,
+            "rDescription": "Specifies the name(s) of the column(s) used in building one or more matrices.",
+            "description": "Specifies the name(s) of the column(s) used in building one or more matrices.",
+            "datatype": "COLUMNS",
+            "allowsLists": true,
+            "rName": "exclude",
+            "useInR": true,
+            "rOrderNum": 2
+        },
+        {
+            "targetTable": [
+                "input_A_role"
+            ],
+            "checkDuplicate": false,
+            "allowedTypes": [],
+            "allowedTypeGroups": [
+                "ALL"
+            ],
+            "matchLengthOfArgument": "",
+            "allowPadding": false,
+            "name": "GroupByColumns",
+            "alternateNames": [],
+            "isRequired": false,
+            "rDescription": "Specifies the name(s) of the column(s) in input teradataml DataFrame to build a separate matrix for each combination.",
+            "description": "Specifies the name(s) of the column(s) in input teradataml DataFrame to build a separate matrix for each combination.",
+            "datatype": "COLUMNS",
+            "allowsLists": true,
+            "rName": "exclude",
+            "useInR": true,
+            "rOrderNum": 3
+        },
+        {
+            "permittedValues": [
+                "Columns",
+                "Varbyte"
+            ],
+            "defaultValue": "columns",
+            "isOutputColumn": false,
+            "name": "MatrixOutput",
+            "alternateNames": [],
+            "isRequired": false,
+            "rDescription": "Specifies the type of matrix output.",
+            "description": "Specifies the type of matrix output.",
+            "datatype": "STRING",
+            "allowsLists": false,
+            "rName": "mavgtype",
+            "useInR": true,
+            "rOrderNum": 4
+        },
+        {
+            "permittedValues": [
+                "Sum of Squares and Cross Products Matrix",
+                "Extended Sum of Squares and Cross Products Matrix",
+                "Corrected Sum of Squares and Cross Products Matrix",
+                "Covariance Matrix",
+                "Correlation Matrix"
+            ],
+            "defaultValue": "ESSCP",
+            "isOutputColumn": false,
+            "name": "MatrixType",
+            "alternateNames": [],
+            "isRequired": false,
+            "rDescription": "Specifies the type of matrix to build.",
+            "description": "Specifies the type of matrix to build.",
+            "datatype": "STRING",
+            "allowsLists": false,
+            "rName": "mavgtype",
+            "useInR": true,
+            "rOrderNum": 5
+        },
+        {
+            "permittedValues": [
+                "IGNORE",
+                "ZERO"
+            ],
+            "defaultValue": "IGNORE",
+            "isOutputColumn": false,
+            "name": "HandleNulls",
+            "alternateNames": [],
+            "isRequired": false,
+            "rDescription": "Specifies a way to treat null values in selected columns.",
+            "description": "Specifies a way to treat null values in selected columns.",
+            "datatype": "STRING",
+            "allowsLists": false,
+            "rName": "mavgtype",
+            "useInR": true,
+            "rOrderNum": 6
+        },
+        {
+            "permittedValues": [],
+            "isOutputColumn": true,
+            "name": "Filter",
+            "alternateNames": [],
+            "isRequired": false,
+            "rDescription": "Specifies the clause to filter rows selected for building the matrix. E.g. income > 0 (where income is an input column).",
+            "description": "Specifies the clause to filter rows selected for building the matrix. E.g. income > 0 (where income is an input column).",
+            "datatype": "STRING",
+            "allowsLists": false,
+            "rName": "output.column",
+            "useInR": true,
+            "rOrderNum": 7
+        }
+    ],
+    "name_map": {
+        "Matrix": "matrix",
+        "InputColumns": "matrix_columns",
+        "GroupByColumns": "matrix_group_columns",
+        "MatrixOutput": "matrix_matrix_output",
+        "MatrixType": "matrix_type",
+        "HandleNulls": "matrix_handle_nulls",
+        "Filter": "matrix_filter"
+    },
+    "type_map": {
+        "Matrix": "SEPARATOR",
+        "InputColumns": "COLUMNS",
+        "GroupByColumns": "COLUMNS",
+        "MatrixOutput": "SELECT",
+        "MatrixType": "SELECT",
+        "HandleNulls": "SELECT",
+        "Filter": "STRING"
+    },
+    "choices_map": {
+        "MatrixOutput": {
+            "Columns": "columns",
+            "Varbyte": "varbyte"
+        },
+        "MatrixType": {
+            "Sum of Squares and Cross Products Matrix": "SSCP",
+            "Extended Sum of Squares and Cross Products Matrix": "ESSCP",
+            "Corrected Sum of Squares and Cross Products Matrix": "CSSCP",
+            "Covariance Matrix": "COV",
+            "Correlation Matrix": "COR"
+        },
+        "HandleNulls": {
+            "IGNORE": "IGNORE",
+            "ZERO": "ZERO"
+        }
+    }
+}

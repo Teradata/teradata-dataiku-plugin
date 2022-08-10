@@ -1,0 +1,257 @@
+{
+    "json_schema_major_version": "1",
+    "json_schema_minor_version": "1",
+    "json_content_version": "1",
+    "function_name": "Overlap VAL",
+    "function_version": "1.0",
+    "function_alias_name": "Overlap VAL",
+    "function_type": "valib",
+    "function_r_name": "",
+    "short_description": "Performs Overlap analysis by combining information from multiple DataFrames into an analytic data set by providing counts of overlapping key fields among pairs of DataFrames. There are 4 additional optional input tables containing the columns on which Overlap analysis is to be performed along; additional datasets can be added in the Dataiku Input/Output tab.",
+    "long_description": "Performs Overlap analysis by combining information from multiple DataFrames into an analytic data set by providing counts of overlapping key fields among pairs of DataFrames. There are 4 additional optional input tables containing the columns on which Overlap analysis is to be performed along; additional datasets can be added in the Dataiku Input/Output tab.",
+    "input_tables": [
+        {
+            "requiredInputKind": [
+                "PartitionByNone"
+            ],
+            "isOrdered": false,
+            "partitionByOne": false,
+            "name": "data1",
+            "alternateNames": [],
+            "isRequired": true,
+            "rDescription": "",
+            "description": "",
+            "datatype": "TABLE_ALIAS",
+            "allowsLists": false,
+            "rName": "data1",
+            "useInR": true,
+            "rOrderNum": 1
+        },
+        {
+            "requiredInputKind": [
+                "PartitionByNone"
+            ],
+            "isOrdered": false,
+            "partitionByOne": false,
+            "name": "data2",
+            "alternateNames": [],
+            "isRequired": false,
+            "rDescription": "",
+            "description": "",
+            "datatype": "TABLE_ALIAS",
+            "allowsLists": false,
+            "rName": "data2",
+            "useInR": true,
+            "rOrderNum": 2
+        },
+        {
+            "requiredInputKind": [
+                "PartitionByNone"
+            ],
+            "isOrdered": false,
+            "partitionByOne": false,
+            "name": "data3",
+            "alternateNames": [],
+            "isRequired": false,
+            "rDescription": "",
+            "description": "",
+            "datatype": "TABLE_ALIAS",
+            "allowsLists": false,
+            "rName": "data3",
+            "useInR": true,
+            "rOrderNum": 3
+        },
+        {
+            "requiredInputKind": [
+                "PartitionByNone"
+            ],
+            "isOrdered": false,
+            "partitionByOne": false,
+            "name": "data4",
+            "alternateNames": [],
+            "isRequired": false,
+            "rDescription": "",
+            "description": "",
+            "datatype": "TABLE_ALIAS",
+            "allowsLists": false,
+            "rName": "data4",
+            "useInR": true,
+            "rOrderNum": 4
+        },
+        {
+            "requiredInputKind": [
+                "PartitionByNone"
+            ],
+            "isOrdered": false,
+            "partitionByOne": false,
+            "name": "data5",
+            "alternateNames": [],
+            "isRequired": false,
+            "rDescription": "",
+            "description": "",
+            "datatype": "TABLE_ALIAS",
+            "allowsLists": false,
+            "rName": "data5",
+            "useInR": true,
+            "rOrderNum": 5
+        }
+    ],
+    "argument_clauses": [
+        {
+            "permittedValues": [
+                "2",
+                "3",
+                "4",
+                "5"
+            ],
+            "defaultValue": "",
+            "isOutputColumn": false,
+            "name": "NumberofDatasetsInputted",
+            "alternateNames": [],
+            "isRequired": false,
+            "rDescription": "",
+            "description": "",
+            "datatype": "STRING",
+            "allowsLists": false,
+            "rName": "mavgtype",
+            "useInR": true,
+            "rOrderNum": 6
+        },
+        {
+            "targetTable": [
+                "data1"
+            ],
+            "checkDuplicate": false,
+            "allowedTypes": [],
+            "allowedTypeGroups": [
+                "ALL"
+            ],
+            "matchLengthOfArgument": "",
+            "allowPadding": false,
+            "name": "Columns1",
+            "alternateNames": [],
+            "isRequired": false,
+            "rDescription": "",
+            "description": "",
+            "datatype": "COLUMNS",
+            "allowsLists": true,
+            "rName": "exclude",
+            "useInR": true,
+            "rOrderNum": 7
+        },
+        {
+            "targetTable": [
+                "data2"
+            ],
+            "checkDuplicate": false,
+            "allowedTypes": [],
+            "allowedTypeGroups": [
+                "ALL"
+            ],
+            "matchLengthOfArgument": "",
+            "allowPadding": false,
+            "name": "Columns2",
+            "alternateNames": [],
+            "isRequired": false,
+            "rDescription": "",
+            "description": "",
+            "datatype": "COLUMNS",
+            "allowsLists": true,
+            "rName": "exclude",
+            "useInR": true,
+            "rOrderNum": 8
+        },
+        {
+            "targetTable": [
+                "data3"
+            ],
+            "checkDuplicate": false,
+            "allowedTypes": [],
+            "allowedTypeGroups": [
+                "ALL"
+            ],
+            "matchLengthOfArgument": "",
+            "allowPadding": false,
+            "name": "Columns3",
+            "alternateNames": [],
+            "isRequired": false,
+            "rDescription": "",
+            "description": "",
+            "datatype": "COLUMNS",
+            "allowsLists": true,
+            "rName": "exclude",
+            "useInR": true,
+            "rOrderNum": 9
+        },
+        {
+            "targetTable": [
+                "data4"
+            ],
+            "checkDuplicate": false,
+            "allowedTypes": [],
+            "allowedTypeGroups": [
+                "ALL"
+            ],
+            "matchLengthOfArgument": "",
+            "allowPadding": false,
+            "name": "Columns4",
+            "alternateNames": [],
+            "isRequired": false,
+            "rDescription": "",
+            "description": "",
+            "datatype": "COLUMNS",
+            "allowsLists": true,
+            "rName": "exclude",
+            "useInR": true,
+            "rOrderNum": 10
+        },
+        {
+            "targetTable": [
+                "data5"
+            ],
+            "checkDuplicate": false,
+            "allowedTypes": [],
+            "allowedTypeGroups": [
+                "ALL"
+            ],
+            "matchLengthOfArgument": "",
+            "allowPadding": false,
+            "name": "Columns5",
+            "alternateNames": [],
+            "isRequired": false,
+            "rDescription": "",
+            "description": "",
+            "datatype": "COLUMNS",
+            "allowsLists": true,
+            "rName": "exclude",
+            "useInR": true,
+            "rOrderNum": 11
+        }
+    ],
+    "name_map": {
+        "Overlap": "overlap",
+        "NumberofDatasetsInputted": "overlap_num_datasets",
+        "Columns1": "overlap_columns1",
+        "Columns2": "overlap_columns2",
+        "Columns3": "overlap_columns3",
+        "Columns4": "overlap_columns4",
+        "Columns5": "overlap_columns5"
+    },
+    "type_map": {
+        "Overlap": "SEPARATOR",
+        "NumberofDatasetsInputted": "SELECT",
+        "Columns1": "COLUMNS",
+        "Columns2": "COLUMNS",
+        "Columns3": "COLUMNS",
+        "Columns4": "COLUMNS",
+        "Columns5": "COLUMNS"
+    },
+    "choices_map": {
+        "NumberofDatasetsInputted": {
+            "2": "2",
+            "3": "3",
+            "4": "4",
+            "5": "5"
+        }
+    }
+}

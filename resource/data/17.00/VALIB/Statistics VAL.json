@@ -1,0 +1,209 @@
+{
+    "json_schema_major_version": "1",
+    "json_schema_minor_version": "1",
+    "json_content_version": "1",
+    "function_name": "Statistics VAL",
+    "function_version": "1.0",
+    "function_alias_name": "Statistics VAL",
+    "function_type": "valib",
+    "function_r_name": "",
+    "short_description": "Statistics analysis provides several common and not so common statistical measures for numeric data columns. Use statistical measures to understand the characteristics and properties of each numeric column, and to look for outlying values and anomalies.",
+    "long_description": "Statistics analysis provides several common and not so common statistical measures for numeric data columns. Use statistical measures to understand the characteristics and properties of each numeric column, and to look for outlying values and anomalies.",
+    "input_tables": [
+        {
+            "requiredInputKind": [
+                "PartitionByNone"
+            ],
+            "isOrdered": false,
+            "partitionByOne": false,
+            "name": "input_A_role",
+            "alternateNames": [],
+            "isRequired": true,
+            "rDescription": "what input A means",
+            "description": "what input A means",
+            "datatype": "TABLE_ALIAS",
+            "allowsLists": false,
+            "rName": "input_A_role",
+            "useInR": true,
+            "rOrderNum": 1
+        }
+    ],
+    "argument_clauses": [
+        {
+            "targetTable": [
+                "input_A_role"
+            ],
+            "checkDuplicate": false,
+            "allowedTypes": [],
+            "allowedTypeGroups": [
+                "ALL"
+            ],
+            "matchLengthOfArgument": "",
+            "allowPadding": false,
+            "name": "InputColumns",
+            "alternateNames": [],
+            "isRequired": true,
+            "rDescription": "Specifies the name(s) of the column(s) to analyze.",
+            "description": "Specifies the name(s) of the column(s) to analyze.",
+            "datatype": "COLUMNS",
+            "allowsLists": true,
+            "rName": "exclude",
+            "useInR": true,
+            "rOrderNum": 2
+        },
+        {
+            "targetTable": [
+                "input_A_role"
+            ],
+            "checkDuplicate": false,
+            "allowedTypes": [],
+            "allowedTypeGroups": [
+                "ALL"
+            ],
+            "matchLengthOfArgument": "",
+            "allowPadding": false,
+            "name": "GroupByColumns",
+            "alternateNames": [],
+            "isRequired": false,
+            "rDescription": "Specifies the name(s) of column(s) to perform separate analysis for each group.",
+            "description": "Specifies the name(s) of column(s) to perform separate analysis for each group.",
+            "datatype": "COLUMNS",
+            "allowsLists": true,
+            "rName": "exclude",
+            "useInR": true,
+            "rOrderNum": 3
+        },
+        {
+            "permittedValues": [
+                "All",
+                "Count",
+                "Min",
+                "Max",
+                "Mean",
+                "StandardDeviation",
+                "Skew",
+                "Kurtosis",
+                "StandardError",
+                "CoefficientOfVariance",
+                "Variance",
+                "Sum",
+                "UncorrectedSumOfSquares",
+                "CorrectedSumOfSquares"
+            ],
+            "defaultValue": "",
+            "isOutputColumn": false,
+            "name": "StatisticOptions",
+            "alternateNames": [],
+            "isRequired": false,
+            "rDescription": "Specifies the basic statistics to be calculated.",
+            "description": "Specifies the basic statistics to be calculated.",
+            "datatype": "STRING",
+            "allowsLists": true,
+            "rName": "mavgtype",
+            "useInR": true,
+            "rOrderNum": 4
+        },
+        {
+            "permittedValues": [
+                "All",
+                "None",
+                "Modes",
+                "Quantiles",
+                "Values",
+                "Rank"
+            ],
+            "defaultValue": "",
+            "isOutputColumn": false,
+            "name": "ExtendedOptions",
+            "alternateNames": [],
+            "isRequired": false,
+            "rDescription": "Specifies the extended options for calculating statistics.",
+            "description": "Specifies the extended options for calculating statistics.",
+            "datatype": "STRING",
+            "allowsLists": true,
+            "rName": "mavgtype",
+            "useInR": true,
+            "rOrderNum": 5
+        },
+        {
+            "permittedValues": [
+                "Sample",
+                "Population"
+            ],
+            "defaultValue": "population",
+            "isOutputColumn": false,
+            "name": "StatisticalMethod",
+            "alternateNames": [],
+            "isRequired": false,
+            "rDescription": "Specifies the statistical method.",
+            "description": "Specifies the statistical method.",
+            "datatype": "STRING",
+            "allowsLists": false,
+            "rName": "mavgtype",
+            "useInR": true,
+            "rOrderNum": 6
+        },
+        {
+            "permittedValues": [],
+            "isOutputColumn": true,
+            "name": "Filter",
+            "alternateNames": [],
+            "isRequired": false,
+            "rDescription": "Specifies the clause to filter rows selected for analysis within Statistics. E.g. income > 0 (where income is an input column).",
+            "description": "Specifies the clause to filter rows selected for analysis within Statistics. E.g. income > 0 (where income is an input column).",
+            "datatype": "STRING",
+            "allowsLists": false,
+            "rName": "output.column",
+            "useInR": true,
+            "rOrderNum": 7
+        }
+    ],
+    "name_map": {
+        "Statistics": "statistics",
+        "InputColumns": "statistics_columns",
+        "GroupByColumns": "statistics_group_columns",
+        "StatisticOptions": "statistics_stats_options",
+        "ExtendedOptions": "statistics_extended_options",
+        "StatisticalMethod": "statistics_statistical_method",
+        "Filter": "statistics_filter"
+    },
+    "type_map": {
+        "Statistics": "SEPARATOR",
+        "InputColumns": "COLUMNS",
+        "GroupByColumns": "COLUMNS",
+        "StatisticOptions": "MULTISELECT",
+        "ExtendedOptions": "MULTISELECT",
+        "StatisticalMethod": "SELECT",
+        "Filter": "STRING"
+    },
+    "choices_map": {
+        "StatisticOptions": {
+            "All": "all",
+            "Count": "cnt",
+            "Min": "min",
+            "Max": "max",
+            "Mean": "mean",
+            "StandardDeviation": "std",
+            "Skew": "skew",
+            "Kurtosis": "kurt",
+            "StandardError": "ste",
+            "CoefficientOfVariance": "cv",
+            "Variance": "var",
+            "Sum": "sum",
+            "UncorrectedSumOfSquares": "uss",
+            "CorrectedSumOfSquares": "css"
+        },
+        "ExtendedOptions": {
+            "All": "all",
+            "None": "None",
+            "Modes": "modes",
+            "Quantiles": "quantiles",
+            "Values": "values",
+            "Rank": "rank"
+        },
+        "StatisticalMethod": {
+            "Sample": "sample",
+            "Population": "population"
+        }
+    }
+}

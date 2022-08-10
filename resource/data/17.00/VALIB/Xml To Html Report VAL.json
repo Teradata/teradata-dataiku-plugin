@@ -1,0 +1,91 @@
+{
+    "json_schema_major_version": "1",
+    "json_schema_minor_version": "1",
+    "json_content_version": "1",
+    "function_name": "Xml To Html Report VAL",
+    "function_version": "1.0",
+    "function_alias_name": "Xml To Html Report VAL",
+    "function_type": "valib",
+    "function_r_name": "",
+    "short_description": "Choose either Decision Tree, Decision Tree Predict/Score, PCA, PCA Predict/Score, Linear Regression, Logistic Regression, or Logistic Regression Predict/Score as the input. This function transforms the XML to HTML, which is easier to view. You can copy the HTML into a text file, give the text file a name ending in '.html', and view it in a browser.",
+    "long_description": "Choose either Decision Tree, Decision Tree Predict/Score, PCA, PCA Predict/Score, Linear Regression, Logistic Regression, or Logistic Regression Predict/Score as the input. This function transforms the XML to HTML, which is easier to view. You can copy the HTML into a text file, give the text file a name ending in '.html', and view it in a browser.",
+    "input_tables": [
+        {
+            "requiredInputKind": [
+                "PartitionByNone"
+            ],
+            "isOrdered": false,
+            "partitionByOne": false,
+            "name": "input_table",
+            "alternateNames": [],
+            "isRequired": true,
+            "rDescription": "Choose either Decision Tree, Decision Tree Predict/Score, PCA, PCA Predict/Score, Linear Regression, Logistic Regression, or Logistic Regression Predict/Score as the required additional input; additional datasets can be added in the Dataiku Input/Output tab.",
+            "description": "Choose either Decision Tree, Decision Tree Predict/Score, PCA, PCA Predict/Score, Linear Regression, Logistic Regression, or Logistic Regression Predict/Score as the required additional input; additional datasets can be added in the Dataiku Input/Output tab.",
+            "datatype": "TABLE_ALIAS",
+            "allowsLists": false,
+            "rName": "input_table",
+            "useInR": true,
+            "rOrderNum": 1
+        }
+    ],
+    "argument_clauses": [
+        {
+            "permittedValues": [
+                "Decision Tree",
+                "Decision Tree Evaluator",
+                "PCA",
+                "PCA Evaluator",
+                "Linear Regression",
+                "Logistic Regression",
+                "Logistic Regression Evaluator"
+            ],
+            "defaultValue": "",
+            "isOutputColumn": false,
+            "name": "AnalysisType",
+            "alternateNames": [],
+            "isRequired": true,
+            "rDescription": "Select the type of table inputted.",
+            "description": "Select the type of table inputted.",
+            "datatype": "STRING",
+            "allowsLists": false,
+            "rName": "mavgtype",
+            "useInR": true,
+            "rOrderNum": 2
+        },
+        {
+            "permittedValues": [],
+            "isOutputColumn": true,
+            "name": "Filter",
+            "alternateNames": [],
+            "isRequired": false,
+            "rDescription": "Specifies the clause to filter rows selected for analysis. E.g. income > 0 (where income is an input column).",
+            "description": "Specifies the clause to filter rows selected for analysis. E.g. income > 0 (where income is an input column).",
+            "datatype": "STRING",
+            "allowsLists": false,
+            "rName": "output.column",
+            "useInR": true,
+            "rOrderNum": 3
+        }
+    ],
+    "name_map": {
+        "XMLtoHTMLReport": "xml_to_html",
+        "AnalysisType": "xmlToHtmlReport_analysis_type",
+        "Filter": "xmlToHtmlReport_filter"
+    },
+    "type_map": {
+        "XMLtoHTMLReport": "SEPARATOR",
+        "AnalysisType": "SELECT",
+        "Filter": "STRING"
+    },
+    "choices_map": {
+        "AnalysisType": {
+            "Decision Tree": "decisiontree",
+            "Decision Tree Evaluator": "decisiontreescore",
+            "PCA": "factor",
+            "PCA Evaluator": "factorscore",
+            "Linear Regression": "linear",
+            "Logistic Regression": "logistic",
+            "Logistic Regression Evaluator": "logisticScore"
+        }
+    }
+}

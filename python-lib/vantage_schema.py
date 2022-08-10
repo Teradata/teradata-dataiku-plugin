@@ -38,7 +38,6 @@ def set_schema_from_vantage(outputTableName, output_dataset, executor, post_quer
     'F' : 'float', 'D' : 'float', 'DA' : 'date', 'CV' : 'string', 'TS' : 'date', \
     'AN' : 'array', 'D' : 'float', 'F' : 'float'}
     for index in range(len(column_names)):
-        # Why do we need to strip??
         column_name = column_names[index].strip('"')
         column_type = column_types[index].strip().upper()
         if column_type in mapping:

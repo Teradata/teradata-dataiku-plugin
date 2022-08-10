@@ -1,0 +1,612 @@
+{
+    "json_schema_major_version": "1",
+    "json_schema_minor_version": "1",
+    "json_content_version": "1",
+    "function_name": "Association VAL",
+    "function_version": "1.0",
+    "function_alias_name": "Association VAL",
+    "function_type": "valib",
+    "function_r_name": "",
+    "short_description": "Association Rules provide various measures concerning items residing in groups. The measures, support, confidence, lift and Z Score, help to determine the likelihood that one or more items exist in a group, given that another one or more items exist in the same group. There are optionally 5 additional input tables (description data, hierarchy data, left lookup data, right lookup data, and reduced data); additional datasets can be added in the Dataiku Input/Output tab.",
+    "long_description": "Association Rules provide various measures concerning items residing in groups. The measures, support, confidence, lift and Z Score, help to determine the likelihood that one or more items exist in a group, given that another one or more items exist in the same group. There are optionally 5 additional input tables (description data, hierarchy data, left lookup data, right lookup data, and reduced data); additional datasets can be added in the Dataiku Input/Output tab.",
+    "input_tables": [
+        {
+            "requiredInputKind": [
+                "PartitionByNone"
+            ],
+            "isOrdered": false,
+            "partitionByOne": false,
+            "name": "input_A_role",
+            "alternateNames": [],
+            "isRequired": true,
+            "rDescription": "what input A means",
+            "description": "what input A means",
+            "datatype": "TABLE_ALIAS",
+            "allowsLists": false,
+            "rName": "input_A_role",
+            "useInR": true,
+            "rOrderNum": 1
+        },
+        {
+            "requiredInputKind": [
+                "PartitionByNone"
+            ],
+            "isOrdered": false,
+            "partitionByOne": false,
+            "name": "description_data",
+            "alternateNames": [],
+            "isRequired": false,
+            "rDescription": "Specifies the teradataml DataFrame containing description data, which is joined with the result.",
+            "description": "Specifies the teradataml DataFrame containing description data, which is joined with the result.",
+            "datatype": "TABLE_ALIAS",
+            "allowsLists": false,
+            "rName": "description_data",
+            "useInR": true,
+            "rOrderNum": 2
+        },
+        {
+            "requiredInputKind": [
+                "PartitionByNone"
+            ],
+            "isOrdered": false,
+            "partitionByOne": false,
+            "name": "hierarchy_data",
+            "alternateNames": [],
+            "isRequired": false,
+            "rDescription": "Specifies the hierarchy data that can be joined with the input data in order to reduce the amount of input data and compute association rules at a different hierarchical level.",
+            "description": "Specifies the hierarchy data that can be joined with the input data in order to reduce the amount of input data and compute association rules at a different hierarchical level.",
+            "datatype": "TABLE_ALIAS",
+            "allowsLists": false,
+            "rName": "hierarchy_data",
+            "useInR": true,
+            "rOrderNum": 3
+        },
+        {
+            "requiredInputKind": [
+                "PartitionByNone"
+            ],
+            "isOrdered": false,
+            "partitionByOne": false,
+            "name": "left_lookup_data",
+            "alternateNames": [],
+            "isRequired": false,
+            "rDescription": "Specifies a left-side lookup data that can be specified to reduce the rules reported to only those with left-side items that appear in the lookup dataset.",
+            "description": "Specifies a left-side lookup data that can be specified to reduce the rules reported to only those with left-side items that appear in the lookup dataset.",
+            "datatype": "TABLE_ALIAS",
+            "allowsLists": false,
+            "rName": "left_lookup_data",
+            "useInR": true,
+            "rOrderNum": 4
+        },
+        {
+            "requiredInputKind": [
+                "PartitionByNone"
+            ],
+            "isOrdered": false,
+            "partitionByOne": false,
+            "name": "right_lookup_data",
+            "alternateNames": [],
+            "isRequired": false,
+            "rDescription": "Specifies a right-side lookup data that can be specified to reduce the rules reported to only those with right-side items that appear in the lookup dataset.",
+            "description": "Specifies a right-side lookup data that can be specified to reduce the rules reported to only those with right-side items that appear in the lookup dataset.",
+            "datatype": "TABLE_ALIAS",
+            "allowsLists": false,
+            "rName": "right_lookup_data",
+            "useInR": true,
+            "rOrderNum": 5
+        },
+        {
+            "requiredInputKind": [
+                "PartitionByNone"
+            ],
+            "isOrdered": false,
+            "partitionByOne": false,
+            "name": "reduced_data",
+            "alternateNames": [],
+            "isRequired": false,
+            "rDescription": "Specifies the reduced input data.",
+            "description": "Specifies the reduced input data.",
+            "datatype": "TABLE_ALIAS",
+            "allowsLists": false,
+            "rName": "reduced_data",
+            "useInR": true,
+            "rOrderNum": 6
+        }
+    ],
+    "argument_clauses": [
+        {
+            "targetTable": [
+                "input_A_role"
+            ],
+            "checkDuplicate": false,
+            "allowedTypes": [],
+            "allowedTypeGroups": [
+                "ALL"
+            ],
+            "matchLengthOfArgument": "",
+            "allowPadding": false,
+            "name": "GroupColumn",
+            "alternateNames": [],
+            "isRequired": true,
+            "rDescription": "",
+            "description": "",
+            "datatype": "COLUMNS",
+            "allowsLists": false,
+            "rName": "exclude",
+            "useInR": true,
+            "rOrderNum": 7,
+            "requiredLength": 1
+        },
+        {
+            "targetTable": [
+                "input_A_role"
+            ],
+            "checkDuplicate": false,
+            "allowedTypes": [],
+            "allowedTypeGroups": [
+                "ALL"
+            ],
+            "matchLengthOfArgument": "",
+            "allowPadding": false,
+            "name": "ItemColumn",
+            "alternateNames": [],
+            "isRequired": true,
+            "rDescription": "",
+            "description": "",
+            "datatype": "COLUMNS",
+            "allowsLists": false,
+            "rName": "exclude",
+            "useInR": true,
+            "rOrderNum": 8,
+            "requiredLength": 1
+        },
+        {
+            "defaultValue": 11,
+            "allowNaN": false,
+            "name": "Combinations",
+            "alternateNames": [],
+            "isRequired": false,
+            "rDescription": "",
+            "description": "",
+            "datatype": "INTEGER",
+            "allowsLists": false,
+            "rName": "window.size",
+            "useInR": true,
+            "rOrderNum": 9
+        },
+        {
+            "defaultValue": false,
+            "name": "DescriptionDataExists",
+            "alternateNames": [],
+            "isRequired": false,
+            "rDescription": "",
+            "description": "",
+            "datatype": "BOOLEAN",
+            "allowsLists": false,
+            "rName": "",
+            "useInR": true,
+            "rOrderNum": 10
+        },
+        {
+            "targetTable": [
+                "description_data"
+            ],
+            "checkDuplicate": false,
+            "allowedTypes": [],
+            "allowedTypeGroups": [
+                "ALL"
+            ],
+            "matchLengthOfArgument": "",
+            "allowPadding": false,
+            "name": "DescriptionIdentifier",
+            "alternateNames": [],
+            "isRequired": false,
+            "rDescription": "Specifies the name of the column in the description_data that is joined with the result.",
+            "description": "Specifies the name of the column in the description_data that is joined with the result.",
+            "datatype": "COLUMNS",
+            "allowsLists": false,
+            "rName": "exclude",
+            "useInR": true,
+            "rOrderNum": 11,
+            "requiredLength": 1
+        },
+        {
+            "targetTable": [
+                "description_data"
+            ],
+            "checkDuplicate": false,
+            "allowedTypes": [],
+            "allowedTypeGroups": [
+                "ALL"
+            ],
+            "matchLengthOfArgument": "",
+            "allowPadding": false,
+            "name": "DescriptionColumn",
+            "alternateNames": [],
+            "isRequired": false,
+            "rDescription": "Specifies the name of the column in the description_data that contains descriptive item names.",
+            "description": "Specifies the name of the column in the description_data that contains descriptive item names.",
+            "datatype": "COLUMNS",
+            "allowsLists": false,
+            "rName": "exclude",
+            "useInR": true,
+            "rOrderNum": 12,
+            "requiredLength": 1
+        },
+        {
+            "defaultValue": 0,
+            "allowNaN": false,
+            "name": "GroupCount",
+            "alternateNames": [],
+            "isRequired": false,
+            "rDescription": "",
+            "description": "",
+            "datatype": "INTEGER",
+            "allowsLists": false,
+            "rName": "window.size",
+            "useInR": true,
+            "rOrderNum": 13
+        },
+        {
+            "defaultValue": false,
+            "name": "HierarchyDataExists",
+            "alternateNames": [],
+            "isRequired": false,
+            "rDescription": "",
+            "description": "",
+            "datatype": "BOOLEAN",
+            "allowsLists": false,
+            "rName": "",
+            "useInR": true,
+            "rOrderNum": 14
+        },
+        {
+            "targetTable": [
+                "hierarchy_data"
+            ],
+            "checkDuplicate": false,
+            "allowedTypes": [],
+            "allowedTypeGroups": [
+                "ALL"
+            ],
+            "matchLengthOfArgument": "",
+            "allowPadding": false,
+            "name": "LowestLevelColumn",
+            "alternateNames": [],
+            "isRequired": false,
+            "rDescription": "",
+            "description": "",
+            "datatype": "COLUMNS",
+            "allowsLists": false,
+            "rName": "exclude",
+            "useInR": true,
+            "rOrderNum": 15,
+            "requiredLength": 1
+        },
+        {
+            "targetTable": [
+                "hierarchy_data"
+            ],
+            "checkDuplicate": false,
+            "allowedTypes": [],
+            "allowedTypeGroups": [
+                "ALL"
+            ],
+            "matchLengthOfArgument": "",
+            "allowPadding": false,
+            "name": "HighestLevelColumn",
+            "alternateNames": [],
+            "isRequired": false,
+            "rDescription": "",
+            "description": "",
+            "datatype": "COLUMNS",
+            "allowsLists": false,
+            "rName": "exclude",
+            "useInR": true,
+            "rOrderNum": 16,
+            "requiredLength": 1
+        },
+        {
+            "defaultValue": false,
+            "name": "LeftLookupDataExists",
+            "alternateNames": [],
+            "isRequired": false,
+            "rDescription": "",
+            "description": "",
+            "datatype": "BOOLEAN",
+            "allowsLists": false,
+            "rName": "",
+            "useInR": true,
+            "rOrderNum": 17
+        },
+        {
+            "targetTable": [
+                "left_lookup_data"
+            ],
+            "checkDuplicate": false,
+            "allowedTypes": [],
+            "allowedTypeGroups": [
+                "ALL"
+            ],
+            "matchLengthOfArgument": "",
+            "allowPadding": false,
+            "name": "LeftLookupColumn",
+            "alternateNames": [],
+            "isRequired": false,
+            "rDescription": "",
+            "description": "",
+            "datatype": "COLUMNS",
+            "allowsLists": false,
+            "rName": "exclude",
+            "useInR": true,
+            "rOrderNum": 18,
+            "requiredLength": 1
+        },
+        {
+            "defaultValue": false,
+            "name": "RightLookupDataExists",
+            "alternateNames": [],
+            "isRequired": false,
+            "rDescription": "",
+            "description": "",
+            "datatype": "BOOLEAN",
+            "allowsLists": false,
+            "rName": "",
+            "useInR": true,
+            "rOrderNum": 19
+        },
+        {
+            "targetTable": [
+                "right_lookup_data"
+            ],
+            "checkDuplicate": false,
+            "allowedTypes": [],
+            "allowedTypeGroups": [
+                "ALL"
+            ],
+            "matchLengthOfArgument": "",
+            "allowPadding": false,
+            "name": "RightLookupColumn",
+            "alternateNames": [],
+            "isRequired": false,
+            "rDescription": "",
+            "description": "",
+            "datatype": "COLUMNS",
+            "allowsLists": false,
+            "rName": "exclude",
+            "useInR": true,
+            "rOrderNum": 20,
+            "requiredLength": 1
+        },
+        {
+            "defaultValue": 0.0,
+            "allowNaN": false,
+            "name": "MinimumConfidence",
+            "alternateNames": [],
+            "isRequired": false,
+            "rDescription": "",
+            "description": "",
+            "datatype": "DOUBLE PRECISION",
+            "allowsLists": false,
+            "rName": "",
+            "useInR": true,
+            "rOrderNum": 21
+        },
+        {
+            "defaultValue": 0.0,
+            "allowNaN": false,
+            "name": "MinimumLift",
+            "alternateNames": [],
+            "isRequired": false,
+            "rDescription": "",
+            "description": "",
+            "datatype": "DOUBLE PRECISION",
+            "allowsLists": false,
+            "rName": "",
+            "useInR": true,
+            "rOrderNum": 22
+        },
+        {
+            "defaultValue": 0.0,
+            "allowNaN": false,
+            "name": "MinimumSupport",
+            "alternateNames": [],
+            "isRequired": false,
+            "rDescription": "",
+            "description": "",
+            "datatype": "DOUBLE PRECISION",
+            "allowsLists": false,
+            "rName": "",
+            "useInR": true,
+            "rOrderNum": 23
+        },
+        {
+            "defaultValue": 0.0,
+            "allowNaN": false,
+            "name": "MinimumZScore",
+            "alternateNames": [],
+            "isRequired": false,
+            "rDescription": "",
+            "description": "",
+            "datatype": "DOUBLE PRECISION",
+            "allowsLists": false,
+            "rName": "",
+            "useInR": true,
+            "rOrderNum": 24
+        },
+        {
+            "defaultValue": 0.0,
+            "allowNaN": false,
+            "name": "OrderingProbability",
+            "alternateNames": [],
+            "isRequired": false,
+            "rDescription": "",
+            "description": "",
+            "datatype": "DOUBLE PRECISION",
+            "allowsLists": false,
+            "rName": "",
+            "useInR": true,
+            "rOrderNum": 25
+        },
+        {
+            "permittedValues": [
+                "All",
+                "Support",
+                "Recalculate"
+            ],
+            "defaultValue": "all",
+            "isOutputColumn": false,
+            "name": "ProcessType",
+            "alternateNames": [],
+            "isRequired": false,
+            "rDescription": "",
+            "description": "",
+            "datatype": "STRING",
+            "allowsLists": false,
+            "rName": "mavgtype",
+            "useInR": true,
+            "rOrderNum": 26
+        },
+        {
+            "defaultValue": false,
+            "name": "RelaxedOrder",
+            "alternateNames": [],
+            "isRequired": false,
+            "rDescription": "",
+            "description": "",
+            "datatype": "BOOLEAN",
+            "allowsLists": false,
+            "rName": "",
+            "useInR": true,
+            "rOrderNum": 27
+        },
+        {
+            "targetTable": [
+                "input_A_role"
+            ],
+            "checkDuplicate": false,
+            "allowedTypes": [],
+            "allowedTypeGroups": [
+                "ALL"
+            ],
+            "matchLengthOfArgument": "",
+            "allowPadding": false,
+            "name": "SequenceColumn",
+            "alternateNames": [],
+            "isRequired": false,
+            "rDescription": "",
+            "description": "",
+            "datatype": "COLUMNS",
+            "allowsLists": false,
+            "rName": "exclude",
+            "useInR": true,
+            "rOrderNum": 28,
+            "requiredLength": 1
+        },
+        {
+            "permittedValues": [],
+            "isOutputColumn": true,
+            "name": "Filter",
+            "alternateNames": [],
+            "isRequired": false,
+            "rDescription": "WHERE",
+            "description": "WHERE",
+            "datatype": "STRING",
+            "allowsLists": false,
+            "rName": "output.column",
+            "useInR": true,
+            "rOrderNum": 29
+        },
+        {
+            "defaultValue": true,
+            "name": "SupportResults",
+            "alternateNames": [],
+            "isRequired": false,
+            "rDescription": "",
+            "description": "",
+            "datatype": "BOOLEAN",
+            "allowsLists": false,
+            "rName": "",
+            "useInR": true,
+            "rOrderNum": 30
+        },
+        {
+            "permittedValues": [],
+            "isOutputColumn": true,
+            "name": "SupportResultPrefix",
+            "alternateNames": [],
+            "isRequired": false,
+            "rDescription": "",
+            "description": "",
+            "datatype": "STRING",
+            "allowsLists": false,
+            "rName": "output.column",
+            "useInR": true,
+            "rOrderNum": 31,
+            "defaultValue": "ml__valib_association"
+        }
+    ],
+    "name_map": {
+        "Association": "association",
+        "GroupColumn": "association_group_column",
+        "ItemColumn": "association_item_column",
+        "Combinations": "association_combinations",
+        "DescriptionDataExists": "association_description_data_exists",
+        "DescriptionIdentifier": "association_description_identifier",
+        "DescriptionColumn": "association_description_column",
+        "GroupCount": "association_group_count",
+        "HierarchyDataExists": "association_hierarchy_data_exists",
+        "LowestLevelColumn": "association_low_level_column",
+        "HighestLevelColumn": "association_high_level_column",
+        "LeftLookupDataExists": "association_left_lookup_data_exists",
+        "LeftLookupColumn": "association_left_lookup_column",
+        "RightLookupDataExists": "association_right_lookup_data_exists",
+        "RightLookupColumn": "association_right_lookup_column",
+        "MinimumConfidence": "association_min_confidence",
+        "MinimumLift": "association_min_lift",
+        "MinimumSupport": "association_min_support",
+        "MinimumZScore": "association_min_zscore",
+        "OrderingProbability": "association_order_prob",
+        "ProcessType": "association_process_type",
+        "RelaxedOrder": "association_relaxed_order",
+        "SequenceColumn": "association_sequence_column",
+        "Filter": "association_filter",
+        "SupportResults": "association_o_support_results",
+        "SupportResultPrefix": "association_support_result_prefix"
+    },
+    "type_map": {
+        "Association": "SEPARATOR",
+        "GroupColumn": "COLUMN",
+        "ItemColumn": "COLUMN",
+        "Combinations": "INT",
+        "DescriptionDataExists": "BOOLEAN",
+        "DescriptionIdentifier": "COLUMN",
+        "DescriptionColumn": "COLUMN",
+        "GroupCount": "INT",
+        "HierarchyDataExists": "BOOLEAN",
+        "LowestLevelColumn": "COLUMN",
+        "HighestLevelColumn": "COLUMN",
+        "LeftLookupDataExists": "BOOLEAN",
+        "LeftLookupColumn": "COLUMN",
+        "RightLookupDataExists": "BOOLEAN",
+        "RightLookupColumn": "COLUMN",
+        "MinimumConfidence": "DOUBLE",
+        "MinimumLift": "DOUBLE",
+        "MinimumSupport": "DOUBLE",
+        "MinimumZScore": "DOUBLE",
+        "OrderingProbability": "DOUBLE",
+        "ProcessType": "SELECT",
+        "RelaxedOrder": "BOOLEAN",
+        "SequenceColumn": "COLUMN",
+        "Filter": "STRING",
+        "SupportResults": "BOOLEAN",
+        "SupportResultPrefix": "STRING"
+    },
+    "choices_map": {
+        "ProcessType": {
+            "All": "all",
+            "Support": "support",
+            "Recalculate": "recalculate"
+        }
+    }
+}

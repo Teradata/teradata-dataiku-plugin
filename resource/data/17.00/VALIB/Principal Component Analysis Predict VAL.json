@@ -1,0 +1,105 @@
+{
+    "json_schema_major_version": "1",
+    "json_schema_minor_version": "1",
+    "json_content_version": "1",
+    "function_name": "Principal Component Analysis Predict VAL",
+    "function_version": "1.0",
+    "function_alias_name": "Principal Component Analysis Predict VAL",
+    "function_type": "valib",
+    "function_r_name": "",
+    "short_description": "The Predict function generates PCA scores using the model created by PCA VALIB function. The scoring process expresses each component as a linear combination of the input columns. There is an additional required input table that specifies the model used by the VALIB PCA function; additional datasets can be added in the Dataiku Input/Output tab.",
+    "long_description": "The Predict function generates PCA scores using the model created by PCA VALIB function. The scoring process expresses each component as a linear combination of the input columns. There is an additional required input table that specifies the model used by the VALIB PCA function; additional datasets can be added in the Dataiku Input/Output tab.",
+    "input_tables": [
+        {
+            "requiredInputKind": [
+                "PartitionByNone"
+            ],
+            "isOrdered": false,
+            "partitionByOne": false,
+            "name": "input_A_role",
+            "alternateNames": [],
+            "isRequired": true,
+            "rDescription": "what input A means",
+            "description": "what input A means",
+            "datatype": "TABLE_ALIAS",
+            "allowsLists": false,
+            "rName": "input_A_role",
+            "useInR": true,
+            "rOrderNum": 1
+        },
+        {
+            "requiredInputKind": [
+                "PartitionByNone"
+            ],
+            "isOrdered": false,
+            "partitionByOne": false,
+            "name": "pca_model",
+            "alternateNames": [],
+            "isRequired": true,
+            "rDescription": "",
+            "description": "",
+            "datatype": "TABLE_ALIAS",
+            "allowsLists": false,
+            "rName": "pca_model",
+            "useInR": true,
+            "rOrderNum": 2
+        }
+    ],
+    "argument_clauses": [
+        {
+            "targetTable": [
+                "input_A_role"
+            ],
+            "checkDuplicate": false,
+            "allowedTypes": [],
+            "allowedTypeGroups": [
+                "ALL"
+            ],
+            "matchLengthOfArgument": "",
+            "allowPadding": false,
+            "name": "IndexColumns",
+            "alternateNames": [],
+            "isRequired": false,
+            "rDescription": "Specifies one or more different columns for the primary index of the result output DataFrame.",
+            "description": "Specifies one or more different columns for the primary index of the result output DataFrame.",
+            "datatype": "COLUMNS",
+            "allowsLists": true,
+            "rName": "exclude",
+            "useInR": true,
+            "rOrderNum": 3
+        },
+        {
+            "targetTable": [
+                "input_A_role"
+            ],
+            "checkDuplicate": false,
+            "allowedTypes": [],
+            "allowedTypeGroups": [
+                "ALL"
+            ],
+            "matchLengthOfArgument": "",
+            "allowPadding": false,
+            "name": "Accumulate",
+            "alternateNames": [],
+            "isRequired": false,
+            "rDescription": "Specifies one or more columns from the 'data' DataFrame that can be passed to the result output DataFrame.",
+            "description": "Specifies one or more columns from the 'data' DataFrame that can be passed to the result output DataFrame.",
+            "datatype": "COLUMNS",
+            "allowsLists": true,
+            "rName": "exclude",
+            "useInR": true,
+            "rOrderNum": 4
+        }
+    ],
+    "name_map": {
+        "PrincipalComponentsAnalysisPredict": "pca2",
+        "IndexColumns": "pca2_index_columns",
+        "Accumulate": "pca2_accumulate"
+    },
+    "type_map": {
+        "PrincipalComponentsAnalysisPredict": "SEPARATOR",
+        "IndexColumns": "COLUMNS",
+        "Accumulate": "COLUMNS"
+    },
+    "choices_map": {}
+}
