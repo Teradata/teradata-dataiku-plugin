@@ -132,7 +132,7 @@ if valid_connection == 1:
 output_dataset_name = get_output_names_for_role('output_dataset')[0]
 output_dataset = dataiku.Dataset(output_dataset_name) 
 if valid_connection == 1:
-    lst = [f"Successfully inserted model_id:{modelname_param[0:30]} into Vantage Table {verifyDatabaseName(database_param)}.{verifyTableName(table_name_param)}"]
+    lst = [f"Successfully inserted model_id:{verifyModelName(modelname_param[0:30])} into Vantage Table {verifyDatabaseName(database_param)}.{verifyTableName(table_name_param)}"]
 else:
     lst = ["Recipe failed. Specify valid Vantage connection."]
 df = pd.DataFrame(lst)
