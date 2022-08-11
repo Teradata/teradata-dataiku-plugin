@@ -2,6 +2,7 @@ import dataiku
 import dataiku
 from dataiku.customrecipe import *
 from dataiku import SQLExecutor2
+from verifyTableColumns import *
 
 def do(payload, config, plugin_config, inputs):
     if payload.get('parameterName') == 'connection_name':
@@ -44,7 +45,7 @@ def do(payload, config, plugin_config, inputs):
             mdbs_name = config.get("user_Typed_DBName")
             
         print(f"mdbs_name value = {mdbs_name}")
-        query = f"select TableName from DBC.TablesV WHERE TableKind = 'T' and LOWER(Databasename) = \'{mdbs_name}\' order by TableName"
+        query = f"select TableName from DBC.TablesV WHERE TableKind = 'T' and LOWER(Databasename) = {verifyModelName(mdbs_name)} order by TableName"
         tablesListDF = conn.query_to_df(query)
         dict_names = tablesListDF.to_dict()["TableName"]
         choices = []
@@ -58,7 +59,7 @@ def do(payload, config, plugin_config, inputs):
         if not license_db_name :
             license_db_name = config.get("user_Typed_License_DB_Name")
             
-        query = f"select TableName from DBC.TablesV WHERE TableKind = 'T' and LOWER(Databasename) = \'{license_db_name}\' order by TableName"
+        query = f"select TableName from DBC.TablesV WHERE TableKind = 'T' and LOWER(Databasename) = {verifyDatabaseName(license_db_name, True)} order by TableName"
         tablesListDF = conn.query_to_df(query)
         dict_names = tablesListDF.to_dict()["TableName"]
         choices = []
@@ -77,9 +78,9 @@ def do(payload, config, plugin_config, inputs):
         if not tbl_name:
             tbl_name = config.get("user_Typed_TBLName")
         
-        print(f"tbl_name =====> \"{mdbs_name}\".\"{tbl_name}\"")    
+        print(f"tbl_name =====> {verifyDatabaseName(mdbs_name)}.{verifyTableName(tbl_name)}")    
         # Create the Dataiku SQL Executor
-        query = f"select model_id from \"{mdbs_name}\".\"{tbl_name}\""
+        query = f"select model_id from {verifyDatabaseName(mdbs_name)}.{verifyTableName(tbl_name)}"
         tablesListDF = conn.query_to_df(query)
         dict_names = tablesListDF.to_dict()["model_id"]
         choices = []

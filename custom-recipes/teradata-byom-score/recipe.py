@@ -10,14 +10,6 @@ from verifyTableColumns import *
 # or more dataset to each input and output role.
 # Roles need to be defined in recipe.json, in the inputRoles and outputRoles fields.
 
-def verifyModelName(modelName):
-    # Model names should not be empty
-    # Model names should never have any form of quotes
-    # Return with single quotes as used as literal expression
-    if modelName and ('"' not in modelName) and ("'" not in modelName):
-        return "'"+modelName+"'"
-    else:
-        raise Exception('Illegal Model Name', modelName)
     
 def verifyOverwriteCache(overwrite_cache, model_name):
     result = ""

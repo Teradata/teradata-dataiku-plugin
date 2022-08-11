@@ -5,6 +5,7 @@ from dataiku.customrecipe import *
 from teradatabyomtest import handle_models
 import json
 import logging
+from verifyTableColumns import *
 
 
 model= handle_models.get_input_output(has_model_as_second_input=True)
@@ -110,28 +111,28 @@ if valid_connection == 1:
     if (create_new_table_param == True):
         #delete_table_if_exists = f"DROP TABLE \"{table_name_param}\";"
         #eng.execute(delete_table_if_exists)
-        create_table = f"CREATE SET TABLE \"{database_param}\".\"{table_name_param}\" (model_id VARCHAR (30), model BLOB ) PRIMARY INDEX (model_id);"
-        delete_table_if_exists = f"DROP TABLE \"{database_param}\".\"{table_name_param}\";"
+        create_table = f"CREATE SET TABLE {verifyDatabaseName(database_param)}.{verifyTableName(table_name_param)} (model_id VARCHAR (30), model BLOB ) PRIMARY INDEX (model_id);"
+        delete_table_if_exists = f"DROP TABLE {verifyDatabaseName(database_param)}.{verifyTableName(table_name_param)};"
         try:
             eng.execute(create_table);
         except:
             eng.execute(delete_table_if_exists);
             eng.execute(create_table);
 
-        delete_record_if_exists = f"delete from \"{database_param}\".\"{table_name_param}\" where model_id = '{modelname_param}';"
+        delete_record_if_exists = f"delete from {verifyDatabaseName(database_param)}.{verifyTableName(table_name_param)} where model_id = {verifyModelName(modelname_param)};"
         #Push the pmml
-        insert_model = f"insert into \"{database_param}\".\"{table_name_param}\" (model_id, model) values(?,?);"
+        insert_model = f"insert into {verifyDatabaseName(database_param)}.{verifyTableName(table_name_param)} (model_id, model) values(?,?);"
         eng.execute(insert_model, modelname_param, pmml_model)
     else:
-        delete_record_if_exists = f"delete from \"{database_param}\".\"{table_name_param}\" where model_id = '{modelname_param[0:30]}';"
-        insert_model = f"insert into \"{database_param}\".\"{table_name_param}\" (model_id, model) values(?,?);"
+        delete_record_if_exists = f"delete from {verifyDatabaseName(database_param)}.{verifyTableName(table_name_param)} where model_id = {verifyModelName(modelname_param[0:30])};"
+        insert_model = f"insert into {verifyDatabaseName(database_param)}.{verifyTableName(table_name_param)} (model_id, model) values(?,?);"
         eng.execute(delete_record_if_exists)
         eng.execute(insert_model, modelname_param, pmml_model)
 
 output_dataset_name = get_output_names_for_role('output_dataset')[0]
 output_dataset = dataiku.Dataset(output_dataset_name) 
 if valid_connection == 1:
-    lst = [f"Successfully inserted model_id:\"{modelname_param[0:30]}\" into Vantage Table \"{database_param}\".\"{table_name_param}\""]
+    lst = [f"Successfully inserted model_id:{modelname_param[0:30]} into Vantage Table {verifyDatabaseName(database_param)}.{verifyTableName(table_name_param)}"]
 else:
     lst = ["Recipe failed. Specify valid Vantage connection."]
 df = pd.DataFrame(lst)

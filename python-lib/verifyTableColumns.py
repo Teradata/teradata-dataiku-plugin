@@ -54,3 +54,11 @@ def verifyColumnName(columnName, single_quotes=False):
         raise Exception('Illegal Column Name', columnName)
 
 
+def verifyModelName(modelName):
+    # Model names should not be empty
+    # Model names should never have any form of quotes
+    # Return with single quotes as used as literal expression
+    if modelName and ('"' not in modelName) and ("'" not in modelName):
+        return "'"+modelName+"'"
+    else:
+        raise Exception('Illegal Model Name', modelName)
