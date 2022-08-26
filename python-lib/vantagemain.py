@@ -129,7 +129,7 @@ def vantageDo():
 
     except Exception as error:
         raise RuntimeError("""Error obtaining connection settings from one of the input tables."""                           
-                           """ This plugin only supports Teradata tables.""")
+                           """This plugin only supports Teradata tables. Specify a default database name in your Teradata connection or a Schema in the input table connection settings.""")
 
     
     # Connection properties.
