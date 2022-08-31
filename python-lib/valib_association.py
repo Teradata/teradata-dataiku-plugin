@@ -138,7 +138,7 @@ def execute(recipe_config, valib_query_wrapper=None):
 
 
 
-    query = """call VAL.td_analyze('ASSOCIATION', 
+    query = """call SYSLIB.td_analyze('ASSOCIATION', 
     'database={};
     tablename={};
     outputdatabase={};
