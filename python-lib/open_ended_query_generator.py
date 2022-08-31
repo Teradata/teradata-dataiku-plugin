@@ -19,6 +19,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SO
 
 # SKS : Import 
 from base_analytic_query_generator import BaseAnalyticQueryGenerator
+from verifyTableColumns import *
 
 def strip_quotes(input_string):
     lst =  input_string.split(",")
@@ -221,12 +222,6 @@ class OpenEndedQueryGenerator():
                 else:
                     func_other_args_values.append('\'' + str(arg['value']) + '\'')
             
-
-        # SKS: Accounts for the SQL Clauses section where the user may input Additional Clauses
-        additional_sql_at_end = ""
-        if 'additionalSQLClause' in self._config_json["function"] and self._config_json["function"]['additionalSQLClause'] != []:
-            #add the additional SQL clause to end (after as temp_alias)
-            additional_sql_at_end = '\n'.join(self._config_json["function"]['additionalSQLClause'])
         
         # SKS: Accounts for the SQL Clauses section where the user may Modify Select Columns of Output Query 
         select_clause = ""
@@ -241,19 +236,15 @@ class OpenEndedQueryGenerator():
                              engine, self._verbose)
         base_query = query_string_gen_unpack._gen_sqlmr_select_stmt_sql()
 
-        if select_clause != "":
-            base_query = base_query.replace("SELECT *", "SELECT "+ select_clause)
-
         CREATE_QUERY = '''CREATE TABLE {}
         AS 
         (
         {}
-        {} 
         )
         WITH DATA
         ;'''
         # CREATE_QUERY = '''{}'''
-        result = CREATE_QUERY.format(self._output_table_name, base_query.replace("sqlmr", "tmp_alias"), additional_sql_at_end)
+        result = CREATE_QUERY.format(verifyAttribute(self._output_table_name), verifyQueryExpr(base_query.replace("sqlmr", "tmp_alias")))
 
         return result
 

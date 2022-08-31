@@ -16,6 +16,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SO
 '''
 
 from query_engine_wrapper import QueryEngineWrapper
+from verifyTableColumns import *
 from valib_transform import *
 
 def execute(recipe_config, valib_query_wrapper=None):       

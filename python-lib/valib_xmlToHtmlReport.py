@@ -16,6 +16,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SO
 '''
 
 from query_engine_wrapper import QueryEngineWrapper
+from verifyTableColumns import *
 from teradata_valib import *
 
 def execute(recipe_config, valib_query_wrapper=None):
@@ -55,16 +56,15 @@ def execute(recipe_config, valib_query_wrapper=None):
     # outputdatabase=DSSDB;outputtablename=ml__valib_xmltohtmlreport_164853966752436;
     # analysistype=logistic;');
 
-    query = "call SYSLIB.td_analyze('REPORT', \
-    'database={};\
-    tablename={};\
-    outputdatabase={};\
-    outputtablename={};\
-    analysistype={};\
-    {}')"\
-    .format(database, tablename, outputdatabase, outputtablename, analysis_type, optional_args)
+    query = """call SYSLIB.td_analyze('REPORT', 
+    'database={};
+    tablename={};
+    outputdatabase={};
+    outputtablename={};
+    analysistype={};
+    {}')""".format(verifyAttribute(database), verifyAttribute(tablename), verifyAttribute(outputdatabase), verifyAttribute(outputtablename), verifyAttribute(analysis_type), verifyAttribute(optional_args))
     
-    query = query.replace("SYSLIB", val_location)
+    query = query.replace("SYSLIB", verifyAttribute(val_location))
     if not valib_query_wrapper:
         return query
     

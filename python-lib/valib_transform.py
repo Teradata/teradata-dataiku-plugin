@@ -17,6 +17,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SO
 
 import logging
 from query_engine_wrapper import QueryEngineWrapper
+from verifyTableColumns import *
 
 def execute_transform(recipe_config, function_name, function_list, unique_name="", valib_query_wrapper=None):
 
@@ -37,7 +38,7 @@ def execute_transform(recipe_config, function_name, function_list, unique_name="
 
         if dropIfExists:
             outputTable = main_output_name
-            drop_query = "DROP TABLE "+outputTable+";"
+            drop_query = "DROP TABLE {};".format(verifyTableName(outputTable))
             try:
                 valib_query_wrapper.execute(drop_query)
             except Exception as e:
@@ -48,8 +49,8 @@ def execute_transform(recipe_config, function_name, function_list, unique_name="
     if delayquery:
         select = ""
         for i in range(len(function_list)):
-            select += "INSERT INTO "+main_output_name+" ( DELAYTRANSFORM ) VALUES  ('" + function_name + "="+ function_list[i] + "');"
-        query = "CREATE TABLE "+main_output_name+" (DELAYTRANSFORM varchar(255));\n"
+            select += "INSERT INTO {} ( DELAYTRANSFORM ) VALUES  ('{}={}');".format(verifyTableName(main_output_name), function_name, function_list[i])
+        query = "CREATE TABLE {} (DELAYTRANSFORM varchar(255));\n".format(verifyTableName(main_output_name))
         if not valib_query_wrapper:
             return query + "<br>" + select
         valib_query_wrapper.execute(query)
@@ -67,9 +68,8 @@ def execute_transform(recipe_config, function_name, function_list, unique_name="
         for f in function_list:
             function_string += f
 
-        query = "call SYSLIB.td_analyze('VARTRAN', \
-        'outputstyle={};{}={};database={};tablename={};outputdatabase={};outputtablename={};keycolumns={};');"\
-        .format('table', function_name, function_string, database, tablename, outputdatabase, outputtablename, keycolumns)
+        query = """call SYSLIB.td_analyze('VARTRAN', 
+        'outputstyle={};{}={};database={};tablename={};outputdatabase={};outputtablename={};keycolumns={};');""".format('table', verifyAttribute(function_name), verifyAttribute(function_string), verifyAttribute(database), verifyAttribute(tablename), verifyAttribute(outputdatabase), verifyAttribute(outputtablename), verifyAttribute(keycolumns))
 
         if not valib_query_wrapper:
             return query
@@ -77,7 +77,7 @@ def execute_transform(recipe_config, function_name, function_list, unique_name="
         # change double quotes to two single quotes
         query = query.replace('"', "''")
 
-        query = query.replace("SYSLIB", val_location)
+        query = query.replace("SYSLIB", verifyAttribute(val_location))
         if not valib_query_wrapper:
             return query
         
@@ -166,7 +166,7 @@ def execute(recipe_config, valib_query_wrapper=None):
         # Handle dropping of output tables.
         if recipe_config.get('dropIfExists', False):
             outputTable = main_output_name
-            drop_query = "DROP TABLE "+outputTable+";"
+            drop_query = "DROP TABLE {};".format(verifyTableName(outputTable))
             try:
                 valib_query_wrapper.execute(drop_query)
             except Exception as e:
@@ -205,21 +205,20 @@ def execute(recipe_config, valib_query_wrapper=None):
         available_functions += "zscore={};".format(zscore)
 
 
-    query = "call SYSLIB.td_analyze('VARTRAN', \
-    'outputstyle={};\
-    {};\
-    database={};\
-    tablename={};\
-    outputdatabase={};\
-    outputtablename={};\
-    keycolumns={};');"\
-    .format('table', available_functions, database, tablename, outputdatabase, outputtablename, keycolumns)
+    query = """call SYSLIB.td_analyze('VARTRAN', 
+    'outputstyle={};
+    {};
+    database={};
+    tablename={};
+    outputdatabase={};
+    outputtablename={};
+    keycolumns={};');""".format('table', verifyAttribute(available_functions), verifyAttribute(database), verifyAttribute(tablename), verifyAttribute(outputdatabase), verifyAttribute(outputtablename), verifyAttribute(keycolumns))
     
     # change double quotes to two single quotes
     query = query.replace('"', "''")
 
 
-    query = query.replace("SYSLIB", val_location)
+    query = query.replace("SYSLIB", verifyAttribute(val_location))
     if not valib_query_wrapper:
         return query
     

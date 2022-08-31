@@ -16,6 +16,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SO
 '''
 
 from query_engine_wrapper import QueryEngineWrapper
+from verifyTableColumns import *
 
 
 def execute(recipe_config, valib_query_wrapper=None):
@@ -71,15 +72,14 @@ def execute(recipe_config, valib_query_wrapper=None):
         optional_args += "thresholdprobability=" + str(recipe_config['chi_square_probability_threshold']) + ";"
 
 
-    query = "call SYSLIB.td_analyze('CHISQUARETEST', \
-    'database={};\
-    tablename={};\
-    outputdatabase={};\
-    outputtablename={};\
-    {}')"\
-    .format(database, tablename, outputdatabase, outputtablename, optional_args)
+    query = """call SYSLIB.td_analyze('CHISQUARETEST', 
+    'database={};
+    tablename={};
+    outputdatabase={};
+    outputtablename={};
+    {}')""".format(verifyAttribute(database), verifyAttribute(tablename), verifyAttribute(outputdatabase), verifyAttribute(outputtablename), verifyAttribute(optional_args))
 
-    query = query.replace("SYSLIB", val_location)
+    query = query.replace("SYSLIB", verifyAttribute(val_location))
     if not valib_query_wrapper:
         return query
     

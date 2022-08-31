@@ -62,3 +62,29 @@ def verifyModelName(modelName):
         return "'"+modelName+"'"
     else:
         raise Exception('Illegal Model Name', modelName)
+
+def verifyAttribute(attributeValue):
+    # Attributes should never have single quotes
+    if ("'" not in attributeValue):
+        return attributeValue
+    else:
+        raise Exception('Illegal Attribute Value', attributeValue)
+
+def verifyQueryExpr(attributeValue):
+    # Expressions should not have new statements
+    if (";" not in attributeValue):
+        return attributeValue
+    else:
+        raise Exception('Illegal Attribute Value', attributeValue)
+
+
+def verifyLocation(locationValue):
+    # Location names should not be empty
+    # Location names should never have any form of quotes
+    # Return with single quotes as used as literal expression
+    if locationValue and ('"' not in locationValue) and ("'" not in locationValue):
+        return "'"+locationValue+"'"
+    else:
+        raise Exception('Illegal Location Name', locationValue)
+
+

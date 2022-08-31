@@ -8,7 +8,7 @@ Current version
 * Merging of Analytic and VAL functions into single recipe.
 * Code refactoring in the Analytic Functions recipes.
 * Renaming of "SCRIPT Table Operator Analysis" recipe into "In-Vantage Scripting".
-* Bug fixes and performance improvements.
+* Bug fixes.
 
 ## Version 2.0.0 (June 2022)
 

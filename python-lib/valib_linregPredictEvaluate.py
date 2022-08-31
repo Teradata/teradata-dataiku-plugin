@@ -16,6 +16,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SO
 '''
 
 from query_engine_wrapper import QueryEngineWrapper
+from verifyTableColumns import *
 
 
 def execute(recipe_config, function_name, valib_query_wrapper=None):
@@ -54,30 +55,28 @@ def execute(recipe_config, function_name, valib_query_wrapper=None):
         if 'linreg2_accumulate' in recipe_config and recipe_config['linreg2_accumulate']:
             accumulate = "retain=" + ",".join(recipe_config['linreg2_accumulate']) + ";"
 
-        query = "call SYSLIB.td_analyze('LINEARSCORE', \
-        'database={};\
-        tablename={};\
-        outputdatabase={};\
-        outputtablename={};\
-        modeldatabase={};\
-        modeltablename={};\
-        index={};\
-        predicted={};\
-        {}')"\
-        .format(database, tablename, outputdatabase, outputtablename, modeldatabase, model, index_columns, response_column, accumulate)
+        query = """call SYSLIB.td_analyze('LINEARSCORE', 
+        'database={};
+        tablename={};
+        outputdatabase={};
+        outputtablename={};
+        modeldatabase={};
+        modeltablename={};
+        index={};
+        predicted={};
+        {}')""".format(verifyAttribute(database), verifyAttribute(tablename), verifyAttribute(outputdatabase), verifyAttribute(outputtablename), verifyAttribute(modeldatabase), verifyAttribute(model), verifyAttribute(index_columns), verifyAttribute(response_column), verifyAttribute(accumulate))
         
     else: 
-        query = "call SYSLIB.td_analyze('LINEARSCORE', \
-        'database={};\
-        tablename={};\
-        outputdatabase={};\
-        outputtablename={};\
-        modeldatabase={};\
-        modeltablename={};\
-        scoringmethod=scoreandevaluate;')"\
-        .format(database, tablename, outputdatabase, outputtablename, modeldatabase, model)
+        query = """call SYSLIB.td_analyze('LINEARSCORE', 
+        'database={};
+        tablename={};
+        outputdatabase={};
+        outputtablename={};
+        modeldatabase={};
+        modeltablename={};
+        scoringmethod=scoreandevaluate;')""".format(verifyAttribute(database), verifyAttribute(tablename), verifyAttribute(outputdatabase), verifyAttribute(outputtablename), verifyAttribute(modeldatabase), verifyAttribute(model))
 
-    query = query.replace("SYSLIB", val_location)
+    query = query.replace("SYSLIB", verifyAttribute(val_location))
     if not valib_query_wrapper:
         return query
     

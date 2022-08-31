@@ -19,6 +19,7 @@ import dataiku
 from dataiku import Dataset
 from dataiku.customrecipe import *
 from dataiku.core.sql import SQLExecutor2
+from verifyTableColumns import *
 
 
 def set_schema_from_vantage(outputTableName, output_dataset, executor, post_query, autocommit, pre_query):
@@ -26,7 +27,7 @@ def set_schema_from_vantage(outputTableName, output_dataset, executor, post_quer
     # Types Documentation: 
     # https://docs.teradata.com/r/rgAb27O_xRmMVc_aQq2VGw/6CYL2QcAvXykzEc8mG__Xg
     # https://www.tutorialspoint.com/teradata/teradata_data_types.htm
-    help_query = 'help table ' + outputTableName + ';'
+    help_query = 'help table {};'.format(verifyTableName(outputTableName))
 
     if not autocommit:
         executor.query_to_df(pre_query)
@@ -46,5 +47,5 @@ def set_schema_from_vantage(outputTableName, output_dataset, executor, post_quer
         else:
             column_type_list.append({'name' : column_name, 'type' : 'string' })
             print("Column name=", column_name, "type=", column_type, 'dataiku_type=', 'string')
-    print("column_type_list=", column_type_list)
+    #print("column_type_list=", column_type_list)
     output_dataset.write_schema(column_type_list)

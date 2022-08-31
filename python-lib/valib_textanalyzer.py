@@ -16,6 +16,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SO
 '''
 
 from query_engine_wrapper import QueryEngineWrapper
+from verifyTableColumns import *
 
 def execute(recipe_config, valib_query_wrapper=None):
     if not valib_query_wrapper:
@@ -48,16 +49,15 @@ def execute(recipe_config, valib_query_wrapper=None):
     if 'textanalyzer_analyze_unicode' in recipe_config and recipe_config['textanalyzer_analyze_unicode']:
         optional_args += "extendedunicodeanalysis=" + str(recipe_config['textanalyzer_analyze_unicode']) + ";"
 
-    query = "call SYSLIB.td_analyze('TEXTFIELDANALYZER',\
-    'database={};\
-    tablename={};\
-    outputdatabase={};\
-    outputtablename={};\
-    columns={};\
-    {}')"\
-    .format(database, tablename, outputdatabase, outputtablename, columns, optional_args)
+    query = """call SYSLIB.td_analyze('TEXTFIELDANALYZER',
+    'database={};
+    tablename={};
+    outputdatabase={};
+    outputtablename={};
+    columns={};
+    {}')""".format(verifyAttribute(database), verifyAttribute(tablename), verifyAttribute(outputdatabase), verifyAttribute(outputtablename), verifyAttribute(columns), verifyAttribute(optional_args))
         
-    query = query.replace("SYSLIB", val_location)
+    query = query.replace("SYSLIB", verifyAttribute(val_location))
     if not valib_query_wrapper:
         return query
     

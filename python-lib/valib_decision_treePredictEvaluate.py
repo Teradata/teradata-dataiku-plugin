@@ -17,6 +17,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SO
 
 import xml.etree.ElementTree as ET
 from query_engine_wrapper import QueryEngineWrapper
+from verifyTableColumns import *
 
 
 
@@ -75,17 +76,16 @@ def execute(recipe_config, function_name, valib_query_wrapper=None):
         optional_args += "scoringmethod=score"
 
 
-    query = "call SYSLIB.td_analyze('DECISIONTREESCORE', \
-    'database={};\
-    tablename={};\
-    outputdatabase={};\
-    outputtablename={};\
-    modeldatabase={};\
-    modeltablename={};\
-    {}')"\
-    .format(database, tablename, outputdatabase, outputtablename, modeldatabase, model, optional_args)
+    query = """call SYSLIB.td_analyze('DECISIONTREESCORE', 
+    'database={};
+    tablename={};
+    outputdatabase={};
+    outputtablename={};
+    modeldatabase={};
+    modeltablename={};
+    {}')""".format(verifyAttribute(database), verifyAttribute(tablename), verifyAttribute(outputdatabase), verifyAttribute(outputtablename), verifyAttribute(modeldatabase), verifyAttribute(model), verifyAttribute(optional_args))
 
-    query = query.replace("SYSLIB", val_location)
+    query = query.replace("SYSLIB", verifyAttribute(val_location))
     if not valib_query_wrapper:
         return query
     
@@ -99,7 +99,7 @@ def execute(recipe_config, function_name, valib_query_wrapper=None):
         output_table_name_rpt = main_output_name + "_rpt"
 
         # Drop the output table that has the predictions as we do not need this
-        query = "DROP TABLE {};".format(output_table_name)
+        query = "DROP TABLE {};".format(verifyTableName(output_table_name))
         valib_query_wrapper.execute(query)
         
         # Lets try to cleanup a report 
@@ -107,7 +107,7 @@ def execute(recipe_config, function_name, valib_query_wrapper=None):
         if cleanupReport:
 
             # Get the XML contents from the report table
-            query = "SELECT * FROM {};".format(output_table_name_rpt)
+            query = "SELECT * FROM {};".format(verifyTableName(output_table_name_rpt))
             result_df = valib_query_wrapper.execute(query)
             xmlModel = None
             for row in valib_query_wrapper.iteratable(result_df):
@@ -125,12 +125,13 @@ def execute(recipe_config, function_name, valib_query_wrapper=None):
                     outputRows.append({"Desc" : lineItem.attrib["Desc"], "Percent" : lineItem.attrib["Percent"].strip("%"), "count" : lineItem.attrib["count"]})
                 if outputRows:
                     # Create the output table with the 3 columns
-                    query = "CREATE TABLE "+output_table_name+" (Description varchar(255), Percentage float, TotalCount int);\n"
+                    query = "CREATE TABLE {} (Description varchar(255), Percentage float, TotalCount int);\n".format(verifyTableName(output_table_name))
                     valib_query_wrapper.execute(query)
                     # Create and execute the INSERT where we insert each row into the output table
                     insert = ""
                     for row in outputRows:
-                        insert += "INSERT INTO "+output_table_name+" VALUES  ('" + row["Desc"] + "', "+ row["Percent"] + ", " + row["count"] + ");"
+                        insert += "INSERT INTO {} VALUES  ('{}', {}, {});".format(verifyTableName(output_table_name), verifyAttribute(row["Desc"]), verifyAttribute(row["Percent"]), verifyAttribute(row["count"]))
+                    
                     query = insert
                     valib_query_wrapper.execute(query)
                 else:
@@ -144,7 +145,7 @@ def execute(recipe_config, function_name, valib_query_wrapper=None):
         # Raw Report output
         if not cleanupReport:
             # If we failed to cleanup report then just output the XML into the output table (i.e output is a duplicate of the report table)
-            query = "CREATE TABLE {} AS (SELECT * FROM {}) WITH DATA NO PRIMARY INDEX;".format(output_table_name, output_table_name_rpt)
+            query = "CREATE TABLE {} AS (SELECT * FROM {}) WITH DATA NO PRIMARY INDEX;".format(verifyTableName(output_table_name), verifyTableName(output_table_name_rpt))
             valib_query_wrapper.execute(query)
 
 

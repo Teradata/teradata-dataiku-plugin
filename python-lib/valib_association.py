@@ -16,6 +16,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SO
 '''
 
 from query_engine_wrapper import QueryEngineWrapper
+from verifyTableColumns import *
 
 def execute(recipe_config, valib_query_wrapper=None):
     
@@ -137,17 +138,16 @@ def execute(recipe_config, valib_query_wrapper=None):
 
 
 
-    query = "call VAL.td_analyze('ASSOCIATION', \
-    'database={};\
-    tablename={};\
-    outputdatabase={};\
-    outputtablename={};\
-    groupcolumn={};\
-    itemcolumn={};\
-    {}')"\
-    .format(database, tablename, outputdatabase, outputtablename, group_column, item_column, optional_args)
+    query = """call VAL.td_analyze('ASSOCIATION', 
+    'database={};
+    tablename={};
+    outputdatabase={};
+    outputtablename={};
+    groupcolumn={};
+    itemcolumn={};
+    {}')""".format(verifyAttribute(database), verifyAttribute(tablename), verifyAttribute(outputdatabase), verifyAttribute(outputtablename), verifyAttribute(group_column), verifyAttribute(item_column), verifyAttribute(optional_args))
 
-    query = query.replace("SYSLIB", val_location)
+    query = query.replace("SYSLIB", verifyAttribute(val_location))
     if not valib_query_wrapper:
         return query
     

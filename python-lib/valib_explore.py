@@ -16,6 +16,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SO
 '''
 
 from query_engine_wrapper import QueryEngineWrapper
+from verifyTableColumns import *
 
 
 def execute(recipe_config, valib_query_wrapper=None):
@@ -109,18 +110,17 @@ def execute(recipe_config, valib_query_wrapper=None):
         optional_args += "where=" + str(explore_filter) + ";"
 
 
-    query = "call SYSLIB.td_analyze('DATAEXPLORER',\
-    'database={};\
-    tablename={};\
-    outputdatabase={};\
-    frequencyoutputtablename= {};\
-    histogramoutputtablename= {};\
-    statisticsoutputtablename= {};\
-    valuesoutputtablename= {};\
-    {}')"\
-    .format(database, tablename, outputdatabase, frequency, histogram, statistics, values, optional_args)
+    query = """call SYSLIB.td_analyze('DATAEXPLORER',
+    'database={};
+    tablename={};
+    outputdatabase={};
+    frequencyoutputtablename= {};
+    histogramoutputtablename= {};
+    statisticsoutputtablename= {};
+    valuesoutputtablename= {};
+    {}')""".format(verifyAttribute(database), verifyAttribute(tablename), verifyAttribute(outputdatabase), verifyAttribute(frequency), verifyAttribute(histogram), verifyAttribute(statistics), verifyAttribute(values), verifyAttribute(optional_args))
 
-    query = query.replace("SYSLIB", val_location)
+    query = query.replace("SYSLIB", verifyAttribute(val_location))
     if not valib_query_wrapper:
         return query
     

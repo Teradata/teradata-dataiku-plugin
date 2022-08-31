@@ -402,23 +402,21 @@ logging.info("""Script Command: """+verifyScriptCommand())
 
 # select query
 logging.info('Building Database Query')
-databaseQuery = 'DATABASE {database};'.format(database=sto_database())
+databaseQuery = 'DATABASE {};'.format(verifyAttribute(sto_database()))
 print("""Database Query: """+databaseQuery)
 executor_query(executor, databaseQuery)
 logging.info('Build Session SearchUIFDBPath Query')
-setSessionQuery = 'SET SESSION SEARCHUIFDBPATH = {searchPath};'.format(searchPath=searchPath)
+setSessionQuery = 'SET SESSION SEARCHUIFDBPATH = {};'.format(verifyAttribute(searchPath))
 logging.info("""Set Session Query: """ + setSessionQuery)
 etQuery = 'COMMIT WORK;'
 
 #File Related:
 
-removeFileQuery = """CALL SYSUIF.REMOVE_FILE('""" + scriptAlias + """',1);"""
+removeFileQuery = "CALL SYSUIF.REMOVE_FILE({},1);".format(verifyLocation(scriptAlias))
 logging.info('Building Script installation query')
-installFileQuery = """CALL SYSUIF.INSTALL_FILE('""" + escape(scriptAlias) + """','""" + escape(scriptFileName) + """','"""+escape(scriptLocation)+"""!"""+escape(scriptFileName)+"""');"""
-replaceFileQuery = """CALL SYSUIF.REPLACE_FILE('""" + escape(scriptAlias) + """','""" + escape(scriptFileName) + """','"""+escape(scriptLocation)+"""!"""+escape(scriptFileName)+"""', 0);"""
-scriptDoesExist = """select * from dbc.tables
-where databasename = '{searchPath}'
-and TableKind = 'Z';""".format(searchPath=searchPath)
+installFileQuery = "CALL SYSUIF.INSTALL_FILE({},{},{});".format(verifyLocation(scriptAlias), verifyLocation(scriptFileName), verifyLocation(scriptLocation + "!" + scriptFileName))
+replaceFileQuery = "CALL SYSUIF.REPLACE_FILE({},{},{}, 0);".format(verifyLocation(scriptAlias), verifyLocation(scriptFileName), verifyLocation(scriptLocation + "!" + scriptFileName))
+scriptDoesExist = "select * from dbc.tables where databasename = {} and TableKind = 'Z';".format(verifyTableName(searchPath, True))
 
 #File Copy to DIST
 dkuinstalldir = os.environ['DKUINSTALLDIR']
@@ -453,13 +451,12 @@ for item in additionalFiles:
         if(tableCheck.shape[0] < 1):
             logging.info("""File Alias:"""+ item.get('file_alias'))
             logging.info('Was not able to find the file in the table list. Attempting to use INSTALL_FILE')        
-            installAdditionalFilesArray.append("""\nCALL SYSUIF.INSTALL_FILE('""" + item.get('file_alias') + """','""" + item.get('filename') + """','"""+item.get('file_location')+item.get('file_format')+"""!"""+item.get('filename')+"""');""")
+            installAdditionalFilesArray.append("\nCALL SYSUIF.INSTALL_FILE({},{},{});".format(verifyLocation(item.get('file_alias')), verifyLocation(item.get('filename')), verifyLocation(item.get('file_location')+item.get('file_format') + "!" + item.get('filename'))))
         else:    
             logging.info("""File Alias:"""+ item.get('file_alias'))
-            logging.info('Was able to find the file in the table list. Attempting to use REPLACE_FILE')                
-            installAdditionalFilesArray.append("""\nCALL SYSUIF.REPLACE_FILE('""" + item.get('file_alias') + """','""" + item.get('filename') + """','"""+item.get('file_location')+item.get('file_format')+"""!"""+item.get('filename')+"""',0);""")
+            installAdditionalFilesArray.append("\nCALL SYSUIF.REPLACE_FILE({},{},{},0);".format(verifyLocation(item.get('file_alias')), verifyLocation(item.get('filename')), verifyLocation(item.get('file_location')+item.get('file_format') + "!" + item.get('filename'))))
     else:
-        installAdditionalFilesArray.append("""\nCALL SYSUIF.INSTALL_FILE('""" + item.get('file_alias') + """','""" + item.get('filename') + """','"""+item.get('file_location')+item.get('file_format')+"""!"""+item.get('filename')+"""');""")
+        installAdditionalFilesArray.append("\nCALL SYSUIF.INSTALL_FILE({},{},{});".format(verifyLocation(item.get('file_alias')), verifyLocation(item.get('filename')), verifyLocation(item.get('file_location')+item.get('file_format') + "!" + item.get('filename'))))
 logging.info("""Additional Files Installation Query/ies: """)
 logging.info(installAdditionalFilesArray)
 
@@ -488,24 +485,8 @@ STOQuery = """SELECT {selectClause}
 FROM SCRIPT (ON (SELECT {onClause} FROM {inputTable} {whereClause}){hashClause}{localOrderClause}{partitionClause}{orderClause}
              SCRIPT_COMMAND({script_command})
              RETURNS ('{returnClause}')
-            );""".\
-            format(inputTable=verifyInputTable(inputTable),
-                   outputTable=outputTable, # Not verified as not user specificed, instead it is from Dataiku output data set information
-                   selectClause=verifySelectClause(output_all, return_clause),
-                   onClause=verifyOnClause(inputs),
-                   whereClause=verifyWhereClause(whereClause),
-                   script_command=verifyScriptCommand(),
-                   hashClause=verifyHashClause(partitionbycolumns),
-                   partitionClause=verifyPartitionClause(partitionbycolumns),
-                   orderClause=verifyOrderClause(partitionorderbycolumns),
-                   localOrderClause=verifyLocalOrderClause(partitionorderbycolumns),
-                   returnClause=verifyReturnClause(returnClause))
+            );""".format(inputTable=verifyInputTable(inputTable), selectClause=verifySelectClause(output_all, return_clause), onClause=verifyOnClause(inputs), whereClause=verifyWhereClause(whereClause), script_command=verifyScriptCommand(),hashClause=verifyHashClause(partitionbycolumns), partitionClause=verifyPartitionClause(partitionbycolumns), orderClause=verifyOrderClause(partitionorderbycolumns), localOrderClause=verifyLocalOrderClause(partitionorderbycolumns),returnClause=verifyReturnClause(returnClause))
 
-def getSelectTableQuery(databasename, fileAlias):
-    return """select * from dbc.tables
-where databasename = '{dataset}'
-and TableName = '{table}'
-and TableKind = 'T';""".format(dataset=databasename, table=fileAlias)
 
 def database():
     # for now, database name = db user name

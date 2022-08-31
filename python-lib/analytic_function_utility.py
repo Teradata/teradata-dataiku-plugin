@@ -68,23 +68,6 @@ def get_all_functions(query_engine_wrapper, fallback_directory, category_name = 
     """ 
 
     lst = []
-    if check_analytic_table == True:
-        try:
-            # execute the query to get the function names from the VCT
-            query_string = "SELECT FunctionName FROM " + table_name
-            if category_name != None and plugin_name != None:
-                query_string += " WHERE Category LIKE '"+ category_name +"' AND Plugin LIKE '" + plugin_name + "'"
-            elif category_name != None:
-                query_string += " WHERE Category LIKE '"+ category_name +"'"
-            elif plugin_name != None:
-                query_string += " WHERE Plugin LIKE '"+ plugin_name +"'"
-            query_results = query_engine_wrapper.execute(query_string+ ";")
-            # loop through each function and append to the list
-            for row in query_engine_wrapper.iteratable(query_results):
-                lst.append(query_engine_wrapper.row_value(row, "FunctionName"))
-        except BaseException as e:
-            logging.info("teradata_analytic_lib: " +table_name+ " does not exist!", e)
-            lst = []
     # If the VCT does not have many functions then it is not correct, mark is as false
     min_num_functions = 20
     if len(lst) < min_num_functions:
@@ -146,32 +129,6 @@ def get_function_json(query_engine_wrapper, function_name, fallback_directory, c
         if that exists, otherwise from the fallback directory of JSONs.
     """ 
     function_json = {} 
-    if check_analytic_table == True:           
-        try:
-            # execute the query to get the JSON from the VCT that matches the function requested
-            query_string = "SELECT JSON FROM  '"+ table_name + "' WHERE FunctionName LIKE '" + function_name + "'"
-
-            if category_name != None and plugin_name != None:
-                query_string += " AND Category LIKE '" + category_name + "' AND Plugin LIKE '" + plugin_name + "'"
-            elif category_name != None:
-                query_string += " AND Category LIKE '" + category_name + "'"
-            elif plugin_name != None:
-                query_string += " AND Plugin LIKE '" + plugin_name + "'"
-
-            query_results = query_engine_wrapper.execute(query_string + ";")
-
-            # loop through each function and append to the list 
-            for row in query_engine_wrapper.iteratable(query_results):
-                function_json = json.loads(query_engine_wrapper.row_value(row, 'JSON').decode("utf-8"))
-                break
-
-            if not function_json:
-                logging.info("teradata_analytic_lib: " +table_name+ " exists but the function is missing", function_name)
-        
-        except BaseException as e:
-            logging.info("teradata_analytic_lib: " +table_name+ " does not exist! Falling back to JSON on filesystem", e)
-            function_json = {}
-
     if not function_json:
         # In this case VCT doesnt exist, so use JSONs on filesystem with the appropriate version and function name
         file_name = os.path.join(fallback_directory, function_name+".json")
@@ -228,35 +185,6 @@ def get_all_function_jsons(query_engine_wrapper, fallback_directory, category_na
     
     result = []           
     sql_query_worked = False
-    if check_analytic_table == True: 
-        try:
-            # execute the query to get the JSON from the VCT that matches the function requested
-            query_string = "SELECT CAST(FROM_BYTES(VCT.JSON, 'base16') AS VARCHAR(30000)) AS JSON FROM '"+ table_name + "' AS VCT"
-            if category_name != None and plugin_name != None:
-                query_string += " WHERE Category LIKE '" + category_name + "' AND Plugin LIKE '" + plugin_name + "'"
-            elif category_name != None:
-                query_string += " WHERE Category LIKE '" + category_name + "'"
-            elif plugin_name != None:
-                query_string += " WHERE Plugin LIKE '" + plugin_name + "'"
-            
-            query_results = query_engine_wrapper.execute(query_string + ";")
-
-      
-            # loop through each function and append to the list 
-            for row in query_engine_wrapper.iteratable(query_results):
-                logging.info("teradata_analytic_lib: Loaded JSON from " +table_name+ "!")
-                json_string = bytearray.fromhex(query_engine_wrapper.row_value(row, 'JSON')).decode()
-                function_json = json.loads(json_string)
-                result.append(function_json)
-                sql_query_worked = True
-                
-            if len(result)==0:
-                logging.info("teradata_analytic_lib: " +table_name+ " exists but no matching functions")
-        
-        except BaseException as e:
-            logging.info("teradata_analytic_lib: " +table_name+ " does not exist! Falling back to JSON on filesystem", e)
-            result = []
-      
 
     if len(result)==0 and os.path.isdir(fallback_directory):
         # In this case VCT doesnt exist, so use JSONs on filesystem with the appropriate version and function name

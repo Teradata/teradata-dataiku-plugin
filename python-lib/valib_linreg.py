@@ -16,6 +16,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SO
 '''
 
 from query_engine_wrapper import QueryEngineWrapper
+from verifyTableColumns import *
 
 
 def execute(recipe_config, valib_query_wrapper=None):
@@ -94,17 +95,16 @@ def execute(recipe_config, valib_query_wrapper=None):
         optional_args += "varianceproportionthreshold=" + str(recipe_config['linreg_variance_prop_threshold']) + ";"
 
 
-    query = "call SYSLIB.td_analyze('LINEAR', \
-    'database={};\
-    tablename={};\
-    outputdatabase={};\
-    outputtablename={};\
-    columns={};\
-    dependent={};\
-    {}')"\
-    .format(database, tablename, outputdatabase, outputtablename, columns, dependent, optional_args)
+    query = """call SYSLIB.td_analyze('LINEAR', 
+    'database={};
+    tablename={};
+    outputdatabase={};
+    outputtablename={};
+    columns={};
+    dependent={};
+    {}')""".format(verifyAttribute(database), verifyAttribute(tablename), verifyAttribute(outputdatabase), verifyAttribute(outputtablename), verifyAttribute(columns), verifyAttribute(dependent), verifyAttribute(optional_args))
 
-    query = query.replace("SYSLIB", val_location)
+    query = query.replace("SYSLIB", verifyAttribute(val_location))
     if not valib_query_wrapper:
         return query
     
