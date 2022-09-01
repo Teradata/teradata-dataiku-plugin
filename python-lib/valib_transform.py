@@ -68,8 +68,8 @@ def execute_transform(recipe_config, function_name, function_list, unique_name="
         for f in function_list:
             function_string += f
 
-        query = """call SYSLIB.td_analyze('VARTRAN', 
-        'outputstyle={};{}={};database={};tablename={};outputdatabase={};outputtablename={};keycolumns={};');""".format('table', verifyAttribute(function_name), verifyAttribute(function_string), verifyAttribute(database), verifyAttribute(tablename), verifyAttribute(outputdatabase), verifyAttribute(outputtablename), verifyAttribute(keycolumns))
+        query = """call {}.td_analyze('VARTRAN', 
+        'outputstyle={};{}={};database={};tablename={};outputdatabase={};outputtablename={};keycolumns={};');""".format(verifyAttribute(val_location), 'table', verifyAttribute(function_name), verifyAttribute(function_string), verifyAttribute(database), verifyAttribute(tablename), verifyAttribute(outputdatabase), verifyAttribute(outputtablename), verifyAttribute(keycolumns))
 
         if not valib_query_wrapper:
             return query
@@ -77,7 +77,7 @@ def execute_transform(recipe_config, function_name, function_list, unique_name="
         # change double quotes to two single quotes
         query = query.replace('"', "''")
 
-        query = query.replace("SYSLIB", verifyAttribute(val_location))
+        
         if not valib_query_wrapper:
             return query
         
@@ -205,20 +205,20 @@ def execute(recipe_config, valib_query_wrapper=None):
         available_functions += "zscore={};".format(zscore)
 
 
-    query = """call SYSLIB.td_analyze('VARTRAN', 
+    query = """call {}.td_analyze('VARTRAN', 
     'outputstyle={};
     {};
     database={};
     tablename={};
     outputdatabase={};
     outputtablename={};
-    keycolumns={};');""".format('table', verifyAttribute(available_functions), verifyAttribute(database), verifyAttribute(tablename), verifyAttribute(outputdatabase), verifyAttribute(outputtablename), verifyAttribute(keycolumns))
+    keycolumns={};');""".format(verifyAttribute(val_location), 'table', verifyAttribute(available_functions), verifyAttribute(database), verifyAttribute(tablename), verifyAttribute(outputdatabase), verifyAttribute(outputtablename), verifyAttribute(keycolumns))
     
     # change double quotes to two single quotes
     query = query.replace('"', "''")
 
 
-    query = query.replace("SYSLIB", verifyAttribute(val_location))
+    
     if not valib_query_wrapper:
         return query
     

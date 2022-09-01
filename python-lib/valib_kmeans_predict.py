@@ -66,16 +66,16 @@ def execute(recipe_config, valib_query_wrapper=None):
 
     optional_args += "operatordatabase=" + val_location + ";"
         
-    query = """call SYSLIB.td_analyze('KMEANSSCORE', 
+    query = """call {}.td_analyze('KMEANSSCORE', 
     'database={};
     tablename={};
     outputdatabase={};
     outputtablename={};
     modeldatabase={};
     modeltablename={};
-    {}')""".format(verifyAttribute(database), verifyAttribute(tablename), verifyAttribute(outputdatabase), verifyAttribute(outputtablename), verifyAttribute(modeldatabase), verifyAttribute(model), verifyAttribute(optional_args))
+    {}')""".format(verifyAttribute(val_location), verifyAttribute(database), verifyAttribute(tablename), verifyAttribute(outputdatabase), verifyAttribute(outputtablename), verifyAttribute(modeldatabase), verifyAttribute(model), verifyAttribute(optional_args))
 
-    query = query.replace("SYSLIB", verifyAttribute(val_location))
+    
     if not valib_query_wrapper:
         return query
     

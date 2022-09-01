@@ -85,7 +85,7 @@ def execute(recipe_config, function_name, valib_query_wrapper=None):
         optional_args += "scoringmethod=score"
 
     # Verify that all attributes do not have quotes
-    query = """call SYSLIB.td_analyze('LOGISTICSCORE', 
+    query = """call {}.td_analyze('LOGISTICSCORE', 
     'database={};
     tablename={};
     outputdatabase={};
@@ -93,9 +93,9 @@ def execute(recipe_config, function_name, valib_query_wrapper=None):
     modeldatabase={};
     modeltablename={};
     estimate={};
-    {}')""".format(verifyAttribute(database), verifyAttribute(tablename), verifyAttribute(outputdatabase), verifyAttribute(outputtablename), verifyAttribute(modeldatabase), verifyAttribute(model), verifyAttribute(estimate_column), verifyAttribute(optional_args))
+    {}')""".format(verifyAttribute(val_location), verifyAttribute(database), verifyAttribute(tablename), verifyAttribute(outputdatabase), verifyAttribute(outputtablename), verifyAttribute(modeldatabase), verifyAttribute(model), verifyAttribute(estimate_column), verifyAttribute(optional_args))
 
-    query = query.replace("SYSLIB", verifyAttribute(val_location))
+    
     if not valib_query_wrapper:
         return query
     

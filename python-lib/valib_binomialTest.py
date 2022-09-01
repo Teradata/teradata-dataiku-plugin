@@ -72,16 +72,16 @@ def execute(recipe_config, valib_query_wrapper=None):
         optional_args += "thresholdprobability=" + str(recipe_config['binomial_probability_threshold']) + ";"
 
 
-    query = """call SYSLIB.td_analyze('BINOMIALTEST', 
+    query = """call {}.td_analyze('BINOMIALTEST', 
     'database={};
     tablename={};
     outputdatabase={};
     outputtablename={};
     firstcolumn={};
     secondcolumn={};
-    {}')""".format(verifyAttribute(database), verifyAttribute(tablename), verifyAttribute(outputdatabase), verifyAttribute(outputtablename), verifyAttribute(first_column), verifyAttribute(second_column), verifyAttribute(optional_args))
+    {}')""".format(verifyAttribute(val_location), verifyAttribute(database), verifyAttribute(tablename), verifyAttribute(outputdatabase), verifyAttribute(outputtablename), verifyAttribute(first_column), verifyAttribute(second_column), verifyAttribute(optional_args))
 
-    query = query.replace("SYSLIB", verifyAttribute(val_location))
+    
     if not valib_query_wrapper:
         return query
     

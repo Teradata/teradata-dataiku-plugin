@@ -49,15 +49,15 @@ def execute(recipe_config, valib_query_wrapper=None):
     if 'textanalyzer_analyze_unicode' in recipe_config and recipe_config['textanalyzer_analyze_unicode']:
         optional_args += "extendedunicodeanalysis=" + str(recipe_config['textanalyzer_analyze_unicode']) + ";"
 
-    query = """call SYSLIB.td_analyze('TEXTFIELDANALYZER',
+    query = """call {}.td_analyze('TEXTFIELDANALYZER',
     'database={};
     tablename={};
     outputdatabase={};
     outputtablename={};
     columns={};
-    {}')""".format(verifyAttribute(database), verifyAttribute(tablename), verifyAttribute(outputdatabase), verifyAttribute(outputtablename), verifyAttribute(columns), verifyAttribute(optional_args))
+    {}')""".format(verifyAttribute(val_location), verifyAttribute(database), verifyAttribute(tablename), verifyAttribute(outputdatabase), verifyAttribute(outputtablename), verifyAttribute(columns), verifyAttribute(optional_args))
         
-    query = query.replace("SYSLIB", verifyAttribute(val_location))
+    
     if not valib_query_wrapper:
         return query
     

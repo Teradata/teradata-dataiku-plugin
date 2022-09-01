@@ -86,14 +86,14 @@ def execute(recipe_config, valib_query_wrapper=None):
         optional_args += "treatmentcolumn=" + str(recipe_config['rank_test_treatment_column']) + ";"
 
 
-    query = """call SYSLIB.td_analyze('RANKTEST', 
+    query = """call {}.td_analyze('RANKTEST', 
     'database={};
     tablename={};
     outputdatabase={};
     outputtablename={};
-    {}')""".format(verifyAttribute(database), verifyAttribute(tablename), verifyAttribute(outputdatabase), verifyAttribute(outputtablename), verifyAttribute(optional_args))
+    {}')""".format(verifyAttribute(val_location), verifyAttribute(database), verifyAttribute(tablename), verifyAttribute(outputdatabase), verifyAttribute(outputtablename), verifyAttribute(optional_args))
 
-    query = query.replace("SYSLIB", verifyAttribute(val_location))
+    
     if not valib_query_wrapper:
         return query
     

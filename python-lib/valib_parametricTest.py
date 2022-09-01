@@ -95,14 +95,14 @@ def execute(recipe_config, valib_query_wrapper=None):
         optional_args += "withindicator=" + str(recipe_config['parametric_test_with_indicator']) + ";"
 
 
-    query = """call SYSLIB.td_analyze('PARAMETRICTEST', 
+    query = """call {}.td_analyze('PARAMETRICTEST', 
     'database={};
     tablename={};
     outputdatabase={};
     outputtablename={};
-    {}')""".format(verifyAttribute(database), verifyAttribute(tablename), verifyAttribute(outputdatabase), verifyAttribute(outputtablename), verifyAttribute(optional_args))
+    {}')""".format(verifyAttribute(val_location), verifyAttribute(database), verifyAttribute(tablename), verifyAttribute(outputdatabase), verifyAttribute(outputtablename), verifyAttribute(optional_args))
 
-    query = query.replace("SYSLIB", verifyAttribute(val_location))
+    
     if not valib_query_wrapper:
         return query
     

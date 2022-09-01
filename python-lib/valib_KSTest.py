@@ -66,15 +66,15 @@ def execute(recipe_config, valib_query_wrapper=None):
         optional_args += "thresholdprobability=" + str(recipe_config['ks_test_probability_threshold']) + ";"
 
 
-    query = """call SYSLIB.td_analyze('KSTEST', 
+    query = """call {}.td_analyze('KSTEST', 
     'database={};
     tablename={};
     outputdatabase={};
     outputtablename={};
     columnofinterest={};
-    {}')""".format(verifyAttribute(database), verifyAttribute(tablename), verifyAttribute(outputdatabase), verifyAttribute(outputtablename), verifyAttribute(dependent_column), verifyAttribute(optional_args))
+    {}')""".format(verifyAttribute(val_location), verifyAttribute(database), verifyAttribute(tablename), verifyAttribute(outputdatabase), verifyAttribute(outputtablename), verifyAttribute(dependent_column), verifyAttribute(optional_args))
 
-    query = query.replace("SYSLIB", verifyAttribute(val_location))
+    
     if not valib_query_wrapper:
         return query
     

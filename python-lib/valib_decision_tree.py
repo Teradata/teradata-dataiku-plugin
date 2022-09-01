@@ -63,16 +63,16 @@ def execute(recipe_config, valib_query_wrapper=None):
 
     optional_args += "operatordatabase=" + val_location + ";"
 
-    query = """call SYSLIB.td_analyze('DECISIONTREE', 
+    query = """call {}.td_analyze('DECISIONTREE', 
     'database={};
     tablename={};
     outputdatabase={};
     outputtablename={};
     columns={};
     dependent={};
-    {}')""".format(verifyAttribute(database), verifyAttribute(tablename), verifyAttribute(outputdatabase), verifyAttribute(outputtablename), verifyAttribute(columns), verifyAttribute(response_column), verifyAttribute(optional_args))
+    {}')""".format(verifyAttribute(val_location), verifyAttribute(database), verifyAttribute(tablename), verifyAttribute(outputdatabase), verifyAttribute(outputtablename), verifyAttribute(columns), verifyAttribute(response_column), verifyAttribute(optional_args))
 
-    query = query.replace("SYSLIB", verifyAttribute(val_location))
+    
     if not valib_query_wrapper:
         return query
     

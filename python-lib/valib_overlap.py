@@ -65,14 +65,14 @@ def execute(recipe_config, valib_query_wrapper=None):
     columns = ",".join(lst_columns)
 
 
-    query = """call SYSLIB.td_analyze('OVERLAP', 
+    query = """call {}.td_analyze('OVERLAP', 
     'database={};
     tablename={};
     outputdatabase={};
     outputtablename={};
-    columns={};')""".format(verifyAttribute(database), verifyAttribute(tablename), verifyAttribute(outputdatabase), verifyAttribute(outputtablename), verifyAttribute(columns))
+    columns={};')""".format(verifyAttribute(val_location), verifyAttribute(database), verifyAttribute(tablename), verifyAttribute(outputdatabase), verifyAttribute(outputtablename), verifyAttribute(columns))
 
-    query = query.replace("SYSLIB", verifyAttribute(val_location))
+    
     if not valib_query_wrapper:
         return query
     

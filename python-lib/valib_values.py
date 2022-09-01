@@ -60,15 +60,15 @@ def execute(recipe_config, valib_query_wrapper=None):
         optional_args += "where=" + str(values_filter) + ";"
 
 
-    query = """call SYSLIB.td_analyze('VALUES', 
+    query = """call {}.td_analyze('VALUES', 
     'database={};
     tablename={};
     outputdatabase={};
     outputtablename={};
     columns={};
-    {}')""".format(verifyAttribute(database), verifyAttribute(tablename), verifyAttribute(outputdatabase), verifyAttribute(outputtablename), verifyAttribute(columns), verifyAttribute(optional_args))
+    {}')""".format(verifyAttribute(val_location), verifyAttribute(database), verifyAttribute(tablename), verifyAttribute(outputdatabase), verifyAttribute(outputtablename), verifyAttribute(columns), verifyAttribute(optional_args))
     
-    query = query.replace("SYSLIB", verifyAttribute(val_location))
+    
     if not valib_query_wrapper:
         return query
     

@@ -56,15 +56,15 @@ def execute(recipe_config, valib_query_wrapper=None):
     # outputdatabase=DSSDB;outputtablename=ml__valib_xmltohtmlreport_164853966752436;
     # analysistype=logistic;');
 
-    query = """call SYSLIB.td_analyze('REPORT', 
+    query = """call {}.td_analyze('REPORT', 
     'database={};
     tablename={};
     outputdatabase={};
     outputtablename={};
     analysistype={};
-    {}')""".format(verifyAttribute(database), verifyAttribute(tablename), verifyAttribute(outputdatabase), verifyAttribute(outputtablename), verifyAttribute(analysis_type), verifyAttribute(optional_args))
+    {}')""".format(verifyAttribute(val_location), verifyAttribute(database), verifyAttribute(tablename), verifyAttribute(outputdatabase), verifyAttribute(outputtablename), verifyAttribute(analysis_type), verifyAttribute(optional_args))
     
-    query = query.replace("SYSLIB", verifyAttribute(val_location))
+    
     if not valib_query_wrapper:
         return query
     

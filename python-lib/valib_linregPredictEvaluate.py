@@ -55,7 +55,7 @@ def execute(recipe_config, function_name, valib_query_wrapper=None):
         if 'linreg2_accumulate' in recipe_config and recipe_config['linreg2_accumulate']:
             accumulate = "retain=" + ",".join(recipe_config['linreg2_accumulate']) + ";"
 
-        query = """call SYSLIB.td_analyze('LINEARSCORE', 
+        query = """call {}.td_analyze('LINEARSCORE', 
         'database={};
         tablename={};
         outputdatabase={};
@@ -64,19 +64,19 @@ def execute(recipe_config, function_name, valib_query_wrapper=None):
         modeltablename={};
         index={};
         predicted={};
-        {}')""".format(verifyAttribute(database), verifyAttribute(tablename), verifyAttribute(outputdatabase), verifyAttribute(outputtablename), verifyAttribute(modeldatabase), verifyAttribute(model), verifyAttribute(index_columns), verifyAttribute(response_column), verifyAttribute(accumulate))
+        {}')""".format(verifyAttribute(val_location), verifyAttribute(database), verifyAttribute(tablename), verifyAttribute(outputdatabase), verifyAttribute(outputtablename), verifyAttribute(modeldatabase), verifyAttribute(model), verifyAttribute(index_columns), verifyAttribute(response_column), verifyAttribute(accumulate))
         
     else: 
-        query = """call SYSLIB.td_analyze('LINEARSCORE', 
+        query = """call {}.td_analyze('LINEARSCORE', 
         'database={};
         tablename={};
         outputdatabase={};
         outputtablename={};
         modeldatabase={};
         modeltablename={};
-        scoringmethod=scoreandevaluate;')""".format(verifyAttribute(database), verifyAttribute(tablename), verifyAttribute(outputdatabase), verifyAttribute(outputtablename), verifyAttribute(modeldatabase), verifyAttribute(model))
+        scoringmethod=scoreandevaluate;')""".format(verifyAttribute(val_location), verifyAttribute(database), verifyAttribute(tablename), verifyAttribute(outputdatabase), verifyAttribute(outputtablename), verifyAttribute(modeldatabase), verifyAttribute(model))
 
-    query = query.replace("SYSLIB", verifyAttribute(val_location))
+    
     if not valib_query_wrapper:
         return query
     

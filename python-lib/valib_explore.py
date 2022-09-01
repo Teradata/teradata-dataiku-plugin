@@ -110,7 +110,7 @@ def execute(recipe_config, valib_query_wrapper=None):
         optional_args += "where=" + str(explore_filter) + ";"
 
 
-    query = """call SYSLIB.td_analyze('DATAEXPLORER',
+    query = """call {}.td_analyze('DATAEXPLORER',
     'database={};
     tablename={};
     outputdatabase={};
@@ -118,9 +118,9 @@ def execute(recipe_config, valib_query_wrapper=None):
     histogramoutputtablename= {};
     statisticsoutputtablename= {};
     valuesoutputtablename= {};
-    {}')""".format(verifyAttribute(database), verifyAttribute(tablename), verifyAttribute(outputdatabase), verifyAttribute(frequency), verifyAttribute(histogram), verifyAttribute(statistics), verifyAttribute(values), verifyAttribute(optional_args))
+    {}')""".format(verifyAttribute(val_location), verifyAttribute(database), verifyAttribute(tablename), verifyAttribute(outputdatabase), verifyAttribute(frequency), verifyAttribute(histogram), verifyAttribute(statistics), verifyAttribute(values), verifyAttribute(optional_args))
 
-    query = query.replace("SYSLIB", verifyAttribute(val_location))
+    
     if not valib_query_wrapper:
         return query
     
