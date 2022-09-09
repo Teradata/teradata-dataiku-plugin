@@ -16,20 +16,21 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SO
 '''
 
 from pseudoconstantgetters import *
+from verifyTableColumns import *
 
 
 def getDropOutputTableArgumentsStatementFromMultipleArguments(arg):
     outputs = arg.get('value', '').split(',')
-    return '\n'.join(DROP_QUERY.format(outputTableName=x)\
+    return '\n'.join(DROP_QUERY.format(outputTableName=verifyTableName(x))\
             for x in outputs)
 
 def getDropOutputTableArgumentsStatements(args):
-    return [DROP_QUERY.format(outputTablename=x.get('value', ''))\
+    return [DROP_QUERY.format(outputTablename=verifyTableName(x.get('value', '')))\
             for x in args if x.get('isOutputTable', False) and not x.get('allowsLists', False)\
             and x.get('value','')] + [getDropOutputTableArgumentsStatementFromMultipleArguments(x)\
                                       for x in args if x.get('isOutputTable', False)\
                                       and x.get('allowsLists', False) and x.get('value', '')]
 
 def dropTableStatement(outputTable):
-    return DROP_QUERY.format(outputTablename=outputTable.tablename)
+    return DROP_QUERY.format(outputTablename=verifyTableName(outputTable.tablename))
 
