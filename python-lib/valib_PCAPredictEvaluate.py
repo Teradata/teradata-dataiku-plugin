@@ -89,14 +89,14 @@ def execute(recipe_config, function_name, valib_query_wrapper=None):
         output_table_name_rpt = main_output_name + "_rpt"
 
         # Drop the output table that has the predictions as we do not need this
-        query = "DROP TABLE {};".format(verifyTableName(output_table_name))
+        query = "DROP TABLE {};".format(verifyQualifiedTableName(output_database_name,output_table_name))
         valib_query_wrapper.execute(query)
 
         # Lets try to cleanup a report 
         cleanupReport = True
         if cleanupReport:
             # Get the XML contents from the report table
-            query = "SELECT * FROM {};".format(verifyTableName(output_table_name_rpt))
+            query = "SELECT * FROM {};".format(verifyQualifiedTableName(output_database_name,output_table_name_rpt))
             result_df = valib_query_wrapper.execute(query)
             xmlModel = None
             for row in valib_query_wrapper.iteratable(result_df):
@@ -113,12 +113,12 @@ def execute(recipe_config, function_name, valib_query_wrapper=None):
                     outputRows.append({"Name" : node[0].text, "StandardErrorOfEstimates" : node[1].text})
                 if outputRows:
                     # Create the output table with the 2 columns
-                    query = "CREATE TABLE {} (Name varchar(255), StandardErrorOfEstimates float);\n".format(verifyTableName(output_table_name))
+                    query = "CREATE TABLE {} (Name varchar(255), StandardErrorOfEstimates float);\n".format(verifyQualifiedTableName(output_database_name,output_table_name))
                     valib_query_wrapper.execute(query)
                     # Create and execute the INSERT where we insert each row into the output table
                     insert = ""
                     for row in outputRows:
-                        insert += "INSERT INTO {} VALUES  ('{}', {});".format(verifyTableName(output_table_name), verifyAttribute(row["Name"]),  verifyAttribute(row["StandardErrorOfEstimates"]))
+                        insert += "INSERT INTO {} VALUES  ('{}', {});".format(verifyQualifiedTableName(output_database_name,output_table_name), verifyAttribute(row["Name"]),  verifyAttribute(row["StandardErrorOfEstimates"]))
                     query = insert
                     valib_query_wrapper.execute(query)
                 else:
@@ -130,7 +130,7 @@ def execute(recipe_config, function_name, valib_query_wrapper=None):
 
         if not cleanupReport:
             # If we failed to cleanup report then just output the XML into the output table (i.e output is a duplicate of the report table)
-            query = "CREATE TABLE {} AS (SELECT * FROM {}) WITH DATA NO PRIMARY INDEX;".format(verifyTableName(output_table_name), verifyTableName(output_table_name_rpt))
+            query = "CREATE TABLE {} AS (SELECT * FROM {}) WITH DATA NO PRIMARY INDEX;".format(verifyQualifiedTableName(output_database_name,output_table_name), verifyQualifiedTableName(output_database_name,output_table_name_rpt))
             valib_query_wrapper.execute(query)
 
 

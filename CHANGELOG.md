@@ -1,14 +1,18 @@
 # Teradata Plugin Changelog
 
-## Version 2.1.0 (August 2022)
+## Version 2.1.1 (October 2022)
 
 Current version
 
+* Bug fix in Analytic Functions recipe: Output Dataset is now fully qualified with database so that it can be different from the input Dataset database.
+* Bug fix in Analytic Functions recipe: Execution of VAL functions now takes place on the input Dataset server.
+
+## Version 2.1.0 (September 2022)
+
 * Support for VAL functions.
-* Merging of Analytic and VAL functions into single recipe.
-* Code refactoring in the Analytic Functions recipes.
+* The Teradata Analytic Functions recipe hosts the VAL functions together with all functions of the former Analytic Functions recipes.
 * Renaming of "SCRIPT Table Operator Analysis" recipe into "In-Vantage Scripting".
-* Bug fixes.
+* Bug and security fixes.
 
 ## Version 2.0.0 (June 2022)
 

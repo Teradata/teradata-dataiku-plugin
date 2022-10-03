@@ -77,15 +77,16 @@ def vantageDo():
             inputDataset = dataiku.Dataset(input_name)
             user_table_name = input_name.split('.')[1]
             connectionInfo = inputDataset.get_location_info()['info']
-            connectionName = connectionInfo['connectionName']
+            inputConnectionName = connectionInfo['connectionName']
             defaultDatabase = inputDataset.get_config()['params'].get('schema', '')
             if not defaultDatabase:
-                defaultDatabase = connections[connectionName]['params']['defaultDatabase']
+                defaultDatabase = connections[inputConnectionName]['params']['defaultDatabase']
             full_table_name = connectionInfo['table']
             inputtables[user_table_name] = full_table_name
             inputschemas[user_table_name] = defaultDatabase
             datasetnames[user_table_name] = input_name
         recipe_config["function"]["inputtables"] = inputtables
+        recipe_config["function"]["inputschemas"] = inputschemas
 
         # generate parameter inputs tables map: name, datasetName, table and schema
         required_inputs = recipe_config["function"]["required_input"]
@@ -114,10 +115,10 @@ def vantageDo():
             outputDataset = dataiku.Dataset(output_name)
             user_table_name = output_name.split('.')[1]
             connectionInfo = outputDataset.get_location_info()['info']
-            connectionName = connectionInfo['connectionName']
-            defaultDatabase = inputDataset.get_config()['params'].get('schema', '')
+            outputConnectionName = connectionInfo['connectionName']
+            defaultDatabase = outputDataset.get_config()['params'].get('schema', '')
             if not defaultDatabase:
-                defaultDatabase = connections[connectionName]['params']['defaultDatabase']
+                defaultDatabase = connections[outputConnectionName]['params']['defaultDatabase']
             full_table_name = connectionInfo['table']
             table_map = {}
             table_map["name"] = user_table_name
@@ -126,6 +127,7 @@ def vantageDo():
             table_map["datasetName"] = output_name
             output_table_names.append(table_map)
         recipe_config["function"]["output_table_names"] = output_table_names
+        print('SKS', recipe_config["function"]["output_table_names"])
 
     except Exception as error:
         raise RuntimeError("""Error obtaining connection settings from one of the input tables."""                           
@@ -179,21 +181,17 @@ def vantageDo():
     # VALIB     
     dss_function = recipe_config.get('function', None)
     if dss_function and 'function_type' in dss_function and dss_function['function_type'] == "valib":
-        dataiku_valib_execution(dss_function, connections, connectionName, executor, autocommit, pre_query, post_query, output_table_names)
+        dataiku_valib_execution(dss_function, connections, inputConnectionName, executor, autocommit, pre_query, post_query, output_table_names)
         return
 
     # output dataset
-    try:
-        outputTable = outputtableinfo(output_dataset.get_location_info()['info'], main_output_name,
-                                  recipe_config or {})
-    except Exception as error:
-        raise RuntimeError("""Error obtaining connection settings for output table."""                           
-                           """ This plugin only supports Teradata tables.""")
+    outputTable = output_table_names[0]["table"]
+    outputDatabase = output_table_names[0].get("schema", "")
 
     # Handle dropping of output tables.
     if dss_function.get('dropIfExists', False):
         logging.info("Preparing to drop tables.")
-        drop_query = dropTableStatement(outputTable)
+        drop_query = dropTableStatement(outputTable, outputDatabase)
         
         logging.info(SEP)
         logging.info("DROP query:")
@@ -216,17 +214,21 @@ def vantageDo():
         logging.info(drop_all_query)
         logging.info(SEP)
            
-        for drop_q in drop_all_query:
+        for output_index in range(1,len(output_table_names)):
             # dataiku's query_to_df's pre_query parameter seems to not work. This is a work-around to ensure that the 
             # "START TRANSACTION;" block applies for non-autocommit TERA mode connections.
             if not autocommit:
                 executor.query_to_df(pre_query)
-            executor.query_to_df(drop_q, post_queries=post_query)
+            drop_query = dropTableStatement(output_table_names[output_index]["table"], outputDatabaseName=output_table_names[output_index].get("schema", ""))
+            executor.query_to_df(drop_query, post_queries=post_query)
+            logging.info("DROP query:")
+            logging.info(drop_query)
+            logging.info(SEP)
 
 
 
     # Create new query based on open ended approach
-    sql_generator = OpenEndedQueryGenerator(outputTable.tablename, recipe_config, verbose=True)
+    sql_generator = OpenEndedQueryGenerator(outputTable, recipe_config, verbose=True, outputDatabaseName=outputDatabase)
     logging.info(SEP)
     logging.info("OpenEndedQueryGenerator query:")
     my_query = sql_generator.create_query()
@@ -251,43 +253,18 @@ def vantageDo():
     logging.info('Moving results to output...')
 
     # Call method for mapping Teradata types to the Dataiku types needed
-    set_schema_from_vantage(outputTable.tablename, output_dataset, executor, post_query, autocommit, pre_query)
+    set_schema_from_vantage(outputTable, output_dataset, executor, post_query, autocommit, pre_query, outputDatabaseName=outputDatabase)
 
     # Additional Tables
     outtables = dss_function.get('output_tables', [])
     if(outtables != []):
         tableCounter = 1
         logging.info('Working on output tables')
-        logging.info(get_output_names_for_role('main'))
-        logging.info(outtables)
-        for table in outtables:
-            if table.get('value') != '' and table.get('value') != None:
-                # try:
-                logging.info('Table')
-                logging.info(table)
-                #Need to change this to max of split in order for multiple database or no-database table inputs
-                #Change below might fix issue 4 of Jan 4 2018 for Nico. For non-drop tables
-                try:
-                    main_output_name2 = list(filter(lambda out_dataset: out_dataset.split('.')[len(out_dataset.split('.'))-1] == table.get('value').split('.')[len(table.get('value').split('.'))-1].strip('\"'),get_output_names_for_role('main')))[0]
-                except Exception as error:
-                    # logging.info(error.message)                    
-                    raise RuntimeError('Unable to find an output dataset for '+table.get('value')+ 'It may not exist as an output Dataset: '+table.get('value')+"\n\Runtime Error:"+ error.message)
-                logging.info('Output name 2')
-                logging.info(main_output_name2)
-                output_dataset2 =  dataiku.Dataset(main_output_name2)   
-                # logging.info("od2 logging.infoer")
-                tableNamePrefix = output_dataset2.get_location_info(sensitive_info=True)['info'].get('connectionParams').get('namingRule').get('tableNameDatasetNamePrefix')
-                if tableNamePrefix != None or tableNamePrefix != '':
-                    logging.info('Table prefix is not empty:' + tableNamePrefix)
-                # except:
-                #     #Need to change this error
-                #     logging.info('Error: Dataset for' + table.get('name') + ' not found')  
-                #     raise Value  
 
-                # Call method for mapping Teradata types to the Dataiku types needed
-                set_schema_from_vantage(outputTable.tablename, output_dataset2, executor, post_query, autocommit, pre_query)
-
-                tableCounter += 1
+        for output_index in range(1,len(output_table_names)):
+            output_dataset2 =  dataiku.Dataset(output_table_names[output_index]["datasetName"]) 
+            set_schema_from_vantage(output_table_names[output_index]["table"], output_dataset2, executor, post_query, autocommit, pre_query, outputDatabaseName=output_table_names[output_index].get("schema", ""))
+            tableCounter += 1
 
     logging.info('Complete!')  
 

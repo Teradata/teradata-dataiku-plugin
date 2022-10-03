@@ -57,7 +57,8 @@ def dataiku_valib_execution(dss_function, connections, connectionName, executor,
     valib_execution(json_contents, dss_function, dropIfExists=dss_function.get('dropIfExists', False), valib_query_wrapper = valib_query_wrapper)
     for output_table in output_table_names:
         outputDataset = dataiku.Dataset(output_table["datasetName"])
-        set_schema_from_vantage(output_table["table"], outputDataset, executor, post_query, autocommit, pre_query)
+        outputExecutor = SQLExecutor2(dataset=outputDataset)   
+        set_schema_from_vantage(output_table["table"], outputDataset, executor, post_query, autocommit, pre_query, outputDatabaseName=output_table.get("schema", ""))
     return
 
 def get_val_location(connections, connectionName):

@@ -31,6 +31,6 @@ def getDropOutputTableArgumentsStatements(args):
                                       for x in args if x.get('isOutputTable', False)\
                                       and x.get('allowsLists', False) and x.get('value', '')]
 
-def dropTableStatement(outputTable):
-    return DROP_QUERY.format(outputTablename=verifyTableName(outputTable.tablename))
+def dropTableStatement(outputTableName, outputDatabaseName=""):
+    return DROP_QUERY.format(outputTablename=verifyQualifiedTableName(outputDatabaseName, outputTableName))
 

@@ -38,7 +38,7 @@ def execute_transform(recipe_config, function_name, function_list, unique_name="
 
         if dropIfExists:
             outputTable = main_output_name
-            drop_query = "DROP TABLE {};".format(verifyTableName(outputTable))
+            drop_query = "DROP TABLE {};".format(verifyQualifiedTableName(output_database_name,outputTable))
             try:
                 valib_query_wrapper.execute(drop_query)
             except Exception as e:
@@ -49,8 +49,8 @@ def execute_transform(recipe_config, function_name, function_list, unique_name="
     if delayquery:
         select = ""
         for i in range(len(function_list)):
-            select += "INSERT INTO {} ( DELAYTRANSFORM ) VALUES  ('{}={}');".format(verifyTableName(main_output_name), function_name, function_list[i])
-        query = "CREATE TABLE {} (DELAYTRANSFORM varchar(255));\n".format(verifyTableName(main_output_name))
+            select += "INSERT INTO {} ( DELAYTRANSFORM ) VALUES  ('{}={}');".format(verifyQualifiedTableName(output_database_name,main_output_name), function_name, function_list[i])
+        query = "CREATE TABLE {} (DELAYTRANSFORM varchar(255));\n".format(verifyQualifiedTableName(output_database_name,main_output_name))
         if not valib_query_wrapper:
             return query + "<br>" + select
         valib_query_wrapper.execute(query)
@@ -62,6 +62,9 @@ def execute_transform(recipe_config, function_name, function_list, unique_name="
         tablename = main_input_name
         outputdatabase = output_database_name
         outputtablename = main_output_name
+        if recipe_config[unique_name+'key_columns'] == []:
+            raise RuntimeError("You need a Key Column if you want to execute immediately.")
+
         keycolumns = ",".join(recipe_config[unique_name+'key_columns'])
 
         function_string = ""
@@ -166,7 +169,7 @@ def execute(recipe_config, valib_query_wrapper=None):
         # Handle dropping of output tables.
         if recipe_config.get('dropIfExists', False):
             outputTable = main_output_name
-            drop_query = "DROP TABLE {};".format(verifyTableName(outputTable))
+            drop_query = "DROP TABLE {};".format(verifyQualifiedTableName(output_database_name,outputTable))
             try:
                 valib_query_wrapper.execute(drop_query)
             except Exception as e:

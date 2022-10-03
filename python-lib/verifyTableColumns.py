@@ -88,3 +88,10 @@ def verifyLocation(locationValue):
         raise Exception('Illegal Location Name', locationValue)
 
 
+def verifyQualifiedTableName(databaseName, tableName):
+    # verify full qualified name with optional databaseName and table name
+    if not databaseName:
+        return verifyTableName(tableName)
+    return verifyDatabaseName(databaseName) + "." + verifyTableName(tableName)
+
+

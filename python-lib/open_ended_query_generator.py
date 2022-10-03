@@ -33,7 +33,7 @@ class OpenEndedQueryGenerator():
     The OpenEndedQueryGenerator is an independent class that takes the input JSON and parses it, 
     it then calls the BaseAnalyticQueryGenerator which generates the outputted SQL.
     '''
-    def __init__(self, output_table_name, config_json, verbose=False):
+    def __init__(self, output_table_name, config_json, verbose=False, outputDatabaseName=""):
         '''
         Constructor for the query generation based on inputted JSON.
 
@@ -49,6 +49,7 @@ class OpenEndedQueryGenerator():
         self._output_table_name = output_table_name
         self._config_json = config_json
         self._verbose = verbose
+        self._output_database_name = outputDatabaseName;
 
 
     def create_query(self):
@@ -99,10 +100,15 @@ class OpenEndedQueryGenerator():
             input_num += 1
 
             input_table_name = req_input["value"]
+            input_table_schema = ""
             if ("inputtables" in self._config_json["function"]) and (input_table_name in self._config_json["function"]["inputtables"]):
                 # Use the full table name
                 input_table_name = self._config_json["function"]["inputtables"][input_table_name]
-            input_table_name = "\"" + input_table_name + "\""
+            if ("inputschemas" in self._config_json["function"]) and (input_table_name in self._config_json["function"]["inputschemas"]):
+                # Use the full table name
+                input_table_schema = self._config_json["function"]["inputschemas"][input_table_name]
+            
+            input_table_name = verifyQualifiedTableName(input_table_schema, input_table_name)
             func_input_table_view_query.append(input_table_name)
 
             # SKS : loop through the partition attributes and append according to the type of partition
@@ -244,7 +250,7 @@ class OpenEndedQueryGenerator():
         WITH DATA
         ;'''
         # CREATE_QUERY = '''{}'''
-        result = CREATE_QUERY.format(verifyAttribute(self._output_table_name), verifyQueryExpr(base_query.replace("sqlmr", "tmp_alias")))
+        result = CREATE_QUERY.format(verifyQualifiedTableName(self._output_database_name, self._output_table_name), verifyQueryExpr(base_query.replace("sqlmr", "tmp_alias")))
 
         return result
 
