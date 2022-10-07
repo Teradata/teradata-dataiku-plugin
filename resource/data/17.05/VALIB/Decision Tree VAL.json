@@ -121,7 +121,7 @@
         {
             "defaultValue": 0,
             "allowNaN": false,
-            "name": "NumberofSplits",
+            "name": "NumberOfSplits",
             "alternateNames": [],
             "isRequired": false,
             "rDescription": "Specifies how far the decision tree can be split.",
