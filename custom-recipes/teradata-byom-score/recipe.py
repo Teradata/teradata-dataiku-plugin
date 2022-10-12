@@ -59,7 +59,7 @@ def verifyAccumulate(columnNames):
 # To  retrieve the datasets of an input role named 'input_A' as an array of dataset names:
 input_dataset_name = get_input_names_for_role('input_dataset')[0]
 input_dataset = dataiku.Dataset(input_dataset_name)
-testing_dataset = input_dataset_name.split('.')[1]
+testing_dataset = input_dataset.get_location_info()['info']['table']
 output_dataset_name = get_output_names_for_role('output_dataset')[0]
 output_dataset = dataiku.Dataset(output_dataset_name) 
 
