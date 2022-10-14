@@ -168,7 +168,7 @@
         "Algorithm": "SELECT",
         "Binning": "BOOLEAN",
         "MaximumDepth": "INT",
-        "NumberofSplits": "INT",
+        "NumberOfSplits": "INT",
         "Pruning": "SELECT"
     },
     "choices_map": {
