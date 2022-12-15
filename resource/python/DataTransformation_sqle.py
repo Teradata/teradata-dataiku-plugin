@@ -411,7 +411,7 @@ def do(payload, config, plugin_config, inputs):
         versionInfo += "</br>" + "</br>"
     versionInfo += "The connected Analytics Database version is: " + vantage_version_number
     versionInfo += "<br>"
-    versionInfo += "Present plugin supports analytic function titles released through version: " + plugin_version_number
+    versionInfo += "The plugin displays all analytic function titles released through version: " + plugin_version_number
 
                 
          
