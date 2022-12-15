@@ -1,0 +1,178 @@
+{
+  "json_schema_major_version": "1",
+  "json_schema_minor_version": "1",
+  "json_content_version": "1",
+  "function_name": "TD_ROC",
+  "function_version": "1.0",
+  "function_type": "fastpath",
+  "function_category": "Model Evaluation",
+  "function_alias_name": "TD_ROC",
+  "function_r_name": "aa.td_roc",
+  "short_description": "Fast path function to Compute AUC, Gini and ROCValues",
+  "long_description": "Fast path function to Compute AUC, Gini and ROCValues(thresholds, false positive rates, and true positive rates) for binary classifiers.",
+  "input_tables": [
+    {
+      "requiredInputKind": [
+        "PartitionByAny"
+      ],
+      "isOrdered": false,
+      "partitionByOne": false,
+      "omitPossible": false,
+      "name": "InputTable",
+      "alternateNames": [],
+      "isRequired": true,
+      "rDescription": "Specifies the name of the table that contains the prediction-actual pairs for a binary classifier.",
+      "description": "Specifies the name of the table that contains the prediction-actual pairs for a binary classifier.",
+      "datatype": "TABLE_ALIAS",
+      "allowsLists": false,
+      "rName": "data",
+      "useInR": true,
+      "rOrderNum": 1
+    }
+  ],
+  "output_tables": [
+    {
+      "isOutputTable": true,
+      "omitPossible": true,
+      "name": "OutputTable",
+      "alternateNames": [],
+      "isRequired": false,
+      "rDescription": "Specifies the name for the output table that the function creates. The outputtable must not already exist.",
+      "description": "[Specify to emit ROCValues(thresholds, false positive rates, and true positive rates).] Specify the name for the output table that the function creates. The output_table must not already exist.",
+      "datatype": "TABLE_NAME",
+      "allowsLists": false,
+      "rName": "output.table",
+      "useInR": true,
+      "rOrderNum": 2
+    }
+  ],
+  "argument_clauses": [
+    {
+      "targetTable": [
+        "InputTable"
+      ],
+      "checkDuplicate": true,
+      "allowedTypes": [],
+      "allowedTypeGroups": [
+        "NUMERIC"
+      ],
+      "requiredLength": 1,
+      "matchLengthOfArgument": "",
+      "allowPadding": true,
+      "name": "ProbabilityColumn",
+      "alternateNames": [],
+      "isRequired": true,
+      "rDescription": "Specifies the name of the input table column that contains the predictions.",
+      "description": "Specify the name of the InputTable column that contains the predicted probabilities of the positive class.",
+      "datatype": "COLUMNS",
+      "allowsLists": false,
+      "rName": "probability.column",
+      "useInR": true,
+      "rOrderNum": 3
+    },
+    {
+      "targetTable": [
+        "InputTable"
+      ],
+      "checkDuplicate": true,
+      "allowedTypes": [],
+      "allowedTypeGroups": [
+        "ALL"
+      ],
+      "requiredLength": 1,
+      "matchLengthOfArgument": "",
+      "allowPadding": true,
+      "name": "ObservationColumn",
+      "alternateNames": [],
+      "isRequired": true,
+      "rDescription": "Specifies the name of the input table column that contains the actual classes. ",
+      "description": "Specify the name of the InputTable column that contains the actual classes of the observations.",
+      "datatype": "COLUMNS",
+      "allowsLists": false,
+      "rName": "observation.column",
+      "useInR": true,
+      "rOrderNum": 4
+    },
+    {
+      "targetTable": [
+        "InputTable"
+      ],
+      "checkDuplicate": true,
+      "allowedTypes": [],
+      "allowedTypeGroups": [
+        "ALL"
+      ],
+      "requiredLength": 1,
+      "matchLengthOfArgument": "",
+      "allowPadding": true,
+      "name": "ModelIdColumn",
+      "alternateNames": [],
+      "isRequired": false,
+      "rDescription": "Specifies the name of the input table column that contains the model or partition identifiers for the ROC curves.",
+      "description": " Specify the name of the InputTable column that contains the model or partition identifiers for the ROC curves. Use this syntax element only when InputTable contains information for more than one model. The function creates a separate ROC curve for each model identifier in this column. Each model must include exactly two classes in ObservationColumn.",
+      "datatype": "COLUMNS",
+      "allowsLists": false,
+      "rName": "model.id.column",
+      "useInR": true,
+      "rOrderNum": 5
+    },
+    {
+      "permittedValues": [],
+      "isOutputColumn": false,
+      "name": "PositiveLabel",
+      "alternateNames": [],
+      "isRequired": true,
+      "rDescription": "Specifies the label of the positive class.",
+      "description": "Specify the label of the positive class.",
+      "datatype": "STRING",
+      "allowsLists": false,
+      "rName": "positive.class",
+      "useInR": true,
+      "rOrderNum": 6
+    },
+    {
+      "defaultValue": 50,
+      "lowerBound": 1,
+      "upperBound": 10000,
+      "lowerBoundType": "INCLUSIVE",
+      "upperBoundType": "INCLUSIVE",
+      "allowNaN": false,
+      "name": "NumThresholds",
+      "alternateNames": [],
+      "isRequired": false,
+      "rDescription": "Specifies the number of thresholds for the function to use. The num_threshold must be a NUMERIC value in the range [1, 10000]. The default value is 50. The function uniformly distributes the thresholds between 0 and 1.",
+      "description": " Specify the number of thresholds for the function to use. The num_thresholds must be a NUMERIC value in the range [1, 10000]. Default: 50 (The function uniformly distributes the thresholds between 0 and 1.)",
+      "datatype": "INTEGER",
+      "allowsLists": false,
+      "rName": "num.thresholds",
+      "useInR": true,
+      "rOrderNum": 7
+    },
+    {
+      "defaultValue": true,
+      "name": "AUC",
+      "alternateNames": [],
+      "isRequired": false,
+      "rDescription": "Specifies whether the function displays the auc calculated from the roc. The default value is 'true'.",
+      "description": " Specify whether the function displays the AUC calculated from the ROC values. Default: 'true'.",
+      "datatype": "BOOLEAN",
+      "allowsLists": false,
+      "rName": "auc",
+      "useInR": true,
+      "rOrderNum": 8
+    },
+    {
+      "defaultValue": true,
+      "name": "GINI",
+      "alternateNames": [],
+      "isRequired": false,
+      "rDescription": "Specifies whether the function displays the gini coefficient calculated from the roc. The default value is 'true'.",
+      "description": "Specify whether the function displays the Gini coefficient calculated from the ROC values. The Gini coefficient is a measure of inequality among values of a frequency distribution. A Gini coefficient of 0 indicates that all values are the same. The closer the Gini coefficient is to 1, the more unequal are the values in the distribution. Default: 'true'.",
+      "datatype": "BOOLEAN",
+      "allowsLists": false,
+      "rName": "gini",
+      "useInR": true,
+      "rOrderNum": 9
+    }
+  ]
+}

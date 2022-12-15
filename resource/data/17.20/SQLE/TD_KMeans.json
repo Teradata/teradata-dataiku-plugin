@@ -1,0 +1,212 @@
+{
+  "json_schema_major_version": "1",
+  "json_schema_minor_version": "1",
+  "json_content_version": "1",
+  "function_name": "TD_KMeans",
+  "function_version": "1.0",
+  "function_type": "fastpath",
+  "function_category": "Model Training",
+  "function_alias_name": "TD_KMeans",
+  "function_r_name": "aa.td_kmeans",
+  "short_description": "fastpath function to generate clustering model using KMeans algorithm.",
+  "long_description": "fastpath function to generate clustering model containing cluster centroids using KMeans algorithm.",
+  "input_tables": [
+    {
+      "requiredInputKind": [
+        "PartitionByAny"
+      ],
+      "isOrdered": false,
+      "partitionByOne": false,
+      "name": "InputTable",
+      "alternateNames": [],
+      "isRequired": true,
+      "rDescription": "The relation that contains input data.",
+      "description": "The relation that contains input data.",
+      "datatype": "TABLE_ALIAS",
+      "allowsLists": false,
+      "rName": "data",
+      "useInR": true,
+      "rOrderNum": 1
+    },
+	{
+      "requiredInputKind": [
+        "Dimension"
+      ],
+      "isOrdered": false,
+      "partitionByOne": false,
+      "name": "InitialCentroidsTable",
+      "alternateNames": [],
+      "isRequired": false,
+      "rDescription": "The relation that contains set of initial centroids.",
+      "description": "The relation that contains set of initial centroids.",
+      "datatype": "TABLE_ALIAS",
+      "allowsLists": false,
+      "rName": "centroids.table",
+      "useInR": true,
+      "rOrderNum": 2
+    }
+  ],
+  "output_tables": [
+    {
+      "isOutputTable": true,
+      "omitPossible": true,
+      "name": "ModelTable",
+      "alternateNames": [],
+      "isRequired": false,
+      "rDescription": "Specifies the name of the table in which the generated KMeans model can be stored.",
+      "description": "Specifies the name of the table in which the generated KMeans model can be stored.",
+      "datatype": "TABLE_NAME",
+      "allowsLists": false,
+      "rName": "model.table",
+      "useInR": true,
+      "rOrderNum": 3
+    }
+  ],
+  "argument_clauses": [
+    {
+      "targetTable": [
+        "InputTable"
+      ],
+      "checkDuplicate": true,
+      "allowedTypes": [],
+      "allowedTypeGroups": [
+        "ALL"
+      ],
+      "matchLengthOfArgument": "",
+      "allowPadding": false,
+      "name": "IdColumn",
+      "alternateNames": [],
+      "isRequired": true,
+      "rDescription": "Specifies the column which is unique identifier of input row.",
+      "description": "Specifies the column which is unique identifier of input row.",
+      "datatype": "COLUMNS",
+      "allowsLists": false,
+      "rName": "id.column",
+      "useInR": true,
+      "rOrderNum": 4
+    },
+	{
+      "targetTable": [
+        "InputTable"
+      ],
+      "checkDuplicate": true,
+      "allowedTypes": [],
+      "allowedTypeGroups": [
+        "NUMERIC"
+      ],
+      "matchLengthOfArgument": "",
+      "allowPadding": false,
+      "name": "TargetColumns",
+      "alternateNames": [],
+      "isRequired": true,
+      "rDescription": "Specifies the columns/features to be used to cluster the data.",
+      "description": "Specifies the columns/features to be used to cluster the data.",
+      "datatype": "COLUMNS",
+      "allowsLists": true,
+      "rName": "target.columns",
+      "useInR": true,
+      "rOrderNum": 5
+    },
+	{
+      "lowerBound": 1,
+      "upperBound": 2147483647,
+      "lowerBoundType": "EXCLUSIVE",
+      "upperBoundType": "INCLUSIVE",
+      "allowNaN": false,
+      "name": "NumClusters",
+      "alternateNames": [],
+      "isRequired": false,
+      "rDescription": "Specifies the number of clusters to be produced. This argument is not allowed with InitialCentroidsTable provided.",
+      "description": "Specifies the number of clusters to be produced. This argument is not allowed with InitialCentroidsTable provided.",
+      "datatype": "INTEGER",
+      "allowsLists": false,
+      "rName": "num.clusters",
+      "useInR": true,
+      "rOrderNum": 6
+    },
+	{
+      "lowerBound": 0,
+      "upperBound": 2147483647,
+      "lowerBoundType": "INCLUSIVE",
+      "upperBoundType": "INCLUSIVE",
+      "allowNaN": false,
+      "name": "Seed",
+      "alternateNames": [],
+      "isRequired": false,
+      "rDescription": "Specify the random seed the algorithm uses for repeatable results. The algorithm uses the seed to randomly sample the input table rows as initial clusters.",
+      "description": "Specify the random seed the algorithm uses for repeatable results. The algorithm uses the seed to randomly sample the input table rows as initial clusters.",
+      "datatype": "INTEGER",
+      "allowsLists": false,
+      "rName": "seed",
+      "useInR": true,
+      "rOrderNum": 7
+    },
+	{
+	  "defaultValue": 0.0395,
+      "lowerBound": 0,
+      "upperBound": 1.797e+308,
+      "lowerBoundType": "INCLUSIVE",
+      "upperBoundType": "INCLUSIVE",
+      "allowNaN": false,
+      "name": "StopThreshold",
+      "alternateNames": [],
+      "isRequired": false,
+      "rDescription": "Specify the convergence threshold. When the centroids move by less than this amount, the algorithm has converged.",
+      "description": "Specify the convergence threshold. When the centroids move by less than this amount, the algorithm has converged.",
+      "datatype": "DOUBLE",
+      "allowsLists": false,
+      "rName": "threshold",
+      "useInR": true,
+      "rOrderNum": 8
+    },
+	{
+	  "defaultValue": 10,
+      "lowerBound": 1,
+      "upperBound": 2147483647,
+      "lowerBoundType": "INCLUSIVE",
+      "upperBoundType": "INCLUSIVE",
+      "allowNaN": false,
+      "name": "MaxIterNum",
+      "alternateNames": [],
+      "isRequired": false,
+      "rDescription": "Specify the maximum number of iterations that the algorithm runs before quitting if the convergence threshold has not been met.",
+      "description": "Specify the maximum number of iterations that the algorithm runs before quitting if the convergence threshold has not been met.",
+      "datatype": "INTEGER",
+      "allowsLists": false,
+      "rName": "iter.max",
+      "useInR": true,
+      "rOrderNum": 9
+    },
+	{
+	  "defaultValue": 1,
+      "lowerBound": 1,
+      "upperBound": 2147483647,
+      "lowerBoundType": "INCLUSIVE",
+      "upperBoundType": "INCLUSIVE",
+      "allowNaN": false,
+      "name": "NumInit",
+      "alternateNames": [],
+      "isRequired": false,
+      "rDescription": "The number of times, the k-means algorithm will be run with different initial centroid seeds. The function will emit out the model having the least value of Total Within Cluster Squared Sum.",
+      "description": "The number of times, the k-means algorithm will be run with different initial centroid seeds. The function will emit out the model having the least value of Total Within Cluster Squared Sum.",
+      "datatype": "INTEGER",
+      "allowsLists": false,
+      "rName": "num.init",
+      "useInR": true,
+      "rOrderNum": 10
+    },
+	{
+      "defaultValue": false,
+      "name": "OutputClusterAssignment",
+      "alternateNames": [],
+      "isRequired": false,
+      "rDescription": "Specifies whether to output Cluster Assignment.",
+      "description": "Specifies whether to output Cluster Assignment.",
+      "datatype": "BOOLEAN",
+      "allowsLists": false,
+      "rName": "output.cluster.assignment",
+      "useInR": true,
+      "rOrderNum": 11
+    }
+  ]
+}

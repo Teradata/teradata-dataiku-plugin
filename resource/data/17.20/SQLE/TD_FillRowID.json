@@ -1,0 +1,52 @@
+{
+  "json_schema_major_version": "1",
+  "json_schema_minor_version": "1",
+  "json_content_version": "1",
+  "function_name": "TD_FillRowId",
+  "function_version": "1.0",
+  "function_type": "fastpath",
+  "function_category": "Feature Engineering Utility",
+  "function_alias_name": "TD_FillRowId",
+  "function_r_name": "aa.td_fill.row.id",
+  "short_description": "fastpath function to assign unique ID to each row",
+  "long_description": "fastpath function to assign unique ID to each row",
+  "input_tables": [
+    {
+      "isOrdered": false,
+      "partitionByOne": false,
+      "name": "InputTable",
+      "alternateNames": [],
+      "isRequired": true,
+      "rDescription": "The relation that contains input data.",
+      "description": "The relation that contains input data.",
+      "datatype": "TABLE_ALIAS",
+      "allowsLists": false,
+      "rName": "data",
+      "useInR": true,
+      "rOrderNum": 1
+    }
+  ],
+  "argument_clauses": [
+    {
+      "targetTable": [],
+      "checkDuplicate": true,
+      "allowedTypes": [],
+      "allowedTypeGroups": [
+        "ALL"
+      ],
+      "matchLengthOfArgument": "",
+      "allowPadding": false,
+      "name": "rowidcolumnname",
+      "alternateNames": [],
+      "isRequired": false,
+      "rDescription": "Specifies name for the ID column in the output",
+      "description": "Specifies name for the ID column in the output",
+      "datatype": "STRING",
+      "isOutputColumn": true,
+      "allowsLists": false,
+      "rName": "row.id.column",
+      "useInR": true,
+      "rOrderNum": 2
+    }
+  ]
+}

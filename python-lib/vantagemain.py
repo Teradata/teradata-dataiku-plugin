@@ -24,6 +24,7 @@ import dataiku
 from dataiku import Dataset
 from dataiku.customrecipe import *
 from dataiku.core.sql import SQLExecutor2
+import pandas as pd
 
 # Import plugin libs
 from querybuilderfacade import *
@@ -127,7 +128,6 @@ def vantageDo():
             table_map["datasetName"] = output_name
             output_table_names.append(table_map)
         recipe_config["function"]["output_table_names"] = output_table_names
-        print('SKS', recipe_config["function"]["output_table_names"])
 
     except Exception as error:
         raise RuntimeError("""Error obtaining connection settings from one of the input tables."""                           
@@ -187,7 +187,6 @@ def vantageDo():
     # output dataset
     outputTable = output_table_names[0]["table"]
     outputDatabase = output_table_names[0].get("schema", "")
-
     # Handle dropping of output tables.
     if dss_function.get('dropIfExists', False):
         logging.info("Preparing to drop tables.")
@@ -207,24 +206,16 @@ def vantageDo():
             logging.info(e)
         
         # Drop other output tables if they exist.
-        drop_all_query = getDropOutputTableArgumentsStatements(dss_function.get('output_tables', []))
-        
-        logging.info(SEP)
-        logging.info('Drop ALL Query:')
-        logging.info(drop_all_query)
-        logging.info(SEP)
-           
-        for output_index in range(1,len(output_table_names)):
-            # dataiku's query_to_df's pre_query parameter seems to not work. This is a work-around to ensure that the 
-            # "START TRANSACTION;" block applies for non-autocommit TERA mode connections.
-            if not autocommit:
-                executor.query_to_df(pre_query)
-            drop_query = dropTableStatement(output_table_names[output_index]["table"], outputDatabaseName=output_table_names[output_index].get("schema", ""))
-            executor.query_to_df(drop_query, post_queries=post_query)
-            logging.info("DROP query:")
-            logging.info(drop_query)
-            logging.info(SEP)
-
+        for tableIndex in range(1, len(output_table_names)):
+            output_table_todrop = output_table_names[tableIndex]["table"]
+            logging.info('Drop Additional Output Query:' + output_table_todrop)
+            drop_query = DROP_QUERY.format(outputTablename=output_table_todrop)
+            try:
+                if not autocommit: 
+                    executor.query_to_df(pre_query)
+                executor.query_to_df(drop_query, post_queries=post_query)
+            except Exception as e:
+                logging.info(e)
 
 
     # Create new query based on open ended approach
@@ -243,24 +234,28 @@ def vantageDo():
         if not autocommit:
             executor.query_to_df(pre_query)
         executor.query_to_df(my_query, post_queries=post_query)
+    except pd.errors.EmptyDataError:
+        # Ignore error
+        pass
     except Exception as error:
+        # Ignore UAF errors as these indicate an empty table
         err_str = str(error)
-        index = err_str.index("[Teradata Database]")
-        if index != -1:
-            err_str = err_str[index:]
+        # Cleanup error , remove messages before "[Teradata Database]"
+        if "[Teradata Database]" in err_str:
+            index = err_str.index("[Teradata Database]")
+            if index != -1:
+                err_str = err_str[index:]
         raise RuntimeError(err_str)
 
     logging.info('Moving results to output...')
 
     # Call method for mapping Teradata types to the Dataiku types needed
     set_schema_from_vantage(outputTable, output_dataset, executor, post_query, autocommit, pre_query, outputDatabaseName=outputDatabase)
-
     # Additional Tables
     outtables = dss_function.get('output_tables', [])
     if(outtables != []):
         tableCounter = 1
-        logging.info('Working on output tables')
-
+        logging.info('Working on additional output tables')
         for output_index in range(1,len(output_table_names)):
             output_dataset2 =  dataiku.Dataset(output_table_names[output_index]["datasetName"]) 
             set_schema_from_vantage(output_table_names[output_index]["table"], output_dataset2, executor, post_query, autocommit, pre_query, outputDatabaseName=output_table_names[output_index].get("schema", ""))

@@ -1,0 +1,138 @@
+{
+  "json_schema_major_version": "1",
+  "json_schema_minor_version": "1",
+  "json_content_version": "1",
+  "function_name": "TD_RegressionEvaluator",
+  "function_version": "1.0",
+  "function_type": "fastpath",
+  "function_category": "Model Evaluation",
+  "function_alias_name": "TD_RegressionEvaluator",
+  "function_r_name": "aa.td_regressionevaluator",
+  "short_description": "fastpath function to compute metrics for the purpose of evaluation of regression models and cross-model comparison. Supports 14 metrics {MAE,MSE,MSLE,MAPE,MPE,RMSE,RMSLE,ME,R2,EV,AR2,MPD,MGD,FSTAT}.",
+  "long_description": "fastpath function to compute metrics for the purpose of evaluation of regression models and cross-model comparison. Supports 14 metrics {MAE,MSE,MSLE,MAPE,MPE,RMSE,RMSLE,ME,R2,EV,AR2,MPD,MGD,FSTAT}.",
+  "input_tables": [
+    {
+      "requiredInputKind": [
+        "PartitionByAny"
+      ],
+      "isOrdered": false,
+      "partitionByOne": false,
+      "name": "InputTable",
+      "alternateNames": [],
+      "isRequired": true,
+      "rDescription": "The relation that contains input data.",
+      "description": "The relation that contains input data.",
+      "datatype": "TABLE_ALIAS",
+      "allowsLists": false,
+      "rName": "data",
+      "useInR": true,
+      "rOrderNum": 1
+    }
+  ],
+  "argument_clauses": [
+    {
+      "targetTable": [
+        "InputTable"
+      ],
+      "checkDuplicate": true,
+      "allowedTypes": [],
+      "allowedTypeGroups": [
+        "NUMERIC"
+      ],
+      "requiredLength": 1,
+      "matchLengthOfArgument": "",
+      "allowPadding": false,
+      "name": "ObservationColumn",
+      "alternateNames": [],
+      "isRequired": true,
+      "rDescription": "Specifies the input table column which contains actual value of the response variable.",
+      "description": "Specifies the input table column which contains actual value of the response variable.",
+      "datatype": "COLUMNS",
+      "allowsLists": false,
+      "rName": "observation.column",
+      "useInR": true,
+      "rOrderNum": 2
+    },
+    {
+      "targetTable": [
+        "InputTable"
+      ],
+      "checkDuplicate": true,
+      "allowedTypes": [],
+      "allowedTypeGroups": [
+        "NUMERIC"
+      ],
+      "requiredLength": 1,
+      "matchLengthOfArgument": "",
+      "allowPadding": false,
+      "name": "PredictionColumn",
+      "alternateNames": [],
+      "isRequired": true,
+      "rDescription": "Specifies the input table column which contains predicted value of the response variable.",
+      "description": "Specifies the input table column which contains predicted value of the response variable.",
+      "datatype": "COLUMNS",
+      "allowsLists": false,
+      "rName": "prediction.column",
+      "useInR": true,
+      "rOrderNum": 3
+    },
+    {
+      "permittedValues": [
+        "MAE","MSE","MSLE","MAPE","MPE","RMSE","RMSLE","ME","R2","EV","AR2","MPD","MGD","FSTAT","Mean Absolute Error","Mean Square Error","Mean Square Log Error","Mean Absolute Percentage Error","Mean Percentage Error","Root Mean Square Error","Root Mean Square Log Error","Max Error","R Squared","Explained Variance","Adjusted R Squared","Mean Poisson Deviance","Mean Gamma Deviance","F Statistics"
+      ],
+      "isOutputColumn": false,
+      "matchLengthOfArgument": "",
+      "allowPadding": false,
+      "name": "Metrics",
+      "alternateNames": [],
+      "isRequired": false,
+      "rDescription": "Specify the Metrics names which will be computed for the purpose of evaluation of regression models and cross-model comparison.",
+      "description": "Specify the Metrics names which will be computed for the purpose of evaluation of regression models and cross-model comparison.",
+      "datatype": "STRING",
+      "allowsLists": true,
+      "rName": "metrics",
+      "useInR": true,
+      "rOrderNum": 4
+    },
+    {
+      "lowerBound": 1,
+      "upperBound": 2147483647,
+      "lowerBoundType": "INCLUSIVE",
+      "upperBoundType": "INCLUSIVE",
+      "allowNaN": false,
+      "isOutputColumn": false,
+      "matchLengthOfArgument": "",
+      "allowPadding": false,
+      "name": "NumOfIndependentVariables",
+      "alternateNames": [],
+      "isRequired": false,
+      "rDescription": "Specify the number of independent variables which were used during modelling.",
+      "description": "Specify the number of independent variables which were used during modelling.",
+      "datatype": "INTEGER",
+      "allowsLists": false,
+      "rName": "independent.features.num",
+      "useInR": true,
+      "rOrderNum": 5
+    },
+    {
+      "lowerBound": 1,
+      "upperBound": 2147483647,
+      "lowerBoundType": "INCLUSIVE",
+      "upperBoundType": "INCLUSIVE",
+      "allowNaN": false,
+      "isOutputColumn": false,
+      "matchLengthOfArgument": "",
+      "allowPadding": false,
+      "name": "DegreesOfFreedom",
+      "alternateNames": [],
+      "isRequired": false,
+      "rDescription": "Specify the numerator degree of freedom and denominator degree of freedom.",
+      "description": "Specify the numerator degree of freedom and denominator degree of freedom.",
+      "datatype": "INTEGER",
+      "allowsLists": true,
+      "rName": "freedom.degrees",
+      "useInR": true,
+      "rOrderNum": 6
+    }
+  ]
+}

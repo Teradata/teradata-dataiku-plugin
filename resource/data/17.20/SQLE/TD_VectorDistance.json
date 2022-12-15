@@ -1,0 +1,183 @@
+{
+  "json_schema_major_version": "1",
+  "json_schema_minor_version": "1",
+  "json_content_version": "1",
+  "function_name": "TD_VectorDistance",
+  "function_version": "1.0",
+  "function_type": "fastpath",
+  "function_category": "Model Training",
+  "function_alias_name": "TD_VectorDistance",
+  "function_r_name": "aa.td_vectordistance",
+  "short_description": "fastpath function which takes a table of target vectors and a table of reference vectors(optional) and returns a table that contains the distance between the target-reference pair.",
+  "long_description": "fastpath function which takes a table of target vectors and a table of reference vectors(optional) and returns a table that contains the distance between the target-reference pair.",
+  "input_tables": [
+    {
+      "requiredInputKind": [
+        "PartitionByAny"
+      ],
+      "isOrdered": false,
+      "partitionByOne": false,
+      "name": "TargetTable",
+      "alternateNames": [],
+      "isRequired": true,
+      "rDescription": "The relation that contains target table vectors.",
+      "description": "The relation that contains target table vectors.",
+      "datatype": "TABLE_ALIAS",
+      "allowsLists": false,
+      "rName": "target.table",
+      "useInR": true,
+      "rOrderNum": 1
+    },
+    {
+      "requiredInputKind": [
+        "Dimension"
+      ],
+      "isOrdered": false,
+      "partitionByOne": false,
+      "name": "ReferenceTable",
+      "alternateNames": [],
+      "isRequired": false,
+      "rDescription": "The relation that contains reference table vectors.",
+      "description": "The relation that contains reference table vectors.",
+      "datatype": "TABLE_ALIAS",
+      "allowsLists": false,
+      "rName": "reference.table",
+      "useInR": true,
+      "rOrderNum": 2
+    }
+  ],
+  "argument_clauses": [
+    {
+      "targetTable": [
+        "TargetTable"
+      ],
+      "checkDuplicate": true,
+      "allowedTypes": [],
+      "allowedTypeGroups": [
+        "INTEGER"
+      ],
+      "requiredLength": 1,
+      "matchLengthOfArgument": "",
+      "allowPadding": false,
+      "name": "TargetIDColumn",
+      "alternateNames": [],
+      "isRequired": true,
+      "rDescription": "Specifies the name of the target table column that contains identifiers of the target table vectors.",
+      "description": "Specifies the name of the target table column that contains identifiers of the target table vectors.",
+      "datatype": "COLUMNS",
+      "allowsLists": false,
+      "rName": "target.id.column",
+      "useInR": true,
+      "rOrderNum": 3
+    },
+    {
+      "targetTable": [
+        "TargetTable"
+      ],
+      "checkDuplicate": true,
+      "allowedTypes": [],
+      "allowedTypeGroups": [
+        "NUMERIC"
+      ],
+      "matchLengthOfArgument": "",
+      "allowPadding": false,
+      "name": "TargetFeatureColumns",
+      "alternateNames": [],
+      "isRequired": true,
+      "rDescription": "Specifies the names of the target table columns that contain features of the target table vectors.",
+      "description": "Specifies the names of the target table columns that contain features of the target table vectors.",
+      "datatype": "COLUMNS",
+      "allowsLists": true,
+      "rName": "target.feature.columns",
+      "useInR": true,
+      "rOrderNum": 4
+    },
+    {
+      "targetTable": [
+        "ReferenceTable"
+      ],
+      "checkDuplicate": true,
+      "allowedTypes": [],
+      "allowedTypeGroups": [
+        "INTEGER"
+      ],
+      "requiredLength": 1,
+      "matchLengthOfArgument": "",
+      "allowPadding": false,
+      "name": "RefIDColumn",
+      "alternateNames": [],
+      "isRequired": false,
+      "rDescription": "Specifies the name of the reference table column that contains identifiers of the reference table vectors.",
+      "description": "Specifies the name of the reference table column that contains identifiers of the reference table vectors.",
+      "datatype": "COLUMNS",
+      "allowsLists": false,
+      "rName": "ref.id.column",
+      "useInR": true,
+      "rOrderNum": 5
+    },
+    {
+      "targetTable": [
+        "ReferenceTable"
+      ],
+      "checkDuplicate": true,
+      "allowedTypes": [],
+      "allowedTypeGroups": [
+        "NUMERIC"
+      ],
+      "matchLengthOfArgument": "",
+      "allowPadding": false,
+      "name": "RefFeatureColumns",
+      "alternateNames": [],
+      "isRequired": false,
+      "rDescription": "Specifies the names of the reference table columns that contain features of the reference table vectors.",
+      "description": "Specifies the names of the reference table columns that contain features of the reference table vectors.",
+      "datatype": "COLUMNS",
+      "allowsLists": true,
+      "rName": "ref.feature.columns",
+      "useInR": true,
+      "rOrderNum": 6
+    },
+    {
+      "permittedValues": [
+        "COSINE",
+        "EUCLIDEAN",
+        "MANHATTAN"
+      ],
+      "defaultValue": "COSINE",
+      "isOutputColumn": false,
+      "matchLengthOfArgument": "",
+      "allowPadding": false,
+      "name": "DistanceMeasure",
+      "alternateNames": [],
+      "isRequired": false,
+      "rDescription": "Specifies the distance measures that the function uses.The default value is 'cosine'.",
+      "description": "Specifies the distance measures that the function uses.The default value is 'cosine'.",
+      "datatype": "STRING",
+      "allowsLists": true,
+      "rName": "distance.measure",
+      "useInR": true,
+      "rOrderNum": 7
+    },
+    {
+      "defaultValue": 10,
+      "lowerBound": 1,
+      "upperBound": 100,
+      "lowerBoundType": "INCLUSIVE",
+      "upperBoundType": "INCLUSIVE",
+      "allowNaN": false,
+      "isOutputColumn": false,
+      "matchLengthOfArgument": "",
+      "allowPadding": false,
+      "name": "TopK",
+      "alternateNames": [],
+      "isRequired": false,
+      "rDescription": "Specifies, for each target vector and for each measure, the maximum number of closest reference vectors to include in the output table.",
+      "description": "Specifies, for each target vector and for each measure, the maximum number of closest reference vectors to include in the output table.",
+      "datatype": "INTEGER",
+      "allowsLists": false,
+      "rName": "topk",
+      "useInR": true,
+      "rOrderNum": 8
+    }
+  ]
+}

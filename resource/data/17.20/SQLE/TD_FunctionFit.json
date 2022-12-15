@@ -1,0 +1,46 @@
+{
+  "json_schema_major_version": "1",
+  "json_schema_minor_version": "1",
+  "json_content_version": "1",
+  "function_name": "TD_FunctionFit",
+  "function_version": "1.0",
+  "function_type": "fastpath",
+  "function_category": "Feature Engineering Transform",
+  "function_alias_name": "TD_FunctionFit",
+  "function_r_name": "aa.td_functionfit",
+  "short_description": "fastpath function that validates and outputs a transformation table that should go into FuncitonTransform.",
+  "long_description":  "fastpath function that validates and outputs a transformation table that should go into FuncitonTransform.",
+  "input_tables": [
+    {
+      "isOrdered": false,
+      "partitionByOne": false,
+      "name": "InputTable",
+      "alternateNames": [],
+      "isRequired": true,
+      "rDescription": "The relation that contains input data.",
+      "description": "The relation that contains input data.",
+      "datatype": "TABLE_ALIAS",
+      "allowsLists": false,
+      "rName": "data",
+      "useInR": true,
+      "rOrderNum": 1
+    },
+    {
+      "requiredInputKind": [
+        "Dimension"
+      ],
+      "isOrdered": false,
+      "partitionByOne": false,
+      "name": "TransformationTable",
+      "alternateNames": [],
+      "isRequired": true,
+      "rDescription": "The transformation table that contains transformation information for the columns in InputTable.",
+      "description":  "The transformation table that contains transformation information for the columns in InputTable.",
+      "datatype": "TABLE_ALIAS",
+      "allowsLists": false,
+      "rName": "object",
+      "useInR": true,
+      "rOrderNum": 2
+    }
+  ]
+}

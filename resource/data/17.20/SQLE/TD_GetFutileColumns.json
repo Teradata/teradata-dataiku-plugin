@@ -1,0 +1,91 @@
+{
+  "json_schema_major_version": "1",
+  "json_schema_minor_version": "1",
+  "json_content_version": "1",
+  "function_name": "TD_GetFutileColumns",
+  "function_version": "1.0",
+  "function_type": "fastpath",
+  "function_category" : "Data Cleaning",
+  "function_alias_name": "TD_GetFutileColumns",
+  "function_r_name": "aa.td_getfutilecolumns",
+  "ref_function_r_name": "aa.td_categorical.summary",
+  "short_description": "It emits the name of the columns which are futile.",
+  "long_description": "It emits the name of the columns which are futile based on 3 scenarios. First, If all values in the columns are unique/distinct, Second, If all the values in the columns are same and Third, If the count of distinctValues in the columns / count of total number of rows in the input table is greater than or equal to the threshold provided in the argument.",
+  "input_tables": [
+    {
+      "requiredInputKind": [
+        "PartitionByAny"
+      ],
+      "isOrdered": false,
+      "partitionByOne": false,
+      "name": "InputTable",
+      "alternateNames": [],
+      "isRequired": true,
+      "rDescription": "The relation that contains input data.",
+      "description": "The relation that contains input data.",
+      "datatype": "TABLE_ALIAS",
+      "allowsLists": false,
+      "rName": "data",
+      "useInR": true,
+      "rOrderNum": 1
+    },
+    {
+      "requiredInputKind": [
+        "Dimension"
+      ],
+      "isOrdered": false,
+      "partitionByOne": false,
+      "name": "CategoryTable",
+      "alternateNames": [],
+      "isRequired": true,
+      "rDescription": "The CategoryTable is generated using TD_CATEGORICALSUMMARY",
+      "description": "The CategoryTable is generated using TD_CATEGORICALSUMMARY",
+      "datatype": "TABLE_ALIAS",
+      "allowsLists": false,
+      "rName": "object",
+      "useInR": true,
+      "rOrderNum": 2
+    }
+  ],
+  "argument_clauses": [
+   {
+      "targetTable": [
+        "CategoryTable"
+      ],
+      "checkDuplicate": false,
+      "allowedTypes": [],
+      "allowedTypeGroups": [
+        "STRING"
+      ],
+      "matchLengthOfArgument": "",
+      "allowPadding": false,
+      "name": "CategoricalSummaryColumn",
+      "alternateNames": [],
+      "isRequired": true,
+      "rDescription": "Column from summarytable which provides names of the columns in input table.",
+      "description": "Column from summarytable which provides names of the columns in input table.",
+      "datatype": "COLUMNS",
+      "allowsLists": false,
+      "rName": "category.summary.column",
+      "useInR": true,
+      "rOrderNum": 3
+    },
+    {
+      "lowerBound": 0,
+      "upperBound": 1,
+      "lowerBoundType": "EXCLUSIVE",
+      "upperBoundType": "INCLUSIVE",
+      "allowNaN": false,
+      "name": "ThresholdValue",
+      "alternateNames": [],
+      "isRequired": true,
+      "rDescription": "The value upto which a particular column in input table is not considered futile.",
+      "description": "The value upto which a particular column in input table is not considered futile.",
+      "datatype": "NUMERIC",
+      "allowsLists": false,
+      "rName": "threshold.value",
+      "useInR": true,
+      "rOrderNum": 4
+    }
+  ]
+}

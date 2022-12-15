@@ -40,6 +40,26 @@ def sto_database(inputdataset):
         return ''
     return result
 
+
+def get_auth_token(inputdataset):
+    if inputdataset == None:
+        return ''
+    #result =  getConnectionParamsFromDataset(output_A_datasets[0]).get('defaultDatabase', "");
+    client = dataiku.api_client()
+    connections = client.list_connections()
+    connectionName = inputdataset.get_location_info()['info']['connectionName']
+    result = None
+    if "dkuProperties" in connections[connectionName]['params']:
+        dkuProperties = connections[connectionName]['params']['dkuProperties']
+        for item in dkuProperties:
+            if item['name'] == "Auth_token":
+                result = item['value']
+                break
+    if not result:
+        return ''
+    return result
+    
+
 def getCurrentConnectionName(inputDataset):
     #input Dataset is the output of dataiku.Dataset("dataset name"
     return inputDataset.get_location_info().get('info', {}).get('connectionName',
@@ -86,11 +106,32 @@ def do(payload, config, plugin_config, inputs):
 
     sto_db = sto_database(inputdataset)
 
+    # Find Vantage Version
+    vantage_version = ""
+    if inputdataset:
+        # Execute query to find out the version and establish if it is Vantage Cloud or not
+        executor = dataiku.core.sql.SQLExecutor2(dataset=inputdataset) 
+        query_string = "SELECT InfoData FROM DBC.DBCInfoV where InfoKey = 'VERSION'"
+        query_results = executor.query_to_df(query_string)
+        for row in query_results.iterrows():
+            vantage_version = row[1]["InfoData"]
+            # This code should be made more robust
+            logging.info("teradata_analytic_lib: the pm.versionInfo table returns", vantage_version)
+            break
 
+    # Find if Vantage Cloud based on vantage version
+    auth_token = get_auth_token(inputdataset)
+    is_vantage_cloud = False
+    if auth_token:
+        is_vantage_cloud = True
+        
     return {'inputfolder':folderpath,
             'fileList':fileList,
             'nbList':pynbList,
             'connection': connection,
             'stoDatabase' : sto_db,
             'inputDataSets':inputDataSets ,
-            'inputs': inputs}
+            'inputs': inputs,
+            'isVantageCloudLake' : is_vantage_cloud,
+            'vantageVersion' : vantage_version,
+            'auth_token' : auth_token}

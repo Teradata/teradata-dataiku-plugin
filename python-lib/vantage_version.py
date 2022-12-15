@@ -70,6 +70,8 @@ def get_vantage_version(query_engine_wrapper):
         vantage_version = "17.10"
     elif "17.20" in vantage_version.lower().replace(" ", ""):
         vantage_version = "17.20"
+    elif vantage_version.count(".") == 3:
+        vantage_version = vantage_version[-2:] + '.'+ vantage_version[0:2]
     else:
         vantage_version = "17.05"
 

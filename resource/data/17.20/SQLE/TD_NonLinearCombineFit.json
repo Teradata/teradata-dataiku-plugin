@@ -1,0 +1,101 @@
+{
+  "json_schema_major_version": "1",
+  "json_schema_minor_version": "1",
+  "json_content_version": "1",
+  "function_name": "TD_NonLinearCombineFit",
+  "function_version": "1.0",
+  "function_type": "fastpath",
+  "function_category": "Feature Engineering Transform",
+  "function_alias_name": "TD_NonLinearCombineFit",
+  "function_r_name": "td.nonlinearcombine.fit",
+  "short_description": "Fastpath function to return parameters and target columns to be used by TD_NonLinearCombineTransform function for generating a new feature.",
+  "long_description": "Fastpath function to return parameters and target columns to be used by TD_NonLinearCombineTransform function for generating a new feature.",
+  "input_tables": [
+    {
+      "isOrdered": false,
+      "partitionByOne": false,
+      "name": "InputTable",
+      "alternateNames": [],
+      "isRequired": true,
+      "rDescription": "The relation that contains input data.",
+      "description": "The relation that contains input data.",
+      "datatype": "TABLE_ALIAS",
+      "allowsLists": false,
+      "rName": "data",
+      "useInR": true,
+      "rOrderNum": 1
+    }
+  ],
+  "output_tables": [
+    {
+      "isOutputTable": true,
+      "omitPossible": true,
+      "name": "OutputTable",
+      "alternateNames": [],
+      "isRequired": false,
+      "rDescription": "Specifies the name of the table in which the output of TD_NonLinearCombineFit can be stored.",
+      "description": "Specifies the name of the table in which the output of TD_NonLinearCombineFit can be stored.",
+      "datatype": "TABLE_NAME",
+      "allowsLists": false,
+      "rName": "output.table",
+      "useInR": true,
+      "rOrderNum": 2
+    }
+  ],
+  "argument_clauses": [
+    {
+      "targetTable": [
+        "InputTable"
+      ],
+      "checkDuplicate": true,
+      "allowedTypes": [],
+      "allowedTypeGroups": [
+        "NUMERIC"
+      ],
+      "matchLengthOfArgument": "",
+      "allowPadding": false,
+      "name": "TargetColumns",
+      "alternateNames": [],
+      "isRequired": true,
+      "rDescription": "Specifies the input table columns to be used for the non linear combination.",
+      "description": "Specifies the input table columns to be used for the non linear combination.",
+      "datatype": "COLUMNS",
+      "allowsLists": true,
+      "rName": "target.columns",
+      "useInR": true,
+      "rOrderNum": 3
+    },
+    {
+      "permittedValues": [],
+      "isOutputColumn": false,
+      "matchLengthOfArgument": "",
+      "allowPadding": false,
+      "name": "Formula",
+      "alternateNames": [],
+      "isRequired": true,
+      "rDescription": "Specifies the formula to be used.",
+      "description": "Specifies the formula to be used.",
+      "datatype": "STRING",
+      "allowsLists": false,
+      "rName": "formula",
+      "useInR": true,
+      "rOrderNum": 4
+    },
+    {
+      "permittedValues": [],
+      "isOutputColumn": true,
+      "matchLengthOfArgument": "",
+      "allowPadding": false,
+      "name": "ResultColumn",
+      "alternateNames": [],
+      "isRequired": true,
+      "rDescription": "Specifies the name of the new feature column.",
+      "description": "Specifies the name of the new feature column.",
+      "datatype": "STRING",
+      "allowsLists": false,
+      "rName": "result.column",
+      "useInR": true,
+      "rOrderNum": 5
+    }
+  ]
+}

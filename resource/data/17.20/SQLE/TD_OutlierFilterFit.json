@@ -1,0 +1,217 @@
+{
+  "json_schema_major_version": "1",
+  "json_schema_minor_version": "1",
+  "json_content_version": "1",
+  "function_name": "TD_OutlierFilterFit",
+  "function_version": "1.0",
+  "function_type": "fastpath",
+  "function_category" : "Data Cleaning",
+  "function_alias_name": "TD_OutlierFilterFit",
+  "function_r_name": "aa.td_outlierfilterfit",
+  "short_description": "OutlierFilterFit function calculates the lower_percentile, upper_percentile, count of rows and median for all the TargetColumns provided by the user. These metrics for each column helps the function OutlierTransform detect outliers in the input table. It also stores parameters from arguments into a FIT table used during transformation. ",
+  "long_description": "OutlierFilterFit function calculates the lower_percentile, upper_percentile, count of rows and median for all the TargetColumns provided by the user. These metrics for each column helps the function OutlierTransform detect outliers in the input table. It also stores parameters from arguments into a FIT table used during transformation.",
+  "input_tables": [
+    {
+      "isOrdered": false,
+      "partitionByOne": false,
+      "name": "InputTable",
+      "alternateNames": [],
+      "isRequired": true,
+      "rDescription": "The relation that contains input data.",
+      "description": "The relation that contains input data.",
+      "datatype": "TABLE_ALIAS",
+      "allowsLists": false,
+      "rName": "data",
+      "useInR": true,
+      "rOrderNum": 1
+    }
+  ],
+  "output_tables": [
+    {
+      "isOutputTable": true,
+      "omitPossible": true,
+      "name": "OutputTable",
+      "alternateNames": [],
+      "isRequired": false,
+      "rDescription": "Specifies the name of the table in which the generated OutlierFilterFit table can be stored.",
+      "description": "Specifies the name of the table in which the generated OutlierFilterFit table can be stored.",
+      "datatype": "TABLE_NAME",
+      "allowsLists": false,
+      "rName": "output.table",
+      "useInR": true,
+      "rOrderNum": 2
+    }
+  ],
+  "argument_clauses": [
+    {
+      "targetTable": [
+        "InputTable"
+      ],
+      "checkDuplicate": true,
+      "allowedTypes": [],
+      "allowedTypeGroups": [
+        "NUMERIC"
+      ],
+      "matchLengthOfArgument": "",
+      "allowPadding": false,
+      "name": "TargetColumns",
+      "alternateNames": [],
+      "isRequired": true,
+      "rDescription": "Specifies the input table columns for which stats needs to be calculated",
+      "description": "Specifies the input table columns for which stats needs to be calculated",
+      "datatype": "COLUMNS",
+      "allowsLists": true,
+      "rName": "target.columns",
+      "useInR": true,
+      "rOrderNum": 3
+    },
+    {
+      "targetTable": [
+        "InputTable"
+      ],
+      "checkDuplicate": true,
+      "allowedTypes": [],
+      "allowedTypeGroups": [
+        "ALL"
+      ],
+      "matchLengthOfArgument": "",
+      "allowPadding": false,
+      "name": "GroupColumns",
+      "alternateNames": [],
+      "isRequired": false,
+      "rDescription": "Specifies the input table column for which stats calculation needs to be grouped together",
+      "description": "Specifies the input table column for which stats calculation needs to be grouped together",
+      "datatype": "COLUMNS",
+      "allowsLists": false,
+      "rName": "group.columns",
+      "useInR": true,
+      "rOrderNum": 4
+    },
+    {
+      "lowerBound": 0,
+      "upperBound": 1,
+      "lowerBoundType": "EXCLUSIVE",
+      "upperBoundType": "INCLUSIVE",
+      "allowNaN": false,
+      "name": "LowerPercentile",
+      "alternateNames": [],
+      "isRequired": false,
+      "defaultValue": 0.05,
+      "rDescription": "Specify lower range of percentile to be used to detect if value is outlier or not",
+      "description": "Specify lower range of percentile to be used to detect if value is outlier or not",
+      "datatype": "NUMERIC",
+      "allowsLists": false,
+      "rName": "lower.percentile",
+      "useInR": true,
+      "rOrderNum": 5
+    },
+    {
+      "lowerBound": 0,
+      "upperBound": 1,
+      "lowerBoundType": "EXCLUSIVE",
+      "upperBoundType": "INCLUSIVE",
+      "allowNaN": false,
+      "name": "UpperPercentile",
+      "alternateNames": [],
+      "isRequired": false,
+      "defaultValue": 0.95,
+      "rDescription": "Specify upper range of percentile to be used to detect if value is outlier or not",
+      "description": "Specify upper range of percentile to be used to detect if value is outlier or not",
+      "datatype": "NUMERIC",
+      "allowsLists": false,
+      "rName": "upper.percentile",
+      "useInR": true,
+      "rOrderNum": 6
+    },
+    {
+      "defaultValue": 1.5,
+      "lowerBound": -9223372036854775808,
+      "upperBound": 9223372036854775807,
+      "lowerBoundType": "EXCLUSIVE",
+      "upperBoundType": "INCLUSIVE",
+      "allowNaN": false,
+      "name": "IQRMultiplier",
+      "alternateNames": [],
+      "isRequired": false,
+      "rDescription": "Specify the multiplier of interquartile range for 'Tukey' filtering.",
+      "description": "Specify the multiplier of interquartile range for 'Tukey' filtering.",
+      "datatype": "NUMERIC",
+      "allowsLists": false,
+      "rName": "iqr.multiplier",
+      "useInR": true,
+      "rOrderNum": 7
+    },
+    {
+      "permittedValues": ["PERCENTILE","TUKEY","CARLING"],
+      "isOutputColumn": false,
+      "matchLengthOfArgument": "",
+      "allowPadding": true,
+      "name": "OutlierMethod",
+      "alternateNames": [
+      ],
+      "isRequired": false,
+      "defaultValue": "PERCENTILE",
+      "rDescription": "Specify one of the following methods of filtering outliers",
+      "description": "Specify one of the following methods of filtering outliers",
+      "datatype": "STRING",
+      "allowsLists": false,
+      "rName": "outlier.method",
+      "useInR": true,
+      "rOrderNum": 8
+    },
+    {
+      "permittedValues": ["DELETE","NULL","MEDIAN"],
+      "isOutputColumn": false,
+      "matchLengthOfArgument": "",
+      "allowPadding": true,
+      "name": "ReplacementValue",
+      "alternateNames": [
+      ],
+      "isRequired": false,
+      "defaultValue": "DELETE",
+      "rDescription": "Specify one of the following methods of filtering outliers",
+      "description": "Specify one of the following methods of filtering outliers",
+      "datatype": ["STRING", "NUMERIC"],
+      "allowsLists": false,
+      "rName": "replacement.value",
+      "useInR": true,
+      "rOrderNum": 9
+    },
+    {
+      "permittedValues": ["BOTH","LOWER","UPPER"],
+      "isOutputColumn": false,
+      "matchLengthOfArgument": "",
+      "allowPadding": true,
+      "name": "RemoveTail",
+      "alternateNames": [
+      ],
+      "isRequired": false,
+      "defaultValue": "BOTH",
+      "rDescription": "Specify the side of the distribution to filter.",
+      "description": "Specify the side of the distribution to filter.",
+      "datatype": "STRING",
+      "allowsLists": false,
+      "rName": "remove.tail",
+      "useInR": true,
+      "rOrderNum": 10
+    },
+    {
+      "permittedValues": ["PERCENTILECONT","PERCENTILEDISC"],
+      "isOutputColumn": false,
+      "matchLengthOfArgument": "",
+      "allowPadding": true,
+      "name": "PercentileMethod",
+      "alternateNames": [
+      ],
+      "isRequired": false,
+      "defaultValue": "PERCENTILEDISC",
+      "rDescription": "Specify the teradata percentile methods to be used for calculation.",
+      "description": "Specify the teradata percentile methods to be used for calculation.",
+      "datatype": "STRING",
+      "allowsLists": false,
+      "rName": "percentile.method",
+      "useInR": true,
+      "rOrderNum": 11
+    }
+  ]
+}

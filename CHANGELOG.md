@@ -1,8 +1,13 @@
 # Teradata Plugin Changelog
 
-## Version 2.1.2 (eFix - October 2022)
+## Version 2.2.0 (December 2022)
 
 Current version
+
+* Support for 54 new Analytic Functions in Analytics Database 17.20.
+* Bug fix: BYOM scoring recipe: Performance improvement by directly routing the scoring output to the database.
+
+## Version 2.1.2 (eFix - October 2022)
 
 * Bug fix: Analytic functions recipe: A naming mismatch caused errors when executing functions that use the "Number Of Splits" argument.
 * Bug fix: BYOM scoring recipe: Now correctly uses the name of a Vantage table to reference the testing Dataset instead of the Dataiku Dataset name.
@@ -13,12 +18,13 @@ Current version
 * Bug fix: Analytic Functions recipe: Output Dataset is now fully qualified with database so that it can be different from the input Dataset database.
 * Bug fix: Analytic Functions recipe: Execution of VAL functions now takes place on the input Dataset server.
 
-## Version 2.1.0 (September 2022)
+## Version 2.1.0 (August 2022)
 
 * Support for VAL functions.
-* The Teradata Analytic Functions recipe hosts the VAL functions together with all functions of the former Analytic Functions recipes.
+* Merging of Analytic and VAL functions into single recipe.
+* Code refactoring in the Analytic Functions recipes.
 * Renaming of "SCRIPT Table Operator Analysis" recipe into "In-Vantage Scripting".
-* Bug and security fixes.
+* Bug fixes.
 
 ## Version 2.0.0 (June 2022)
 

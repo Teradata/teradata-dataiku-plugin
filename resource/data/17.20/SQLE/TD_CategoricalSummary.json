@@ -1,0 +1,53 @@
+{
+  "json_schema_major_version": "1",
+  "json_schema_minor_version": "1",
+  "json_content_version": "1",
+  "function_name": "TD_CategoricalSummary",
+  "function_version": "1.0",
+  "function_type": "fastpath",
+  "function_category" : "Data Exploration",
+  "function_alias_name": "TD_CategoricalSummary",
+  "function_r_name": "aa.td_categorical.summary",
+  "short_description": "fastpath function to give the categorical summary of the target columns.",
+  "long_description": "fastpath function to give the DistinctValue and DistinctValueCount of the target columns",
+  "input_tables": [
+    {
+      "isOrdered": false,
+      "partitionByOne": false,
+      "name": "InputTable",
+      "alternateNames": [],
+      "isRequired": true,
+      "rDescription": "The relation that contains input data.",
+      "description": "The relation that contains input data.",
+      "datatype": "TABLE_ALIAS",
+      "allowsLists": false,
+      "rName": "data",
+      "useInR": true,
+      "rOrderNum": 1
+    }
+  ],
+  "argument_clauses": [
+    {
+      "targetTable": [
+        "InputTable"
+      ],
+      "checkDuplicate": true,
+      "allowedTypes": [],
+      "allowedTypeGroups": [
+        "STRING"
+      ],
+      "matchLengthOfArgument": "",
+      "allowPadding": false,
+      "name": "TargetColumns",
+      "alternateNames": [],
+      "isRequired": true,
+      "rDescription": "Specifies the input table columns for which categorical summary needs to be determined.",
+      "description": "Specifies the input table columns for which categorical summary needs to be determined.",
+      "datatype": "COLUMNS",
+      "allowsLists": true,
+      "rName": "target.columns",
+      "useInR": true,
+      "rOrderNum": 2
+    }
+  ]
+}

@@ -1,0 +1,128 @@
+{
+  "json_schema_major_version": "1",
+  "json_schema_minor_version": "1",
+  "json_content_version": "1",
+  "function_name": "TD_RowNormalizeFit",
+  "function_version": "1.0",
+  "function_type": "fastpath",
+  "function_category": "Feature Engineering Transform",
+  "function_alias_name": "TD_RowNormalizeFit",
+  "function_r_name": "aa.td_rownormalize.fit",
+  "short_description": "fastpath function to return parameters and target columns to be used by TD_RowNormalizeTransform for normalizing the input data.",
+  "long_description": "fastpath function to return parameters and target columns to be used by TD_RowNormalizeTransform for normalizing the input data.",
+  "input_tables": [
+    {
+      "isOrdered": false,
+      "partitionByOne": false,
+      "name": "InputTable",
+      "alternateNames": [],
+      "isRequired": true,
+      "rDescription": "The relation that contains input data.",
+      "description": "The relation that contains input data.",
+      "datatype": "TABLE_ALIAS",
+      "allowsLists": false,
+      "rName": "data",
+      "useInR": true,
+      "rOrderNum": 1
+    }
+  ],
+  "output_tables": [
+    {
+      "isOutputTable": true,
+      "omitPossible": true,
+      "name": "OutputTable",
+      "alternateNames": [],
+      "isRequired": false,
+      "rDescription": "Specifies the name of the table in which the output of TD_RowNormalizeFit can be stored.",
+      "description": "Specifies the name of the table in which the output of TD_RowNormalizeFit can be stored.",
+      "datatype": "TABLE_NAME",
+      "allowsLists": false,
+      "rName": "output.table",
+      "useInR": true,
+      "rOrderNum": 2
+    }
+  ],
+  "argument_clauses": [
+    {
+      "targetTable": [
+        "InputTable"
+      ],
+      "checkDuplicate": true,
+      "allowedTypes": [],
+      "allowedTypeGroups": [
+        "NUMERIC"
+      ],
+      "matchLengthOfArgument": "",
+      "allowPadding": false,
+      "name": "TargetColumns",
+      "alternateNames": [],
+      "isRequired": true,
+      "rDescription": "Specifies the input table columns that need to be normalized.",
+      "description": "Specifies the input table columns that need to be normalized.",
+      "datatype": "COLUMNS",
+      "allowsLists": true,
+      "rName": "target.columns",
+      "useInR": true,
+      "rOrderNum": 3
+    },
+    {
+      "permittedValues": [
+        "UNITVECTOR",
+        "FRACTION",
+        "PERCENTAGE",
+        "INDEX"
+      ],
+      "defaultValue": "UNITVECTOR",
+      "isOutputColumn": false,
+      "matchLengthOfArgument": "",
+      "allowPadding": false,
+      "name": "Approach",
+      "alternateNames": [],
+      "isRequired": false,
+      "rDescription": "Specifies the method to use for row wise normalization. Default: UNITVECTOR.",
+      "description": "Specifies the method to use for row wise normalization. Default: UNITVECTOR.",
+      "datatype": "STRING",
+      "allowsLists": false,
+      "rName": "approach",
+      "useInR": true,
+      "rOrderNum": 4
+    },
+    {
+      "targetTable": [
+        "InputTable"
+      ],
+      "checkDuplicate": true,
+      "allowedTypes": [],
+      "allowedTypeGroups": [
+        "NUMERIC"
+      ],
+      "matchLengthOfArgument": "",
+      "allowPadding": false,
+      "name": "BaseColumn",
+      "alternateNames": [],
+      "isRequired": false,
+      "rDescription": "Specifies the base column to be used in INDEX approach formula.",
+      "description": "Specifies the base column to be used in INDEX approach formula.",
+      "datatype": "COLUMNS",
+      "allowsLists": false,
+      "rName": "base.column",
+      "useInR": true,
+      "rOrderNum": 5
+    },
+    {
+      "allowNaN": false,
+      "matchLengthOfArgument": "",
+      "allowPadding": false,
+      "name": "BaseValue",
+      "alternateNames": [],
+      "isRequired": false,
+      "rDescription": "Specifies the base value to be used in INDEX approach formula.",
+      "description": "Specifies the base value to be used in INDEX approach formula.",
+      "datatype": "DOUBLE",
+      "allowsLists": false,
+      "rName": "base.value",
+      "useInR": true,
+      "rOrderNum": 6
+    }
+  ]
+}

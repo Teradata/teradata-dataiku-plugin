@@ -32,6 +32,19 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SO
 
     <div class="control-group">
 
+     <div id="tag-enter-form">
+      <form>
+
+      <input style="width:95%" type="text" id="tag_enter_txt" class="text ui-widget-content ui-corner-all" />
+
+      </form>
+    </div>
+
+
+    <div id="dialog-reset" title="Reset to Default?">
+      <p class="inner-label">These parameter values will be reset to the defaults. Are you sure?</p>
+    </div>
+
     <!-- search filters -->
     <table style="width:100%">
       <tr>
@@ -69,19 +82,12 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SO
         </input>
         <datalist name="available_functions" id="available_functions"  >
         </datalist>
-        
 
-        
 
-        
-        <!-- SKS: Add JSON button 
-        <button ng-click="showJSONDialog()" data-toggle="tooltip" data-container="body" data-html="true" title="See what the input JSON looks like."><img width=30 height=16 src="/plugins/TeradataVantageSQLEFunctionsPlugin/resource/img/json_icon.png"></button>
-        -->
+        <!-- SKS: Add reset button -->
+        <button type="button" ng-click="showResetDialog()" data-toggle="tooltip" data-container="body" data-html="true" 
+        title="Reset the parameters of the function to defaults.">Reset</button>
 
-        <!-- &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-        SKS: Add explanation button 
-        <button ng-click="showExplainDialog()" data-toggle="tooltip" data-container="body" data-html="true" title="See an explanation of your SQL query."><img width=30 height=16 src="/plugins/TeradataVantageSQLEFunctionsPlugin/resource/img/explain_icon.png"></button>
-        -->
       </div>
 
 
@@ -95,7 +101,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SO
   </div> -->
     <div class="control-group" ng-if="config.function">
       <label class="control-label">Description</label>
-      <div class="controls" style="max-width: 40%; text-align: justify">
+      <div class="controls" style="max-width: 80%; overflow-y:scroll; max-height:150px;">
         {{ getFunctionDescription() }}
       </div>
       <label ng-show=" config.function.name.includes('VAL') && valDatabase=='' " style="color:red;display: inline-block">
@@ -177,10 +183,183 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SO
               <td>
                 <!-- Aliased Input Table Selection-->
                 <select required ng-model="item.value" ng-options="t.fullName.split('.')[1] as t.fullName.split('.')[1] for t in inputs"
-                        ng-change="changeInputModelTable(item)"
-                >
+                        ng-change="changeInputModelTable(item)">
                       <option value="" selected>--No Selection--</option>
                   </select>
+
+
+                  <!-- Add UAF Type-->
+                  <div ng-if="item.hasOwnProperty('uafType')">
+                    <label class="fixed-label-size">UAF Type </label>
+                    <select required ng-model="item.uafType" data-container="body" data-toggle="tooltip" title="{{ getToolTip('UAF_FUNCTION') }}" data-placement="right">
+                      <option value="">--No Selection--</option>
+                      <option ng-if="item.uaf.requiredUafKind.includes('SERIES')" value="SERIES">SERIES</option>
+                      <option ng-if="item.uaf.requiredUafKind.includes('MATRIX')" value="MATRIX">MATRIX</option>
+                      <option ng-if="item.uaf.requiredUafKind.includes('ART')" value="ART">ART</option>
+                      <option ng-if="item.uaf.requiredUafKind.includes('GENSERIES')" value="GENSERIES">GENSERIES</option>
+                    </select>
+                    &nbsp;&nbsp;&nbsp;&nbsp;
+                    <input type="checkbox" ng-model="item.uaf.details">&nbsp;&nbsp;&nbsp;Details</input>
+                  </div>
+                  <!-- UAF GENSERIES UI-->
+                  <span ng-if="item.uafType=='GENSERIES'">
+                      <label class="fixed-label-size">Instance Names </label>
+                      <input type="text" ng-model="item.uaf.instance_names" data-toggle="tooltip" data-container="body" 
+                         data-html="true" title="Sets the columns and values for the generated series. It is a JSON object that contains one or more name-value pairs, each of which contains a series identifier name and its value." data-placement="right" />
+                      &nbsp;&nbsp;&nbsp;&nbsp;
+                       <label class="fixed-label-size">Data Type </label>
+                      <input type="text" ng-model="item.uaf.data_type" data-toggle="tooltip" data-container="body" 
+                         data-html="true" title="Sets the data types of the identifying columns for the generated series." data-placement="right" />
+                    </span>
+                  <!-- UAF SERIES UI-->
+                  <div ng-if="item.hasOwnProperty('uafType')" ng-show="item.uaf.details">
+                    <span ng-if="item.uafType!='ART' && item.uafType!='GENSERIES'">
+                      <label class="fixed-label-size">Row </label>
+                      <select required ng-model="item.uaf.is_row_sequence" data-container="body" data-toggle="tooltip" title="UAF Row Sequence or Timecode" data-placement="right">
+                        <option value="TIMECODE">TIMECODE</option>
+                        <option value="SEQUENCE">SEQUENCE</option>
+                      </select>
+                      &nbsp;&nbsp;&nbsp;&nbsp;
+                      <input required type="text" ng-model="item.uaf.row_axis_name" data-toggle="tooltip" data-container="body" 
+                         data-html="true" title="Sets the UAF Row Field" data-placement="right" />
+                    </span>
+                    <span ng-if="item.uafType=='MATRIX'">
+                      <label class="fixed-label-size">Column </label>
+                      <select required ng-model="item.uaf.is_col_sequence" data-container="body" data-toggle="tooltip" title="UAF Column Sequence or Timecode" data-placement="right">
+                        <option value="TIMECODE">TIMECODE</option>
+                        <option value="SEQUENCE">SEQUENCE</option>
+                      </select>
+                      &nbsp;&nbsp;&nbsp;&nbsp;
+                      <input required type="text" ng-model="item.uaf.column_axis_name" data-toggle="tooltip" data-container="body" 
+                         data-html="true" title="Sets the UAF Column Field" data-placement="right" />
+                    </span>
+                    <span>
+                      <label ng-if="item.uafType!='GENSERIES'" class="fixed-label-size">ID </label>
+                          <table ng-if="item.uafType!='GENSERIES'">
+                            <tr>
+                              <td>
+                                <input ng-if="item.uafType!='ART'" required class="teradata-tags" ng-model="item.uaf.id_name" type="text" 
+                              data-toggle="tooltip" data-container="body" data-html="true" title="UAF {{item.uafType=='SERIES' ? 'Series' : 'Matrix'}} ID"
+                              data-placement="right"></input>
+                              </td>
+                              <td>
+                                <input  class="teradata-tags" ng-model="item.uaf.id_sequence" type="text" 
+                              data-toggle="tooltip" data-container="body" data-html="true" title="UAF ID Sequence"
+                              data-placement="right"></input>
+                              </td>
+                            </tr>
+                          </table>
+                    </span>
+                    <span>
+                      <label class="fixed-label-size">Payload </label>
+                          <table ng-if="item.uafType!='GENSERIES'">
+                            <tr>
+                              <td>
+                                <input ng-required="item.uafType!='ART'" class="teradata-tags" ng-model="item.uaf.payload_fields" type="text" 
+                              data-toggle="tooltip" data-container="body" data-html="true" title="Payload Field"
+                              data-placement="right"></input>
+                              </td>
+                              <td>
+                                <select ng-required="item.uafType!='ART'" ng-model="item.uaf.payload_content" data-container="body" data-toggle="tooltip" title="Payload Content" data-placement="right">
+                                  <option value="REAL">REAL</option>
+                                  <option value="COMPLEX">COMPLEX</option>
+                                  <option value="AMPL_PHASE">AMPL_PHASE</option>
+                                  <option value="AMPL_PHASE_RADIANS">AMPL_PHASE_RADIANS</option>
+                                  <option value="AMPL_PHASE_DEGREES">AMPL_PHASE_DEGREES</option>
+                                  <option value="MULTIVAR_REAL">MULTIVAR_REAL</option>
+                                  <option value="MULTIVAR_COMPLEX">MULTIVAR_COMPLEX</option>
+                                  <option value="MULTIVAR_ANYTYPE">MULTIVAR_ANYTYPE</option>
+                                  <option value="MULTIVAR_AMPL_PHASE">MULTIVAR_AMPL_PHASE</option>
+                                  <option value="MULTIVAR_AMPL_PHASE_RADIANS">MULTIVAR_AMPL_PHASE_RADIANS</option>
+                                  <option value="MULTIVAR_AMPL_PHASE_DEGREES">MULTIVAR_AMPL_PHASE_DEGREES</option>
+                                </select>
+                              </td>
+                            </tr>
+                          </table>
+                          <table ng-if="item.uafType=='GENSERIES'">
+                            <tr>
+                              <td>
+                                <label class="fixed-label-size">Start Value</label>
+                                <input ng-model="item.uaf.payload_start_value" type="text" 
+                              data-toggle="tooltip" data-container="body" data-html="true" title="Payload Start Value"
+                              data-placement="right"></input>
+                              </td>
+                              <td>
+                                <label class="fixed-label-size">Offset Value</label>
+                                <input ng-model="item.uaf.payload_offset_value" type="text" 
+                              data-toggle="tooltip" data-container="body" data-html="true" title="Payload Offset Value"
+                              data-placement="right"></input>
+                              </td>
+                              <td>
+                                <label class="fixed-label-size">Number Entries</label>
+                                <input ng-model="item.uaf.payload_num_entries" type="text" 
+                              data-toggle="tooltip" data-container="body" data-html="true" title="Payload Number Entries"
+                              data-placement="right"></input>
+                              </td>
+                            </tr>
+                            </table>
+                    </span>
+                    <span ng-if="item.uafType!='GENSERIES'">
+                      <label class="fixed-label-size">Layer </label>
+                      <input type="text" ng-model="item.uaf.layer" data-toggle="tooltip" data-container="body" 
+                         data-html="true" title="Sets the UAF Layer" data-placement="right" />
+                      &nbsp;&nbsp;&nbsp;&nbsp;
+                       <select ng-model="item.uaf.interval" data-container="body" data-toggle="tooltip" title="Interval Enable" data-placement="right"
+                        ng-if="item.uafType=='SERIES'">
+                        <option value="Off">Off</option>
+                        <option value="On">On</option>
+                      </select>
+                    </span>
+
+
+                    <span ng-if="item.uaf.interval=='On' && item.uafType=='SERIES'">
+                      <label class="fixed-label-size">Interval </label>
+                      
+                      <select ng-model="item.uaf.time_duration" data-container="body" data-toggle="tooltip" title="Interval Time Duration" data-placement="right">
+                        <option value="CAL_YEARS">CAL_YEARS</option>
+                        <option value="CAL_MONTHS">CAL_MONTHS</option>
+                        <option value="CAL_DAYS">CAL_DAYS</option>
+                        <option value="WEEKS">WEEKS</option>
+                        <option value="DAYS">DAYS</option>
+                        <option value="HOURS">HOURS</option>
+                        <option value="MINUTES">MINUTES</option>
+                        <option value="SECONDS">SECONDS</option>
+                        <option value="MILLISECONDS">MILLISECONDS</option>
+                        <option value="MICROSECONDS">MICROSECONDS</option>
+                      </select>
+
+                      &nbsp;&nbsp;&nbsp;&nbsp;
+                      <select ng-model="item.uaf.time_type" data-container="body" data-toggle="tooltip" title="Interval Type" data-placement="right">
+                        <option value=""></option>
+                        <option value="float">Float</option>
+                        <option value="integer">Integer</option>
+                      </select>
+                    </span>
+                    <span  ng-if="item.uaf.interval=='On' && item.uafType=='SERIES'">
+                      <label class="fixed-label-size">Zero </label>
+                     <select ng-model="item.uaf.time_zero" data-container="body" data-toggle="tooltip" title="Time Zero" data-placement="right">
+                        <option value=""></option>
+                        <option value="DATE">DATE</option>
+                        <option value="TIMESTAMP">TIMESTAMP</option>
+                        <option value="TIMESTAMP WITH TIME ZONE">TIMESTAMP WITH TIME ZONE</option>
+                      </select>
+
+                      
+                      &nbsp;&nbsp;&nbsp;&nbsp;
+                      <input type="text" ng-model="item.uaf.seq_zero" data-toggle="tooltip" data-container="body" 
+                         data-html="true" title="Sequence Zero" data-placement="right" />
+                    </span>
+
+
+
+
+                    <span ng-if="item.uafType!='GENSERIES'">
+                      <label class="fixed-label-size">WHERE </label>
+                      <input type="text" ng-model="item.uaf.where" data-toggle="tooltip" data-container="body" 
+                         data-html="true" title="Sets the UAF Where" data-placement="right" />
+                    </span>
+
+                  </div>
 
                   <!-- Aliased Input Table Partition if multiple-->
 
@@ -358,7 +537,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SO
             </tr>
 
 
-            <tr ng-repeat="item in config.function.arguments" ng-model="config.function.arguments" ng-if="item.isRequired && useNativeOrNot(item.inNative)">
+            <tr ng-repeat="item in config.function.arguments" ng-model="config.function.arguments" ng-if="item.isRequired && useNativeOrNot(item.inNative) && !item.datatype.startsWith('GROUP') ">
               <td style="text-transform: capitalize">{{ getArgumentFormattedName(item.name) }}
                 <!-- Button for columns-->
                 <button ng-if="multiColumnNamesCheck(item) && !getPermittedValuesWithName(item)"
@@ -373,9 +552,17 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SO
               </td>
               </td>
               <td>
-                <input required type="text" ng-model="item.value" ng-if="(['STRING','DOUBLE','INTEGER','DRIVER','SQLEXPR', 'LONG', 'DOUBLE PRECISION'].indexOf(item.datatype) >= 0 || (item.datatype == 'TABLE_NAME' && isArgumentOutputTable(item))) && !item.allowsLists && !getPermittedValuesWithName(item)"
-                  data-toggle="tooltip" data-container="body" data-html="true" title="{{ getArgumentDescriptionWithName(item.name) }}"
+                <!-- SKS: Support for validating numeric types, with Min and Max and Step attributes, previous was type="text" and no min, max or step -->
+                <input 
+                       type="{{['DOUBLE','INTEGER', 'LONG', 'DOUBLE PRECISION'].indexOf(item.datatype) >= 0 ? 'number' : 'text'}}" 
+                       min ="{{['DOUBLE','INTEGER', 'LONG', 'DOUBLE PRECISION'].indexOf(item.datatype) >= 0 ? getLowerBoundValuesWithName(item) : ''}}"
+                       max ="{{['DOUBLE','INTEGER', 'LONG', 'DOUBLE PRECISION'].indexOf(item.datatype) >= 0 ? getUpperBoundValuesWithName(item) : ''}}"
+                       step ="{{['DOUBLE', 'DOUBLE PRECISION'].indexOf(item.datatype) >= 0 ? getStepRangeValuesWithName(item) : '1'}}"
+
+                    ng-model="item.value" ng-if="(['STRING','DOUBLE','INTEGER','DRIVER','SQLEXPR', 'LONG', 'DOUBLE PRECISION'].indexOf(item.datatype) >= 0 || (item.datatype == 'TABLE_NAME' && isArgumentOutputTable(item))) && !item.allowsLists && !getPermittedValuesWithName(item)"
+                  data-toggle="tooltip" data-container="body" data-html="true" title="YYYYYYYY{{ getArgumentDescriptionWithName(item.name) }}"
                   data-placement="right" />
+
 
                 <input required class="teradata-tags" ng-model="item.value" type="text" ng-if="['STRING','DOUBLE','INTEGER','DRIVER','SQLEXPR', 'LONG', 'DOUBLE PRECISION'].indexOf(item.datatype) >= 0 && item.allowsLists && !getPermittedValuesWithName(item)"
                   data-toggle="tooltip" data-container="body" data-html="true" title="{{ getArgumentDescriptionWithName(item.name) }}"
@@ -928,7 +1115,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SO
 
             
             
-            <tr ng-repeat="item in config.function.arguments" ng-model="config.function.arguments" ng-if="!item.isRequired && useNativeOrNot(item.inNative)">
+            <tr ng-repeat="item in config.function.arguments" ng-model="config.function.arguments" ng-if="!item.isRequired && useNativeOrNot(item.inNative) && !item.datatype.startsWith('GROUP')">
               <td style="text-transform: capitalize">{{ getArgumentFormattedName(item.name) }}
                 <!-- Button for multi columns-->
                 <button ng-if="multiColumnNamesCheck(item) && !getPermittedValuesWithName(item)"

@@ -135,6 +135,11 @@ def load_json(json_dict, inputs):
                         partitionByKey = "PartitionByOne" # If partitionByOneInclusive is not a key, we override the partitionByKey to be partitionByOne.
                 required_input_dict['kind'] = partitionByKey
                 required_input_dict['inputKindChoices'] = requiredInputKind
+
+                if "uaf" in table:
+                    required_input_dict["uaf"] = table["uaf"]
+                if "uafType" in table:
+                    required_input_dict["uafType"] = table["uafType"]
                 
                 # Check if the table is named (= required input) or not (unaliased input).
                 if 'name' in table.keys() or ('Dimension' in table.get('requiredInputKind',[]) and 0 < unaliased_inputs.get('count',0)):
@@ -151,6 +156,11 @@ def load_json(json_dict, inputs):
                         d['partitionInputKind'] = ['PartitionByOne']
                     else:
                         d['partitionInputKind'] = table.get("requiredInputKind", [])
+
+
+
+
+
                 num_input_tables += 1
                         
         d["required_input"] = required_inputs
@@ -198,6 +208,8 @@ def load_json(json_dict, inputs):
                 arg["name"] = argument.get("name", "")
                 arg["isRequired"] = argument.get("isRequired", False)
                 arg["datatype"] = argument.get("datatype", "")
+                #if arg["datatype"] == "GROUPEND":
+                #    continue
                 if type(arg["datatype"]) != str:
                     arg["datatype"] = "STRING"
                 arg["datatype"] = arg["datatype"].upper()
@@ -206,6 +218,8 @@ def load_json(json_dict, inputs):
                 if arg["datatype"] == "COLUMN":
                     arg["datatype"] = "COLUMNS"
 
+                if "useDefaultInQuery" in argument:
+                    arg["useDefaultInQuery"] = argument["useDefaultInQuery"]
 
                 # SKS: Add upper and lower bounds
                 arg["lowerBound"] = str(argument.get("lowerBound", ""))
@@ -224,8 +238,13 @@ def load_json(json_dict, inputs):
                     arg["value"] = defaultValuesFromArg(argument)
                     # SKS: Added Default Value for frontend to use as well
                     arg["defaultValue"] = arg["value"]
+
+                if "Type" in argument:
+                    arg["Type"] = argument["Type"]
+
                 # arg["inNative"] = True # Setting to True because all files should be native and not MLE.
                 args.append(arg)
+                
             d['arguments'] = args
             # f_native = json.loads(open('%s/data/%s' % (os.getenv("DKU_CUSTOM_RESOURCE_FOLDER"), f.get("native"))).read())
             f_native = f
@@ -335,14 +354,29 @@ def do(payload, config, plugin_config, inputs):
     choices = []
     plugin_version_number = vantage_version_number
     for category in category_names:
-        fallback_directory = os.path.join(env, 'data', plugin_version_number, category)
+        if category == "VALIB":
+            fallback_directory = os.path.join(env, 'data', category)
+        else:
+            fallback_directory = os.path.join(env, 'data', plugin_version_number, category)
     
         # Check if fallback directory exists
         if not os.path.isdir(fallback_directory):
-            # Use the latest version we have if the version is not available
-            if plugin_version_number == "17.20" and os.path.isdir(os.path.join(env, 'data', "17.10", category)):
-                plugin_version_number = "17.10"
+            version_directory = os.path.join(env, 'data')
+            difference_map = {}
+            for version in os.listdir(version_directory):
+                if version == "VALIB":
+                    continue
+                if not os.path.isdir(os.path.join(env, 'data', version)):
+                    continue
+                if float(version) > float(plugin_version_number):
+                    continue
+                difference_map[version] = float(plugin_version_number) - float(version)
+            
+            if len(difference_map)>0: 
+                best_version = min(difference_map, key=difference_map.get)
+                plugin_version_number = best_version
             else:
+                # Default if nothing is found
                 plugin_version_number = "17.05"
             fallback_directory = os.path.join(env, 'data', plugin_version_number, category)
 
@@ -353,8 +387,11 @@ def do(payload, config, plugin_config, inputs):
         for filename in fallback_files:
             if not filename.endswith(".json"):
                 continue
-            function_dict = {} 
-            filepath = os.path.join(plugin_version_number, category, filename)
+            function_dict = {}
+            if category == "VALIB":
+                filepath = os.path.join(category, filename)
+            else:
+                filepath = os.path.join(plugin_version_number, category, filename)
             function_dict["name"] = filename.replace(".json", "")
             function_dict["function_alias_name"] = function_dict["name"]
             function_dict["json_file_path"] = filepath
@@ -375,6 +412,7 @@ def do(payload, config, plugin_config, inputs):
     versionInfo += "The connected Analytics Database version is: " + vantage_version_number
     versionInfo += "<br>"
     versionInfo += "Present plugin supports analytic function titles released through version: " + plugin_version_number
+
                 
          
     input_table_name = inputs[0]['fullName'].split('.')[1]

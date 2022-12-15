@@ -1,0 +1,147 @@
+{
+   "json_schema_major_version":"1",
+   "json_schema_minor_version":"1",
+   "json_content_version":"1",
+   "function_name":"TD_ClassificationEvaluator",
+   "function_version":"1.0",
+   "function_alias_name":"TD_ClassificationEvaluator",
+   "function_type":"fastpath",
+   "function_category": "Model Evaluation",
+   "function_r_name":"aa.td.CLASSIFICATION.EVALUATOR",
+   "ref_function_r_name":"aa.td.CLASSIFICATION.EVALUATOR",
+   "short_description":"This function evaluate and emits various metrics of classification model based on it's predictions on the data",
+   "long_description":"This function evaluate and emits various metrics of classification model based on it's predictions on the data",
+   "input_tables":[
+      {
+         "requiredInputKind":[
+            "PartitionByAny"
+         ],
+         "isOrdered":false,
+         "partitionByOne":false,
+         "name":"InputTable",
+         "alternateNames":[
+
+         ],
+         "isRequired":true,
+         "rDescription":"Specifies the table containing expected and predicted labels.",
+         "description":"Specifies the table containing expected and predicted labels.",
+         "datatype":"TABLE_ALIAS",
+         "allowsLists":false,
+         "rName":"data",
+         "useInR":true,
+         "rFormulaUsage":false,
+         "rOrderNum":1
+      }
+   ],
+   "output_tables":[
+      {
+         "isOutputTable":true,
+         "omitPossible":true,
+         "name":"OutputTable",
+         "alternateNames":[
+
+         ],
+         "isRequired":false,
+         "rDescription":"Specifies the name for the output table that the function creates. The outputtable must not already exist.",
+         "description":"[Specify to emit various metrics.] Specify the name for the output table that the function creates. The outputtable must not already exist.",
+         "datatype":"TABLE_NAME",
+         "allowsLists":false,
+         "rName":"output.table",
+         "useInR":true,
+         "rOrderNum":2
+      }
+   ],
+   "argument_clauses":[
+      {
+         "targetTable":[
+            "InputTable"
+         ],
+         "checkDuplicate":true,
+         "allowedTypes":[
+
+         ],
+         "allowedTypeGroups":[
+            "STRING"
+         ],
+         "matchLengthOfArgument":"",
+         "allowPadding":false,
+         "name":"ObservationColumn",
+         "alternateNames":[
+
+         ],
+         "isRequired":true,
+         "rDescription":"Specify the ObservationColumn in InputTable which contains expected labels.",
+         "description":"Specify the ObservationColumn in InputTable which contains expected labels.",
+         "datatype":"COLUMNS",
+         "allowsLists":false,
+         "rName":"Observation.Column",
+         "useInR":true,
+         "rOrderNum":3
+      },
+      {
+         "targetTable":[
+            "InputTable"
+         ],
+         "checkDuplicate":true,
+         "allowedTypes":[
+
+         ],
+         "allowedTypeGroups":[
+            "STRING"
+         ],
+         "matchLengthOfArgument":"",
+         "allowPadding":false,
+         "name":"PredictionColumn",
+         "alternateNames":[
+
+         ],
+         "isRequired":true,
+         "rDescription":"Specify the PredictionColumn in InputTable which contains predicted labels.",
+         "description":"Specify the PredictionColumn in InputTable which contains predicted labels.",
+         "datatype":"COLUMNS",
+         "allowsLists":false,
+         "rName":"Prediction.Column",
+         "useInR":true,
+         "rOrderNum":4
+      },
+      {
+         "lowerBound":1,
+         "upperBound":512,
+         "lowerBoundType":"INCLUSIVE",
+         "upperBoundType":"INCLUSIVE",
+         "allowNaN":false,
+         "name":"NumLabels",
+         "alternateNames":[
+
+         ],
+         "isRequired":false,
+         "rDescription":"Specifies the number of labels in the dataset. Valid value is in between 1 and 512. Applicable only when user does not provide Labels argument.",
+         "description":"Specifies the number of labels in the dataset. Valid value is in between 1 and 512. Applicable only when user does not provide Labels argument.",
+         "datatype":"INTEGER",
+         "allowsLists":false,
+         "rName":"Num.Labels",
+         "useInR":true,
+         "rOrderNum":5
+      },
+      {
+         "permittedValues":[
+
+         ],
+         "isOutputColumn":false,
+         "matchLengthOfArgument":"",
+         "allowPadding":false,
+         "name":"Labels",
+         "alternateNames":[
+
+         ],
+         "isRequired":false,
+         "rDescription":"Specify the list of all labels present in the data",
+         "description":"Specify the list of all labels present in the data",
+         "datatype":"STRING",
+         "allowsLists":true,
+         "rName":"labels",
+         "useInR":true,
+         "rOrderNum":6
+      }
+   ]
+}

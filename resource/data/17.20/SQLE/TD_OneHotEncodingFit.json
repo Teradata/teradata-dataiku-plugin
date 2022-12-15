@@ -1,0 +1,182 @@
+{
+  "json_schema_major_version": "1",
+  "json_schema_minor_version": "1",
+  "json_content_version": "1",
+  "function_name": "TD_OneHotEncodingFit",
+  "function_version": "1.0",
+  "function_type": "fastpath",
+  "function_category": "Feature Engineering Transform",
+  "function_alias_name": "TD_OneHotEncodingFit",
+  "function_r_name": "aa.td_one.hot.encoding.fit",
+  "short_description": "fastpath function records all the parameters required for TD_OneHotEncodingTransform t",
+  "long_description": "fastpath function records all the parameters required for TD_OneHotEncodingTransform function. i.e, target attributes and their categorical values to be encoded and other parameters. Output of TD_OneHotEncodingFit function is used by TD_OneHotEncodingTransform function for encoding the input data. It supports inputs in both sparse and dense format",
+  "input_tables": [
+    {
+      "isOrdered": false,
+      "partitionByOne": false,
+      "name": "InputTable",
+      "alternateNames": [],
+      "isRequired": true,
+      "rDescription": "The relation that contains input data.",
+      "description": "The relation that contains input data.",
+      "datatype": "TABLE_ALIAS",
+      "allowsLists": false,
+      "rName": "data",
+      "useInR": true,
+      "rOrderNum": 1
+    }
+  ],
+  "argument_clauses": [
+    {
+      "targetTable": [
+        "InputTable"
+      ],
+      "checkDuplicate": true,
+      "allowedTypes": [
+		"VARCHAR",
+		"CHAR"
+	  ],
+      "allowedTypeGroups": [
+      ],
+      "matchLengthOfArgument": "",
+      "allowPadding": false,
+      "name": "TargetColumn",
+      "alternateNames": [],
+      "isRequired": false,
+      "rDescription": "Specifies the input table column which is to be encoded. This argument is used when Input is in dense format.",
+      "description": "Specifies the input table column which is to be encoded. This argument is used when Input is in dense format.",
+      "datatype": "COLUMNS",
+      "allowsLists": false,
+      "rName": "target.column",
+      "useInR": true,
+      "rOrderNum": 2
+    },
+    {
+      "targetTable": [
+        "InputTable"
+      ],
+      "checkDuplicate": true,
+      "allowedTypes": [
+		"VARCHAR",
+		"CHAR"
+	  ],
+      "allowedTypeGroups": [
+      ],
+      "matchLengthOfArgument": "",
+      "allowPadding": false,
+      "name": "AttributeColumn",
+      "alternateNames": [],
+      "isRequired": false,
+      "rDescription": "Specifies the input table column which contains attribute names. This argument is used when Input is in sparse format.",
+      "description": "Specifies the input table column which contains attribute names. This argument is used when Input is in sparse format.",
+      "datatype": "COLUMNS",
+      "allowsLists": false,
+      "rName": "attribute.column",
+      "useInR": true,
+      "rOrderNum": 3
+    },
+    {
+      "targetTable": [
+        "InputTable"
+      ],
+      "checkDuplicate": true,
+      "allowedTypes": [
+		"VARCHAR",
+		"CHAR"
+	  ],
+      "allowedTypeGroups": [
+      ],
+      "matchLengthOfArgument": "",
+      "allowPadding": false,
+      "name": "ValueColumn",
+      "alternateNames": [],
+      "isRequired": false,
+      "rDescription": "Specifies the input table column which contains attribute values. This argument is used when Input is in sparse format.",
+      "description": "Specifies the input table column which contains attribute values. This argument is used when Input is in sparse format.",
+      "datatype": "COLUMNS",
+      "allowsLists": false,
+      "rName": "value.column",
+      "useInR": true,
+      "rOrderNum": 4
+    },
+    {
+      "isOutputColumn": false,
+      "matchLengthOfArgument": "",
+      "allowPadding": false,
+      "name": "IsInputDense",
+      "alternateNames": [],
+      "isRequired": true,
+      "rDescription": "Specify whether input is in dense format or sparse format.",
+      "description": "Specify whether input is in dense format or sparse format.",
+      "datatype": "BOOLEAN",
+      "allowsLists": false,
+      "rName": "is.input.dense",
+      "useInR": true,
+      "rOrderNum": 5
+    },
+    {
+      "permittedValues": [],
+      "isOutputColumn": false,
+      "matchLengthOfArgument": "",
+      "allowPadding": false,
+      "name": "CategoricalValues",
+      "alternateNames": [],
+      "isRequired": false,
+      "rDescription": "A list of categorical values which are to encoded in one-hot form. This argument should be used when the Input format is dense.",
+      "description": "A list of categorical values which are to encoded in one-hot form. This argument should be used when the Input format is dense.",
+      "datatype": "STRING",
+      "allowsLists": true,
+      "rName": "categorical.values",
+      "useInR": true,
+      "rOrderNum": 6
+    },
+    {
+      "permittedValues": [],
+      "isOutputColumn": false,
+      "matchLengthOfArgument": "",
+      "allowPadding": false,
+      "name": "OtherColumnName",
+      "alternateNames": [],
+      "isRequired": false,
+      "rDescription": "Column name for the column representing one-hot encoding for values other than the ones specified in the CategoricalValues argument. This argument should be used when the Input format is dense. Default: 'other'",
+      "description": "Column name for the column representing one-hot encoding for values other than the ones specified in the CategoricalValues argument. This argument should be used when the Input format is dense. Default: 'other'",
+      "datatype": "STRING",
+      "allowsLists": false,
+      "rName": "other.column",
+      "useInR": true,
+      "rOrderNum": 7
+    },
+    {
+      "permittedValues": [],
+      "isOutputColumn": false,
+      "matchLengthOfArgument": "",
+      "allowPadding": false,
+      "name": "TargetAttributes",
+      "alternateNames": [],
+      "isRequired": false,
+      "rDescription": "A list of attributes for which encoding should be performed. This argument should be used when the Input format is sparse.",
+      "description": "A list of attributes for which encoding should be performed. This argument should be used when the Input format is sparse.",
+      "datatype": "STRING",
+      "allowsLists": true,
+      "rName": "target.attributes",
+      "useInR": true,
+      "rOrderNum": 8
+    },
+    {
+      "permittedValues": [],
+      "isOutputColumn": false,
+      "matchLengthOfArgument": "",
+      "allowPadding": false,
+      "name": "OtherAttributeNames",
+      "alternateNames": [],
+      "isRequired": false,
+      "rDescription": "A list of attribute names representing one-hot encoding for values other than the categorical values present in the input table for the attributes specified in the TargetAttributes argument. This argument should be used when the Input format is sparse.",
+      "description": "A list of attribute names representing one-hot encoding for values other than the categorical values present in the input table for the attributes specified in the TargetAttributes argument. This argument should be used when the Input format is sparse.",
+      "datatype": "STRING",
+      "allowsLists": true,
+      "rName": "other.attributes",
+      "useInR": true,
+      "rOrderNum": 9
+    }
+  ]
+}

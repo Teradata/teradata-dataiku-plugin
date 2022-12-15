@@ -1,0 +1,77 @@
+{
+  "json_schema_major_version": "1",
+  "json_schema_minor_version": "1",
+  "json_content_version": "1",
+  "function_name": "TD_ANOVA",
+  "function_version": "1.0",
+  "function_type": "fastpath",
+  "function_category": "Hypothesis Testing",
+  "function_alias_name": "TD_ANOVA",
+  "function_r_name": "aa.td_anova",
+  "short_description": "hypothesis test function to perform anova analysis on a data set.",
+  "long_description": "fastpath function to perform one-way anova analysis on a data set with two or more groups.",
+  "input_tables": [
+    {
+      "requiredInputKind": [
+        "PartitionByAny"
+      ],
+      "isOrdered": false,
+      "partitionByOne": false,
+      "name": "InputTable",
+      "alternateNames": [],
+      "isRequired": true,
+      "rDescription": "The relation that contains input data.",
+      "description": "The relation that contains input data.",
+      "datatype": "TABLE_ALIAS",
+      "allowsLists": false,
+      "rName": "data",
+      "useInR": true,
+      "rOrderNum": 1
+    }
+  ],
+  "argument_clauses": [
+    {
+      "targetTable": [
+        "InputTable"
+      ],
+      "checkDuplicate": true,
+      "allowedTypes": [],
+      "allowedTypeGroups": [
+        "NUMERIC"
+      ],
+      "matchLengthOfArgument": "",
+      "allowPadding": false,
+      "name": "Groupcolumns",
+      "alternateNames": [],
+      "isRequired": false,
+      "rDescription": "Specifies the input table columns to use in the computation.",
+      "description": "Specifies the input table columns to use in the computation.",
+      "datatype": "COLUMNS",
+      "allowsLists": true,
+      "rName": "group.columns",
+      "useInR": true,
+      "rOrderNum": 2
+    },
+    {
+      "defaultValue": 0.05,
+      "lowerBound": 0,
+      "upperBound": 1,
+      "lowerBoundType": "INCLUSIVE",
+      "upperBoundType": "INCLUSIVE",
+      "allowNaN": false,
+      "isOutputColumn": false,
+      "matchLengthOfArgument": "",
+      "allowPadding": false,
+      "name": "Alpha",
+      "alternateNames": [],
+      "isRequired": false,
+      "rDescription": "Specifies the value of alpha in hypothesis function",
+      "description": "Specifies the value of alpha in hypothesis function",
+      "datatype": "double precision",
+      "allowsLists": false,
+      "rName": "alpha",
+      "useInR": true,
+      "rOrderNum": 3
+    }
+  ]
+}

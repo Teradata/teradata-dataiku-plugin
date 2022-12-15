@@ -4,6 +4,10 @@ from dataiku.customrecipe import *
 import pandas as pd
 import logging
 from verifyTableColumns import *
+from querybuilderfacade import *
+from inputtableinfo import *
+from outputtableinfo import *
+from vantage_schema import set_schema_from_vantage
 
 
 # Inputs and outputs are defined by roles. In the recipe's I/O tab, the user can associate one
@@ -107,12 +111,58 @@ if accumulate_all == False:
 conn =  SQLExecutor2(dataset = input_dataset)
 
 
+# Get the output database and table name
+SEP_LENGTH = 80
+SEP = "=" * SEP_LENGTH
+client = dataiku.api_client()
+main_input_name = get_input_names_for_role('input_dataset')[0]
+projectkey = main_input_name.split('.')[0]
+project = client.get_project(projectkey)
+connections = client.list_connections()
+connectionInfo = output_dataset.get_location_info()['info']
+outputConnectionName = connectionInfo['connectionName']
+outputDatabase = output_dataset.get_config()['params'].get('schema', '')
+if not outputDatabase:
+    outputDatabase = connections[outputConnectionName]['params']['defaultDatabase']
+outputTable = connectionInfo['table']
+
+# Setup - pre/post query
+properties = input_dataset.get_location_info(sensitive_info=True)['info'].get('connectionParams').get('properties')
+autocommit = input_dataset.get_location_info(sensitive_info=True)['info'].get('connectionParams').get('autocommitMode')
+logging.info(SEP)
+
+logging.info("Assuming TERA mode.")
+pre_query = ["BEGIN TRANSACTION;"]
+post_query = ["END TRANSACTION;"]
+for prop in properties:
+    if prop['name'] == 'TMODE':
+        if prop['value'] == 'ANSI':
+            logging.info("ANSI mode.")
+            pre_query = [";"]
+            post_query = ["COMMIT WORK;"]
+
+logging.info(SEP)
+
+# Delete old table
+executor =  SQLExecutor2(dataset = output_dataset)
+try:
+    drop_query = dropTableStatement(outputTable, outputDatabase)
+    logging.info(SEP)
+    logging.info("DROP query:")
+    if autocommit:
+        executor.query_to_df(query=drop_query)
+    else:
+        executor.query_to_df(pre_query=pre_query, query=drop_query, post_queries=post_query)
+    logging.info(SEP)
+except Exception as e:
+    logging.info(e)
+
+# Create the query 
 if scoring_type == 'dataiku':
     if modeloutputfields_user == False:
-        query = f"SELECT * FROM {verifyDatabaseName(PMMLPredict_db)}.PMMLPredict ( ON (select * from {verifyDatabaseName(database_name)}.{verifyDatabaseName(testing_dataset)}) AS InputTable ON (SELECT * FROM {verifyDatabaseName(database_name)}.{verifyTableName(table_name)} WHERE model_id = {verifyModelName(model_name)}) AS ModelTable DIMENSION USING {verifyAccumulate(accumulate)} {verifyOverwriteCache(overwrite_cache, model_name)})AS td;"
+        query = f"CREATE TABLE {verifyQualifiedTableName(outputDatabase, outputTable)} AS (SELECT * FROM {verifyDatabaseName(PMMLPredict_db)}.PMMLPredict ( ON (select * from {verifyDatabaseName(database_name)}.{verifyDatabaseName(testing_dataset)}) AS InputTable ON (SELECT * FROM {verifyDatabaseName(database_name)}.{verifyTableName(table_name)} WHERE model_id = {verifyModelName(model_name)}) AS ModelTable DIMENSION USING {verifyAccumulate(accumulate)} {verifyOverwriteCache(overwrite_cache, model_name)})AS td) WITH DATA;"
     else:
-        query = f"SELECT * FROM {verifyDatabaseName(PMMLPredict_db)}.PMMLPredict ( ON (select * from {verifyDatabaseName(database_name)}.{verifyDatabaseName(testing_dataset)}) AS InputTable ON (SELECT * FROM {verifyDatabaseName(database_name)}.{verifyTableName(table_name)} WHERE model_id = {verifyModelName(model_name)}) AS ModelTable DIMENSION USING {verifyAccumulate(accumulate)} {verifyModelOutputValues(modeloutputfields_values)} {verifyOverwriteCache(overwrite_cache, model_name)})AS td;"
-    predicted = conn.query_to_df(query)
+        query = f"CREATE TABLE {verifyQualifiedTableName(outputDatabase, outputTable)} AS (SELECT * FROM {verifyDatabaseName(PMMLPredict_db)}.PMMLPredict ( ON (select * from {verifyDatabaseName(database_name)}.{verifyDatabaseName(testing_dataset)}) AS InputTable ON (SELECT * FROM {verifyDatabaseName(database_name)}.{verifyTableName(table_name)} WHERE model_id = {verifyModelName(model_name)}) AS ModelTable DIMENSION USING {verifyAccumulate(accumulate)} {verifyModelOutputValues(modeloutputfields_values)} {verifyOverwriteCache(overwrite_cache, model_name)})AS td) WITH DATA;"
     
 if scoring_type == 'h2o':
     h2o_model_type = str(get_recipe_config()["H2O_Model_Type"])
@@ -135,15 +185,33 @@ if scoring_type == 'h2o':
 
         
         if modeloutputfields_user == False:
-            query = f"SELECT * FROM {verifyDatabaseName(PMMLPredict_db)}.H2OPredict ( ON (select * from {verifyDatabaseName(database_name)}.{verifyDatabaseName(testing_dataset)}) AS InputTable ON (SELECT model_id, model, {verifyDatabaseName(dia_license_db_name)}.{verifyDatabaseName(dia_license_table_name)}.license FROM {verifyDatabaseName(database_name)}.{verifyTableName(table_name)} WHERE model_id = {verifyModelName(model_name)}) AS ModelTable DIMENSION USING {verifyAccumulate(accumulate)} ModelType ('DAI') {verifyOverwriteCache(overwrite_cache, model_name)})AS td;"
+            query = f"CREATE TABLE {verifyQualifiedTableName(outputDatabase, outputTable)} AS (SELECT * FROM {verifyDatabaseName(PMMLPredict_db)}.H2OPredict ( ON (select * from {verifyDatabaseName(database_name)}.{verifyDatabaseName(testing_dataset)}) AS InputTable ON (SELECT model_id, model, {verifyDatabaseName(dia_license_db_name)}.{verifyDatabaseName(dia_license_table_name)}.license FROM {verifyDatabaseName(database_name)}.{verifyTableName(table_name)} WHERE model_id = {verifyModelName(model_name)}) AS ModelTable DIMENSION USING {verifyAccumulate(accumulate)} ModelType ('DAI') {verifyOverwriteCache(overwrite_cache, model_name)})AS td) WITH DATA;"
         else:
-            query = f"SELECT * FROM {verifyDatabaseName(PMMLPredict_db)}.H2OPredict ( ON (select * from {verifyDatabaseName(database_name)}.{verifyDatabaseName(testing_dataset)}) AS InputTable ON (SELECT model_id, model, {verifyDatabaseName(dia_license_db_name)}.{verifyDatabaseName(dia_license_table_name)}.license FROM {verifyDatabaseName(database_name)}.{verifyTableName(table_name)} WHERE model_id = {verifyModelName(model_name)}) AS ModelTable DIMENSION USING {verifyAccumulate(accumulate)} ModelType ('DAI') {verifyModelOutputValues(modeloutputfields_values)} {verifyOverwriteCache(overwrite_cache, model_name)})AS td;"
+            query = f"CREATE TABLE {verifyQualifiedTableName(outputDatabase, outputTable)} AS (SELECT * FROM {verifyDatabaseName(PMMLPredict_db)}.H2OPredict ( ON (select * from {verifyDatabaseName(database_name)}.{verifyDatabaseName(testing_dataset)}) AS InputTable ON (SELECT model_id, model, {verifyDatabaseName(dia_license_db_name)}.{verifyDatabaseName(dia_license_table_name)}.license FROM {verifyDatabaseName(database_name)}.{verifyTableName(table_name)} WHERE model_id = {verifyModelName(model_name)}) AS ModelTable DIMENSION USING {verifyAccumulate(accumulate)} ModelType ('DAI') {verifyModelOutputValues(modeloutputfields_values)} {verifyOverwriteCache(overwrite_cache, model_name)})AS td) WITH DATA;"
     else:
         if modeloutputfields_user == False:
-            query = f"SELECT * FROM {verifyDatabaseName(PMMLPredict_db)}.H2OPredict ( ON (select * from {verifyDatabaseName(database_name)}.{verifyDatabaseName(testing_dataset)}) AS InputTable ON (SELECT model_id, model FROM {verifyDatabaseName(database_name)}.{verifyTableName(table_name)} WHERE model_id = {verifyModelName(model_name)}) AS ModelTable DIMENSION USING {verifyAccumulate(accumulate)} {verifyOverwriteCache(overwrite_cache, model_name)})AS td;"
+            query = f"CREATE TABLE {verifyQualifiedTableName(outputDatabase, outputTable)} AS (SELECT * FROM {verifyDatabaseName(PMMLPredict_db)}.H2OPredict ( ON (select * from {verifyDatabaseName(database_name)}.{verifyDatabaseName(testing_dataset)}) AS InputTable ON (SELECT model_id, model FROM {verifyDatabaseName(database_name)}.{verifyTableName(table_name)} WHERE model_id = {verifyModelName(model_name)}) AS ModelTable DIMENSION USING {verifyAccumulate(accumulate)} {verifyOverwriteCache(overwrite_cache, model_name)})AS td) WITH DATA;"
         else:
-            query = f"SELECT * FROM {verifyDatabaseName(PMMLPredict_db)}.H2OPredict ( ON (select * from {verifyDatabaseName(database_name)}.{verifyDatabaseName(testing_dataset)}) AS InputTable ON (SELECT model_id, model FROM {verifyDatabaseName(database_name)}.{verifyTableName(table_name)} WHERE model_id = {verifyModelName(model_name)}) AS ModelTable DIMENSION USING {verifyAccumulate(accumulate)} {verifyModelOutputValues(modeloutputfields_values)} {verifyOverwriteCache(overwrite_cache, model_name)})AS td;"
-    predicted = conn.query_to_df(query)
+            query = f"CREATE TABLE {verifyQualifiedTableName(outputDatabase, outputTable)} AS (SELECT * FROM {verifyDatabaseName(PMMLPredict_db)}.H2OPredict ( ON (select * from {verifyDatabaseName(database_name)}.{verifyDatabaseName(testing_dataset)}) AS InputTable ON (SELECT model_id, model FROM {verifyDatabaseName(database_name)}.{verifyTableName(table_name)} WHERE model_id = {verifyModelName(model_name)}) AS ModelTable DIMENSION USING {verifyAccumulate(accumulate)} {verifyModelOutputValues(modeloutputfields_values)} {verifyOverwriteCache(overwrite_cache, model_name)})AS td) WITH DATA;"
     
 logging.info(f"Prediction Query ==> {query}")
-output_dataset.write_with_schema(pd.DataFrame(predicted))
+
+# Execute the query
+try:
+    # dataiku's query_to_df's pre_query parameter seems to not work. This is a work-around to ensure that the 
+    # "START TRANSACTION;" block applies for non-autocommit TERA mode connections.
+    if autocommit:
+        executor.query_to_df(query=query)
+    else:
+        executor.query_to_df(pre_query=pre_query, query=query, post_queries=post_query)
+except Exception as error:
+    err_str = str(error)
+    index = err_str.index("[Teradata Database]")
+    if index != -1:
+        err_str = err_str[index:]
+    raise RuntimeError(err_str)
+
+set_schema_from_vantage(outputTable, output_dataset, executor, post_query, autocommit, pre_query, outputDatabaseName=outputDatabase)
+
+logging.info('Complete!')  
+

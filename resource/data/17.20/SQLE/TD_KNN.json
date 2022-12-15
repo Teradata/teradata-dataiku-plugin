@@ -1,0 +1,262 @@
+{
+  "json_schema_major_version": "1",
+  "json_schema_minor_version": "2",
+  "json_content_version": "1",
+  "function_name": "TD_KNN",
+  "function_version": "1.0",
+  "function_type": "fastpath",
+  "function_category": "Model Training",
+  "function_alias_name": "TD_KNN",
+  "function_r_name": "aa.td_knn",
+  "ref_function_r_name": "aa.td_knn",
+  "short_description": "This function classifies data objects based on proximity to other data objects with known classification.",
+  "long_description": "This function classifies data objects based on proximity to other data objects with known classification.",
+  "input_tables": [
+    {
+      "requiredInputKind": [
+        "PartitionByAny"
+      ],
+      "isOrdered": false,
+      "partitionByOne": false,
+      "name": "testtable",
+      "alternateNames": [],
+      "isRequired": true,
+      "rDescription": "Specifies the table containing the input data.",
+      "description": "Specifies the table containing the input data.",
+      "datatype": "TABLE_ALIAS",
+      "allowsLists": false,
+      "rName": "test.data",
+      "useInR": true,
+      "rOrderNum": 1
+    },
+    {
+      "requiredInputKind": [
+        "Dimension"
+      ],
+
+      "isOrdered": false,
+      "partitionByOne": false,
+      "name": "trainingtable",
+      "alternateNames": [],
+      "isRequired": true,
+      "rDescription": "Specifies the table containing the model data.",
+      "description": "Specifies the table containing the model data.",
+      "datatype": "TABLE_ALIAS",
+      "allowsLists": false,
+      "rName": "train.data",
+      "useInR": true,
+      "rOrderNum": 2
+    }
+  ],
+
+  "argument_clauses": [
+    {
+      "targetTable": [
+        "testtable"
+      ],
+
+      "checkDuplicate": true,
+      "allowedTypes": [],
+      "allowedTypeGroups": [
+        "ALL"
+      ],
+
+      "matchLengthOfArgument": "",
+      "allowPadding": false,
+      "name": "IDColumn",
+      "alternateNames": [],
+      "isRequired": true,
+      "rDescription": "Specify the name of the column that uniquely identifies a data object both in training table and test table.",
+      "description": "Specify the name of the column that uniquely identifies a data object both in training table and test table.",
+      "datatype": "COLUMNS",
+      "allowsLists": false,
+      "rName": "id.column",
+      "useInR": true,
+      "rOrderNum": 3
+    },
+    {
+      "targetTable": [
+        "testtable"
+      ],
+      "checkDuplicate": true,
+      "allowedTypes": [],
+      "allowedTypeGroups": [
+        "ALL"
+      ],
+      "matchLengthOfArgument": "",
+      "allowPadding": false,
+      "name": "InputColumns",
+      "alternateNames": [],
+      "isRequired": true,
+      "rDescription": "Specify the names of the training table columns that the function uses to compute the distance between a test object and the training objects. The test table must also have these columns. ",
+      "description": "Specify the names of the training table columns that the function uses to compute the distance between a test object and the training objects. The test table must also have these columns. ",
+      "datatype": "COLUMNS",
+      "allowsLists": true,
+      "rName": "input.columns",
+      "useInR": true,
+      "rOrderNum": 4
+    },
+    {
+      "permittedValues": ["regression","classification","neighbors"],
+      "isOutputColumn": false,
+      "defaultValue": "classification",
+      "name": "ModelType",
+      "alternateNames": [],
+      "isRequired": false,
+      "rDescription": "Specify the Model Type for KNN function. Acceptable values are 'regression', 'classification', or 'neighbors'. ",
+      "description": "Specify the Model Type for KNN function. Acceptable values are 'regression', 'classification', or 'neighbors'. ",
+      "datatype": "STRING",
+      "allowsLists": false,
+      "rName": "model.type",
+      "useInR": true,
+      "rOrderNum": 5
+    },
+    {
+      "isOutputColumn": false,
+      "defaultValue": 5,
+      "name": "K",
+      "alternateNames": [],
+      "isRequired": false,
+      "rDescription": "Specify the number of nearest neighbors to use in the algorithm. Any positive integer value > 0 and <= 1000 can be chosen. ",
+      "description": "Specify the number of nearest neighbors to use in the algorithm. Any positive integer value > 0 and <= 1000 can be chosen. ",
+      "datatype": "INTEGER",
+      "allowsLists": false,
+      "rName": "k",
+      "useInR": true,
+      "rOrderNum": 6
+    },
+    {
+      "targetTable": [
+        "testtable"
+      ],
+
+      "checkDuplicate": false,
+      "allowedTypes": [],
+      "allowedTypeGroups": [
+        "ALL"
+      ],
+      "matchLengthOfArgument": "",
+      "allowPadding": false,
+      "name": "Accumulate",
+      "alternateNames": [],
+      "isRequired": false,
+      "rDescription": "Specify the names of the input table columns that need to be copied from the input test table to output.",
+      "description": "Specify the names of the input table columns that need to be copied from the input test table to output.",
+      "datatype": "COLUMNS",
+      "allowsLists": true,
+      "rName": "accumulate",
+      "useInR": true,
+      "rOrderNum": 7
+    },
+    {
+      "targetTable": [
+        "trainingtable"
+      ],
+      "checkDuplicate": true,
+      "allowedTypes": [],
+      "allowedTypeGroups": [
+        "ALL"
+      ],
+      
+      "matchLengthOfArgument": "",
+      "allowPadding": false,
+      "name": "ResponseColumn",
+      "alternateNames": [],
+      "isRequired": false,
+      "rDescription": "Specify the name of the training table column that contains the numeric response variable values to be used for prediction in KNN based regression or classification. ",
+      "description": "Specify the name of the training table column that contains the numeric response variable values to be used for prediction in KNN based regression or classification. ",
+      "datatype": "COLUMNS",
+      "allowsLists": false,
+      "rName": "response.column",
+      "useInR": true,
+      "rOrderNum": 8
+    },
+    {
+      "isOutputColumn": false,
+      "defaultValue": 0.0,
+      "name": "VotingWeight",
+      "alternateNames": [],
+      "isRequired": false,
+      "rDescription": "Specifies the voting weight of the training object for determining the class of the test object as a function of the distance between the training and test objects. The voting weight is calculated as w, where w=1/POWER(distance, voting_weight) and distance is the distance between the test object and the training object. Must be a non-negative real number. ",
+      "description": "Specifies the voting weight of the training object for determining the class of the test object as a function of the distance between the training and test objects. The voting weight is calculated as w, where w=1/POWER(distance, voting_weight) and distance is the distance between the test object and the training object. Must be a non-negative real number. ",
+      "datatype": "DOUBLE",
+      "allowsLists": false,
+      "rName": "voting.weight",
+      "useInR": true,
+      "rOrderNum": 9
+    },
+    {
+      "isOutputColumn": false,
+      "defaultValue": 1e-7,
+      "name": "Tolerance",
+      "alternateNames": [],
+      "isRequired": false,
+      "rDescription": "When a non-zero voting weight is used, the case of zero distance will cause the weight (w=1/POWER(distance, voting_weight)) to be undefined. Tolerance allows the user to define the smallest distance to be considered. For any distance under the given tolerance, the weight will be calculated as w=1/POWER(tolerance, voting_weight). ",
+      "description": "When a non-zero voting weight is used, the case of zero distance will cause the weight (w=1/POWER(distance, voting_weight)) to be undefined. Tolerance allows the user to define the smallest distance to be considered. For any distance under the given tolerance, the weight will be calculated as w=1/POWER(tolerance, voting_weight). ",
+      "datatype": "DOUBLE",
+      "allowsLists": false,
+      "rName": "tolerance",
+      "useInR": true,
+      "rOrderNum": 10
+    },
+    {
+      "isOutputColumn": false,
+      "defaultValue": false,
+      "name": "OutputProb",
+      "alternateNames": [],
+      "isRequired": false,
+      "rDescription": "Indicates whether the function should output the probability for each response specified in 'Responses'. If 'Responses' is not given, outputs the probability of the predicted response. ",
+      "description": "Indicates whether the function should output the probability for each response specified in 'Responses'. If 'Responses' is not given, outputs the probability of the predicted response. ",
+      "datatype": "BOOLEAN",
+      "allowsLists": false,
+      "rName": "output.prob",
+      "useInR": true,
+      "rOrderNum": 11
+    },
+
+    {
+      "isOutputColumn": false,
+      "name": "Responses",
+      "alternateNames": [],
+      "isRequired": false,
+      "rDescription": "Specify the class labels for which to output probabilities. ",
+      "description": "Specify the class labels for which to output probabilities. ",
+      "datatype": "STRING",
+      "allowsLists": true,
+      "rName": "output.responses",
+      "useInR": true,
+      "rOrderNum": 12
+
+    },
+    {
+      "isOutputColumn": false,
+      "defaultValue": false,
+      "name": "EmitNeighbors",
+      "isRequired": false,
+      "rDescription": "A boolean flag which specifies whether the neighbors are to be emitted in the output. ",
+      "description": "A boolean flag which specifies whether the neighbors are to be emitted in the output. ",
+      "datatype": "BOOLEAN",
+      "allowsLists": false,
+      "rName": "emit.neighbors",
+      "useInR": true,
+      "rOrderNum": 13
+    },
+
+    {
+      "defaultValue": false,
+      "isOutputColumn": false,
+      "name": "EmitDistances",
+      "isRequired": false,
+      "rDescription": "A boolean flag which specifies whether the neighbor distances are to be emitted in the output. ",
+      "description": "A boolean flag which specifies whether the neighbor distances are to be emitted in the output. ",
+      "datatype": "BOOLEAN",
+      "allowsLists": false,
+      "rName": "emit.distances",
+      "useInR": true,
+      "rOrderNum": 14
+    }
+
+  ]
+
+}
+

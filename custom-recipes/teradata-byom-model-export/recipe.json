@@ -110,23 +110,6 @@
             "mandatory": true
         },
         {
-            "name": "model_format",
-            "label":"Model format",
-            "description": "Select model export format",
-            "defaultValue": "pmml",
-            "type": "SELECT",
-            "selectChoices": [
-                {
-                    "value": "pmml",
-                    "label": "PMML"
-                },
-                {
-                    "value": "dataiku",
-                    "label": "Dataiku .JAR"
-                }
-            ]
-        },
-        {
             "name": "sep3",
             "label": "Note",
             "description": "By selecting the Create New Table option, you agree to replace the existing table if there is one with the same name",

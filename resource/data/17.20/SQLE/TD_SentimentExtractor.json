@@ -1,0 +1,194 @@
+{
+  "json_schema_major_version": "1",
+  "json_schema_minor_version": "1",
+  "json_content_version": "1",
+  "function_name": "TD_SentimentExtractor",
+  "function_version": "1.0",
+  "function_type": "fastpath",
+  "function_category": "Text Analytic",
+  "function_alias_name": "TD_SentimentExtractor",
+  "function_r_name": "aa.td_sentimentextractor",
+  "short_description": "fastpath function to extracts the sentiment (positive, negative, or neutral) of each input document or sentence, using a dictionary model.",
+  "long_description": "fastpath function to extracts the sentiment (positive, negative, or neutral) of each input document or sentence, using a dictionary model.",
+  "input_tables": [
+    {
+      "requiredInputKind": [
+        "PartitionByAny"
+      ],
+      "isOrdered": false,
+      "partitionByOne": false,
+      "name": "InputTable",
+      "alternateNames": [],
+      "isRequired": true,
+      "rDescription": "The relation that contains input data.",
+      "description": "The relation that contains input data.",
+      "datatype": "TABLE_ALIAS",
+      "allowsLists": false,
+      "rName": "data",
+      "useInR": true,
+      "rOrderNum": 1
+    },
+    {
+      "requiredInputKind": [
+        "Dimension"
+      ],
+      "isOrdered": false,
+      "partitionByOne": false,
+      "name": "CustomDictionaryTable",
+      "alternateNames": [],
+      "isRequired": false,
+      "rDescription": "The CustomDictionaryTable ON clause can be used if the user wants to use his own custom dictionary table.",
+      "description": "The CustomDictionaryTable ON clause can be used if the user wants to use his own custom dictionary table.",
+      "datatype": "TABLE_ALIAS",
+      "allowsLists": false,
+      "rName": "cust.dict",
+      "useInR": true,
+      "rOrderNum": 2
+    },
+    {
+      "requiredInputKind": [
+        "Dimension"
+      ],
+      "isOrdered": false,
+      "partitionByOne": false,
+      "name": "AdditionalDictionaryTable",
+      "alternateNames": [],
+      "isRequired": false,
+      "rDescription": "The AdditionalDictionaryTable ON clause can be used If the user wants to add additional entries to either CUSTOMDICTIONARYTABLE or default dictionary.",
+      "description": "The AdditionalDictionaryTable ON clause can be used If the user wants to add additional entries to either CUSTOMDICTIONARYTABLE or default dictionary.",
+      "datatype": "TABLE_ALIAS",
+      "allowsLists": false,
+      "rName": "add.dict",
+      "useInR": true,
+      "rOrderNum": 3
+    }
+  ],
+  "output_tables": [
+    {
+      "isOutputTable": true,
+      "omitPossible": false,
+      "name": "OutputDictionaryTable",
+      "alternateNames": [],
+      "isRequired": false,
+      "rDescription": "Name for the table that the function will generate which will contain the dictionary contents used during the sentiment analysis.",
+      "description": "Name for the table that the function will generate which will contain the dictionary contents used during the sentiment analysis.",
+      "datatype": "TABLE_NAME",
+      "allowsLists": false,
+      "rName": "output.dictionary.table",
+      "useInR": true,
+      "rOrderNum": 4
+    }
+  ],
+  "argument_clauses": [
+    {
+      "targetTable": [
+        "InputTable"
+      ],
+      "checkDuplicate": true,
+      "allowedTypes": [],
+      "allowedTypeGroups": [
+        "STRING"
+      ],
+      "requiredLength": 1,
+      "matchLengthOfArgument": "",
+      "allowPadding": false,
+      "name": "TextColumn",
+      "alternateNames": [],
+      "isRequired": true,
+      "rDescription": "Specifies the input table column that contains the text data from which to extracts the sentiments.",
+      "description": "Specifies the input table column that contains the text data from which to extracts the sentiments.",
+      "datatype": "COLUMNS",
+      "allowsLists": false,
+      "rName": "text.column",
+      "useInR": true,
+      "rOrderNum": 5
+    },
+    {
+      "targetTable": [
+        "InputTable"
+      ],
+      "checkDuplicate": true,
+      "allowedTypes": [],
+      "allowedTypeGroups": [
+        "ALL"
+      ],
+      "matchLengthOfArgument": "",
+      "allowPadding": false,
+      "name": "Accumulate",
+      "alternateNames": [],
+      "isRequired": false,
+      "rDescription": "Specifies the input table columns to copy to the output table. By default, the function doesn't copy any input table columns to the output table.",
+      "description": "Specifies the input table columns to copy to the output table. By default, the function doesn't copy any input table columns to the output table.",
+      "datatype": "COLUMNS",
+      "allowsLists": true,
+      "rName": "accumulate",
+      "useInR": true,
+      "rOrderNum": 6
+    },
+    {
+      "permittedValues": [
+        "DOCUMENT",
+        "SENTENCE"
+      ],
+      "defaultValue": "DOCUMENT",
+      "isOutputColumn": false,
+      "matchLengthOfArgument": "",
+      "allowPadding": false,
+      "name": "AnalysisType",
+      "alternateNames": [],
+      "isRequired": false,
+      "rDescription": "Specify the level of analysis - whether to analyze each document (default) or each sentence in a document.",
+      "description": "Specify the level of analysis - whether to analyze each document (default) or each sentence in a document.",
+      "datatype": "STRING",
+      "allowsLists": false,
+      "rName": "analysis.type",
+      "useInR": true,
+      "rOrderNum": 7
+    },
+    {
+      "permittedValues": [
+        "NONE",
+        "NEGATIVE_RECALL",
+        "NEGATIVE_PRECISION",
+        "POSITIVE_RECALL",
+        "POSITIVE_PRECISION"
+      ],
+      "defaultValue": "NONE",
+      "isOutputColumn": false,
+      "matchLengthOfArgument": "",
+      "allowPadding": false,
+      "name": "Priority",
+      "alternateNames": [],
+      "isRequired": false,
+      "rDescription": "Specify the highest priority when returning results: {NONE, NEGATIVE_RECALL, NEGATIVE_PRECISION, POSITIVE_RECALL, POSITIVE_PRECISION}.",
+      "description": "Specify the highest priority when returning results: {NONE, NEGATIVE_RECALL, NEGATIVE_PRECISION, POSITIVE_RECALL, POSITIVE_PRECISION}.",
+      "datatype": "STRING",
+      "allowsLists": false,
+      "rName": "priority",
+      "useInR": true,
+      "rOrderNum": 8
+    },
+    {
+      "permittedValues": [
+        "ALL",
+        "POS",
+        "NEG",
+        "NEU"
+      ],
+      "defaultValue": "ALL",
+      "isOutputColumn": false,
+      "matchLengthOfArgument": "",
+      "allowPadding": false,
+      "name": "OutputType",
+      "alternateNames": [],
+      "isRequired": false,
+      "rDescription": "Specify the kind of results to return: {ALL, POSITIVE, NEGATIVE, NEUTRAL}.",
+      "description": "Specify the kind of results to return: {ALL, POSITIVE, NEGATIVE, NEUTRAL}.",
+      "datatype": "STRING",
+      "allowsLists": false,
+      "rName": "output.type",
+      "useInR": true,
+      "rOrderNum": 9
+    }
+  ]
+}

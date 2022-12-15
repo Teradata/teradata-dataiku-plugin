@@ -1,0 +1,147 @@
+{
+  "json_schema_major_version": "1",
+  "json_schema_minor_version": "1",
+  "json_content_version": "1",
+  "function_name": "TD_SimpleImputeFit",
+  "function_version": "1.0",
+  "function_type": "fastpath",
+  "function_category" : "Feature Engineering Transform",
+  "function_alias_name": "TD_SimpleImputeFit",
+  "function_r_name": "aa.TD_SimpleImputeFit",
+  "short_description": "Imputation is the process of replacing missing data with substituted values. TD_SimpleImputeFit is a function to find out such substituted values based on the user input. Available options are Min, Max, Mean, Median, Mode, <Literal-value>.",
+  "long_description": "Imputation is the process of replacing missing data with substituted values. TD_SimpleImputeFit is a function to find out such substituted values based on the user input. Available options are Min, Max, Mean, Median, Mode, <Literal-value>.",
+  "input_tables": [
+    {
+      "isOrdered": false,
+      "partitionByOne": false,
+      "name": "InputTable",
+      "alternateNames": [],
+      "isRequired": true,
+      "rDescription": "The relation that contains input data.",
+      "description": "The relation that contains input data.",
+      "datatype": "TABLE_ALIAS",
+      "allowsLists": true,
+      "rName": "data",
+      "useInR": true,
+      "rOrderNum": 1
+    }
+  ],
+  "output_tables": [
+    {
+      "isOutputTable": true,
+      "omitPossible": true,
+      "name": "OutputTable",
+      "alternateNames": [],
+      "isRequired": false,
+      "rDescription": "Specifies the name of the table in which the output of TD_SimpleImputeFit can be stored.",
+      "description": "Specifies the name of the table in which the output of TD_SimpleImputeFit can be stored.",
+      "datatype": "TABLE_NAME",
+      "allowsLists": false,
+      "rName": "output.table",
+      "useInR": true,
+      "rOrderNum": 2
+    }
+  ],
+  "argument_clauses": [
+    {
+      "targetTable": [
+        "InputTable"
+      ],
+      "checkDuplicate": true,
+      "allowedTypes": [],
+      "allowedTypeGroups": [
+        "ALL"
+      ],
+      "matchLengthOfArgument": "",
+      "allowPadding": false,
+      "name": "ColsForStats",
+      "alternateNames": [],
+      "isRequired": true,
+      "rDescription": "Specifies the input table columns for which stats needs to be calculated",
+      "description": "Specifies the input table columns for which stats needs to be calculated",
+      "datatype": "COLUMNS",
+      "allowsLists": true,
+      "rName": "stats.columns",
+      "useInR": true,
+      "rOrderNum": 2
+    },
+   {
+      "targetTable": [
+        "InputTable"
+      ],
+      "checkDuplicate": true,
+      "allowedTypes": [],
+      "allowedTypeGroups": [
+        "ALL"
+      ],
+      "matchLengthOfArgument": "",
+      "allowPadding": false,
+      "name": "ColsForLiterals",
+      "alternateNames": [],
+      "isRequired": false,
+      "rDescription": "Specifies the input table columns for which Literals needs to be imputed",
+      "description": "Specifies the input table columns for which Literals needs to be imputed",
+      "datatype": "COLUMNS",
+      "allowsLists": true,
+      "rName": "literals.columns",
+      "useInR": true,
+      "rOrderNum": 3
+    },
+   {
+      "targetTable": [
+        "InputTable"
+      ],
+      "checkDuplicate": true,
+      "allowedTypes": [],
+      "allowedTypeGroups": [
+        "ALL"
+      ],
+      "matchLengthOfArgument": "",
+      "allowPadding": false,
+      "name": "PartitionColumn",
+      "alternateNames": [],
+      "isRequired": false,
+      "rDescription": "Specifies the input table colum on which partition needs to be done",
+      "description": "Specifies the input table colum on which partition needs to be done",
+      "datatype": "COLUMNS",
+      "allowsLists": true,
+      "rName": "partition.column",
+      "useInR": true,
+      "rOrderNum": 4
+    },
+   {
+      "permittedValues": ["MIN","MAX","MEAN","MEDIAN","MODE"],
+      "isOutputColumn": false,
+      "matchLengthOfArgument": "",
+      "allowPadding": true,
+      "name": "Stats",
+      "alternateNames": [
+      ],
+      "isRequired": true,
+      "rDescription": "Specify the Stats to be computed on input table columns",
+      "description": "Specify the Stats to be computed on input table columns",
+      "datatype": "STRING",
+      "allowsLists": true,
+      "rName": "Stats",
+      "useInR": true,
+      "rOrderNum": 5
+    },
+   {
+      "isOutputColumn": false,
+      "matchLengthOfArgument": "",
+      "allowPadding": true,
+      "name": "Literals",
+      "alternateNames": [
+      ],
+      "isRequired": false,
+      "rDescription": "Specify the Literal value to be imputed on input table columns",
+      "description": "Specify the Literal value to be imputed on input table columns",
+      "datatype": "STRING",
+      "allowsLists": true,
+      "rName": "Literals",
+      "useInR": true,
+      "rOrderNum": 6
+    }
+
+  ]
+}

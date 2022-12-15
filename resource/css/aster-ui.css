@@ -32,6 +32,13 @@ p:not(.inner-label) {
     min-height: 50vh !important;
 }
 
+#dialog-reset {
+    display: none;
+}
+#tag-enter-form {
+    display: none;
+}
+
 .modal {
 	display: none;
     height: calc(60%);
@@ -421,5 +428,8 @@ div.inner-cell {
     user-select: none;
 }
 
+.fixed-label-size {
+    width:100px;
+}
 
 

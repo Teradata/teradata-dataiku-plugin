@@ -1,0 +1,92 @@
+{
+  "json_schema_major_version": "1",
+  "json_schema_minor_version": "1",
+  "json_content_version": "1",
+  "function_name": "TD_ConvertTo",
+  "function_version": "1.0",
+  "function_type": "fastpath",
+  "function_category" : "Data Cleaning",
+  "function_alias_name": "TD_ConvertTo",
+  "function_r_name": "aa.td_convert.to",
+  "short_description": "fastpath function to cast/convert columns from one datatype to another.",
+  "long_description": "fastpath function to cast/convert columns from one datatype to another.",
+  "input_tables": [
+    {
+      "isOrdered": false,
+      "partitionByOne": false,
+      "name": "InputTable",
+      "alternateNames": [],
+      "isRequired": true,
+      "rDescription": "The relation that contains input data.",
+      "description": "The relation that contains input data.",
+      "datatype": "TABLE_ALIAS",
+      "allowsLists": false,
+      "rName": "data",
+      "useInR": true,
+      "rOrderNum": 1
+    }
+  ],
+  "argument_clauses": [
+    {
+      "targetTable": [
+        "InputTable"
+      ],
+      "checkDuplicate": true,
+      "allowedTypes": [],
+      "allowedTypeGroups": [
+        "ALL"
+      ],
+      "matchLengthOfArgument": "",
+      "allowPadding": false,
+      "name": "TargetColumns",
+      "alternateNames": [],
+      "isRequired": true,
+      "rDescription": "Specifies the input table columns which needs to be casted/converted to another datattype",
+      "description": "Specifies the input table columns which needs to be casted/converted to another datattype",
+      "datatype": "COLUMNS",
+      "allowsLists": true,
+      "rName": "target.columns",
+      "useInR": true,
+      "rOrderNum": 2
+    },
+	{
+      "permittedValues": [],
+      "isOutputColumn": false,
+      "matchLengthOfArgument": "",
+      "allowPadding": false,
+      "name": "TargetDataType",
+      "alternateNames": [],
+      "isRequired": true,
+      "rDescription": "Specify target datatype(s) into which target columns need to be converted. If one value is provided, it applies to all target columns. If more than one value is specified, each TargetDataType value applies to corresponding TargetColumns value (in the order specified by the user).",
+      "description": "Specify target datatype(s) into which target columns need to be converted. If one value is provided, it applies to all target columns. If more than one value is specified, each TargetDataType value applies to corresponding TargetColumns value (in the order specified by the user).",
+      "datatype": "STRING",
+      "allowsLists": true,
+      "rName": "target.datatype",
+      "useInR": true,
+      "rOrderNum": 3
+    },
+    
+    {
+      "targetTable": [
+        "InputTable"
+      ],
+      "checkDuplicate": true,
+      "allowedTypes": [],
+      "allowedTypeGroups": [
+        "ALL"
+      ],
+      "matchLengthOfArgument": "",
+      "allowPadding": false,
+      "name": "Accumulate",
+      "alternateNames": [],
+      "isRequired": false,
+      "rDescription": "Specifies the input table columns to copy to the output table. By default, the function copies all input table columns to the output table.",
+      "description": "Specifies the input table columns to copy to the output table. By default, the function copies all input table columns to the output table.",
+      "datatype": "COLUMNS",
+      "allowsLists": true,
+      "rName": "accumulate",
+      "useInR": true,
+      "rOrderNum": 4
+    }
+  ]
+}

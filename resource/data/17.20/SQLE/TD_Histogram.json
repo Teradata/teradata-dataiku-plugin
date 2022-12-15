@@ -1,0 +1,132 @@
+{
+  "json_schema_major_version": "1",
+  "json_schema_minor_version": "1",
+  "json_content_version": "1",
+  "function_name": "TD_Histogram",
+  "function_version": "1.0",
+  "function_type": "fastpath",
+  "function_category" : "Data Exploration",
+  "function_alias_name": "TD_Histogram",
+  "function_r_name": "aa.td_histogram",
+  "short_description": "fastpath function to perform histogram calculation on a data set.",
+  "long_description": "fastpath function to perform histogram calculation on a data set, which accepts either auto-generated bins, Equal-Width bins and Variable-Width bins, output <label ,MinValue, MaxValue, CountOfValues, bin_percent>.",
+  "input_tables": [
+    {
+      "isOrdered": false,
+      "partitionByOne": false,
+      "name": "InputTable",
+      "alternateNames": [],
+      "isRequired": true,
+      "rDescription": "The relation that contains input data.",
+      "description": "The relation that contains input data.",
+      "datatype": "TABLE_ALIAS",
+      "allowsLists": false,
+      "rName": "data",
+      "useInR": true,
+      "rOrderNum": 1
+    },
+    {
+      "requiredInputKind": [
+        "Dimension"
+      ],
+      "isOrdered": false,
+      "partitionByOne": false,
+      "name": "MinMax",
+      "alternateNames": [],
+      "isRequired": false,
+      "rDescription": "The relation that contains bin data, needed for EQUAL-WIDTH and VARIABLE-WIDTH.",
+      "description": "The relation that contains bin data, needed for EQUAL-WIDTH and VARIABLE-WIDTH.",
+      "datatype": "TABLE_ALIAS",
+      "allowsLists": false,
+      "rName": "object",
+      "useInR": true,
+      "rOrderNum": 2
+    }
+  ],
+  "argument_clauses": [
+    {
+      "targetTable": [
+        "InputTable"
+      ],
+      "checkDuplicate": true,
+      "allowedTypes": [],
+      "allowedTypeGroups": [
+        "NUMERIC"
+      ],
+      "matchLengthOfArgument": "",
+      "allowPadding": false,
+      "name": "TargetColumn",
+      "alternateNames": [],
+      "isRequired": true,
+      "rDescription": "Specifies the input table column for which histogram computation is to be done.",
+      "description": "Specifies the input table column for which histogram computation is to be done.",
+      "datatype": "COLUMNS",
+      "allowsLists": true,
+      "rName": "target.columns",
+      "useInR": true,
+      "rOrderNum": 3
+    },
+	{
+      "permittedValues": [
+        "STURGES",
+        "SCOTT",
+        "EQUAL-WIDTH",
+        "VARIABLE-WIDTH"
+      ],
+      "isOutputColumn": false,
+      "matchLengthOfArgument": "",
+      "allowPadding": false,
+      "name": "MethodType",
+      "alternateNames": [],
+      "isRequired": true,
+      "rDescription": "Specify the MethodType which will be used for histogram computation. Supported MethodType are {STURGES, SCOTT, EQUAL-WIDTH, VARIABLE-WIDTH}.",
+      "description": "Specify the MethodType which will be used for histogram computation. Supported MethodType are {STURGES, SCOTT, EQUAL-WIDTH, VARIABLE-WIDTH}.",
+      "datatype": "STRING",
+      "allowsLists": false,
+      "rName": "method.type",
+      "useInR": true,
+      "rOrderNum": 4
+    },
+    {
+      "defaultValue": 1,
+      "lowerBound": 1,
+      "upperBound": 2147483647,
+      "lowerBoundType": "INCLUSIVE",
+      "upperBoundType": "INCLUSIVE",
+      "allowNaN": false,
+      "isOutputColumn": false,
+      "matchLengthOfArgument": "",
+      "allowPadding": false,
+      "name": "NBins",
+      "alternateNames": [],
+      "isRequired": false,
+      "rDescription": "Specifies the number of bins to be used during histogram computation when MethodType is either EQUAL-WIDTH or VARIABLE-WIDTH, not needed for STURGES and SCOTT",
+      "description": "Specifies the number of bins to be used during histogram computation when MethodType is either EQUAL-WIDTH or VARIABLE-WIDTH, not needed for STURGES and SCOTT",
+      "datatype": "INTEGER",
+      "allowsLists": false,
+      "rName": "nbins",
+      "useInR": true,
+      "rOrderNum": 5
+    },
+	{
+      "permittedValues": [
+        "LEFT",
+        "RIGHT"
+      ],
+      "defaultValue": "LEFT",
+      "isOutputColumn": false,
+      "matchLengthOfArgument": "",
+      "allowPadding": false,
+      "name": "Inclusion",
+      "alternateNames": [],
+      "isRequired": false,
+      "rDescription": "Indicates whether points on bin boundaries should be included in the bin on the left or the right. The permitted values are [left, right]. The default value is left.",
+      "description": "Indicates whether points on bin boundaries should be included in the bin on the left or the right. The permitted values are [left, right]. The default value is left.",
+      "datatype": "STRING",
+      "allowsLists": false,
+      "rName": "inclusion",
+      "useInR": true,
+      "rOrderNum": 6
+    }
+  ]
+}

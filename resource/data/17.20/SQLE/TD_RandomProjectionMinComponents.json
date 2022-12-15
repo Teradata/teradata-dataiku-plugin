@@ -1,0 +1,76 @@
+{
+    "json_schema_major_version": "1",
+    "json_schema_minor_version": "1",
+    "json_content_version": "1",
+    "function_name": "TD_RandomProjectionMinComponents",
+    "function_version": "1.0",
+    "function_type": "fastpath",
+    "function_category": "Feature Engineering Transform",
+    "function_alias_name": "TD_RandomProjectionMinComponents",
+    "function_r_name": "aa.td_randomprojectionmincomponents",
+    "short_description": "fastpath function to calculate minimum number of components for applying RandomProjection algorithm.",
+    "long_description": "fastpath function to calculate minimum number of components for applying RandomProjection algorithm.",
+    "input_tables": [
+        {
+            "requiredInputKind": [
+                "PartitionByAny"
+            ],
+            "isOrdered": false,
+            "partitionByOne": false,
+            "name": "InputTable",
+            "alternateNames": [],
+            "isRequired": true,
+            "rDescription": "The relation that contains input data.",
+            "description": "The relation that contains input data.",
+            "datatype": "TABLE_ALIAS",
+            "allowsLists": false,
+            "rName": "data",
+            "useInR": true,
+            "rOrderNum": 1
+        }
+    ],
+    "argument_clauses": [
+        {
+            "targetTable": [
+                "InputTable"
+            ],
+            "checkDuplicate": true,
+            "allowedTypes": [],
+            "allowedTypeGroups": [
+                "NUMERIC"
+            ],
+            "matchLengthOfArgument": "",
+            "allowPadding": false,
+            "name": "TargetColumns",
+            "alternateNames": [],
+            "isRequired": true,
+            "rDescription": "Specifies the columns/features to be used for processing.",
+            "description": "Specifies the columns/features to be used for processing.. Format [Start:End].",
+            "datatype": "STRING",
+            "allowsLists": false,
+            "rName": "target.columns",
+            "useInR": true,
+            "rOrderNum": 2,
+            "defaultValue": "[1:]",
+            "useDefaultInQuery": false
+        },
+        {
+            "defaultValue": 0.1,
+            "lowerBound": 0,
+            "upperBound": 1,
+            "lowerBoundType": "EXCLUSIVE",
+            "upperBoundType": "EXCLUSIVE",
+            "allowNaN": false,
+            "name": "Epsilon",
+            "alternateNames": [],
+            "isRequired": false,
+            "rDescription": "Specify the epsilon(distortion) parameter value.",
+            "description": "Specify the epsilon(distortion) parameter value.",
+            "datatype": "DOUBLE",
+            "allowsLists": false,
+            "rName": "epsilon",
+            "useInR": true,
+            "rOrderNum": 3
+        }
+    ]
+}

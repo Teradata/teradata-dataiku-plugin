@@ -1,0 +1,53 @@
+{
+  "json_schema_major_version": "1",
+  "json_schema_minor_version": "1",
+  "json_content_version": "1",
+  "function_name": "TD_WhichMax",
+  "function_version": "1.0",
+  "function_type": "fastpath",
+  "function_category" : "Data Exploration",
+  "function_alias_name": "TD_WhichMax",
+  "function_r_name": "aa.td_which.max",
+  "short_description": "fastpath function to return rows with max value in specified target column.",
+  "long_description": "fastpath function to return rows with max value in specified target column.",
+  "input_tables": [
+    {
+      "isOrdered": false,
+      "partitionByOne": false,
+      "name": "InputTable",
+      "alternateNames": [],
+      "isRequired": true,
+      "rDescription": "The relation that contains input data.",
+      "description": "The relation that contains input data.",
+      "datatype": "TABLE_ALIAS",
+      "allowsLists": false,
+      "rName": "data",
+      "useInR": true,
+      "rOrderNum": 1
+    }
+  ],
+  "argument_clauses": [
+    {
+      "targetTable": [
+        "InputTable"
+      ],
+      "checkDuplicate": true,
+      "allowedTypes": [],
+      "allowedTypeGroups": [
+        "ALL"
+      ],
+      "matchLengthOfArgument": "",
+      "allowPadding": false,
+      "name": "TargetColumn",
+      "alternateNames": [],
+      "isRequired": true,
+      "rDescription": "Specifies the input table column which needs to be checked for maximum value.",
+      "description": "Specifies the input table column which needs to be checked for maximum value.",
+      "datatype": "COLUMNS",
+      "allowsLists": false,
+      "rName": "target.column",
+      "useInR": true,
+      "rOrderNum": 2
+    }
+  ]
+}

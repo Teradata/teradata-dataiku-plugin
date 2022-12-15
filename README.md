@@ -1,6 +1,6 @@
 # Teradata Plugin
 
-A collection of recipes that interface Teradata Vantage in-Database analytic tools to Dataiku users.
+A collection of recipes that interface in-Database analytic tools of the Teradata Vantage Data and Analytics Platform to Dataiku users.
 
 
 ## Scope Of The Plugin
@@ -42,7 +42,7 @@ To install the Teradata plugin for Dataiku from a zip file on your client, perfo
 For additional information, see the following links on docs.teradata.com:
 
 1. [Teradata Vantage User Guide](https://docs.teradata.com/r/Teradata-VantageTM-User-Guide/March-2022).
-2. [Analytics Database Analytic Functions Overview](https://docs.teradata.com/r/Teradata-VantageTM-Advanced-SQL-Engine-Analytic-Functions/July-2021/Introduction-to-Teradata-Vantage/Advanced-SQL-Engine-Analytic-Functions-Overview).
-3. [Teradata Vantage Analytic Library Functions](https://docs.teradata.com/r/Vantage-Analytics-Library-User-Guide/January-2022).
-4. [BYOM Documentation](https://docs.teradata.com/r/Teradata-VantageTM-Bring-Your-Own-Model-User-Guide/May-2022/Bring-Your-Own-Model).
+2. [Advanced SQL Engine Analytic Functions Overview](https://docs.teradata.com/r/Teradata-VantageTM-Advanced-SQL-Engine-Analytic-Functions/July-2021/Introduction-to-Teradata-Vantage/Advanced-SQL-Engine-Analytic-Functions-Overview).
+3. [Teradata Vantage Analytic Functions](https://docs.teradata.com/r/Teradata-VantageTM-Advanced-SQL-Engine-Analytic-Functions/July-2021).
+4. [BYOM Documentation](https://docs.teradata.com/r/Teradata-VantageTM-Bring-Your-Own-Model-User-Guide/October-2021).
 5. Teradata Orange Book Series: “R And Python Analytics with the SCRIPT Table Operator”. The direct [PDF link](https://docs.teradata.com/v/u/Orange-Book/R-and-Python-Analytics-with-SCRIPT-Table-Operator-Orange-Book-4.3.2) has restricted access to Teradata customers and partners; sign-in is needed.

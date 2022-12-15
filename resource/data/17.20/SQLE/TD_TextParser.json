@@ -1,0 +1,192 @@
+{
+	"json_schema_major_version": "1",
+	"json_schema_minor_version": "1",
+	"json_content_version": "1",
+	"function_name": "TD_TextParser",
+	"function_version": "1.0",
+	"function_type": "fastpath",
+	"function_category": "Text Analytic",
+	"function_alias_name": "TD_TextParser",
+	"function_r_name": "aa.tdtextparser",
+	"short_description": "fastpath function used to parse text",
+	"long_description": "fastpath function used to parse text",
+	"input_tables": [{
+			"requiredInputKind": [
+				"PartitionByAny"
+			],
+			"isOrdered": false,
+			"partitionByOne": false,
+			"name": "InputTable",
+			"alternateNames": [],
+			"isRequired": true,
+			"rDescription": "The relation that contains input data.",
+			"description": "The relation that contains input data.",
+			"datatype": "TABLE_ALIAS",
+			"allowsLists": false,
+			"rName": "data",
+			"useInR": true,
+			"rOrderNum": 1
+		},
+		{
+			"requiredInputKind": [
+				"Dimension"
+			],
+			"isOrdered": false,
+			"partitionByOne": false,
+			"name": "StopWordsTable",
+			"alternateNames": [],
+			"isRequired": false,
+			"rDescription": "The table containing stop words.",
+			"description": "The table containing stop words.",
+			"datatype": "TABLE_ALIAS",
+			"allowsLists": false,
+			"rName": "object",
+			"useInR": true,
+			"rOrderNum": 2
+		}
+	],
+	"argument_clauses": [{
+			"targetTable": [
+				"InputTable"
+			],
+			"checkDuplicate": true,
+			"allowedTypes": [],
+			"allowedTypeGroups": [
+				"STRING"
+			],
+			"matchLengthOfArgument": "",
+			"allowPadding": false,
+			"name": "TextColumn",
+			"alternateNames": [],
+			"isRequired": true,
+			"rDescription": "Specifies the name of the input column whose contents are to be tokenized.",
+			"description": "Specifies the name of the input column whose contents are to be tokenized.",
+			"datatype": "COLUMNS",
+			"allowsLists": false,
+			"rName": "text.column",
+			"useInR": true,
+			"rOrderNum": 3
+		},
+		{
+			"defaultValue": true,
+			"permittedValues": [],
+			"isOutputColumn": false,
+			"matchLengthOfArgument": "",
+			"allowPadding": false,
+			"name": "ConvertToLowerCase",
+			"alternateNames": [],
+			"isRequired": false,
+			"rDescription": "Specifies whether to convert input text to lowercase.",
+			"description": "Specifies whether to convert input text to lowercase.",
+			"datatype": "BOOLEAN",
+			"allowsLists": false,
+			"rName": "covert.to.lowercase",
+			"useInR": true,
+			"rOrderNum": 4
+		},
+		{
+			"defaultValue": false,
+			"permittedValues": [],
+			"isOutputColumn": false,
+			"matchLengthOfArgument": "",
+			"allowPadding": false,
+			"name": "StemTokens",
+			"alternateNames": [],
+			"isRequired": false,
+			"rDescription": "Specify whether to stem the tokens.",
+			"description": "Specify whether to stem the tokens.",
+			"datatype": "BOOLEAN",
+			"allowsLists": false,
+			"rName": "stem.tokens",
+			"useInR": true,
+			"rOrderNum": 5
+		},
+		{
+			"defaultValue": false,
+			"permittedValues": [],
+			"isOutputColumn": false,
+			"matchLengthOfArgument": "",
+			"allowPadding": false,
+			"name": "RemoveStopWords",
+			"alternateNames": [],
+			"isRequired": false,
+			"rDescription": "Specifies whether to remove stop words from the input text before parsing.",
+			"description": "Specifies whether to remove stop words from the input text before parsing.",
+			"datatype": "BOOLEAN",
+			"allowsLists": false,
+			"rName": "remove.stopwords",
+			"useInR": true,
+			"rOrderNum": 6
+		},
+		{
+			"targetTable": [
+				"InputTable"
+			],
+			"checkDuplicate": true,
+			"allowedTypes": [],
+			"allowedTypeGroups": [
+				"ALL"
+			],
+			"matchLengthOfArgument": "",
+			"allowPadding": false,
+			"name": "Accumulate",
+			"alternateNames": [],
+			"isRequired": false,
+			"rDescription": "Specifies the input table columns to copy to the output table. By default, the function copies no input table columns to the output table.",
+			"description": "Specifies the input table columns to copy to the output table. By default, the function copies no input table columns to the output table.",
+			"datatype": "COLUMNS",
+			"allowsLists": true,
+			"rName": "accumulate",
+			"useInR": true,
+			"rOrderNum": 7
+		},
+		{
+			"defaultValue": " \\\\t\\\\n\\\\f\\\\r",
+			"isOutputColumn": false,
+			"matchLengthOfArgument": "",
+			"allowPadding": false,
+			"name": "Delimiter",
+			"alternateNames": [],
+			"isRequired": false,
+			"rDescription": "Specifies an expression that represents the word delimiter.",
+			"description": "Specifies an expression that represents the word delimiter.",
+			"datatype": "STRING",
+			"allowsLists": false,
+			"rName": "delimiter",
+			"useInR": true,
+			"rOrderNum": 8
+		},
+		{
+			"defaultValue": "!#$%&()*+,-./:;?@\\\\^_`{|}~",
+			"isOutputColumn": false,
+			"matchLengthOfArgument": "",
+			"allowPadding": false,
+			"name": "Punctuation",
+			"alternateNames": [],
+			"isRequired": false,
+			"rDescription": "Specifies an expression that represents the punctuation characters to replace with a space in the input text.",
+			"description": "Specifies an expression that represents the punctuation characters to replace with a space in the input text.",
+			"datatype": "STRING",
+			"allowsLists": false,
+			"rName": "punctuation",
+			"useInR": true,
+			"rOrderNum": 9
+		},
+		{
+			"defaultValue": "token",
+			"isOutputColumn": false,
+			"matchLengthOfArgument": "",
+			"allowPadding": false,
+			"name": "TokenColName",
+			"alternateNames": [],
+			"isRequired": false,
+			"rDescription": "Specifies the name of the output column that contains the individual tokens from the input document.",
+			"description": "Specifies the name of the output column that contains the individual tokens from the input document.",
+			"datatype": "STRING",
+			"allowsLists": false,
+			"rName": "token.col.name",
+			"useInR": true,
+			"rOrderNum": 10
+		}
+	]
+}

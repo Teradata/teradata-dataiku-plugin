@@ -1,0 +1,170 @@
+{
+  "json_schema_major_version": "1",
+  "json_schema_minor_version": "1",
+  "json_content_version": "1",
+  "function_name": "TD_ZTest",
+  "function_version": "1.0",
+  "function_type": "fastpath",
+  "function_category": "Hypothesis Testing",
+  "function_alias_name": "TD_ZTest",
+  "function_r_name": "aa.td_ztest",
+  "short_description": "hypothesis test function to perform ztest analysis on a data set.",
+  "long_description": "fastpath function to perform ztest analysis on a data set.",
+  "input_tables": [
+    {
+      "isOrdered": false,
+      "partitionByOne": false,
+      "name": "InputTable",
+      "alternateNames": [],
+      "isRequired": true,
+      "rDescription": "The input table for ztest analysis",
+      "description": "The input table for ztest analysis.",
+      "datatype": "TABLE_ALIAS",
+      "allowsLists": false,
+      "rName": "data",
+      "useInR": true,
+      "rOrderNum": 1
+    }
+  ],
+  "argument_clauses": [
+    {
+      "defaultValue": 0.5,
+      "lowerBound": 0,
+      "upperBound": 1,
+      "lowerBoundType": "INCLUSIVE",
+      "upperBoundType": "INCLUSIVE",
+      "allowNaN": false,
+      "isOutputColumn": false,
+      "matchLengthOfArgument": "",
+      "allowPadding": false,
+      "name": "Alpha",
+      "alternateNames": [],
+      "isRequired": false,
+      "rDescription": "Specifies the value of alpha in hypothesis test  function",
+      "description": "Specifies the value of alpha in hypothesis test function",
+      "datatype": "double precision",
+      "allowsLists": false,
+      "rName": "alpha",
+      "useInR": true,
+      "rOrderNum": 2
+    },
+    {
+      "targetTable": [
+        "InputTable"
+      ],
+      "checkDuplicate": true,
+      "allowedTypes": [],
+      "allowedTypeGroups": [
+        "NUMERIC"
+      ],
+      "allowNaN": false,
+      "isOutputColumn": false,
+      "matchLengthOfArgument": "",
+      "allowPadding": false,
+      "name": "FirstSampleColumn",
+      "alternateNames": [],
+      "isRequired": true,
+      "rDescription": "Specifies the first sample column in f test",
+      "description": "Specifies the first sample column in f test",
+      "datatype": "COLUMN",
+      "allowsLists": false,
+      "rName": "first.sample.column",
+      "useInR": true,
+      "rOrderNum": 3
+    },
+    {
+      "targetTable": [
+        "InputTable"
+      ],
+      "checkDuplicate": true,
+      "allowedTypes": [],
+      "allowedTypeGroups": [
+        "NUMERIC"
+      ],
+      "allowNaN": false,
+      "isOutputColumn": false,
+      "matchLengthOfArgument": "",
+      "allowPadding": false,
+      "name": "SecondSampleColumn",
+      "alternateNames": [],
+      "isRequired": false,
+      "rDescription": "Specifies the second sample column in f test",
+      "description": "Specifies the second sample column in f test",
+      "datatype": "COLUMN",
+      "allowsLists": false,
+      "rName": "second.sample.column",
+      "useInR": true,
+      "rOrderNum": 4
+    },
+    {
+       "permittedValues": [
+        "lower-tailed",
+        "two-tailed",
+        "upper-tailed"
+       ],
+      "defaultValue": "two-tailed",
+      "allowNaN": false,
+      "isOutputColumn": false,
+      "matchLengthOfArgument": "",
+      "allowPadding": false,
+      "name": "Alternatehypothesis",
+      "alternateNames": [],
+      "isRequired": false,
+      "rDescription": "Specifies the alternate hypothesis",
+      "description": "Specifies the alternate hypothesis",
+      "datatype": "STRING",
+      "allowsLists": false,
+      "rName": "alternate.hypothesis",
+      "useInR": true,
+      "rOrderNum": 5
+    },
+    {
+      "allowNaN": false,
+      "isOutputColumn": false,
+      "matchLengthOfArgument": "",
+      "allowPadding": false,
+      "name": "FirstSampleVariance",
+      "alternateNames": [],
+      "isRequired": true,
+      "rDescription": "Specifies the first sample variance",
+      "description": "Specifies the first sample variance",
+      "datatype": "NUMERIC",
+      "allowsLists": false,
+      "rName": "first.sample.variance",
+      "useInR": true,
+      "rOrderNum": 6
+    },
+    {
+      "allowNaN": false,
+      "isOutputColumn": false,
+      "matchLengthOfArgument": "",
+      "allowPadding": false,
+      "name": "SecondSampleVariance",
+      "alternateNames": [],
+      "isRequired": false,
+      "rDescription": "Specifies the second sample variance",
+      "description": "Specifies the second sample variance",
+      "datatype": "NUMERIC",
+      "allowsLists": false,
+      "rName": "second.sample.variance",
+      "useInR": true,
+      "rOrderNum": 7
+    },
+    {
+      "allowNaN": false,
+      "isOutputColumn": false,
+      "matchLengthOfArgument": "",
+      "allowPadding": false,
+      "name": "MeanUnderH0",
+      "alternateNames": [],
+      "isRequired": false,
+      "rDescription": "Specifies the mean under the null hypothesis",
+      "description": "Specifies the mean under the null hypothesis",
+      "datatype": "NUMERIC",
+      "allowsLists": false,
+      "rName": "mean.under.h0",
+      "useInR": true,
+      "rOrderNum": 8
+    }
+  ]
+}

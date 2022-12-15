@@ -19,7 +19,9 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SO
 
 # SKS : Import 
 from base_analytic_query_generator import BaseAnalyticQueryGenerator
+from gen_uaf_sql import gen_uaf_query
 from verifyTableColumns import *
+
 
 def strip_quotes(input_string):
     lst =  input_string.split(",")
@@ -58,6 +60,11 @@ class OpenEndedQueryGenerator():
         multiple arguments, this function gathers all those arguments accordingly and then inputs it into BaseAnalyticQueryGenerator
         in order to get back the output SQL query string.
         '''
+        dss_function = self._config_json.get('function', None)
+        if dss_function and 'function_type' in dss_function and dss_function['function_type'] == "uaf":
+            query, error = gen_uaf_query(self._output_table_name, self._config_json, self._output_database_name)
+            return query
+
         # SKS : Query arguments
         func_alias_name = self._config_json["function"]["function_alias_name"]
         function_name = func_alias_name
@@ -179,7 +186,7 @@ class OpenEndedQueryGenerator():
                 else:
                     arg['value'] = 'False'
             else:
-                if ('defaultValue' in arg) and (arg['value'] == arg['defaultValue']):
+                if ('defaultValue' in arg) and (arg['value'] == arg['defaultValue']) and arg.get('useDefaultInQuery', True):
                     continue
                 # SKS : for columns, ignore columns that are empty
                 if ('defaultValue' in arg) and (arg['datatype'] == 'COLUMNS') and arg['defaultValue'] == '' and (arg['value'] == [""] or arg['value'] == []):
@@ -228,7 +235,24 @@ class OpenEndedQueryGenerator():
                 else:
                     func_other_args_values.append('\'' + str(arg['value']) + '\'')
             
-        
+        # Check if output tables exists in InDB Json    
+        if "output_tables" in self._config_json["function"]:
+            output_tables = self._config_json["function"]["output_tables"]
+            # For each output
+            for output_index in range(len(output_tables)):
+                # get output name
+                output_name = output_tables[output_index]["name"]
+                # now check if recipe has actually connected an extra output
+                recipe_outputs = self._config_json["function"].get("output_table_names", [])
+                # assume output_index+1 is needed as the zero'th output is the main output and not an extra output
+                # i.e. the first optional output is at 1
+                if output_index+1 < len(recipe_outputs):
+                    output_full_table_name = recipe_outputs[output_index+1]["table"]
+                    # now add to arguments for base query generator
+                    func_output_args_sql_names.append(output_name)
+                    func_output_args_values.append(output_full_table_name)
+
+       
         # SKS: Accounts for the SQL Clauses section where the user may Modify Select Columns of Output Query 
         select_clause = ""
         if 'customSelectClause' in self._config_json["function"] and self._config_json["function"]['customSelectClause'] == True:
@@ -242,6 +266,7 @@ class OpenEndedQueryGenerator():
                              engine, self._verbose)
         base_query = query_string_gen_unpack._gen_sqlmr_select_stmt_sql()
 
+       
         CREATE_QUERY = '''CREATE TABLE {}
         AS 
         (
@@ -251,6 +276,5 @@ class OpenEndedQueryGenerator():
         ;'''
         # CREATE_QUERY = '''{}'''
         result = CREATE_QUERY.format(verifyQualifiedTableName(self._output_database_name, self._output_table_name), verifyQueryExpr(base_query.replace("sqlmr", "tmp_alias")))
-
         return result
 

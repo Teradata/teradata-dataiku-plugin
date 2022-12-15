@@ -42,25 +42,22 @@ from dataiku import pandasutils as pdu
 valid_connection = 1
 
 client = dataiku.api_client()
+pmml_model = client.get_project(project_key).get_saved_model(saved_model_id).get_version_details(version_id).get_scoring_pmml_stream().content
 
 connection_name = str(get_recipe_config()["connection_name"][0])
-connection_info = client.get_connection(name=connection_name).get_info()
-dss_connection_prams = connection_info.get_params()
+dss_connection_prams = client.get_connection(name=connection_name).get_info().get_params()
     
-user_param = str(connection_info.get_basic_credential()['user'])
+user_param = str(dss_connection_prams['user'])
 logging.info(user_param)
     
 host_param = str(dss_connection_prams['host'])
 logging.info(host_param)
     
-password_param = str(connection_info.get_basic_credential()['password'])
+password_param = str(dss_connection_prams['password'])
  
 database_param_by_user = str(get_recipe_config()["database_existing"])
-if database_param_by_user == "":    
-    if 'defaultDatabase' in dss_connection_prams:
-        database_param = str(dss_connection_prams['defaultDatabase'])
-    else:
-        database_param = user_param
+if database_param_by_user == "":
+   database_param = str(dss_connection_prams['defaultDatabase'])
 else:
    database_param = database_param_by_user
     
@@ -86,12 +83,6 @@ logging.info(logmech_param)
 create_new_table_param = bool(get_recipe_config()["create"])
 table_name_param = str(get_recipe_config()["tablename"])
 modelname_param = str(get_recipe_config()["modelname"])
-
-if str(get_recipe_config().get("model_format","pmml")) == "pmml":
-    model_bytes = client.get_project(project_key).get_saved_model(saved_model_id).get_version_details(version_id).get_scoring_pmml_stream().content
-else:
-    model_bytes = client.get_project(project_key).get_saved_model(saved_model_id).get_version_details(version_id).get_scoring_jar_stream(include_libs=False, model_class=modelname_param).content
-
 
 # For optional parameters, you should provide a default value in case the parameter is not present:
 #my_variable = get_recipe_config().get('parameter_name', None)
@@ -129,14 +120,14 @@ if valid_connection == 1:
             eng.execute(create_table);
 
         delete_record_if_exists = f"delete from {verifyDatabaseName(database_param)}.{verifyTableName(table_name_param)} where model_id = {verifyModelName(modelname_param)};"
-        #Push the model
+        #Push the pmml
         insert_model = f"insert into {verifyDatabaseName(database_param)}.{verifyTableName(table_name_param)} (model_id, model) values(?,?);"
-        eng.execute(insert_model, modelname_param, model_bytes)
+        eng.execute(insert_model, modelname_param, pmml_model)
     else:
         delete_record_if_exists = f"delete from {verifyDatabaseName(database_param)}.{verifyTableName(table_name_param)} where model_id = {verifyModelName(modelname_param[0:30])};"
         insert_model = f"insert into {verifyDatabaseName(database_param)}.{verifyTableName(table_name_param)} (model_id, model) values(?,?);"
         eng.execute(delete_record_if_exists)
-        eng.execute(insert_model, modelname_param, model_bytes)
+        eng.execute(insert_model, modelname_param, pmml_model)
 
 output_dataset_name = get_output_names_for_role('output_dataset')[0]
 output_dataset = dataiku.Dataset(output_dataset_name) 

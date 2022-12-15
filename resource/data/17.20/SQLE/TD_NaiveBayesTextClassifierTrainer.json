@@ -1,0 +1,137 @@
+{
+  "json_schema_major_version": "1",
+  "json_schema_minor_version": "1",
+  "json_content_version": "1",
+  "function_name": "TD_NaiveBayesTextClassifierTrainer",
+  "function_version": "1.0",
+  "function_type": "fastpath",
+  "function_category": "Text Analytic",
+  "function_alias_name": "TD_NaiveBayesTextClassifierTrainer",
+  "function_r_name": "td.naivebayes.textclassifier.trainer",
+  "short_description": "Trains a Naive Bayes text classifier model.",
+  "long_description": "Trains a Naive Bayes text classifier model.",
+  "partner_function": "NaiveBayesTextClassifierPredict",
+  "input_tables": [
+    {
+      "isOrdered": false,
+      "partitionByOne": false,
+      "omitPossible": false,
+      "name": "InputTable",
+      "alternateNames": [],
+      "isRequired": true,
+      "rDescription": "The table defining the training tokens.",
+      "description": "The table defining the training tokens.",
+      "datatype": "TABLE_NAME",
+      "allowsLists": false,
+      "rName": "data",
+      "useInR": true,
+      "rOrderNum": 1
+    }
+  ],
+  "output_tables": [
+    {
+      "isOutputTable": true,
+      "omitPossible": false,
+      "name": "ModelTable",
+      "alternateNames": [],
+      "isRequired": false,
+      "rDescription": "The table defining output table used to contain model.",
+      "description": "The table defining output table used to contain model.",
+      "datatype": "TABLE_NAME",
+      "allowsLists": false,
+      "rName": "model.table",
+      "useInR": true,
+      "rOrderNum": 2
+    }
+  ],
+  "argument_clauses": [
+    {
+      "targetTable": [
+        "InputTable"
+      ],
+      "checkDuplicate": true,
+      "allowedTypes": [],
+      "allowedTypeGroups": [
+        "STRING"
+      ],
+      "requiredLength": 1,
+      "matchLengthOfArgument": "",
+      "allowPadding": true,
+      "name": "DocCategoryColumn",
+      "alternateNames": [],
+      "isRequired": true,
+      "rDescription": " Specifies the name of the input table column that contains the document category.",
+      "description": " Specifies the name of the input table column that contains the document category.",
+      "datatype": "COLUMN_NAMES",
+      "allowsLists": false,
+      "rName": "doc.category.column",
+      "useInR": true,
+      "rOrderNum": 3
+    },
+    {
+      "targetTable": [
+        "InputTable"
+      ],
+      "checkDuplicate": true,
+      "allowedTypes": [],
+      "allowedTypeGroups": [
+        "STRING"
+      ],
+      "requiredLength": 1,
+      "matchLengthOfArgument": "",
+      "allowPadding": true,
+      "name": "TokenColumn",
+      "alternateNames": [],
+      "isRequired": true,
+      "rDescription": " Specifies the name of the input table column that contains the tokens.",
+      "description": " Specifies the name of the input table column that contains the tokens.",
+      "datatype": "COLUMN_NAMES",
+      "allowsLists": false,
+      "rName": "token.column",
+      "useInR": true,
+      "rOrderNum": 4
+    },
+    {
+      "targetTable": [
+        "InputTable"
+      ],
+      "checkDuplicate": true,
+      "allowedTypes": [],
+      "allowedTypeGroups": [
+        "STRING",
+        "INTEGER"
+      ],
+      "requiredLength": 1,
+      "matchLengthOfArgument": "",
+      "allowPadding": true,
+      "name": "DocIdColumn",
+      "alternateNames": [],
+      "isRequired": false,
+      "rDescription": "Specifies the name of the input table column that contains the document identifier.",
+      "description": "Specifies the name of the input table column that contains the document identifier.",
+      "datatype": "COLUMN_NAMES",
+      "allowsLists": false,
+      "rName": "doc.id.column",
+      "useInR": true,
+      "rOrderNum": 5
+    },
+    {
+      "permittedValues": [
+        "MULTINOMIAL",
+        "BERNOULLI"
+      ],
+      "defaultValue": "MULTINOMIAL",
+      "isOutputColumn": false,
+      "name": "ModelType",
+      "alternateNames": [],
+      "isRequired": false,
+      "rDescription": "Specifies the model type of the text classifier. The default value is 'Multinomial'.",
+      "description": "Specifies the model type of the text classifier. The default value is 'Multinomial'.",
+      "datatype": "STRING",
+      "allowsLists": false,
+      "rName": "model.type",
+      "useInR": true,
+      "rOrderNum": 6
+    }
+  ]
+}

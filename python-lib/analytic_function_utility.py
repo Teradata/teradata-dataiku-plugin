@@ -68,6 +68,7 @@ def get_all_functions(query_engine_wrapper, fallback_directory, category_name = 
     """ 
 
     lst = []
+
     # If the VCT does not have many functions then it is not correct, mark is as false
     min_num_functions = 20
     if len(lst) < min_num_functions:
@@ -129,6 +130,8 @@ def get_function_json(query_engine_wrapper, function_name, fallback_directory, c
         if that exists, otherwise from the fallback directory of JSONs.
     """ 
     function_json = {} 
+    
+
     if not function_json:
         # In this case VCT doesnt exist, so use JSONs on filesystem with the appropriate version and function name
         file_name = os.path.join(fallback_directory, function_name+".json")
@@ -185,6 +188,7 @@ def get_all_function_jsons(query_engine_wrapper, fallback_directory, category_na
     
     result = []           
     sql_query_worked = False
+    
 
     if len(result)==0 and os.path.isdir(fallback_directory):
         # In this case VCT doesnt exist, so use JSONs on filesystem with the appropriate version and function name

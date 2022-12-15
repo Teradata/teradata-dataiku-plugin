@@ -1,0 +1,47 @@
+{
+  "json_schema_major_version": "1",
+  "json_schema_minor_version": "1",
+  "json_content_version": "1",
+  "function_name": "TD_OutlierFilterTransform",
+  "function_version": "1.0",
+  "function_type": "fastpath",
+  "function_category" : "Data Cleaning",
+  "function_alias_name": "TD_OutlierFilterTransform",
+  "function_r_name": "aa.td_OutlierFilterTransform",
+  "short_description": "OutlierFilterTransform Analytical function filters the outliers from the input table. It uses the FitTable from the OutlierFilterFit function to get statistics like median, count of rows, lower_percentile & upper_percentile for every column specified in TargetColumns argument and filters the outliers in the input table.",
+  "long_description": "OutlierFilterTransform Analytical function filters the outliers from the input table. It uses the FitTable from the OutlierFilterFit function to get statistics like median, count of rows, lower_percentile & upper_percentile for every column specified in TargetColumns argument and filters the outliers in the input table.",
+  "input_tables": [
+    {
+      "isOrdered": false,
+      "partitionByOne": false,
+      "name": "InputTable",
+      "alternateNames": [],
+      "isRequired": true,
+      "rDescription": "The relation that contains input data.",
+      "description": "The relation that contains input data.",
+      "datatype": "TABLE_ALIAS",
+      "allowsLists": false,
+      "rName": "data",
+      "useInR": true,
+      "rOrderNum": 1
+    },
+    {
+      "requiredInputKind": [
+        "Dimension",
+        "PartitionByKey"
+      ],
+      "isOrdered": false,
+      "partitionByOne": false,
+      "name": "FitTable",
+      "alternateNames": [],
+      "isRequired": true,
+      "rDescription": "The FitTable contains all statistics required to detect Outliers along with values of arguments used.",
+      "description": "The FitTable contains all statistics required to detect Outliers along with values of arguments used.",
+      "datatype": "TABLE_ALIAS",
+      "allowsLists": false,
+      "rName": "object",
+      "useInR": true,
+      "rOrderNum": 2
+    }
+  ]
+}

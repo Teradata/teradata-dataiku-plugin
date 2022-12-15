@@ -1,0 +1,68 @@
+{
+  "json_schema_major_version": "1",
+  "json_schema_minor_version": "1",
+  "json_content_version": "1",
+  "function_name": "TD_ChiSq",
+  "function_version": "1.0",
+  "function_type": "fastpath",
+  "function_category": "Hypothesis Testing",
+  "function_alias_name": "TD_ChiSq",
+  "function_r_name": "aa.td_chisq",
+  "short_description": "hypothesis test function to perform chisquare analysis on a data set.",
+  "long_description": "fastpath function to perform chisquare test analysis on an input contingency table.",
+  "input_tables": [
+    {
+      "isOrdered": false,
+      "partitionByOne": false,
+      "name": "Contingency",
+      "alternateNames": [],
+      "isRequired": true,
+      "rDescription": "The relation that contains input contingency table.",
+      "description": "The relation that contains contingency table.",
+      "datatype": "TABLE_ALIAS",
+      "allowsLists": false,
+      "rName": "data",
+      "useInR": true,
+      "rOrderNum": 1
+    }
+  ],
+  "output_tables": [
+    {
+      "isOutputTable": true,
+      "omitPossible": false,
+      "name": "ExpCounts",
+      "alternateNames": [],
+      "isRequired": false,
+      "rDescription": "Name for the table that the function will generate as a secondary table.",
+      "description": "Name for the table that the function will generate as a secondary table",
+      "datatype": "TABLE_NAME",
+      "allowsLists": false,
+      "rName": "output.table",
+      "useInR": true,
+      "rOrderNum": 2
+    }
+  ],
+  "argument_clauses": [
+    {
+      "defaultValue": 0.5,
+      "lowerBound": 0,
+      "upperBound": 1,
+      "lowerBoundType": "INCLUSIVE",
+      "upperBoundType": "INCLUSIVE",
+      "allowNaN": false,
+      "isOutputColumn": false,
+      "matchLengthOfArgument": "",
+      "allowPadding": false,
+      "name": "Alpha",
+      "alternateNames": [],
+      "isRequired": false,
+      "rDescription": "Specifies the vaule of alpha in hypothesis test  function",
+      "description": "Specifies the vaule of alpha in hypothesis test function",
+      "datatype": "double precision",
+      "allowsLists": false,
+      "rName": "alpha",
+      "useInR": true,
+      "rOrderNum": 3
+    }
+  ]
+}

@@ -1,0 +1,71 @@
+{
+  "json_schema_major_version": "1",
+  "json_schema_minor_version": "1",
+  "json_content_version": "1",
+  "function_name": "TD_FunctionTransform",
+  "function_version": "1.0",
+  "function_type": "fastpath",
+  "function_category": "Feature Engineering Transform",
+  "function_alias_name": "TD_FunctionTransform",
+  "function_r_name": "aa.td_functiontransform",
+  "short_description": "fastpath function that performs transformations on the InputTable depending on the parameters in the FitTable.",
+  "long_description":  "fastpath function that performs transformations on the InputTable depending on the parameters in the FitTable.",
+  "input_tables": [
+    {
+      "isOrdered": false,
+      "partitionByOne": false,
+      "name": "InputTable",
+      "alternateNames": [],
+      "isRequired": true,
+      "rDescription": "The relation that contains input data.",
+      "description": "The relation that contains input data.",
+      "datatype": "TABLE_ALIAS",
+      "allowsLists": false,
+      "rName": "data",
+      "useInR": true,
+      "rOrderNum": 1
+    },
+    {
+      "requiredInputKind": [
+        "Dimension"
+      ],
+      "isOrdered": false,
+      "partitionByOne": false,
+      "name": "FitTable",
+      "alternateNames": [],
+      "isRequired": true,
+      "rDescription": "The output of TD_FunctionFit.",
+      "description":  "The output of TD_FunctionFit.",
+      "datatype": "TABLE_ALIAS",
+      "allowsLists": false,
+      "rName": "object",
+      "useInR": true,
+      "rOrderNum": 2
+    }
+  ],
+  "argument_clauses": [
+    {
+      "targetTable": [
+        "InputTable"
+      ],
+      "checkDuplicate": false,
+      "allowedTypes": [],
+      "allowedTypeGroups": [
+        "ALL"
+      ],
+      "matchLengthOfArgument": "",
+      "allowPadding": false,
+      "name": "IDColumns",
+      "alternateNames": [],
+      "isRequired": false,
+      "rDescription": "Specifies the input table numeric columns to exactly copy to the output. By default, all numeric columns will be converted to FLOAT.",
+      "description": "Specifies the input table numeric columns to exactly copy to the output. By default, all numeric columns will be converted to FLOAT.",
+      "datatype": "COLUMNS",
+      "allowsLists": true,
+      "rName": "id.columns",
+      "useInR": true,
+      "rOrderNum": 3
+    }
+  ]
+ 
+}

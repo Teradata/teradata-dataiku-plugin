@@ -1,0 +1,157 @@
+{
+  "json_schema_major_version": "1",
+  "json_schema_minor_version": "1",
+  "json_content_version": "1",
+  "function_name": "TD_ScaleFit",
+  "function_version": "1.0",
+  "function_type": "fastpath",
+  "function_category": "Feature Engineering Transform",
+  "function_alias_name": "TD_ScaleFit",
+  "function_r_name": "aa.td_scale.fit",
+  "short_description": "fastpath function to generate required statistics and scaling parameters to be used by TD_ScaleTransform for scaling the input data.",
+  "long_description": "fastpath function to generate required statistics and scaling parameters to be used by TD_ScaleTransform for scaling the input data.",
+  "input_tables": [
+    {
+      "isOrdered": false,
+      "partitionByOne": false,
+      "name": "InputTable",
+      "alternateNames": [],
+      "isRequired": true,
+      "rDescription": "The relation that contains input data.",
+      "description": "The relation that contains input data.",
+      "datatype": "TABLE_ALIAS",
+      "allowsLists": false,
+      "rName": "data",
+      "useInR": true,
+      "rOrderNum": 1
+    }
+  ],
+  "output_tables": [
+    {
+      "isOutputTable": true,
+      "omitPossible": true,
+      "name": "OutputTable",
+      "alternateNames": [],
+      "isRequired": false,
+      "rDescription": "Specifies the name of the table in which the output of TD_ScaleFit can be stored.",
+      "description": "Specifies the name of the table in which the output of TD_ScaleFit can be stored.",
+      "datatype": "TABLE_NAME",
+      "allowsLists": false,
+      "rName": "output.table",
+      "useInR": true,
+      "rOrderNum": 2
+    }
+  ],
+  "argument_clauses": [
+    {
+      "targetTable": [
+        "InputTable"
+      ],
+      "checkDuplicate": true,
+      "allowedTypes": [],
+      "allowedTypeGroups": [
+        "NUMERIC"
+      ],
+      "matchLengthOfArgument": "",
+      "allowPadding": false,
+      "name": "TargetColumns",
+      "alternateNames": [],
+      "isRequired": true,
+      "rDescription": "Specifies the input table columns for which scaling parameters and statistics will be generated.",
+      "description": "Specifies the input table columns for which scaling parameters and statistics will be generated.",
+      "datatype": "COLUMNS",
+      "allowsLists": true,
+      "rName": "target.columns",
+      "useInR": true,
+      "rOrderNum": 3
+    },
+	{
+      "permittedValues": [],
+      "isOutputColumn": false,
+      "matchLengthOfArgument": "",
+      "allowPadding": false,
+      "name": "ScaleMethod",
+      "alternateNames": [],
+      "isRequired": true,
+      "rDescription": "Specify the ScaleMethod to be used for scaling. If one value is provided, it applies to all target columns. If more than one value is specified, ScaleMethod values applies to TargetColumns values in the order specified by the user.",
+      "description": "Specify the ScaleMethod to be used for scaling. If one value is provided, it applies to all target columns. If more than one value is specified, ScaleMethod values applies to TargetColumns values in the order specified by the user.",
+      "datatype": "STRING",
+      "allowsLists": true,
+      "rName": "scale.method",
+      "useInR": true,
+      "rOrderNum": 4
+    },
+	{
+      "permittedValues": [
+        "KEEP",
+        "ZERO",
+        "LOCATION"
+      ],
+      "defaultValue": "KEEP",
+      "isOutputColumn": false,
+      "matchLengthOfArgument": "",
+      "allowPadding": false,
+      "name": "MissValue",
+      "alternateNames": [],
+      "isRequired": false,
+      "rDescription": "Specifies how to process NULL values in input, as follows:KEEP (default): Keep NULL values, ZERO: Replace each NULL value with zero, LOCATION: Replace each NULL value with its location value.",
+      "description": "Specifies how to process NULL values in input, as follows:KEEP (default): Keep NULL values, ZERO: Replace each NULL value with zero, LOCATION: Replace each NULL value with its location value.",
+      "datatype": "STRING",
+      "allowsLists": false,
+      "rName": "miss.value",
+      "useInR": true,
+      "rOrderNum": 5
+    },
+	{
+      "defaultValue": false,
+      "name": "GlobalScale",
+      "alternateNames": [],
+      "isRequired": false,
+      "rDescription": " Specifies whether all input columns are scaled to the same location and scale (using global statistics). The default value is 'false' (each input column is scaled separately).",
+      "description": " Specifies whether all input columns are scaled to the same location and scale (using global statistics). The default value is 'false' (each input column is scaled separately).",
+      "datatype": "BOOLEAN",
+      "allowsLists": false,
+      "rName": "global.scale",
+      "useInR": true,
+      "rOrderNum": 6
+    },
+	{
+      "permittedValues": [],
+      "defaultValue": [
+        "1"
+      ],
+      "isOutputColumn": false,
+      "matchLengthOfArgument": "",
+      "allowPadding": true,
+      "name": "Multiplier",
+      "alternateNames": [],
+      "isRequired": false,
+      "rDescription": "Specifies one or more multiplying factors to apply to the input variables, multiplier in the following formula: X' = intercept + multiplier * (X - location)/scale. If you specify only one multiplier, it applies to all TargetColumns. If you specify multiple multiplying factors, each multiplier applies to the corresponding TargetColumn. For example, the first multiplier applies to the first column specified by the TargetColumns argument, the second multiplier applies to the second input column, and so on. The default multiplier is 1.",
+      "description": "Specifies one or more multiplying factors to apply to the input variables, multiplier in the following formula: X' = intercept + multiplier * (X - location)/scale. If you specify only one multiplier, it applies to all TargetColumns. If you specify multiple multiplying factors, each multiplier applies to the corresponding TargetColumn. For example, the first multiplier applies to the first column specified by the TargetColumns argument, the second multiplier applies to the second input column, and so on. The default multiplier is 1.",
+      "datatype": "STRING",
+      "allowsLists": true,
+      "rName": "multiplier",
+      "useInR": true,
+      "rOrderNum": 7
+    },
+	{
+      "permittedValues": [],
+      "defaultValue": [
+        "0"
+      ],
+      "isOutputColumn": false,
+      "matchLengthOfArgument": "",
+      "allowPadding": true,
+      "name": "Intercept",
+      "alternateNames": [],
+      "isRequired": false,
+      "rDescription": "Specifies one or more addition factors incrementing the scaled results, intercept in the following formula: X' = intercept + multiplier * (X - location)/scale. If you specify only one intercept, it applies to all TargetColumns. If you specify multiple addition factors, each intercept applies to the corresponding TargetColumn. The syntax of intercept is: [-]{number | min | mean | max } where min, mean, and max are the global minimum, maximum, mean values in the corresponding columns. The function scales the values of min, mean, and max. For example, if intercept is '- min' and multiplier is 1, the scaled result is transformed to a nonnegative sequence according to this formula, where scaledmin is the scaled value: X' = -scaledmin + 1 * (X - location)/scale. The default intercept is 0.",
+      "description": "Specifies one or more addition factors incrementing the scaled results, intercept in the following formula: X' = intercept + multiplier * (X - location)/scale If you specify only one intercept, it applies to all columns specified by the InputColumns argument. If you specify multiple addition factors, each intercept applies to the corresponding input column. The syntax of intercept is: [-]{number | min | mean | max } where min, mean, and max are the global minimum, maximum, mean values in the corresponding columns. The function scales the values of min, mean, and max. For example, if intercept is '- min' and multiplier is 1, the scaled result is transformed to a nonnegative sequence according to this formula, where scaledmin is the scaled value: X' = -scaledmin + 1 * (X - location)/scale The default intercept is 0.",
+      "datatype": "STRING",
+      "allowsLists": true,
+      "rName": "intercept",
+      "useInR": true,
+      "rOrderNum": 8
+    }
+  ]
+}

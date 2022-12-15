@@ -1,0 +1,141 @@
+{
+  "json_schema_major_version": "1",
+  "json_schema_minor_version": "1",
+  "json_content_version": "1",
+  "function_name": "TD_OrdinalEncodingFit",
+  "function_version": "1.0",
+  "function_alias_name": "TD_OrdinalEncodingFit",
+  "function_type": "fastpath",
+  "function_category": "Feature Engineering Transform",
+  "function_r_name": "aa.td.ordinal.encoding.fit",
+  "ref_function_r_name": "aa.td.ordinal.encoding.fit",
+  "short_description": "This function generates encoded ordinal integer values for each category in a target column.",
+  "long_description": "This function takes a input table partitioned by ANY and a target categorical column and generates integer ordinal values for each unique category in the target column.",
+  "input_tables": [
+    {
+      "requiredInputKind": [
+        "PartitionByAny"
+      ],
+      "isOrdered": false,
+      "partitionByOne": false,
+      "name": "InputTable",
+      "alternateNames": [],
+      "isRequired": true,
+      "rDescription": "Specifies the table containing the input categorical target column.",
+      "description": "Specifies the table containing the input categorical target column.",
+      "datatype": "TABLE_ALIAS",
+      "allowsLists": false,
+      "rName": "data",
+      "useInR": true,
+      "rFormulaUsage": false,
+      "rOrderNum": 1
+    }
+  ],
+  "output_tables": [
+    {
+      "isOutputTable": true,
+      "omitPossible": false,
+      "name": "OutputTable",
+      "alternateNames": [],
+      "isRequired": false,
+      "rDescription": "Name for the table that the function will generate when OUT clause is provided.",
+      "description": "Name for the table that the function will generate when OUT clause is provided.",
+      "datatype": "TABLE_NAME",
+      "allowsLists": false,
+      "rName": "output.table",
+      "useInR": true,
+      "rOrderNum": 2
+    }
+  ],
+  "argument_clauses": [
+    {
+      "targetTable": [
+        "InputTable"
+      ],
+      "checkDuplicate": true,
+      "allowedTypes": [],
+      "allowedTypeGroups": [
+        "STRING"
+      ],
+      "requiredLength": 1,
+      "matchLengthOfArgument": "",
+      "allowPadding": false,
+      "name": "TargetColumn",
+      "alternateNames": [],
+      "isRequired": true,
+      "rDescription": "Specify the categorical input target column.",
+      "description": "Specify the categorical input target column.",
+      "datatype": "COLUMNS",
+      "allowsLists": false,
+      "rName": "target.column",
+      "useInR": true,
+      "rOrderNum": 3
+    },
+    {
+      "permittedValues": [
+        "AUTO",
+        "LIST"
+      ],
+      "defaultValue": "AUTO",
+      "name": "Approach",
+      "alternateNames": [],
+      "isRequired": false,
+      "rDescription": "Specifies whether to determine categories automatically from the input table data (AUTO approach) or the user provided list (LIST approach).",
+      "description": "Specifies whether to determine categories automatically from the input table data (AUTO approach) or the user provided list (LIST approach).",
+      "datatype": "STRING",
+      "allowsLists": false,
+      "rName": "approach",
+      "useInR": true,
+      "rOrderNum": 4
+    },
+	{
+      "name": "Categories",
+      "alternateNames": [],
+      "isRequired": false,
+      "rDescription": "Specifies the list of categories that need to be encoded in the desired order.",
+      "description": "Specifies the list of categories that need to be encoded in the desired order.",
+      "datatype": "STRING",
+      "allowsLists": true,
+      "rName": "categories",
+      "useInR": true,
+      "rOrderNum": 5
+    },
+	{
+      "name": "OrdinalValues",
+      "alternateNames": [],
+      "isRequired": false,
+      "rDescription": "Specifies custom ordinal values to replace the categories.",
+      "description": "Specifies custom ordinal values to replace the categories.",
+      "datatype": "INTEGER",
+      "allowsLists": true,
+      "rName": "ordinal.values",
+      "useInR": true,
+      "rOrderNum": 6
+    },
+	{
+      "defaultValue": 0,
+      "name": "StartValue",
+      "alternateNames": [],
+      "isRequired": false,
+      "rDescription": "Specifies the starting value for ordinal values list.",
+      "description": "Specifies the starting value for ordinal values list.",
+      "datatype": "INTEGER",
+      "allowsLists": false,
+      "rName": "start.value",
+      "useInR": true,
+      "rOrderNum": 7
+    },
+	{
+      "name": "DefaultValue",
+      "alternateNames": [],
+      "isRequired": false,
+      "rDescription": "Specifies the ordinal value to use when category is not found.",
+      "description": "Specifies the ordinal value to use when category is not found.",
+      "datatype": "INTEGER",
+      "allowsLists": false,
+      "rName": "default.value",
+      "useInR": true,
+      "rOrderNum": 8
+    }
+  ]
+}

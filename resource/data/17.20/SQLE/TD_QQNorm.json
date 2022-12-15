@@ -1,0 +1,111 @@
+{
+  "json_schema_major_version": "1",
+  "json_schema_minor_version": "1",
+  "json_content_version": "1",
+  "function_name": "TD_QQNorm",
+  "function_version": "1.0",
+  "function_type": "fastpath",
+  "function_category" : "Data Exploration",
+  "function_alias_name": "TD_QQNorm",
+  "function_r_name": "aa.td_qq.norm",
+  "short_description": "fastpath function used to determine if a column follows Normal Distribution using standard normal quantiles.",
+  "long_description": "fastpath function used to determine if a column follows Normal Distribution using standard normal quantiles.",
+  "input_tables": [
+    {
+      "isOrdered": false,
+      "partitionByOne": false,
+      "name": "InputTable",
+      "alternateNames": [],
+      "isRequired": true,
+      "rDescription": "The relation that contains input data along with rank columns containing ranks for values in TargetColumn.",
+      "description": "The relation that contains input data along with rank columns containing ranks for values in TargetColumn.",
+      "datatype": "TABLE_ALIAS",
+      "allowsLists": false,
+      "rName": "data",
+      "useInR": true,
+      "rOrderNum": 1
+    }
+  ],
+  "argument_clauses": [
+    {
+      "targetTable": [
+        "InputTable"
+      ],
+      "checkDuplicate": true,
+      "allowedTypes": [],
+      "allowedTypeGroups": [
+        "NUMERIC"
+      ],
+      "matchLengthOfArgument": "",
+      "allowPadding": false,
+      "name": "TargetColumns",
+      "alternateNames": [],
+      "isRequired": true,
+      "rDescription": "Specifies the input table columns for which standard normal quantiles needs to be generated.",
+      "description": "Specifies the input table columns for which standard normal quantiles needs to be generated.",
+      "datatype": "COLUMNS",
+      "allowsLists": true,
+      "rName": "target.columns",
+      "useInR": true,
+      "rOrderNum": 2
+    },
+	{
+      "targetTable": [
+        "InputTable"
+      ],
+      "checkDuplicate": true,
+      "allowedTypes": [],
+      "allowedTypeGroups": [
+        "INTEGER"
+      ],
+      "matchLengthOfArgument": "",
+      "allowPadding": false,
+      "name": "RankColumns",
+      "alternateNames": [],
+      "isRequired": true,
+      "rDescription": "Specifies the input table columns containing rank values for TargetColumns.",
+      "description": "Specifies the input table columns containing rank values for TargetColumns.",
+      "datatype": "COLUMNS",
+      "allowsLists": true,
+      "rName": "rank.columns",
+      "useInR": true,
+      "rOrderNum": 3
+    },
+	{
+      "permittedValues": [],
+      "isOutputColumn": true,
+      "name": "OutputColumns",
+      "alternateNames": [],
+      "isRequired": false,
+      "rDescription": "Specifies the names to give to the output columns which will contain standard normal quantiles. By default, the output column names will be generated as TargetColumnName_theoretical_quantiles.",
+      "description": "Specifies the names to give to the output columns which will contain standard normal quantiles. By default, the output column names will be generated as TargetColumnName_theoretical_quantiles.",
+      "datatype": "STRING",
+      "allowsLists": true,
+      "rName": "output.columns",
+      "useInR": true,
+      "rOrderNum": 4
+    },
+	{
+      "targetTable": [
+        "InputTable"
+      ],
+      "checkDuplicate": true,
+      "allowedTypes": [],
+      "allowedTypeGroups": [
+        "ALL"
+      ],
+      "matchLengthOfArgument": "",
+      "allowPadding": false,
+      "name": "Accumulate",
+      "alternateNames": [],
+      "isRequired": false,
+      "rDescription": "Specifies the input table columns to copy to the output table. By default, the function copies no input table columns to the output table.",
+      "description": "Specifies the input table columns to copy to the output table. By default, the function copies no input table columns to the output table.",
+      "datatype": "COLUMNS",
+      "allowsLists": true,
+      "rName": "accumulate",
+      "useInR": true,
+      "rOrderNum": 5
+    }
+  ]
+}

@@ -1,0 +1,53 @@
+{
+  "json_schema_major_version": "1",
+  "json_schema_minor_version": "1",
+  "json_content_version": "1",
+  "function_name": "TD_ColumnSummary",
+  "function_version": "1.0",
+  "function_type": "fastpath",
+  "function_category" : "Data Exploration",
+  "function_alias_name": "TD_ColumnSummary",
+  "function_r_name": "aa.td_column.summary",
+  "short_description": "fastpath function to give the column summary of the target columns.",
+  "long_description": "fastpath function to give the count of NonNull, Null, Blank, Zero, Positive, Negative and NullPercentage and NonNullPercentage of the target columns",
+  "input_tables": [
+    {
+      "isOrdered": false,
+      "partitionByOne": false,
+      "name": "InputTable",
+      "alternateNames": [],
+      "isRequired": true,
+      "rDescription": "The relation that contains input data.",
+      "description": "The relation that contains input data.",
+      "datatype": "TABLE_ALIAS",
+      "allowsLists": false,
+      "rName": "data",
+      "useInR": true,
+      "rOrderNum": 1
+    }
+  ],
+  "argument_clauses": [
+    {
+      "targetTable": [
+        "InputTable"
+      ],
+      "checkDuplicate": true,
+      "allowedTypes": [],
+      "allowedTypeGroups": [
+        "ALL"
+      ],
+      "matchLengthOfArgument": "",
+      "allowPadding": false,
+      "name": "TargetColumns",
+      "alternateNames": [],
+      "isRequired": true,
+      "rDescription": "Specifies the input table columns for which column summary needs to be determined.",
+      "description": "Specifies the input table columns for which column summary needs to be determined.",
+      "datatype": "COLUMNS",
+      "allowsLists": true,
+      "rName": "target.columns",
+      "useInR": true,
+      "rOrderNum": 2
+    }
+  ]
+}

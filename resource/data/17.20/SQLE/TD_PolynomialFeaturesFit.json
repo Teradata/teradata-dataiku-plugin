@@ -1,0 +1,114 @@
+{
+  "json_schema_major_version": "1",
+  "json_schema_minor_version": "1",
+  "json_content_version": "1",
+  "function_name": "TD_PolynomialFeaturesFit",
+  "function_version": "1.0",
+  "function_type": "fastpath",
+  "function_category": "Feature Engineering Transform",
+  "function_alias_name": "TD_PolynomialFeaturesFit",
+  "function_r_name": "aa.td_polynomialfeaturesfit",
+  "short_description": "fastpath function with an intermediate step to polynomialfeaturestransform, which helps the user to store all the values provided in the argument in the form of a table.",
+  "long_description": "fastpath function with an intermediate step to polynomialfeaturestransform, which helps the user to store all the values provided in the argument in the form of a table.",
+  "input_tables": [
+    {
+      "isOrdered": false,
+      "partitionByOne": false,
+      "name": "InputTable",
+      "alternateNames": [],
+      "isRequired": true,
+      "rDescription": "The relation that contains input data.",
+      "description": "The relation that contains input data.",
+      "datatype": "TABLE_ALIAS",
+      "allowsLists": false,
+      "rName": "data",
+      "useInR": true,
+      "rOrderNum": 1
+    }
+  ],
+  "output_tables": [
+    {
+      "isOutputTable": true,
+      "omitPossible": false,
+      "name": "OutputTable",
+      "alternateNames": [],
+      "isRequired": false,
+      "rDescription": "Specifies the name of the table where the function stores the result from the function",
+      "description": "Specifies the name of the table where the function stores the result from the function",
+      "datatype": "TABLE_NAME",
+      "allowsLists": false,
+      "rName": "output.table",
+      "useInR": true,
+      "rOrderNum": 2
+    }
+  ],
+  "argument_clauses": [
+    {
+      "targetTable": [
+        "InputTable"
+      ],
+      "checkDuplicate": true,
+      "allowedTypes": [],
+      "allowedTypeGroups": [
+        "NUMERIC"
+      ],
+      "matchLengthOfArgument": "",
+      "allowPadding": false,
+      "name": "TargetColumns",
+      "alternateNames": [],
+      "isRequired": true,
+      "rDescription": "Specifies the input table columns for which polynomial features needs to be generated.",
+      "description": "Specifies the input table columns for which polynomial features needs to be generated.",
+      "datatype": "COLUMNS",
+      "allowsLists": true,
+      "rName": "target.columns",
+      "useInR": true,
+      "rOrderNum": 3
+    },
+	{
+      "defaultValue": true,
+      "name": "IncludeBias",
+      "alternateNames": [],
+      "isRequired": false,
+      "rDescription": "It adds an extra bias column one, which acts as an intercept term in a linear model",
+      "description": "It adds an extra bias column one, which acts as an intercept term in a linear model",
+      "datatype": "BOOLEAN",
+      "allowsLists": false,
+      "rName": "include.bias",
+      "useInR": true,
+      "rOrderNum": 4
+    },
+	
+	{
+      "defaultValue": false,
+      "name": "InteractionOnly",
+      "alternateNames": [],
+      "isRequired": false,
+      "rDescription": "If true, features that are products of at most degree distinct input features are only produced",
+      "description": "If true, features that are products of at most degree distinct input features are only produced",
+      "datatype": "BOOLEAN",
+      "allowsLists": false,
+      "rName": "interaction.only",
+      "useInR": true,
+      "rOrderNum": 5
+    },
+	{
+      "defaultValue": 2,
+      "lowerBound": 0,
+      "upperBound": 3,
+      "lowerBoundType": "EXCLUSIVE",
+      "upperBoundType": "INCLUSIVE",
+      "allowNaN": false,
+      "name": "Degree",
+      "alternateNames": [],
+      "isRequired": false,
+      "rDescription": "degree upto which polynomial features between TargetColumns are imputed.",
+      "description": "degree upto which polynomial features between TargetColumns are imputed.",
+      "datatype": "INTEGER",
+      "allowsLists": false,
+      "rName": "degree",
+      "useInR": true,
+      "rOrderNum": 6
+    }
+  ]
+}

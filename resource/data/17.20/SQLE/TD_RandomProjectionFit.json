@@ -1,0 +1,182 @@
+{
+    "json_schema_major_version": "1",
+    "json_schema_minor_version": "1",
+    "json_content_version": "1",
+    "function_name": "TD_RandomProjectionFit",
+    "function_version": "1.0",
+    "function_type": "fastpath",
+    "function_category": "Feature Engineering Transform",
+    "function_alias_name": "TD_RandomProjectionFit",
+    "function_r_name": "aa.td_randomprojection.fit",
+    "short_description": "fastpath function to generate/store required set of values/parameters to be used by TD_RandomProjectionTransform for dimensionality reduction.",
+    "long_description": "fastpath function to generate/store required set of values/parameters to be used by TD_RandomProjectionTransform for dimensionality reduction.",
+    "input_tables": [
+        {
+            "requiredInputKind": [
+                "PartitionByAny"
+            ],
+            "isOrdered": false,
+            "partitionByOne": false,
+            "name": "InputTable",
+            "alternateNames": [],
+            "isRequired": true,
+            "rDescription": "The relation that contains input data.",
+            "description": "The relation that contains input data.",
+            "datatype": "TABLE_ALIAS",
+            "allowsLists": false,
+            "rName": "data",
+            "useInR": true,
+            "rOrderNum": 1
+        }
+    ],
+    "output_tables": [
+        {
+            "isOutputTable": true,
+            "omitPossible": true,
+            "name": "OutputTable",
+            "alternateNames": [],
+            "isRequired": false,
+            "rDescription": "Specifies the name of the table in which the output of TD_RandomProjectionFit can be stored.",
+            "description": "Specifies the name of the table in which the output of TD_RandomProjectionFit can be stored.",
+            "datatype": "TABLE_NAME",
+            "allowsLists": false,
+            "rName": "output.table",
+            "useInR": true,
+            "rOrderNum": 2
+        }
+    ],
+    "argument_clauses": [
+        {
+            "targetTable": [
+                "InputTable"
+            ],
+            "checkDuplicate": true,
+            "allowedTypes": [],
+            "allowedTypeGroups": [
+                "NUMERIC"
+            ],
+            "matchLengthOfArgument": "",
+            "allowPadding": false,
+            "name": "TargetColumns",
+            "alternateNames": [],
+            "isRequired": true,
+            "rDescription": "Specifies the columns/features to be used for processing.",
+            "description": "Specifies the columns/features to be used for processing.. Format [Start:End].",
+            "datatype": "STRING",
+            "allowsLists": false,
+            "rName": "target.columns",
+            "useInR": true,
+            "rOrderNum": 3,
+            "defaultValue": "[1:]",
+            "useDefaultInQuery": false
+        },
+        {
+            "lowerBound": 1,
+            "upperBound": 2147483647,
+            "lowerBoundType": "INCLUSIVE",
+            "upperBoundType": "INCLUSIVE",
+            "allowNaN": false,
+            "name": "NumComponents",
+            "alternateNames": [],
+            "isRequired": true,
+            "rDescription": "Specifies the target dimension(number of features) into which data points from the original dimension will be projected.",
+            "description": "Specifies the target dimension(number of features) into which data points from the original dimension will be projected.",
+            "datatype": "INTEGER",
+            "allowsLists": false,
+            "rName": "num.components",
+            "useInR": true,
+            "rOrderNum": 4
+        },
+        {
+            "defaultValue": 0,
+            "lowerBound": 0,
+            "upperBound": 2147483647,
+            "lowerBoundType": "INCLUSIVE",
+            "upperBoundType": "INCLUSIVE",
+            "allowNaN": false,
+            "name": "Seed",
+            "alternateNames": [],
+            "isRequired": false,
+            "rDescription": "Specify the random seed the function uses for repeatable results.",
+            "description": "Specify the random seed the function uses for repeatable results.",
+            "datatype": "INTEGER",
+            "allowsLists": false,
+            "rName": "seed",
+            "useInR": true,
+            "rOrderNum": 5
+        },
+        {
+            "defaultValue": 0.1,
+            "lowerBound": 0,
+            "upperBound": 1,
+            "lowerBoundType": "EXCLUSIVE",
+            "upperBoundType": "EXCLUSIVE",
+            "allowNaN": false,
+            "name": "Epsilon",
+            "alternateNames": [],
+            "isRequired": false,
+            "rDescription": "Specify the epsilon(distortion) parameter value.",
+            "description": "Specify the epsilon(distortion) parameter value.",
+            "datatype": "DOUBLE",
+            "allowsLists": false,
+            "rName": "epsilon",
+            "useInR": true,
+            "rOrderNum": 6
+        },
+        {
+            "defaultValue": 0.333,
+            "lowerBound": 0,
+            "upperBound": 1,
+            "lowerBoundType": "EXCLUSIVE",
+            "upperBoundType": "INCLUSIVE",
+            "allowNaN": false,
+            "name": "Density",
+            "alternateNames": [],
+            "isRequired": false,
+            "rDescription": "Specifies the approximate ratio of non-zero elements to be produced in the random projection matrix.",
+            "description": "Specifies the approximate ratio of non-zero elements to be produced in the random projection matrix.",
+            "datatype": "DOUBLE",
+            "allowsLists": false,
+            "rName": "density",
+            "useInR": true,
+            "rOrderNum": 7
+        },
+        {
+            "permittedValues": [
+                "GAUSSIAN",
+                "SPARSE"
+            ],
+            "defaultValue": "GAUSSIAN",
+            "isOutputColumn": false,
+            "matchLengthOfArgument": "",
+            "allowPadding": false,
+            "name": "ProjectionMethod",
+            "alternateNames": [],
+            "isRequired": false,
+            "rDescription": "Specifies the method name for RandomProjection algorithm.",
+            "description": "Specifies the method name for RandomProjection algorithm.",
+            "datatype": "STRING",
+            "allowsLists": false,
+            "rName": "projection.method",
+            "useInR": true,
+            "rOrderNum": 8
+        },
+        {
+            "permittedValues": [],
+            "defaultValue": "td_rpj_feature",
+            "isOutputColumn": false,
+            "matchLengthOfArgument": "",
+            "allowPadding": false,
+            "name": "OutputFeatureNamesPrefix",
+            "alternateNames": [],
+            "isRequired": false,
+            "rDescription": "Specifies prefix to be used for output feature names generated by TD_RandomProjectionTransform.",
+            "description": "Specifies prefix to be used for output feature names generated by TD_RandomProjectionTransform.",
+            "datatype": "STRING",
+            "allowsLists": false,
+            "rName": "output.featurenames.prefix",
+            "useInR": true,
+            "rOrderNum": 9
+        }
+    ]
+}

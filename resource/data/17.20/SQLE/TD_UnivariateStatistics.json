@@ -1,0 +1,118 @@
+{
+  "json_schema_major_version": "1",
+  "json_schema_minor_version": "1",
+  "json_content_version": "1",
+  "function_name": "TD_UnivariateStatistics",
+  "function_version": "1.0",
+  "function_alias_name": "TD_UnivariateStatistics",
+  "function_type": "fastpath",
+  "function_category" : "Data Exploration",
+  "function_r_name": "aa.td.univariate.statistics",
+  "ref_function_r_name": "aa.td.univariate.statistics",
+  "short_description": "This function generates set of univariate statistics for numeric target columns.",
+  "long_description": "This function takes a input table partitioned by ANY and a set of numeric target columns and generates a set of statistics for each target columns.",
+  "input_tables": [
+    {
+      "isOrdered": false,
+      "partitionByOne": false,
+      "name": "InputTable",
+      "alternateNames": [],
+      "isRequired": true,
+      "rDescription": "Specifies the table containing the input numeric columns.",
+      "description": "Specifies the table containing the input numeric columns.",
+      "datatype": "TABLE_ALIAS",
+      "allowsLists": false,
+      "rName": "newdata",
+      "useInR": true,
+      "rFormulaUsage": false,
+      "rOrderNum": 1
+    }
+  ],
+  "argument_clauses": [
+    {
+      "targetTable": [
+        "InputTable"
+      ],
+      "checkDuplicate": true,
+      "allowedTypes": [],
+      "allowedTypeGroups": [
+        "ALL"
+      ],
+      "requiredLength": 1,
+      "matchLengthOfArgument": "",
+      "allowPadding": false,
+      "name": "TargetColumns",
+      "alternateNames": [],
+      "isRequired": true,
+      "rDescription": "Specify the NUMERIC input target columns or column range.",
+      "description": "Specify the NUMERIC input target columns or column range.",
+      "datatype": "COLUMNS",
+      "allowsLists": true,
+      "rName": "target.columns",
+      "useInR": true,
+      "rOrderNum": 2
+    },
+	{
+      "targetTable": [
+        "InputTable"
+      ],
+      "checkDuplicate": true,
+      "allowedTypes": [],
+      "allowedTypeGroups": [
+        "ALL"
+      ],
+      "requiredLength": 1,
+      "matchLengthOfArgument": "",
+      "allowPadding": false,
+      "name": "PartitionColumns",
+      "alternateNames": [],
+      "isRequired": false,
+      "rDescription": "Specify the names of the input partition columns.",
+      "description": "Specify the names of the input partition columns.",
+      "datatype": "COLUMNS",
+      "allowsLists": true,
+      "rName": "partition.columns",
+      "useInR": true,
+      "rOrderNum": 3
+    },
+    {
+      "defaultValue": "ALL",
+      "name": "Stats",
+      "alternateNames": [],
+      "isRequired": false,
+      "rDescription": "Specify any actual/alternate statistics names to be calculated for the target columns.",
+      "description": "Specify any actual/alternate statistics names to be calculated for the target columns.",
+      "datatype": "STRING",
+      "allowsLists": true,
+      "rName": "stats",
+      "useInR": true,
+      "rOrderNum": 4
+    },
+	{
+      "defaultValue": [1, 5, 10, 25, 50, 75, 90, 95, 99],
+      "name": "Centiles",
+      "alternateNames": [],
+      "isRequired": false,
+      "rDescription": "This argument is applicable only when the Percentiles (PRC) or ALL stats is provided in the Stats argument. Specify the particular percentile value to be calculated. This argument can accept multiple unique integer values between 1 to 100.",
+      "description": "This argument is applicable only when the Percentiles (PRC) or ALL stats is provided in the Stats argument. Specify the particular percentile value to be calculated. This argument can accept multiple unique integer values between 1 to 100.",
+      "datatype": "INTEGER",
+      "allowsLists": true,
+      "rName": "centiles",
+      "useInR": true,
+      "rOrderNum": 5
+    },
+	{
+      "defaultValue": 20,
+      "name": "TrimPercentile",
+      "alternateNames": [],
+      "isRequired": false,
+      "rDescription": "This argument is applicable only when the Trimmed Mean (TM) or ALL stats is provided in the Stats argument. This argument can accept only one integer values between 1 to 50. Calculates mean of all the values laying in between the trimmed lower percentile (trim_percentage) and trimmed upper percentile (100 – trimmed_percentage).",
+      "description": "This argument is applicable only when the Trimmed Mean (TM) or ALL stats is provided in the Stats argument. This argument can accept only one integer values between 1 to 50. Calculates mean of all the values laying in between the trimmed lower percentile (trim_percentage) and trimmed upper percentile (100 – trimmed_percentage).",
+      "datatype": "INTEGER",
+      "allowsLists": false,
+      "rName": "trim.percentile",
+      "useInR": true,
+      "rOrderNum": 6
+    }
+  ]
+}

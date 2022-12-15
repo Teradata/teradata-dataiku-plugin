@@ -135,7 +135,8 @@
       WHERE:'[Optional] Specify in SQL format any conditions that your input data must satisfy (note: This option corresponds to using the WHERE clause in SQL).',
       OUTPUT_COLUMN: 'Check the box to include this variable in the Dataiku output dataset.',
       OUTPUT_ALL: 'By default, all output variables of your recipe are included in the recipe Dataiku output dataset. To include only select variables, check the corresponding boxes next to the variables you want to include.',
-      DATA_PARTITION_TYPE: 'If other than None, the recipe will execute with different data partitions. The column values option determines partitioning by means of different values in one or more columns (note: This option corresponds to using the PARTITION BY clause in SQL). The Hash option partitions data in a different way, where data are distributed to Database AMPs based on AMP hash values in one or more columns (note: This option corresponds to using the HASH BY clause in SQL).'
+      DATA_PARTITION_TYPE: 'If other than None, the recipe will execute with different data partitions. The column values option determines partitioning by means of different values in one or more columns (note: This option corresponds to using the PARTITION BY clause in SQL). The Hash option partitions data in a different way, where data are distributed to Database AMPs based on AMP hash values in one or more columns (note: This option corresponds to using the HASH BY clause in SQL).',
+      UAF_FUNCTION: 'Specify the type of the input UAF table.'
    
     }
 
@@ -212,10 +213,12 @@
         var data = undefined;
         var i = 0;
         var choice = undefined;
+        var selectedFunctionIsAvailable = false;
         for(i=0; i<numChoices; ++i) {
           // Find the choice for the selectedFunction 
           choice = $scope.choices[i]
           if(selectedFunction  == choice["function_alias_name"]) {
+              selectedFunctionIsAvailable = true;
               // Check if it has original_json
               if("json_contents" in choice) {
                   // If it does have original_json, just use that for the data
@@ -226,8 +229,9 @@
           }
         }
 
-        // If JSON contents are not available then call python to load the JSON contents
-        if(data == undefined) {
+        
+        // This would load the last JSON which is zSCORE
+        if(selectedFunctionIsAvailable && data == undefined) {
           var json_path = choice["json_file_path"]
           $scope.callPythonDo({"load_json":json_path}).then(
                     data => {
@@ -258,8 +262,9 @@
                   );
           return
         }
+        
 
-        if(data == undefined) {
+        if(!selectedFunctionIsAvailable) {
           $('<div></div>').dialog({
                   modal: true,
                   width: 400,
@@ -615,6 +620,47 @@ removeOrderByColumn_WITHDIR: function(orderArray, orderDirArray, index) {
             });  //end confirm dialog
       },
 
+      // SKS: Reset Dialog
+      showResetDialog: function() {
+            $( "#dialog-reset" ).dialog({
+                  resizable: false,
+                  height: "auto",
+                  width: 400,
+                  modal: true,
+                  buttons: {
+                    "Reset": function() {
+                      var selectedFunction = $scope.config.function.name;
+                      var numChoices = $scope.choices.length;
+                      var data = undefined;
+                      var i = 0;
+                      var choice = undefined;
+                      var selectedFunctionIsAvailable = false;
+                      for(i=0; i<numChoices; ++i) {
+                        // Find the choice for the selectedFunction 
+                        choice = $scope.choices[i];
+                        if(selectedFunction  == choice["function_alias_name"]) {
+                            selectedFunctionIsAvailable = true;
+                            // Check if it has original_json
+                            if("json_contents" in choice) {
+                                // we don't want this to happen therefore set to undefined
+                                choice["json_contents"] = undefined;
+                                break; 
+                            }
+                            break;
+                        }
+                      }
+                      $scope.config.function = {};
+                      $scope.config.function.name = selectedFunction;
+                      $scope.refresh($scope.config.function.name);
+                      $( this ).dialog( "close" );
+                    },
+                    Cancel: function() {
+                      $( this ).dialog( "close" );
+                    }
+                  }
+            });  //end confirm dialog
+      },
+
        // SKS: JSON Dialog
       showJSONDialog: function() {
            $('<div></div>').dialog({
@@ -743,7 +789,7 @@ removeOrderByColumn_WITHDIR: function(orderArray, orderDirArray, index) {
           if (argument) {
             if (argument.lowerBound.toString().toLowerCase().indexOf("infinity") != -1)
               return "-1000000";
-            return argument.lowerBound.toString();
+            return argument.lowerBound.toFixed(4);
           }
           return "-1000000";
       },
@@ -753,7 +799,7 @@ removeOrderByColumn_WITHDIR: function(orderArray, orderDirArray, index) {
           if (argument) {
             if (argument.upperBound.toString().toLowerCase().indexOf("infinity") != -1)
               return "1000000";
-            return argument.upperBound.toString();
+            return argument.upperBound.toFixed(4);
           }
           return "1000000";
       },
@@ -761,14 +807,16 @@ removeOrderByColumn_WITHDIR: function(orderArray, orderDirArray, index) {
           let name = item.name;
           let argument = $scope.getArgumentWithName(name);
           if (argument) {
-            if (argument.lowerBound.toString().toLowerCase().indexOf("infinity") != -1)
-              return "0.01";
-            if (argument.upperBound.toString().toLowerCase().indexOf("infinity") != -1)
-              return "0.01";
-            return ((argument.upperBound-argument.lowerBound)/100.0).toString();
+            if (argument.lowerBound.toString().toLowerCase().indexOf("infinity") != -1 || argument.lowerBound < -1000.0)
+              return "0.001";
+            if (argument.upperBound.toString().toLowerCase().indexOf("infinity") != -1 || argument.upperBound > 1000.0)
+              return "0.001";
+            let stepValue = ((argument.upperBound-argument.lowerBound)/10000.0);
+            if(stepValue<0.001)
+              stepValue = 0.001;
+            return stepValue.toFixed(4);
           }
-          // Set the step size to have 100 intervals
-          return "0.01";
+          return "0.001";
       },
 
       // SKS: Added Default Value
@@ -817,9 +865,23 @@ removeOrderByColumn_WITHDIR: function(orderArray, orderDirArray, index) {
 
       getArgumentFormattedName: function (name) {
           let argument = $scope.getArgumentWithName(name);
-          return argument ? argument.name.replace(/([A-Z]+)/g, " $1")
+
+          // SKS: Do not show Groups
+          if (argument && (argument.datatype == 'GROUPSTART' || argument.datatype == 'GROUPEND')) {
+            return ""
+          }
+
+          let result = argument ? argument.name.replace(/([A-Z]+)/g, " $1")
                   .replace(/([A-Z][a-z])/g, " $1").split('_').join(' ')
                   : name;
+          /* Dont show full group name, just last attribute with spaces before it
+          if(result.includes(".")) {
+            let breakdown = result.split(".");
+            return "  ".repeat(breakdown.length-1) + breakdown[breakdown.length-1];
+          }
+          */
+
+          return result;
       },
 
       getPermittedValues: function (i) {
@@ -1291,7 +1353,8 @@ removeOrderByColumn_WITHDIR: function(orderArray, orderDirArray, index) {
        */
       communicateWithBackend: function () {
 
-        // SAROOP_DONE: Set flag to false (before backend is called)
+        // This is called the first time or when there is a refresh
+        // Dictionary we get back is ..
         isBackendDictReady = false;
         var startTime = new Date();
         $scope.callPythonDo({}).then(
@@ -1603,7 +1666,6 @@ removeOrderByColumn_WITHDIR: function(orderArray, orderDirArray, index) {
       },
 
       cleanName: function (rawName) {
-
         return rawName.split('_').join(' ').toLowerCase()
 
       },

@@ -65,7 +65,7 @@ def verifyModelName(modelName):
 
 def verifyAttribute(attributeValue):
     # Attributes should never have single quotes
-    if ("'" not in attributeValue):
+    if (not attributeValue) or ("'" not in attributeValue):
         return attributeValue
     else:
         raise Exception('Illegal Attribute Value', attributeValue)
