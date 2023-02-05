@@ -1,8 +1,12 @@
 # Teradata Plugin Changelog
 
-## Version 2.2.0 (December 2022)
+## Version 2.2.1 (February 2023)
 
 Current version
+
+* Bug fix: An issue prevented non-admin users from running plugin recipes.
+
+## Version 2.2.0 (December 2022)
 
 * Support for 54 new Analytic Functions in Analytics Database 17.20.
 * Bug fix: BYOM scoring recipe: Performance improvement by directly routing the scoring output to the database.

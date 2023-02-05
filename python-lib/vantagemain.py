@@ -30,6 +30,7 @@ import pandas as pd
 from querybuilderfacade import *
 from inputtableinfo import *
 from outputtableinfo import *
+import auth
 
 # SQLE functions via Open ended query generation
 from open_ended_query_generator import OpenEndedQueryGenerator
@@ -61,8 +62,7 @@ def vantageDo():
     client = dataiku.api_client()
     projectkey = main_input_name.split('.')[0]
     project = client.get_project(projectkey)
-    connections = client.list_connections()
-
+    connections = {}
     recipe_config = get_recipe_config()
 
     # Datasets
@@ -79,8 +79,9 @@ def vantageDo():
             user_table_name = input_name.split('.')[1]
             connectionInfo = inputDataset.get_location_info()['info']
             inputConnectionName = connectionInfo['connectionName']
+            connections = auth.addConnection(connections, inputConnectionName)
             defaultDatabase = inputDataset.get_config()['params'].get('schema', '')
-            if not defaultDatabase:
+            if not defaultDatabase and inputConnectionName in connections:
                 defaultDatabase = connections[inputConnectionName]['params']['defaultDatabase']
             full_table_name = connectionInfo['table']
             inputtables[user_table_name] = full_table_name
@@ -117,8 +118,9 @@ def vantageDo():
             user_table_name = output_name.split('.')[1]
             connectionInfo = outputDataset.get_location_info()['info']
             outputConnectionName = connectionInfo['connectionName']
+            connections = auth.addConnection(connections, outputConnectionName)
             defaultDatabase = outputDataset.get_config()['params'].get('schema', '')
-            if not defaultDatabase:
+            if not defaultDatabase and outputConnectionName in connections:
                 defaultDatabase = connections[outputConnectionName]['params']['defaultDatabase']
             full_table_name = connectionInfo['table']
             table_map = {}
@@ -135,9 +137,15 @@ def vantageDo():
 
     
     # Connection properties.
-    properties = input_dataset.get_location_info(sensitive_info=True)['info'].get('connectionParams').get('properties')
-    autocommit = input_dataset.get_location_info(sensitive_info=True)['info'].get('connectionParams').get('autocommitMode')
-    
+    autocommit = True
+    try:
+        properties = input_dataset.get_location_info(sensitive_info=True)['info'].get('connectionParams').get('properties')
+        autocommit = input_dataset.get_location_info(sensitive_info=True)['info'].get('connectionParams').get('autocommitMode')
+    except:
+        if inputConnectionName in connections:
+            properties = connections[inputConnectionName]['params']['properties']
+            autocommit = connections[inputConnectionName]['params']['autocommitMode']
+        
     # SQL Executor.
     executor = SQLExecutor2(dataset=input_dataset)   
     

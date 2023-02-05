@@ -20,15 +20,19 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 '''
 
+import sys
+sys.path.append('../../python-lib')
+import auth
+
+
 FUNCTION_CATEGORY="Data Transformation"
 
 def sto_database(inputdataset):
     if inputdataset == None:
         return ''
-    #result =  getConnectionParamsFromDataset(output_A_datasets[0]).get('defaultDatabase', "");
-    client = dataiku.api_client()
-    connections = client.list_connections()
+    connections = {}
     connectionName = inputdataset.get_location_info()['info']['connectionName']
+    connections = auth.addConnection(connections, connectionName)
     result = None
     if "dkuProperties" in connections[connectionName]['params']:
         dkuProperties = connections[connectionName]['params']['dkuProperties']
@@ -44,10 +48,9 @@ def sto_database(inputdataset):
 def get_auth_token(inputdataset):
     if inputdataset == None:
         return ''
-    #result =  getConnectionParamsFromDataset(output_A_datasets[0]).get('defaultDatabase', "");
-    client = dataiku.api_client()
-    connections = client.list_connections()
+    connections = {}
     connectionName = inputdataset.get_location_info()['info']['connectionName']
+    connections = auth.addConnection(connections, connectionName)
     result = None
     if "dkuProperties" in connections[connectionName]['params']:
         dkuProperties = connections[connectionName]['params']['dkuProperties']

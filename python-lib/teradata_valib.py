@@ -62,6 +62,8 @@ def dataiku_valib_execution(dss_function, connections, connectionName, executor,
     return
 
 def get_val_location(connections, connectionName):
+    if connectionName not in connections:
+        return 'VAL'
     val_location = None
     if "dkuProperties" in connections[connectionName]['params']:
         dkuProperties = connections[connectionName]['params']['dkuProperties']

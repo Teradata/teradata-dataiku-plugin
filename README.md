@@ -19,7 +19,7 @@ For complete details, please see the Teradata plugin user guide under the [offic
 
 To use the Teradata plugin:
 
-* You will need access credentials to establish a connection to a target Teradata Vantage Analytics Database.
+* You will need access credentials to establish a connection to a target Teradata Vantage Analytics Database on a VantageCloud Enterprise or Vantage Core system.
 * To connect to an Analytics Database, the [Teradata JDBC Driver](https://downloads.teradata.com/download/connectivity/jdbc-driver). Version 16.20 or later is required.
 
 

@@ -28,6 +28,7 @@ from dataiku.customrecipe import get_recipe_resource
 import sys
 sys.path.append('../../python-lib')
 import vantage_version
+import auth
 # SKS Open Query Generator
 from open_ended_query_generator import OpenEndedQueryGenerator
 from query_engine_wrapper import QueryEngineWrapper
@@ -45,20 +46,23 @@ PARTNER_LIST=["EvaluateNamedEntityFinderRow","LinRegMatrix"]
 def get_val_default_database(inputdataset):
     if inputdataset == None:
         return '', ''
-    client = dataiku.api_client()
-    connections = client.list_connections()
+    
+    connections = {}
     connectionName = inputdataset.get_location_info()['info']['connectionName']
+    connections = auth.addConnection(connections, connectionName)
     defaultDatabase = ''
-    if 'defaultDatabase' in connections[connectionName]['params']:
+    if connectionName in connections and 'defaultDatabase' in connections[connectionName]['params']:
         defaultDatabase = connections[connectionName]['params']['defaultDatabase']
     valDatabase = ''
-    if "dkuProperties" in connections[connectionName]['params']:
+    if connectionName in connections and "dkuProperties" in connections[connectionName]['params']:
         dkuProperties = connections[connectionName]['params']['dkuProperties']
         for item in dkuProperties:
             if item['name'] == "VAL_DATABASE":
                 valDatabase = item['value']
                 break
     return valDatabase, defaultDatabase
+
+
 
 # Subclass of query engine wrapper implemented with a Dataiku SQLExecutor2
 # An instance of this class will be created when we use the functions in analytic_function_utility and vantage_version
@@ -426,9 +430,10 @@ def do(payload, config, plugin_config, inputs):
         inputschemas[inputtablename] = inputdataset.read_schema()
     
     connection = getConnectionParamsFromDataset(input_dataset)
-    aafschema = ([property.get('value', '') for property in connection.\
-                  get('connectionParams', {}).get('properties', {})
-          if 'aafschema_700' == property.get('name', '')] or ['']).pop()
+    if connection:
+        aafschema = ([property.get('value', '') for property in connection.\
+                      get('connectionParams', {}).get('properties', {})
+              if 'aafschema_700' == property.get('name', '')] or ['']).pop()
     
     # schema = None # Debugging.
     # inputschemas = None

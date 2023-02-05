@@ -109,6 +109,7 @@ import os
 from dataiku import pandasutils as pdu
 from dataiku.core.sql import SQLExecutor2
 from verifyTableColumns import *
+import auth
 
 
 def executor_query(executor, query_string):
@@ -128,9 +129,10 @@ handle = dataiku.Folder(script_role) if input_B_names else None
 logging.info('Getting STO Database')
 def sto_database():
     #result =  getConnectionParamsFromDataset(output_A_datasets[0]).get('defaultDatabase', "");
-    client = dataiku.api_client()
-    connections = client.list_connections()
+    connections = {}
     connectionName = input_A_datasets[0].get_location_info()['info']['connectionName']
+    connections = auth.addConnection(connections, connectionName)
+
     result = None
     if "dkuProperties" in connections[connectionName]['params']:
         dkuProperties = connections[connectionName]['params']['dkuProperties']
@@ -148,8 +150,16 @@ def getConnectionDetails(dataset=input_A_datasets[0]):
     return getConnectionParamsFromDataset(input_A_datasets[0]);
 
 
-properties = getConnectionDetails(input_A_datasets[0]).get('properties')
-autocommit = getConnectionDetails(input_A_datasets[0]).get('autocommitMode')
+# Connection properties.
+try:
+    properties = getConnectionDetails(input_A_datasets[0]).get('properties')
+    autocommit = getConnectionDetails(input_A_datasets[0]).get('autocommitMode')
+except:
+    connections = {}
+    inputConnectionName = input_A_datasets[0].get_location_info()['info']['connectionName']
+    connections = auth.addConnection(connections, inputConnectionName)
+
+
 tmode = ''
 
 for prop in properties:

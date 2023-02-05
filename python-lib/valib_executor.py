@@ -58,69 +58,74 @@ import valib_xmlToHtmlReport
 
 def valib_execution(json_contents, dss_function, dropIfExists=False, valib_query_wrapper=None):
     correct_json = {}
-    label_to_name_map = json_contents["name_map"]
-    label_to_type_map = json_contents["type_map"]
-    label_to_choice_map = json_contents["choices_map"]
-    arguments = dss_function["arguments"]
-    for argument in arguments:
-        label = argument["name"]
-        if "value" in argument:
-            value = argument["value"]
-        else:
-            continue
-        name = label_to_name_map[label]
-        parameter_type = label_to_type_map[label]
-        if parameter_type == 'COLUMNS' or parameter_type == 'COLUMN':
-            # Avoid passing in no columns
-            if len(value) == 1 and not value[0]:
-                continue
-        if parameter_type == 'SELECT':
-            if value in label_to_choice_map[label]:
-                value = label_to_choice_map[label][value]
-        
-        if parameter_type == 'MULTISELECT':
-            if len(value) == 0:
-                continue
-            if type(value) == str:
-                items = value.split('\x00')
-            elif type(value) == list:
-                items = value
+    if dss_function:
+        label_to_name_map = json_contents["name_map"]
+        label_to_type_map = json_contents["type_map"]
+        label_to_choice_map = json_contents["choices_map"]
+        arguments = dss_function["arguments"]
+        for argument in arguments:
+            label = argument["name"]
+            if "value" in argument:
+                value = argument["value"]
             else:
                 continue
-            value = []
-            for item in items:
-                if item in label_to_choice_map[label]:
-                    item = label_to_choice_map[label][item]
-                value.append(item)
+            name = label_to_name_map[label]
+            parameter_type = label_to_type_map[label]
+            if parameter_type == 'COLUMNS' or parameter_type == 'COLUMN':
+                # Avoid passing in no columns
+                if len(value) == 1 and not value[0]:
+                    continue
+            if parameter_type == 'SELECT':
+                if value in label_to_choice_map[label]:
+                    value = label_to_choice_map[label][value]
+            
+            if parameter_type == 'MULTISELECT':
+                if len(value) == 0:
+                    continue
+                if type(value) == str:
+                    items = value.split('\x00')
+                elif type(value) == list:
+                    items = value
+                else:
+                    continue
+                value = []
+                for item in items:
+                    if item in label_to_choice_map[label]:
+                        item = label_to_choice_map[label][item]
+                    value.append(item)
 
-        if parameter_type == 'MAP':
-            map_value = {}
-            if str(value) == "":
-                continue
-            elif "/" in str(value):
-                sep = "/"
-            elif ":" in str(value):
-                sep = ":"
-            values = value.split('\x00')
+            if parameter_type == 'MAP':
+                map_value = {}
+                if str(value) == "":
+                    continue
+                elif "/" in str(value):
+                    sep = "/"
+                elif ":" in str(value):
+                    sep = ":"
+                values = value.split('\x00')
 
-            for item in values:
-                values = item.split(sep)
-                map_value[values[0]] = values[1]
-            value = map_value
-        if parameter_type == 'STRINGS':
-            if str(value) == "":
-                continue
-            value = value.split('\x00')
-        correct_json[name] = value
-    function_name = json_contents["function_name"]
+                for item in values:
+                    values = item.split(sep)
+                    map_value[values[0]] = values[1]
+                value = map_value
+            if parameter_type == 'STRINGS':
+                if str(value) == "":
+                    continue
+                value = value.split('\x00')
+            correct_json[name] = value
 
-    # Get Input Table Names Based on user selection
-    if "input_table_names" in dss_function:
-        correct_json["input_table_names"] = dss_function["input_table_names"]
-    if "output_table_names" in dss_function:
-        correct_json["output_table_names"] = dss_function["output_table_names"]
-    if "val_location" in dss_function:
-        correct_json["val_location"] = dss_function["val_location"] 
+        function_name = json_contents["function_name"]
+
+        # Get Input Table Names Based on user selection
+        if "input_table_names" in dss_function:
+            correct_json["input_table_names"] = dss_function["input_table_names"]
+        if "output_table_names" in dss_function:
+            correct_json["output_table_names"] = dss_function["output_table_names"]
+        if "val_location" in dss_function:
+            correct_json["val_location"] = dss_function["val_location"] 
+    else:
+        correct_json = json_contents
+        function_name = correct_json["function_name"]
 
     # Execute function
     if function_name == "Chi Square Test VAL":

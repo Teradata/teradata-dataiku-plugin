@@ -54,3 +54,14 @@ def getAuthFilePath(filename):
     except Exception as e:
         print('Error getting resource recipe: {error}'.format(error=repr(e.args)))
     return filepath
+
+
+def addConnection(connections, connectionName):
+    try:
+        client = dataiku.api_client()
+        connections[connectionName] = client.get_connection(name=connectionName).get_info()
+        return connections
+    except:
+        pass
+    return connections
+

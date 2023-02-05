@@ -6,6 +6,7 @@ from teradatabyomtest import handle_models
 import json
 import logging
 from verifyTableColumns import *
+import auth
 
 
 model= handle_models.get_input_output(has_model_as_second_input=True)
@@ -46,7 +47,7 @@ pmml_model = client.get_project(project_key).get_saved_model(saved_model_id).get
 
 connection_name = str(get_recipe_config()["connection_name"][0])
 dss_connection_prams = client.get_connection(name=connection_name).get_info().get_params()
-    
+
 user_param = str(dss_connection_prams['user'])
 logging.info(user_param)
     
@@ -98,7 +99,6 @@ modelname_param = str(get_recipe_config()["modelname"])
 #############################
 
 # -*- coding: utf-8 -*-
-
 
 import sqlalchemy
 #creating connection

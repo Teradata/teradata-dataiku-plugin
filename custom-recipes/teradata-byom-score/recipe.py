@@ -8,7 +8,7 @@ from querybuilderfacade import *
 from inputtableinfo import *
 from outputtableinfo import *
 from vantage_schema import set_schema_from_vantage
-
+import auth
 
 # Inputs and outputs are defined by roles. In the recipe's I/O tab, the user can associate one
 # or more dataset to each input and output role.
@@ -118,17 +118,27 @@ client = dataiku.api_client()
 main_input_name = get_input_names_for_role('input_dataset')[0]
 projectkey = main_input_name.split('.')[0]
 project = client.get_project(projectkey)
-connections = client.list_connections()
+
 connectionInfo = output_dataset.get_location_info()['info']
 outputConnectionName = connectionInfo['connectionName']
+connections = {}
+connections = auth.addConnection(connections, outputConnectionName)
+
+
 outputDatabase = output_dataset.get_config()['params'].get('schema', '')
 if not outputDatabase:
     outputDatabase = connections[outputConnectionName]['params']['defaultDatabase']
 outputTable = connectionInfo['table']
 
 # Setup - pre/post query
-properties = input_dataset.get_location_info(sensitive_info=True)['info'].get('connectionParams').get('properties')
-autocommit = input_dataset.get_location_info(sensitive_info=True)['info'].get('connectionParams').get('autocommitMode')
+try:
+    properties = input_dataset.get_location_info(sensitive_info=True)['info'].get('connectionParams').get('properties')
+    autocommit = input_dataset.get_location_info(sensitive_info=True)['info'].get('connectionParams').get('autocommitMode')
+except:
+    inputConnectionName = input_dataset.get_location_info()['info']['connectionName']
+    properties = connections[inputConnectionName]['params']['properties']
+    autocommit = connections[inputConnectionName]['params']['autocommitMode']
+
 logging.info(SEP)
 
 logging.info("Assuming TERA mode.")
@@ -146,13 +156,14 @@ logging.info(SEP)
 # Delete old table
 executor =  SQLExecutor2(dataset = output_dataset)
 try:
-    drop_query = dropTableStatement(outputTable, outputDatabase)
+    drop_query = f"DROP TABLE {verifyQualifiedTableName(outputDatabase, outputTable)};"
     logging.info(SEP)
     logging.info("DROP query:")
-    if autocommit:
-        executor.query_to_df(query=drop_query)
-    else:
-        executor.query_to_df(pre_query=pre_query, query=drop_query, post_queries=post_query)
+    
+    if not autocommit:
+        executor.query_to_df(pre_query)
+    executor.query_to_df(drop_query, post_queries=post_query)
+
     logging.info(SEP)
 except Exception as e:
     logging.info(e)
@@ -200,10 +211,9 @@ logging.info(f"Prediction Query ==> {query}")
 try:
     # dataiku's query_to_df's pre_query parameter seems to not work. This is a work-around to ensure that the 
     # "START TRANSACTION;" block applies for non-autocommit TERA mode connections.
-    if autocommit:
-        executor.query_to_df(query=query)
-    else:
-        executor.query_to_df(pre_query=pre_query, query=query, post_queries=post_query)
+    if not autocommit:
+        executor.query_to_df(pre_query)
+    executor.query_to_df(query, post_queries=post_query)
 except Exception as error:
     err_str = str(error)
     index = err_str.index("[Teradata Database]")
