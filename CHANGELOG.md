@@ -1,6 +1,6 @@
 # Teradata Plugin Changelog
 
-## Version 2.2.1 (February 2023)
+## Version 2.2.1 (eFix - February 2023)
 
 Current version
 
