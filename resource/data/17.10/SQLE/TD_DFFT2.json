@@ -1,0 +1,231 @@
+{
+    "JSONVersion": "1",
+    "FuncRName": "...",
+    "MaxInputFiles": 1,
+    "IsPlottable": true,
+    "InputFmt": false,
+    "OutputFmt": true,
+    "function_type": "uaf",
+    "json_schema_major_version": "1",
+    "json_schema_minor_version": "2",
+    "json_content_version": "1",
+    "function_name": "TD_DFFT2",
+    "function_r_name": "aa.td_dfft2",
+    "ref_function_r_name": "aa.td_dfft2",
+    "function_version": "...",
+    "short_description": "This function executes the two-dimensional Fourier Transform ",
+    "long_description": "This function provides the ability to generate 'on-demand' plots.  The generated plots can be either univariate, multivariate, or composite in nature. The chosen implementation\u2019s output and style specification closely match Matplotlib ( https://matplotlib.org/ ), an extremely popular Python plotting library. The primary purpose for this decision is to jump start existing Matplotlib users into TD_PLOT usage.  However, the Teradata implementation is a completely independent and separate one based on C/C++.",
+    "input_tables": [
+        {
+            "LangName": "data or object or newdata or ... --> Langauges team can work with UAF team to come up with this field",
+            "requiredInputKind": [
+                "PartitionByNone"
+            ],
+            "isOrdered": false,
+            "partitionByOne": false,
+            "alternateNames": [],
+            "isRequired": true,
+            "description": "This function executes the two-dimensional Fourier Transform against a logical matrix having elements which are either real numbers or complex numbers.",
+            "rDescription": "This function executes the two-dimensional Fourier Transform against a logical matrix having elements which are either real numbers or complex numbers.",
+            "datatype": "TABLE_ALIAS",
+            "allowsLists": false,
+            "name": "Input",
+            "rName": "Input",
+            "useInR": true,
+            "rOrderNum": 1,
+            "uaf": {
+                "requiredUafKind": [
+                    "MATRIX"
+                ],
+                "is_row_sequence": "SEQUENCE",
+                "is_col_sequence": "SEQUENCE",
+                "row_axis_name": "",
+                "column_axis_name": "",
+                "id_name": "",
+                "id_sequence": "",
+                "payload_fields": "",
+                "payload_content": "",
+                "layer": "",
+                "where": "",
+                "time_duration": "",
+                "time_zero": "",
+                "time_type": "",
+                "seq_zero": "",
+                "interval": "Off",
+                "details": true,
+                "instance_names": "",
+                "data_type": "",
+                "payload_start_value": "",
+                "payload_offset_value": "",
+                "payload_num_entries": "",
+                "index": 0
+            },
+            "uafType": "MATRIX"
+        }
+    ],
+    "output_tables": [
+        {
+            "Type": "ART",
+            "PrimaryLayer": true,
+            "LayerName": "ARTPRIMARY",
+            "ResultTableColumnTypes": [
+                "integer",
+                "integer",
+                "float",
+                "float"
+            ],
+            "LangName": "data or object or newdata or ... --> Langauges team can work with UAF team to come up with this field",
+            "isOutputTable": true,
+            "omitPossible": true,
+            "partitionByOne": false,
+            "alternateNames": [],
+            "isRequired": false,
+            "description": "The TD_DFFT2 returns ONLY a Primary Result set.  There is no Secondary or Tertiary Result set returned by this function.  The Primary Result set can be retrieved by issuing a SELECT statement against the analytical result table containing the results.",
+            "rDescription": "The TD_DFFT2 returns ONLY a Primary Result set.  There is no Secondary or Tertiary Result set returned by this function.  The Primary Result set can be retrieved by issuing a SELECT statement against the analytical result table containing the results.",
+            "datatype": "TABLE_NAME",
+            "allowsLists": false,
+            "name": "OutputTable1",
+            "rName": "OutputTable1",
+            "useInR": true,
+            "rOrderNum": 2
+        }
+    ],
+    "argument_clauses": [
+        {
+            "name": "OutputFormat",
+            "defaultValue": "INDEX_STYLE(NUMERICAL_SEQUENCE)",
+            "permittedValues": [
+                "INDEX_STYLE(NUMERICAL_SEQUENCE)",
+                "INDEX_STYLE(FLOW_THROUGH)",
+                "CONTENT(COMPLEX)"
+            ],
+            "allowsLists": false,
+            "Type": "string",
+            "datatype": "STRING",
+            "description": "Output format",
+            "isRequired": false,
+            "rOrderNum": 3
+        },
+        {
+            "name": "ZERO_PADDING_OK",
+            "defaultValue": 1,
+            "permittedValues": [
+                0,
+                1
+            ],
+            "allowsLists": false,
+            "Type": "integer",
+            "datatype": "INTEGER",
+            "description": "Optional Parameter.  Determines whether it is OK to add zeros to both the 'row-series' and 'column-series' comprising the matrix.  Zeros are added to the end of  these series to achieve a more efficient computation of the FFT coefficients.  A value of '1' means true; a value of '0' means false.  Default is true.",
+            "isRequired": false,
+            "rOrderNum": 4
+        },
+        {
+            "name": "FREQ_STYLE",
+            "defaultValue": "",
+            "permittedValues": [
+                "K_INTEGRAL",
+                "K_SAMPLE_RATE",
+                "K_RADIANS",
+                "K_HERTZ"
+            ],
+            "allowsLists": false,
+            "Type": "enumeration<string>",
+            "datatype": "STRING",
+            "description": "Optional Parameter.  Determines format/values associated with the x-axis (ROW_I index) and y-axis (COLUMN_I index) of the output.  Choices are: 'K_INTEGRAL', an integer representation.; 'K_SAMPLE_RATE': normalized to 'Number Entries', ranges from -0.5 to +0.5;  'K_RADIANS', ranges from -PI to +PI; and, 'K_HERTZ', must be used in conjunction with the 'HERTZ_SAMPLE_RATE', this represents the frequency in hertz. The Default is 'K_INTEGRAL'. ",
+            "isRequired": false,
+            "rOrderNum": 5
+        },
+        {
+            "name": "HERTZ_SAMPLE_RATE",
+            "lowerBound": 0,
+            "lowerBoundType": "INCLUSIVE",
+            "allowNaN": false,
+            "allowsLists": false,
+            "Type": "float",
+            "datatype": "DOUBLE",
+            "description": "Optional Parameter.  Only valid with a FREQ_STYLE(K_HERTZ).  A Floating point constant representing the sample rate, in hertz.  A value of 10000.0 means that the sample points were obtained by sampling at a rate of 10,000 hertz.  This hertz interpretation will be applied to both the ROW_I and COLUMN_I indexes.",
+            "isRequired": false,
+            "rOrderNum": 6
+        },
+        {
+            "name": "ALGORITHM",
+            "permittedValues": [
+                "COOLEY_TUKEY",
+                "SINGLETON"
+            ],
+            "allowsLists": false,
+            "Type": "enumeration<string>",
+            "datatype": "STRING",
+            "description": "Optional Parameter.  Bypasses the internal DFFT Planner and influences the core DFFT algorithm associated with the primary DFFT calculation.  Choices are: 'COOLEY_TUKEY', or 'SINGLETON'.  When this parameter is NOT PRESENT.  The internal DFFT 'Planner' will select the most efficient algorithm for the operation. ",
+            "isRequired": false,
+            "rOrderNum": 7
+        },
+        {
+            "name": "HUMAN_READABLE",
+            "defaultValue": 1,
+            "permittedValues": [
+                0,
+                1
+            ],
+            "allowsLists": false,
+            "Type": "integer",
+            "datatype": "INTEGER",
+            "description": "Optional Parameter.  Determines whether the produced output rows comprising the matrix are in a human-readable / plottable form; or if they are output in the raw-form, which is equivalent to how the 'R' and 'PYTHON' programs would output the results.     A value of '1' means true, output in human readable form; a value of '0' means false, output in raw form.  Default is true \u2013 output in Human Readable format.",
+            "isRequired": false,
+            "rOrderNum": 8
+        },
+        {
+            "name": "OUTPUT_FMT",
+            "allowsLists": false,
+            "Type": "GROUPSTART",
+            "datatype": "GROUPSTART",
+            "description": "The TD_DFFT functions comes with many options relative to the contents of the output rows.  The data scientist has both the ability to affect the style of index used within the result series, as well as whether the Fourier coefficients should be output in rectangular (complex number) or polar (amplitude-phase) form.  Using the FREQ_STYLE and K_HERTZ parameters, the data scientist can choose between different ways of outputting the \u201cindex\u201d associated with the output series of Fourier coefficients, choosing between: a simple monotonically increasing integer index; an index based on the normalized sample rate; an index based on radians; and, an index based on the original sampling frequency used to capture the series.",
+            "isRequired": true,
+            "rOrderNum": 9
+        },
+        {
+            "name": "OUTPUT_FMT.CONTENT",
+            "permittedValues": [
+                "COMPLEX",
+                "AMPL_PHASE_RADIANS",
+                "AMPL_PHASE_DEGREES",
+                "AMPL_PHASE",
+                "MULTIVAR_COMPLEX",
+                "MULTIVAR_AMPL_PHASE",
+                "MULTIVAR_AMPL_PHASE_RADIANS",
+                "MULTIVAR_AMPL_PHASE_DEGREES",
+                "MULTIVAR_AMPL_PHASE"
+            ],
+            "allowsLists": false,
+            "Type": "enumeration",
+            "datatype": "STRING",
+            "description": "The data scientist may explicitly define the output content, OUTPUT_FMT(CONTENT()), choosing to output the Fourier coefficients in  either rectangular (complex numbers) or polar (amplitude-phase) number pairs.",
+            "isRequired": true,
+            "rOrderNum": 10
+        },
+        {
+            "name": "OUTPUT_FMT.ROW_MAJOR",
+            "defaultValue": 1,
+            "permittedValues": [
+                0,
+                1
+            ],
+            "allowsLists": false,
+            "Type": "integer",
+            "datatype": "INTEGER",
+            "description": "The data scientist may explicity declare whether they want the matrix output in a row-major-centric or column-major-centric manner, via the OUTPUT_FMT(ROW_MAJOR()) construct.",
+            "isRequired": true,
+            "rOrderNum": 11
+        },
+        {
+            "name": "OUTPUT_FMT_GROUPEND",
+            "allowsLists": false,
+            "Type": "GROUPEND",
+            "datatype": "GROUPEND",
+            "description": "The TD_DFFT functions comes with many options relative to the contents of the output rows.  The data scientist has both the ability to affect the style of index used within the result series, as well as whether the Fourier coefficients should be output in rectangular (complex number) or polar (amplitude-phase) form.  Using the FREQ_STYLE and K_HERTZ parameters, the data scientist can choose between different ways of outputting the \u201cindex\u201d associated with the output series of Fourier coefficients, choosing between: a simple monotonically increasing integer index; an index based on the normalized sample rate; an index based on radians; and, an index based on the original sampling frequency used to capture the series.",
+            "isRequired": true,
+            "rOrderNum": 12
+        }
+    ]
+}

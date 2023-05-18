@@ -1,0 +1,139 @@
+{
+    "JSONVersion": "1",
+    "FuncRName": "...",
+    "MaxInputFiles": 1,
+    "IsPlottable": false,
+    "InputFmt": false,
+    "OutputFmt": false,
+    "function_type": "uaf",
+    "json_schema_major_version": "1",
+    "json_schema_minor_version": "2",
+    "json_content_version": "1",
+    "function_name": "TD_SELECTION_CRITERIA",
+    "function_r_name": "aa.td_selection_criteria",
+    "ref_function_r_name": "aa.td_selection_criteria",
+    "function_version": "...",
+    "short_description": "The TD_SELECTION_CRITERIA function calculates a number of metrics ",
+    "long_description": "The TD_SELECTION_CRITERIA function calculates a number of metrics against the residuals left over from a model validation exercise.  The produced metrics can be used by the data scientist to make an intelligent choice as to which forecast model candidates to select to pursue for their forecast modeling project. ",
+    "input_tables": [
+        {
+            "LangName": "data or object or newdata or ... --> Langauges team can work with UAF team to come up with this field",
+            "requiredInputKind": [
+                "PartitionByNone"
+            ],
+            "isOrdered": false,
+            "partitionByOne": false,
+            "alternateNames": [],
+            "isRequired": true,
+            "description": "This section outlines the syntax associated with invoking the TD_SELECTION_CRITERIA function.   This function can accept either a single multivariate series as an input, or alternatively can accept an ART table containing the residual results from a previously run regression operation. For the case in which the input is a single multivariate series, the fields in the SERIES_SPEC(PAYLOAD(FIELDS(). CONTENT(MULTIVAR_REAL)) must consists of: First field referenced is the original series value; Second field referenced is the calculated series value produced by the model; Third field is the calculated residual: original_value minus calculated_valueFor the scenario in which the residuals reside within the tertiary result set associated with an ART table, then the caller merely needs to pass in the TABLE_NAME identify the ART containing the residuals - the DBS software will perform the extraction of the original series, calculated series, and residuals as part of the execution of this function.",
+            "rDescription": "This section outlines the syntax associated with invoking the TD_SELECTION_CRITERIA function.   This function can accept either a single multivariate series as an input, or alternatively can accept an ART table containing the residual results from a previously run regression operation. For the case in which the input is a single multivariate series, the fields in the SERIES_SPEC(PAYLOAD(FIELDS(). CONTENT(MULTIVAR_REAL)) must consists of: First field referenced is the original series value; Second field referenced is the calculated series value produced by the model; Third field is the calculated residual: original_value minus calculated_valueFor the scenario in which the residuals reside within the tertiary result set associated with an ART table, then the caller merely needs to pass in the TABLE_NAME identify the ART containing the residuals - the DBS software will perform the extraction of the original series, calculated series, and residuals as part of the execution of this function.",
+            "datatype": "TABLE_ALIAS",
+            "allowsLists": false,
+            "name": "Input",
+            "rName": "Input",
+            "useInR": true,
+            "rOrderNum": 1,
+            "uaf": {
+                "requiredUafKind": [
+                    "SERIES",
+                    "ART"
+                ],
+                "is_row_sequence": "SEQUENCE",
+                "is_col_sequence": "SEQUENCE",
+                "row_axis_name": "",
+                "column_axis_name": "",
+                "id_name": "",
+                "id_sequence": "",
+                "payload_fields": "",
+                "payload_content": "",
+                "layer": "",
+                "where": "",
+                "time_duration": "",
+                "time_zero": "",
+                "time_type": "",
+                "seq_zero": "",
+                "interval": "Off",
+                "details": true,
+                "instance_names": "",
+                "data_type": "",
+                "payload_start_value": "",
+                "payload_offset_value": "",
+                "payload_num_entries": "",
+                "index": 0
+            },
+            "uafType": ""
+        }
+    ],
+    "output_tables": [
+        {
+            "Type": "ART",
+            "PrimaryLayer": true,
+            "LayerName": "ARTPRIMARY",
+            "ResultTableColumnTypes": [
+                "integer",
+                "integer",
+                "float",
+                "float",
+                "float",
+                "float",
+                "float"
+            ],
+            "LangName": "data or object or newdata or ... --> Langauges team can work with UAF team to come up with this field",
+            "isOutputTable": true,
+            "omitPossible": true,
+            "partitionByOne": false,
+            "alternateNames": [],
+            "isRequired": false,
+            "description": "The TD_SELECTION_CRITERIA  function returns only a primary result set consisting of one row per unique series acted upon.   There are no secondary or tertiary result sets produced by this function.  The primary result set can be retrieved by issuing a SELECT against the analytical result table (ART) containing the results.",
+            "rDescription": "The TD_SELECTION_CRITERIA  function returns only a primary result set consisting of one row per unique series acted upon.   There are no secondary or tertiary result sets produced by this function.  The primary result set can be retrieved by issuing a SELECT against the analytical result table (ART) containing the results.",
+            "datatype": "TABLE_NAME",
+            "allowsLists": false,
+            "name": "OutputTable1",
+            "rName": "OutputTable1",
+            "useInR": true,
+            "rOrderNum": 2
+        }
+    ],
+    "argument_clauses": [
+        {
+            "name": "VAR_COUNT",
+            "lowerBound": 0,
+            "lowerBoundType": "INCLUSIVE",
+            "allowNaN": false,
+            "allowsLists": false,
+            "Type": "integer",
+            "datatype": "INTEGER",
+            "description": "For an ARIMA(p,d,q) model, this is an integer indicating the total number of parameters: VAR_COUNT = p + q +1(CONSTANT(1)); present in the model. ",
+            "isRequired": true,
+            "rOrderNum": 3
+        },
+        {
+            "name": "CONSTANT",
+            "defaultValue": 0,
+            "permittedValues": [
+                0,
+                1
+            ],
+            "allowsLists": false,
+            "Type": "integer",
+            "datatype": "INTEGER",
+            "description": "If  the ARIMA model has the constant part when fit the model. 0 is no constant and 1 is with constant",
+            "isRequired": true,
+            "rOrderNum": 4
+        },
+        {
+            "name": "USE_LIKELIHOOD",
+            "defaultValue": 0,
+            "permittedValues": [
+                0,
+                1
+            ],
+            "allowsLists": false,
+            "Type": "integer",
+            "datatype": "INTEGER",
+            "description": "If the calculation of those selection criteria values like AIC are based on the max log-likelihood provided during the model fitting stage. Only available when input table is art generated from TD_ARIMAESTIMATE.If throwing regular input or art from TD_ARIMAVALIDATE, function will error out.0 is using RSS, and 1 is using log-likelihood. Default value is 0 - using residuals.",
+            "isRequired": true,
+            "rOrderNum": 5
+        }
+    ]
+}

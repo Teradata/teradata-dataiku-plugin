@@ -1,0 +1,206 @@
+{
+    "JSONVersion": "1",
+    "FuncRName": "...",
+    "MaxInputFiles": 1,
+    "IsPlottable": true,
+    "InputFmt": false,
+    "OutputFmt": false,
+    "function_type": "uaf",
+    "json_schema_major_version": "1",
+    "json_schema_minor_version": "2",
+    "json_content_version": "1",
+    "function_name": "TD_GOLDFELD_QUANDT",
+    "function_r_name": "aa.td_goldfeld_quandt",
+    "ref_function_r_name": "aa.td_goldfeld_quandt",
+    "function_version": "...",
+    "short_description": "Statistical test that is performed on behalf of univariate or multivariate regression models",
+    "long_description": "The hope relative to the development of a univariate or multi-variate regression model is to create a regression model (estimator) that can be characterized as being BLUE: meaning the 'Best Linear Unbiased Estimator'.  One of the properties of such an estimator is that the variance should be homoscedastic, meaning that the variance should be constant.   The opposite behavior is that of a heteroscedastic variance",
+    "input_tables": [
+        {
+            "LangName": "data or object or newdata or ... --> Langauges team can work with UAF team to come up with this field",
+            "requiredInputKind": [
+                "PartitionByNone"
+            ],
+            "isOrdered": false,
+            "partitionByOne": false,
+            "alternateNames": [],
+            "isRequired": true,
+            "description": "This function is executed against the original univariate or multivariate series",
+            "rDescription": "This function is executed against the original univariate or multivariate series",
+            "datatype": "TABLE_ALIAS",
+            "allowsLists": false,
+            "name": "Input",
+            "rName": "Input",
+            "useInR": true,
+            "rOrderNum": 1,
+            "uaf": {
+                "requiredUafKind": [
+                    "SERIES"
+                ],
+                "is_row_sequence": "SEQUENCE",
+                "is_col_sequence": "SEQUENCE",
+                "row_axis_name": "",
+                "column_axis_name": "",
+                "id_name": "",
+                "id_sequence": "",
+                "payload_fields": "",
+                "payload_content": "",
+                "layer": "",
+                "where": "",
+                "time_duration": "",
+                "time_zero": "",
+                "time_type": "",
+                "seq_zero": "",
+                "interval": "Off",
+                "details": true,
+                "instance_names": "",
+                "data_type": "",
+                "payload_start_value": "",
+                "payload_offset_value": "",
+                "payload_num_entries": "",
+                "index": 0
+            },
+            "uafType": "SERIES"
+        }
+    ],
+    "output_tables": [
+        {
+            "Type": "ART",
+            "PrimaryLayer": true,
+            "LayerName": "ARTPRIMARY",
+            "ResultTableColumnTypes": [
+                "integer",
+                "integer",
+                "integer",
+                "integer",
+                "integer",
+                "integer",
+                "integer",
+                "float",
+                "float",
+                "float",
+                "float",
+                "float",
+                "varchar(64)"
+            ],
+            "LangName": "data or object or newdata or ... --> Langauges team can work with UAF team to come up with this field",
+            "isOutputTable": true,
+            "omitPossible": true,
+            "partitionByOne": false,
+            "alternateNames": [],
+            "isRequired": false,
+            "description": "The TD_GOLDFELD_QUANDT function returns only a primary result set consisting of one row per unique series acted upon.   There are no secondary or tertiary result sets produced by this function.  The primary result set can be retrieved by issuing a SELECT against the analytical table containing the results.",
+            "rDescription": "The TD_GOLDFELD_QUANDT function returns only a primary result set consisting of one row per unique series acted upon.   There are no secondary or tertiary result sets produced by this function.  The primary result set can be retrieved by issuing a SELECT against the analytical table containing the results.",
+            "datatype": "TABLE_NAME",
+            "allowsLists": false,
+            "name": "OutputTable1",
+            "rName": "OutputTable1",
+            "useInR": true,
+            "rOrderNum": 2
+        }
+    ],
+    "argument_clauses": [
+        {
+            "name": "ROW_AXIS",
+            "allowsLists": false,
+            "Type": "<varies>",
+            "datatype": "DOUBLE",
+            "description": "The ROW_AXIS() member of the Series Specification is used as one of the important input parameters for the TD_GOLDFELD_QUANDT test.  The ROW_AXIS determines how the series is ordered prior to being passed into the function.  For the Goldfeld-Quandt test, the suspected explanator parameter should be passed into the row axis, to force the series to be ordered by the suspected variable.   The SERIES_SPEC(ROW_AXIS()) parameter is used to order the series by the suspected explanatory variable, prior to the running of the test.  Pass the suspected variable in as the ROW_AXIS field. This is a mandatory parameter.",
+            "isRequired": true,
+            "rOrderNum": 3
+        },
+        {
+            "name": "ORIG_REGR_PARAMCNT",
+            "defaultValue": 1,
+            "lowerBound": 1,
+            "lowerBoundType": "INCLUSIVE",
+            "allowNaN": false,
+            "allowsLists": false,
+            "Type": "integer",
+            "datatype": "INTEGER",
+            "description": "Positive Integer value > 0.  A parameter indicating how many response and explanatory variables were present in the original regression, which is being analyzed by this test.  ",
+            "isRequired": true,
+            "rOrderNum": 4
+        },
+        {
+            "name": "WEIGHTS",
+            "permittedValues": [
+                0,
+                1
+            ],
+            "allowsLists": false,
+            "Type": "integer",
+            "datatype": "INTEGER",
+            "description": "Optional Parameter.  But when used must be accompanied by both a FORMULA and an ALGORITHM. FLAG having either a '0' or '1' value.  A value of '1' means the last series found in the payload is to be interpreted as a series of weights that can be used to perform a weighted least squares regression solution.",
+            "isRequired": false,
+            "rOrderNum": 5
+        },
+        {
+            "name": "FORMULA",
+            "allowsLists": false,
+            "Type": "<td_formula>",
+            "datatype": "STRING",
+            "description": "Optional Parameter. When used must be accompanied minimally by ALGORITHM.A Teradata formula string that defines the formula that is to be used in the regression operation. As an example consider: FORMULA(Y = c + a*x1+ b*(exp(x1)*cos(x1))); in which Y is the response variable; x1 is the explanatory variable; and, a, b, and c are the coefficients that the regression is to determine. See the Teradata Formula String subsection within the TD_GENSERIES4FUNC function section for additional information. Note: The name of the response variable must always be Y; and, the name of the explanatory variable must always be X1. User is free to name the coefficients whatever they wish.Default: If no formula is passed in, then the default formula used for the regression shall be: Y=C+aX1",
+            "isRequired": false,
+            "rOrderNum": 6
+        },
+        {
+            "name": "ALGORITHM",
+            "langName": "...",
+            "allowsLists": false,
+            "Type": "string",
+            "datatype": "STRING",
+            "description": "Optional parameter.  But when used must be accompanied minimally by FORMULA.Implementation method name. A value of 'QR' , METHOD(QR), means that QR decomposition is to be employed. A value of 'PSI',  METHOD(PSI), means that pseudo-inverse based on SVD is to be used to solve the regression.",
+            "isRequired": false,
+            "rOrderNum": 7
+        },
+        {
+            "name": "START_IDX",
+            "lowerBound": 0,
+            "lowerBoundType": "EXCLUSIVE",
+            "allowNaN": false,
+            "allowsLists": false,
+            "Type": "double",
+            "datatype": "DOUBLE",
+            "description": "Optional parameter. Positive real value > 0.  Identifies the split-point-index for the operation. If less than 1.0, then the split-point index is calculated as: START_IDX * N; where N is total number of sample points.  If greater than '1' then START_IDX is interpreted as being the split-point index.   If not present, than START_IDX is computed using integer math:  START_IDX = (<total entries in series> - OMIT) / 2",
+            "isRequired": false,
+            "rOrderNum": 8
+        },
+        {
+            "name": "OMIT",
+            "lowerBound": 0,
+            "lowerBoundType": "EXCLUSIVE",
+            "allowNaN": false,
+            "allowsLists": false,
+            "Type": "double",
+            "datatype": "DOUBLE",
+            "description": "Positive real value > 0. Determines the number of of 'central sample values' to omit while forming the two 'test groups'.  If less than 1.0, then the number of samples to be omitted is calculated as: OMIT * N; where N is total number of sample points.  If greater than '1' then OMIT is interpreted as number of central points to omit.  ",
+            "isRequired": true,
+            "rOrderNum": 9
+        },
+        {
+            "name": "SIGNIFICANCE_LEVEL",
+            "lowerBound": 0,
+            "upperBound": 1,
+            "lowerBoundType": "EXCLUSIVE",
+            "upperBoundType": "EXCLUSIVE",
+            "allowNaN": false,
+            "allowsLists": false,
+            "Type": "double",
+            "datatype": "DOUBLE",
+            "description": "The desired significance level for the test. 99%, aka, 0.01; 95%,aka,0.05",
+            "isRequired": true,
+            "rOrderNum": 10
+        },
+        {
+            "name": "TEST",
+            "langName": "...",
+            "allowsLists": false,
+            "Type": "string",
+            "datatype": "STRING",
+            "description": "Optional parameter.   Has a value of:  'GREATER' or 'LESS' or 'TWOSIDED' ; DEFAULT (if not present) is 'GREATER'.  Test value influences how GQ Test Statistic is computed and how Hypothesis is evaluated. See test description above to understand meaning of choosing a TEST value.",
+            "isRequired": false,
+            "rOrderNum": 11
+        }
+    ]
+}

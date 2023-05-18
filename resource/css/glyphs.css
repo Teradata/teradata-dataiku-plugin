@@ -37,6 +37,9 @@
   margin-right: 4px;
 }
 /* Add icons you will be using below */
+.glyphicon-cog:before {
+  content:"\e019";
+}
 .glyphicon-plus:before {
   content:"\2b";	
 }
@@ -56,3 +59,17 @@
 .glyphicon-question-sign:before {
   content: '\e085';
 }
+
+.glyphicon-backward:before {
+  content: "\e071";
+}
+
+.glyphicon-forward:before {
+  content: "\e075";
+}
+
+.glyphicon-picture:before {
+  content: "\e060";
+}
+
+

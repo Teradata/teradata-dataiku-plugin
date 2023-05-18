@@ -127,6 +127,17 @@ def do(payload, config, plugin_config, inputs):
     is_vantage_cloud = False
     if auth_token:
         is_vantage_cloud = True
+
+    # Establish you have privileges to read the connection
+    connectionErrorMessage = ""
+    try:
+        connectionName = inputdataset.get_location_info()['info']['connectionName']
+        client = dataiku.api_client()
+        if client.get_connection(name=connectionName).get_info():
+            connectionErrorMessage = ""
+    except:
+        connectionErrorMessage = "Permissions error: Contact your Dataiku admin user to have 'Details Readable by' granted to 'Every Analyst' for the connection : " + connectionName
+
         
     return {'inputfolder':folderpath,
             'fileList':fileList,
@@ -137,4 +148,5 @@ def do(payload, config, plugin_config, inputs):
             'inputs': inputs,
             'isVantageCloudLake' : is_vantage_cloud,
             'vantageVersion' : vantage_version,
-            'auth_token' : auth_token}
+            'auth_token' : auth_token,
+            'connectionErrorMessage' : connectionErrorMessage}

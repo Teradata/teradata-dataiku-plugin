@@ -67,8 +67,12 @@ if not input_B_names:
     script_role = 'sto_scripts'
     input_B_names = get_input_names_for_role(script_role)
 
+# Get the name of the folder from the inputd rather than assuming its 'language_scripts'
+if input_B_names:
+    script_role = input_B_names[0]
+
 # The dataset objects themselves can then be created like this:
-input_B_datasets = [dataiku.Dataset(name) for name in input_B_names]
+# input_B_datasets = [dataiku.Dataset(name) for name in input_B_names]
 
 # For outputs, the process is the same:
 output_A_names = get_output_names_for_role('main')
@@ -113,12 +117,12 @@ import auth
 
 
 def executor_query(executor, query_string):
-    logging.info('Query : ' + query_string)
+    print('Query : ' + query_string)
     return executor.query_to_df(query_string)
 
 def executor_query2(executor, query_string, pre_queries):
-    logging.info('PreQuery : ', pre_queries)
-    logging.info('Query : ', query_string)
+    print('PreQuery : ', pre_queries)
+    print('Query : ', query_string)
     return executor.query_to_df(query_string, pre_queries)
 
 
@@ -126,7 +130,7 @@ def executor_query2(executor, query_string, pre_queries):
 handle = dataiku.Folder(script_role) if input_B_names else None
 
 
-logging.info('Getting STO Database')
+print('Getting STO Database')
 def sto_database():
     #result =  getConnectionParamsFromDataset(output_A_datasets[0]).get('defaultDatabase', "");
     connections = {}
@@ -165,14 +169,14 @@ tmode = ''
 for prop in properties:
     if prop['name'] == 'TMODE' and prop['value'] == 'TERA':
         #Detected TERA
-        logging.info('I am in TERA MODE')
+        print('I am in TERA MODE')
         tmode = 'TERA'
         stTxn = 'BEGIN TRANSACTION;'
         edTxn = 'END TRANSACTION;'
 
     elif prop['name'] == 'TMODE' and prop['value'] == 'ANSI':
         #Detected ANSI
-        logging.info('I am in ANSI MODE')
+        print('I am in ANSI MODE')
         tmode = 'ANSI'
         stTxn = ';'
         edTxn = 'COMMIT WORK;'
@@ -188,7 +192,7 @@ defaultDB = sto_database()
 
 output_location = output_A_datasets[0].get_location_info()['info']
 
-logging.info('Getting Function Config')
+print('Getting Function Config')
 scriptAlias = function_config.get('script_alias', '')
 scriptFileName = function_config.get('script_filename', '')
 scriptLocation = function_config.get('script_location', '')
@@ -216,13 +220,13 @@ elif 'cz' == scriptLocation:
     scriptFileLocation = handle.file_path(scriptFileName)
     # We do not support python notebooks in this release
     #    if scriptFileLocation.endswith(".ipynb"):
-    #        logging.info("Convert Notebook to Python Script")  
-    #        logging.info("Input Notebook", scriptFileName, scriptFileLocation)  
+    #        print("Convert Notebook to Python Script")  
+    #        print("Input Notebook", scriptFileName, scriptFileLocation)  
     #        pythonScript = scriptFileLocation.replace(".ipynb", ".py")
     #        convertNotebook(scriptFileLocation, pythonScript)
     #        scriptFileLocation = pythonScript
     #        scriptFileName = scriptFileName.replace(".ipynb", ".py")
-    #        logging.info("Output Python", scriptFileName, scriptFileLocation)  
+    #        print("Output Python", scriptFileName, scriptFileLocation)  
     #        cleanupFiles.append(scriptFileLocation)
 else:
     performFileLoad = False
@@ -406,24 +410,24 @@ partitionbycolumns = function_config.get('partitionbycolumns', '')
 partitionorderbycolumns = function_config.get('partitionorderbycolumns', '')
 
 
-logging.info('Building STO Script Command')
+print('Building STO Script Command')
 
-logging.info("""Script Command: """+verifyScriptCommand())
+print("""Script Command: """+verifyScriptCommand())
 
 # select query
-logging.info('Building Database Query')
+print('Building Database Query')
 databaseQuery = 'DATABASE {};'.format(verifyAttribute(sto_database()))
 print("""Database Query: """+databaseQuery)
 executor_query(executor, databaseQuery)
-logging.info('Build Session SearchUIFDBPath Query')
+print('Build Session SearchUIFDBPath Query')
 setSessionQuery = 'SET SESSION SEARCHUIFDBPATH = {};'.format(verifyAttribute(searchPath))
-logging.info("""Set Session Query: """ + setSessionQuery)
+print("""Set Session Query: """ + setSessionQuery)
 etQuery = 'COMMIT WORK;'
 
 #File Related:
 
 removeFileQuery = "CALL SYSUIF.REMOVE_FILE({},1);".format(verifyLocation(scriptAlias))
-logging.info('Building Script installation query')
+print('Building Script installation query')
 installFileQuery = "CALL SYSUIF.INSTALL_FILE({},{},{});".format(verifyLocation(scriptAlias), verifyLocation(scriptFileName), verifyLocation(scriptLocation + "!" + scriptFileName))
 replaceFileQuery = "CALL SYSUIF.REPLACE_FILE({},{},{}, 0);".format(verifyLocation(scriptAlias), verifyLocation(scriptFileName), verifyLocation(scriptLocation + "!" + scriptFileName))
 scriptDoesExist = "select * from dbc.tables where databasename = {} and TableKind = 'Z';".format(verifyTableName(searchPath, True))
@@ -431,24 +435,24 @@ scriptDoesExist = "select * from dbc.tables where databasename = {} and TableKin
 #File Copy to DIST
 dkuinstalldir = os.environ['DKUINSTALLDIR']
 newPath = dkuinstalldir + """/dist/"""+scriptFileName
-logging.info(newPath)
-# logging.info(replaceFileQuery)
+print(newPath)
+# print(replaceFileQuery)
 #COPY FILE TEST
 if(performFileLoad):
     copyfile(escape(scriptFileLocation.rstrip()), newPath)
 
 #ADDITIONAL FILES
 #INSTALL Additional files
-logging.info('Building Additional File INSTALLATION/REPLACEMENT')
+print('Building Additional File INSTALLATION/REPLACEMENT')
 # installAdditionalFiles = """"""
 installAdditionalFilesArray = []
 for item in additionalFiles:
     address = item.get('file_address', '').rstrip() if\
         ('s' == item.get('file_location', '')) else handle.file_path(item.get('filename', ''))
     newPath = dkuinstalldir + """/dist/"""+item.get('filename')
-    logging.info(newPath)
-    # logging.info(replaceFileQuery)
-    logging.info(address)
+    print(newPath)
+    # print(replaceFileQuery)
+    print(address)
     #COPY FILE TEST
     copyfile(address, newPath)
     if item.get('replace_file'):
@@ -456,24 +460,24 @@ for item in additionalFiles:
         query_check = getSelectInstalledFileQuery(defaultDB,item.get('file_alias'))
     
         tableCheck = executor_query(executor, query_check)
-        logging.info(tableCheck)
-        logging.info(tableCheck.shape)
+        print(tableCheck)
+        print(tableCheck.shape)
         if(tableCheck.shape[0] < 1):
-            logging.info("""File Alias:"""+ item.get('file_alias'))
-            logging.info('Was not able to find the file in the table list. Attempting to use INSTALL_FILE')        
+            print("""File Alias:"""+ item.get('file_alias'))
+            print('Was not able to find the file in the table list. Attempting to use INSTALL_FILE')        
             installAdditionalFilesArray.append("\nCALL SYSUIF.INSTALL_FILE({},{},{});".format(verifyLocation(item.get('file_alias')), verifyLocation(item.get('filename')), verifyLocation(item.get('file_location')+item.get('file_format') + "!" + item.get('filename'))))
         else:    
-            logging.info("""File Alias:"""+ item.get('file_alias'))
+            print("""File Alias:"""+ item.get('file_alias'))
             installAdditionalFilesArray.append("\nCALL SYSUIF.REPLACE_FILE({},{},{},0);".format(verifyLocation(item.get('file_alias')), verifyLocation(item.get('filename')), verifyLocation(item.get('file_location')+item.get('file_format') + "!" + item.get('filename'))))
     else:
         installAdditionalFilesArray.append("\nCALL SYSUIF.INSTALL_FILE({},{},{});".format(verifyLocation(item.get('file_alias')), verifyLocation(item.get('filename')), verifyLocation(item.get('file_location')+item.get('file_format') + "!" + item.get('filename'))))
-logging.info("""Additional Files Installation Query/ies: """)
-logging.info(installAdditionalFilesArray)
+print("""Additional Files Installation Query/ies: """)
+print(installAdditionalFilesArray)
 
 #MOVE ADDITIONAL FILES
 
 
-logging.info(output_A_names[0])
+print(output_A_names[0])
 
 # Gather inputs to generate onClause
 inputs = function_config.get('inputs', "")
@@ -506,35 +510,35 @@ def database():
 #File Loading
 if(performFileLoad):
     if function_config.get("replace_script"):
-        logging.info('performing replacefile')
+        print('performing replacefile')
         query_check = getSelectInstalledFileQuery(defaultDB, scriptAlias)
   
         tableCheck = executor_query(executor, query_check)
-        logging.info('Checking table list for previously installed files')
-        logging.info(tableCheck)
-        logging.info(tableCheck.shape)
+        print('Checking table list for previously installed files')
+        print(tableCheck)
+        print(tableCheck.shape)
         if(tableCheck.shape[0] < 1):
-            logging.info('Was not able to find the file in the table list. Attempting to use INSTALL_FILE')
+            print('Was not able to find the file in the table list. Attempting to use INSTALL_FILE')
             if autocommit:
-                logging.info('Auto commit is true')
+                print('Auto commit is true')
                 executor_query2(executor, installFileQuery, [databaseQuery, setSessionQuery])
             else:
-                logging.info('Auto commit is false')
+                print('Auto commit is false')
                 executor_query2(executor, edTxn, [stTxn, databaseQuery, setSessionQuery, installFileQuery])
         else:    
-            logging.info('Was able to find the file in the table list. Attempting to use REPLACE_FILE')
+            print('Was able to find the file in the table list. Attempting to use REPLACE_FILE')
             if autocommit:
-                logging.info('Auto commit is true')
+                print('Auto commit is true')
                 executor_query2(executor, replaceFileQuery,[databaseQuery, setSessionQuery])
             else:
-                logging.info('Auto commit is false')
+                print('Auto commit is false')
                 executor_query2(executor, edTxn,[stTxn, databaseQuery, setSessionQuery, replaceFileQuery])
     else:
-        logging.info('performing installfile')
+        print('performing installfile')
         executor_query2(executor, edTxn,[stTxn, databaseQuery, setSessionQuery, installFileQuery])
 
 if(installAdditionalFilesArray != []):
-    logging.info('Installing additional files...')
+    print('Installing additional files...')
     if autocommit:
         placeholderQuery = "SELECT 1;" #Placeholder so that a query is still executed.
         executor_query2(executor, placeholderQuery,[databaseQuery,setSessionQuery]+installAdditionalFilesArray);
@@ -544,18 +548,18 @@ if(installAdditionalFilesArray != []):
 
     
 # Recipe outputs                                                          
-logging.info('setSessionQuery')
-logging.info(setSessionQuery)
-logging.info('replaceFileQuery')
-logging.info(replaceFileQuery)
-logging.info('Executing SELECT Query...')
-logging.info(STOQuery)
+print('setSessionQuery')
+print(setSessionQuery)
+print('replaceFileQuery')
+print(replaceFileQuery)
+print('Executing SELECT Query...')
+print(STOQuery)
 selectResult = executor_query2(executor, STOQuery,[databaseQuery, setSessionQuery])
-logging.info('Moving results to output...')
+print('Moving results to output...')
 pythonrecipe_out = output_A_datasets[0]
 pythonrecipe_out.write_with_schema(selectResult)
 if cleanupFiles:
     # deleting autogenerated files
     for filePath in cleanupFiles:
         os.remove(filePath)
-logging.info('Complete!')  
+print('Complete!')  

@@ -50,7 +50,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SO
 
         <!-- Tab links -->
         <div class="tabplugin">
-          <button class="tablinks" id="defaultOpen" ng-click="openTabs($event, 'tabs-loading')">Script Loading</button>
+          <button class="tablinks" id="defaultOpen" ng-click="openTabs($event, 'tabs-loading')">SCRIPT Loading</button>
           <button class="tablinks" ng-if="!isVantageCloudLake" ng-click="openTabs($event, 'tabs-execution')">SCRIPT Arguments</button>
           <button class="tablinks" ng-if="isVantageCloudLake" ng-click="openTabs($event, 'tabs-execution')">APPLY Arguments</button>
           <button class="tablinks" ng-if="false" ng-click="openTabs($event, 'tabs-table')">Other SQL Arguments</button>
@@ -124,6 +124,9 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SO
             <button ng-click="addMoreFilesClick()">Add More Files</button>
             <label ng-hide=" stoDatabase=='' " style="display: inline-block">&emsp;&emsp;&emsp;&emsp; Added files will be installed in the following path:
               <em>.&#47;{{stoDatabase}}&#47;&#60;filename&#62;</em>
+            </label>
+            <label ng-show=" connectionErrorMessage!='' "  style="color:red;display: inline-block">
+                    {{connectionErrorMessage}}
             </label>
              <label ng-show=" stoDatabase=='' " style="color:red;display: inline-block">&emsp;&emsp;&emsp;&emsp; 
               Error: Missing database search path for SCRIPT. To use this recipe, specify first a database name for the STO_DATABASE custom property in your connection settings. 

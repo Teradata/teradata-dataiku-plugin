@@ -1,0 +1,231 @@
+{
+    "JSONVersion": "1",
+    "FuncRName": "...",
+    "MaxInputFiles": 1,
+    "IsPlottable": false,
+    "InputFmt": false,
+    "OutputFmt": true,
+    "function_type": "uaf",
+    "json_schema_major_version": "1",
+    "json_schema_minor_version": "2",
+    "json_content_version": "1",
+    "function_name": "TD_RESAMPLE",
+    "function_r_name": "aa.td_resample",
+    "ref_function_r_name": "aa.td_resample",
+    "function_version": "...",
+    "short_description": "Interpolating data based on existing data",
+    "long_description": "Another classical approach to transforming a time series from an irregular to regular, and/or altering the sampling interval associated with the time series, is to apply a resampling function to the series. Resampling functions generally take as an input: a time series, which can be regular or irregular to begin with; a starting point, aka, 'time-zero'; and a desired target sampling interval.  There are usually multiple choices available to the data scientist as to how the interpolation associated with the sample interval change is going to occur.",
+    "input_tables": [
+        {
+            "LangName": "data or object or newdata or ... --> Langauges team can work with UAF team to come up with this field",
+            "requiredInputKind": [
+                "PartitionByNone"
+            ],
+            "isOrdered": false,
+            "partitionByOne": false,
+            "alternateNames": [],
+            "isRequired": true,
+            "description": "The Teradata rendition of this function takes a logical series, containing any form of regular or irregular series - time series, spatial series, arbitrary numerical series - and applies an interpolation algorithm to transform it into a discrete series with the target start point and target sampling interval.    The input series and the result series both contain real numbers - CONTENT(REAL) or CONTENT(MULTIVAR_REAL)- as their series elements.  In producing the output, the data scientist has a choice of preserving or replacing the series indexing mechanism, via the OUTPUT_FMT(INDEX_STYLE()) declaration.  The default INDEX_STYLE declaration indexes the result series as: OUTPUT_FMT(INDEX_STYLE(FLOW_THROUGH)). ",
+            "rDescription": "The Teradata rendition of this function takes a logical series, containing any form of regular or irregular series - time series, spatial series, arbitrary numerical series - and applies an interpolation algorithm to transform it into a discrete series with the target start point and target sampling interval.    The input series and the result series both contain real numbers - CONTENT(REAL) or CONTENT(MULTIVAR_REAL)- as their series elements.  In producing the output, the data scientist has a choice of preserving or replacing the series indexing mechanism, via the OUTPUT_FMT(INDEX_STYLE()) declaration.  The default INDEX_STYLE declaration indexes the result series as: OUTPUT_FMT(INDEX_STYLE(FLOW_THROUGH)). ",
+            "datatype": "TABLE_ALIAS",
+            "allowsLists": false,
+            "name": "Input",
+            "rName": "Input",
+            "useInR": true,
+            "rOrderNum": 1,
+            "uaf": {
+                "requiredUafKind": [
+                    "SERIES"
+                ],
+                "is_row_sequence": "SEQUENCE",
+                "is_col_sequence": "SEQUENCE",
+                "row_axis_name": "",
+                "column_axis_name": "",
+                "id_name": "",
+                "id_sequence": "",
+                "payload_fields": "",
+                "payload_content": "",
+                "layer": "",
+                "where": "",
+                "time_duration": "",
+                "time_zero": "",
+                "time_type": "",
+                "seq_zero": "",
+                "interval": "Off",
+                "details": true,
+                "instance_names": "",
+                "data_type": "",
+                "payload_start_value": "",
+                "payload_offset_value": "",
+                "payload_num_entries": "",
+                "index": 0
+            },
+            "uafType": "SERIES"
+        }
+    ],
+    "output_tables": [
+        {
+            "Type": "ART",
+            "PrimaryLayer": true,
+            "LayerName": "ARTPRIMARY",
+            "ResultTableColumnTypes": [
+                "<varies>",
+                "float"
+            ],
+            "LangName": "data or object or newdata or ... --> Langauges team can work with UAF team to come up with this field",
+            "isOutputTable": true,
+            "omitPossible": true,
+            "partitionByOne": false,
+            "alternateNames": [],
+            "isRequired": false,
+            "description": "The TD_RESAMPLE function returns only a primary result set.   There are no secondary or tertiary result sets produced by this function.  The primary result set can be retrieved by issuing a SELECT against the analytical table containing the results.",
+            "rDescription": "The TD_RESAMPLE function returns only a primary result set.   There are no secondary or tertiary result sets produced by this function.  The primary result set can be retrieved by issuing a SELECT against the analytical table containing the results.",
+            "datatype": "TABLE_NAME",
+            "allowsLists": false,
+            "name": "OutputTable1",
+            "rName": "OutputTable1",
+            "useInR": true,
+            "rOrderNum": 2
+        }
+    ],
+    "argument_clauses": [
+        {
+            "name": "OutputFormat",
+            "defaultValue": "INDEX_STYLE(NUMERICAL_SEQUENCE)",
+            "permittedValues": [
+                "INDEX_STYLE(NUMERICAL_SEQUENCE)",
+                "INDEX_STYLE(FLOW_THROUGH)",
+                "CONTENT(REAL)"
+            ],
+            "allowsLists": false,
+            "Type": "string",
+            "datatype": "STRING",
+            "description": "Output format",
+            "isRequired": false,
+            "rOrderNum": 3
+        },
+        {
+            "name": "TIMECODE",
+            "allowsLists": false,
+            "Type": "GROUPSTART",
+            "datatype": "GROUPSTART",
+            "description": "Describes the result series that this function is to produce. At least one of TIMECODE or SEQUENCE must be present, and must correspond correctly to the index data type of the input series. They are mutually exclusive.",
+            "isRequired": false,
+            "rOrderNum": 4
+        },
+        {
+            "name": "TIMECODE.START_VALUE",
+            "allowsLists": false,
+            "Type": "enumeration",
+            "datatype": "STRING",
+            "description": "Starting value - this is the first sampling index that the resample function is to interpolate",
+            "isRequired": false,
+            "rOrderNum": 5
+        },
+        {
+            "name": "TIMECODE.DURATION",
+            "allowsLists": false,
+            "Type": "enumeration",
+            "datatype": "STRING",
+            "description": "Sampling duration - sampling interval associated with the result series.",
+            "isRequired": false,
+            "rOrderNum": 6
+        },
+        {
+            "name": "TIMECODE_GROUPEND",
+            "allowsLists": false,
+            "Type": "GROUPEND",
+            "datatype": "GROUPEND",
+            "description": "Describes the result series that this function is to produce. At least one of TIMECODE or SEQUENCE must be present, and must correspond correctly to the index data type of the input series. They are mutually exclusive.",
+            "isRequired": true,
+            "rOrderNum": 7
+        },
+        {
+            "name": "INTERPOLATE",
+            "permittedValues": [
+                "NONE",
+                "LINEAR",
+                "LAG",
+                "LEAD",
+                "WEIGHTED",
+                "SPLINE"
+            ],
+            "defaultValue": "BOTH",
+            "allowsLists": false,
+            "Type": "enumeration",
+            "datatype": "STRING",
+            "description": "enum( NONE, LINEAR, LAG, LEAD, WEIGHTED, SPLINE  ) : enumerated value selecting one of the valid supported interpolation strategies.",
+            "isRequired": true,
+            "rOrderNum": 8
+        },
+        {
+            "name": "WEIGHT",
+            "lowerBound": 0,
+            "upperBound": 1,
+            "lowerBoundType": "INCLUSIVE",
+            "upperBoundType": "INCLUSIVE",
+            "allowNaN": false,
+            "allowsLists": false,
+            "Type": "double",
+            "datatype": "DOUBLE",
+            "description": "Only valid when INTERPOLATE(WEIGHTED) has been selected.   The interpolated value is calculated as: Y_t  =  Y_{t_LEFT} * (1 - WEIGHT) + (Y-{t_RIGHT} * WEIGHT)",
+            "isRequired": false,
+            "rOrderNum": 9
+        },
+        {
+            "name": "SPLINE_PARAMS",
+            "allowsLists": false,
+            "Type": "GROUPSTART",
+            "datatype": "GROUPSTART",
+            "description": "Only valid when INTERPOLATE(SPLINE) has been selected. This is used to specify characteristics of the generated spline. This parameter is optional.",
+            "isRequired": false,
+            "rOrderNum": 10
+        },
+        {
+            "name": "SPLINE_PARAMS.METHOD",
+            "permittedValues": [
+                "NATURAL",
+                "CLAMPED",
+                "NOT_A_KNOT"
+            ],
+            "defaultValue": "NOT_A_KNOT",
+            "allowsLists": false,
+            "Type": "enumeration",
+            "datatype": "STRING",
+            "description": "Specifies which kind of spline to be produced. The available types are NATURAL, CLAMPED, and NOT_A_KNOT. This parameter is optional - the default value is NOT_A_KNOT. ",
+            "isRequired": false,
+            "rOrderNum": 11
+        },
+        {
+            "name": "SPLINE_PARAMS.yp1",
+            "allowNaN": false,
+            "defaultValue": 0,
+            "allowsLists": false,
+            "Type": "double",
+            "datatype": "DOUBLE",
+            "description": "Only valid when METHOD(CLAMPED) has been specified. Specifies the value of the first derivative for the left boundary condition. This parameter is optional - the default value is 0.",
+            "isRequired": false,
+            "rOrderNum": 12
+        },
+        {
+            "name": "SPLINE_PARAMS.ypn",
+            "allowNaN": false,
+            "defaultValue": 0,
+            "allowsLists": false,
+            "Type": "double",
+            "datatype": "DOUBLE",
+            "description": "Only valid when METHOD(CLAMPED) has been specified. Specifies the value of the first derivative for the right boundary condition. This parameter is optional - the default value is 0.",
+            "isRequired": false,
+            "rOrderNum": 13
+        },
+        {
+            "name": "SPLINE_PARAMS_GROUPEND",
+            "allowsLists": false,
+            "Type": "GROUPEND",
+            "datatype": "GROUPEND",
+            "description": "Only valid when INTERPOLATE(SPLINE) has been selected. This is used to specify characteristics of the generated spline. This parameter is optional.",
+            "isRequired": true,
+            "rOrderNum": 14
+        }
+    ]
+}

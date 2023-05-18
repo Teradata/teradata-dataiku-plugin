@@ -1,0 +1,123 @@
+{
+    "JSONVersion": "1",
+    "FuncRName": "...",
+    "MaxInputFiles": 1,
+    "IsPlottable": true,
+    "InputFmt": false,
+    "OutputFmt": true,
+    "function_type": "uaf",
+    "json_schema_major_version": "1",
+    "json_schema_minor_version": "2",
+    "json_content_version": "1",
+    "function_name": "TD_IDFFT2",
+    "function_r_name": "aa.td_idfft2",
+    "ref_function_r_name": "aa.td_idfft2",
+    "function_version": "...",
+    "short_description": "The reverse direction (Inverse) Two Dimensional Discrete Fourier Transform ",
+    "long_description": "This function simply reverses the 2D Fourier Transform.  It takes as its input either a logical matrix containing Fourier coefficients in the form of complex number elements, or, alternatively, in the form of amplitude-phase pair (polar form) elements.   The function then runs them through a reverse-transform summation formula, and output the original logical matrix (original 2D array) that was input into the TD_DFFT2 to generate the Fourier coefficients. ",
+    "input_tables": [
+        {
+            "LangName": "data or object or newdata or ... --> Langauges team can work with UAF team to come up with this field",
+            "requiredInputKind": [
+                "PartitionByNone"
+            ],
+            "isOrdered": false,
+            "partitionByOne": false,
+            "alternateNames": [],
+            "isRequired": true,
+            "description": "It takes as its input a logical matrix that has been populated previously with 2D Fourier Transform coefficients.  The calculated coefficients may exist in either the form of : complex numbers - real and imaginary pairs; or exist as amplitude-phase pairs.",
+            "rDescription": "It takes as its input a logical matrix that has been populated previously with 2D Fourier Transform coefficients.  The calculated coefficients may exist in either the form of : complex numbers - real and imaginary pairs; or exist as amplitude-phase pairs.",
+            "datatype": "TABLE_ALIAS",
+            "allowsLists": false,
+            "name": "Input",
+            "rName": "Input",
+            "useInR": true,
+            "rOrderNum": 1,
+            "uaf": {
+                "requiredUafKind": [
+                    "MATRIX"
+                ],
+                "is_row_sequence": "SEQUENCE",
+                "is_col_sequence": "SEQUENCE",
+                "row_axis_name": "",
+                "column_axis_name": "",
+                "id_name": "",
+                "id_sequence": "",
+                "payload_fields": "",
+                "payload_content": "",
+                "layer": "",
+                "where": "",
+                "time_duration": "",
+                "time_zero": "",
+                "time_type": "",
+                "seq_zero": "",
+                "interval": "Off",
+                "details": true,
+                "instance_names": "",
+                "data_type": "",
+                "payload_start_value": "",
+                "payload_offset_value": "",
+                "payload_num_entries": "",
+                "index": 0
+            },
+            "uafType": "MATRIX"
+        }
+    ],
+    "output_tables": [
+        {
+            "Type": "ART",
+            "PrimaryLayer": true,
+            "LayerName": "ARTPRIMARY",
+            "ResultTableColumnTypes": [
+                "integer",
+                "integer",
+                "float",
+                "float"
+            ],
+            "LangName": "data or object or newdata or ... --> Langauges team can work with UAF team to come up with this field",
+            "isOutputTable": true,
+            "omitPossible": true,
+            "partitionByOne": false,
+            "alternateNames": [],
+            "isRequired": false,
+            "description": "The output of the inverse transform is a result matrix containing magnitudes.  The indexes for the rows and columns will be monotonically increasing integers beginning from 0.The TD_IDFFT2 function only returns a Primary Result set.  There are no Secondary or Tertiary Result sets returned by this function.  The Primary Result set can be returned by issuing a SELECT statement against the analytical result table containing the results.The TD_IDFFT2 transforms the input frequency domain matrix, containing the Fourier coefficients as elements, back into a matrix containing time/space domain entries.    The elements of the result matrix are either CONTENT(COMPLEX) or CONTENT(MULTIVAR_COMPLEX).    ",
+            "rDescription": "The output of the inverse transform is a result matrix containing magnitudes.  The indexes for the rows and columns will be monotonically increasing integers beginning from 0.The TD_IDFFT2 function only returns a Primary Result set.  There are no Secondary or Tertiary Result sets returned by this function.  The Primary Result set can be returned by issuing a SELECT statement against the analytical result table containing the results.The TD_IDFFT2 transforms the input frequency domain matrix, containing the Fourier coefficients as elements, back into a matrix containing time/space domain entries.    The elements of the result matrix are either CONTENT(COMPLEX) or CONTENT(MULTIVAR_COMPLEX).    ",
+            "datatype": "TABLE_NAME",
+            "allowsLists": false,
+            "name": "OutputTable1",
+            "rName": "OutputTable1",
+            "useInR": true,
+            "rOrderNum": 2
+        }
+    ],
+    "argument_clauses": [
+        {
+            "name": "OutputFormat",
+            "defaultValue": "INDEX_STYLE(NUMERICAL_SEQUENCE)",
+            "permittedValues": [
+                "INDEX_STYLE(NUMERICAL_SEQUENCE)",
+                "INDEX_STYLE(FLOW_THROUGH)"
+            ],
+            "allowsLists": false,
+            "Type": "string",
+            "datatype": "STRING",
+            "description": "Output format",
+            "isRequired": false,
+            "rOrderNum": 3
+        },
+        {
+            "name": "HUMAN_READABLE",
+            "defaultValue": 1,
+            "permittedValues": [
+                0,
+                1
+            ],
+            "allowsLists": false,
+            "Type": "integer",
+            "datatype": "INTEGER",
+            "description": "Required Parameter when input rows are in raw format.  Informs the TD_IDDFT as to whether the incoming DFFT coefficient rows are in a human-readable / plottable form; or if they are output in the raw-form, which is equivalent to how the 'R' and 'PYTHON' programs produce DFFT results.     A value of '1' means true, output in human readable form; a value of '0' means false, output in raw form.  Default is true \u2013 output in Human Readable format.",
+            "isRequired": false,
+            "rOrderNum": 4
+        }
+    ]
+}

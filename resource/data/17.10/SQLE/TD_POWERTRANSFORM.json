@@ -1,0 +1,150 @@
+{
+    "JSONVersion": "1",
+    "FuncRName": "...",
+    "MaxInputFiles": 1,
+    "IsPlottable": true,
+    "InputFmt": false,
+    "OutputFmt": true,
+    "function_type": "uaf",
+    "json_schema_major_version": "1",
+    "json_schema_minor_version": "2",
+    "json_content_version": "1",
+    "function_name": "TD_POWERTRANSFORM",
+    "function_r_name": "aa.td_powertransform",
+    "ref_function_r_name": "aa.td_powertransform",
+    "function_version": "...",
+    "short_description": "Applies a power transform to a series",
+    "long_description": "At its core, this function takes a logical-runtime series - time series or numerically sequenced series - as an input and applies a power transform to the series, producing another series (1D array) as an output.  The passed in logical input series can be either a univariate or multivariate series, in which case the function respectively produces a univariate or multivariate output series.   The data scientist has a choice of preserving the input series indexing mechanism, or even altering it, via the OUTPUT_FMT(INDEX_STYLE()) declaration.",
+    "input_tables": [
+        {
+            "LangName": "data or object or newdata or ... --> Langauges team can work with UAF team to come up with this field",
+            "requiredInputKind": [
+                "PartitionByNone"
+            ],
+            "isOrdered": false,
+            "partitionByOne": false,
+            "alternateNames": [],
+            "isRequired": true,
+            "description": "this function takes a logical-runtime series - time series or numerically sequenced series - as an input",
+            "rDescription": "this function takes a logical-runtime series - time series or numerically sequenced series - as an input",
+            "datatype": "TABLE_ALIAS",
+            "allowsLists": false,
+            "name": "Input",
+            "rName": "Input",
+            "useInR": true,
+            "rOrderNum": 1,
+            "uaf": {
+                "requiredUafKind": [
+                    "SERIES"
+                ],
+                "is_row_sequence": "SEQUENCE",
+                "is_col_sequence": "SEQUENCE",
+                "row_axis_name": "",
+                "column_axis_name": "",
+                "id_name": "",
+                "id_sequence": "",
+                "payload_fields": "",
+                "payload_content": "",
+                "layer": "",
+                "where": "",
+                "time_duration": "",
+                "time_zero": "",
+                "time_type": "",
+                "seq_zero": "",
+                "interval": "Off",
+                "details": true,
+                "instance_names": "",
+                "data_type": "",
+                "payload_start_value": "",
+                "payload_offset_value": "",
+                "payload_num_entries": "",
+                "index": 0
+            },
+            "uafType": "SERIES"
+        }
+    ],
+    "output_tables": [
+        {
+            "Type": "Series",
+            "PrimaryLayer": true,
+            "LayerName": "ARTPRIMARY",
+            "ResultTableColumnTypes": [
+                "<varies>",
+                "float"
+            ],
+            "LangName": "data or object or newdata or ... --> Langauges team can work with UAF team to come up with this field",
+            "isOutputTable": true,
+            "omitPossible": true,
+            "partitionByOne": false,
+            "alternateNames": [],
+            "isRequired": false,
+            "description": "The TD_POWERTRANSFORM function returns only a primary result set.   There are no secondary or tertiary result sets produced by this function.The produced logical result matrix always contains real number elements.  The data scientist has the choice with regards to the indexing mechanism (ROW_I) to be associated with the output series - OUTPUT_FMT(INDEX_STYLE()). ",
+            "rDescription": "The TD_POWERTRANSFORM function returns only a primary result set.   There are no secondary or tertiary result sets produced by this function.The produced logical result matrix always contains real number elements.  The data scientist has the choice with regards to the indexing mechanism (ROW_I) to be associated with the output series - OUTPUT_FMT(INDEX_STYLE()). ",
+            "datatype": "TABLE_NAME",
+            "allowsLists": false,
+            "name": "OutputTable1",
+            "rName": "OutputTable1",
+            "useInR": true,
+            "rOrderNum": 2
+        }
+    ],
+    "argument_clauses": [
+        {
+            "name": "OutputFormat",
+            "defaultValue": "INDEX_STYLE(NUMERICAL_SEQUENCE)",
+            "permittedValues": [
+                "INDEX_STYLE(NUMERICAL_SEQUENCE)",
+                "INDEX_STYLE(FLOW_THROUGH)"
+            ],
+            "allowsLists": false,
+            "Type": "string",
+            "datatype": "STRING",
+            "description": "Output format",
+            "isRequired": false,
+            "rOrderNum": 3
+        },
+        {
+            "name": "BACK_TRANSFORM",
+            "permittedValues": [
+                0,
+                1
+            ],
+            "allowsLists": false,
+            "Type": "integer",
+            "datatype": "INTEGER",
+            "description": "Flag set to 0 or 1.  BACK_TRANSFORM(0) is the default - means the forward transform is to be applied.  BACK_TRANSFORM(1) means the back transform is to be applied.",
+            "isRequired": true,
+            "rOrderNum": 4
+        },
+        {
+            "name": "P",
+            "allowNaN": false,
+            "allowsLists": false,
+            "Type": "double",
+            "datatype": "DOUBLE",
+            "description": "Incoming magnitudes are raised to this power.   Collectively, P and B determine the power function to be applied",
+            "isRequired": true,
+            "rOrderNum": 5
+        },
+        {
+            "name": "B",
+            "allowNaN": false,
+            "allowsLists": false,
+            "Type": "double",
+            "datatype": "DOUBLE",
+            "description": "Germane for log functions.  The log to be applied. Collectively, P and B determine the power function to be applied",
+            "isRequired": true,
+            "rOrderNum": 6
+        },
+        {
+            "name": "LAMBDA",
+            "allowNaN": false,
+            "allowsLists": false,
+            "Type": "double",
+            "datatype": "DOUBLE",
+            "description": "Germane for the Box-Cox transformation",
+            "isRequired": true,
+            "rOrderNum": 7
+        }
+    ]
+}

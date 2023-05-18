@@ -1,0 +1,148 @@
+{
+    "JSONVersion": "1",
+    "FuncRName": "...",
+    "MaxInputFiles": 1,
+    "IsPlottable": false,
+    "InputFmt": false,
+    "OutputFmt": false,
+    "function_type": "uaf",
+    "json_schema_major_version": "1",
+    "json_schema_minor_version": "2",
+    "json_content_version": "1",
+    "function_name": "TD_DICKEY_FULLER",
+    "function_r_name": "aa.td_dickey_fuller",
+    "ref_function_r_name": "aa.td_dickey_fuller",
+    "function_version": "...",
+    "short_description": "The Dickey-Fuller test is a statistical test for the presence of one or more unit roots",
+    "long_description": "The Dickey-Fuller test is a statistical test for the presence of one or more unit roots within a given series generating process, thus, the test strives to answer the question, 'given the sample data available, is it possible that the true data generating process for y contains one or more unit roots?''.",
+    "input_tables": [
+        {
+            "LangName": "data or object or newdata or ... --> Langauges team can work with UAF team to come up with this field",
+            "requiredInputKind": [
+                "PartitionByNone"
+            ],
+            "isOrdered": false,
+            "partitionByOne": false,
+            "alternateNames": [],
+            "isRequired": true,
+            "description": "This section outlines the syntax associated with invoking the TD_DICKEY_FULLER function.   The function takes in a single logical-runtime series as an input.  The series is only permitted to have univariate elements.  ",
+            "rDescription": "This section outlines the syntax associated with invoking the TD_DICKEY_FULLER function.   The function takes in a single logical-runtime series as an input.  The series is only permitted to have univariate elements.  ",
+            "datatype": "TABLE_ALIAS",
+            "allowsLists": false,
+            "name": "Input",
+            "rName": "Input",
+            "useInR": true,
+            "rOrderNum": 1,
+            "uaf": {
+                "requiredUafKind": [
+                    "SERIES"
+                ],
+                "is_row_sequence": "SEQUENCE",
+                "is_col_sequence": "SEQUENCE",
+                "row_axis_name": "",
+                "column_axis_name": "",
+                "id_name": "",
+                "id_sequence": "",
+                "payload_fields": "",
+                "payload_content": "",
+                "layer": "",
+                "where": "",
+                "time_duration": "",
+                "time_zero": "",
+                "time_type": "",
+                "seq_zero": "",
+                "interval": "Off",
+                "details": true,
+                "instance_names": "",
+                "data_type": "",
+                "payload_start_value": "",
+                "payload_offset_value": "",
+                "payload_num_entries": "",
+                "index": 0
+            },
+            "uafType": "SERIES"
+        }
+    ],
+    "output_tables": [
+        {
+            "Type": "ART",
+            "PrimaryLayer": true,
+            "LayerName": "ARTPRIMARY",
+            "ResultTableColumnTypes": [
+                "integer",
+                "integer",
+                "varchar(16)",
+                "float",
+                "float",
+                "varchar(16)"
+            ],
+            "LangName": "data or object or newdata or ... --> Langauges team can work with UAF team to come up with this field",
+            "isOutputTable": true,
+            "omitPossible": true,
+            "partitionByOne": false,
+            "alternateNames": [],
+            "isRequired": false,
+            "description": "The TD_DICKEY_FULLER function internally executes an OLS regression,  linear regression.    function returns only a primary result set consisting of one row per unique series acted upon.   There are no secondary or tertiary result sets produced by this function.  The primary result set can be retrieved by issuing a SELECT against the analytical table containing the results.",
+            "rDescription": "The TD_DICKEY_FULLER function internally executes an OLS regression,  linear regression.    function returns only a primary result set consisting of one row per unique series acted upon.   There are no secondary or tertiary result sets produced by this function.  The primary result set can be retrieved by issuing a SELECT against the analytical table containing the results.",
+            "datatype": "TABLE_NAME",
+            "allowsLists": false,
+            "name": "OutputTable1",
+            "rName": "OutputTable1",
+            "useInR": true,
+            "rOrderNum": 2
+        }
+    ],
+    "argument_clauses": [
+        {
+            "name": "ALGORITHM",
+            "permittedValues": [
+                "NONE",
+                "DRIFT",
+                "TREND",
+                "DRIFTNTREND",
+                "FORMULA"
+            ],
+            "allowsLists": false,
+            "Type": "enum<string>",
+            "datatype": "STRING",
+            "description": "An enumerated type with values of:  NONE, DRIFT, TREND, DRIFTNTREND, or FORMULA, which influences the type of regression that will be run for the test.NONE - Random WalkDRIFT - Random Walk with DriftTREND - Random Walk with Linear TrendDRIFTNTREND - Random Walk with Drift and TrendDRIFTNTREND & MAXLAGS - Random Walk with Drift and Trend and auxiliary lagsFORMULA & MAXLAGS - Random Walk with roll-your-own on Drift and Trend; plus auxiliary lags",
+            "isRequired": true,
+            "rOrderNum": 3
+        },
+        {
+            "name": "MAXLAGS",
+            "lowerBound": 0,
+            "lowerBoundType": "INCLUSIVE",
+            "allowNaN": false,
+            "allowsLists": false,
+            "Type": "integer",
+            "datatype": "INTEGER",
+            "description": "The presence of the MAXLAGS parameter means the data scientist wishes to run the augmented Dickey-Fuller test. This is the maximum number of lags that will be used to form the regression equation. ",
+            "isRequired": true,
+            "rOrderNum": 4
+        },
+        {
+            "name": "DRIFT_TREND_FORMULA",
+            "allowsLists": false,
+            "Type": "<td_formula>",
+            "datatype": "STRING",
+            "description": "A Teradata formula string that stores the formula used to represent the drift and trend portions of the regression.  The formula is only valid when used in conjunction with ALGORITHM (FORMULA).    It uses the Teradata formula syntax and is expected to be of the form:  b_1 + b_2X_1 + b_3X_1^2 + \u2026 etc; which the UAF function interprets as: :  b_1 + b_2t + b_3t^2 + \u2026 etc   ",
+            "isRequired": false,
+            "rOrderNum": 5
+        },
+        {
+            "name": "SIGNIFICANCE_LEVEL",
+            "lowerBound": 0,
+            "upperBound": 1,
+            "lowerBoundType": "EXCLUSIVE",
+            "upperBoundType": "EXCLUSIVE",
+            "allowNaN": false,
+            "allowsLists": false,
+            "Type": "double",
+            "datatype": "DOUBLE",
+            "description": "The desired significance level for the test.",
+            "isRequired": true,
+            "rOrderNum": 6
+        }
+    ]
+}

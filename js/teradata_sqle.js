@@ -229,12 +229,13 @@
           }
         }
 
-        
+     
         // This would load the last JSON which is zSCORE
         if(selectedFunctionIsAvailable && data == undefined) {
           var json_path = choice["json_file_path"]
           $scope.callPythonDo({"load_json":json_path}).then(
                     data => {
+                          if("error" in data) {alert(data["error"]);}
                           var result = data['result'];
                           // Update the dictionary
                           for(let key in result) {
@@ -281,6 +282,7 @@
                   }   
               }).css("font-size", "12px"); 
             return;
+
         }
 
         // JSON contents were available so load 
@@ -600,6 +602,247 @@ removeOrderByColumn_WITHDIR: function(orderArray, orderDirArray, index) {
         }
 
       },
+
+
+      getUiParams : function(startParamName, endParamName) {
+        var result = [];
+        var numParams = $scope.config.function.arguments.length;
+        var addToParams = false;
+        for(let i = 0; i<numParams; i++)
+        {
+            var ithArg = $scope.config.function.arguments[i];
+            if(ithArg['name'] == startParamName)
+            {
+              addToParams = true;
+            }
+            if(addToParams) {
+              var clonedIthArg = Object.assign({}, ithArg)
+              result.push(clonedIthArg);
+            }
+            if(ithArg['name'] == endParamName)
+            {
+              break;
+            }
+        }
+
+        return result;
+      },
+
+      resetUiParams : function(startParamName, endParamName, row = -1, column = -1) {
+        var result = {}
+        var numParams = $scope.config.function.arguments.length;
+        var resetParams = false;
+        for(let i = 0; i<numParams; i++)
+        {
+            var ithArg = $scope.config.function.arguments[i];
+            if(ithArg['name'] == startParamName)
+            {
+              resetParams = true;
+            }
+            if(resetParams){
+
+              if (ithArg['defaultValue'] !== undefined) {
+                ithArg['value'] = ithArg['defaultValue']
+              }
+              else {
+                ithArg['value'] = ""
+              }
+              if (ithArg['name'] == 'PLOTS.ID'){
+                ithArg['value'] = $scope.config.current_param_store_index + 1;
+              }
+              if (row != -1 && column != -1 && ithArg['name'] == 'PLOTS.CELL'){
+                ithArg['value'] = row.toString() + "\x00" + column.toString();
+              }
+              result[ithArg['name']] = ithArg['value'];
+            }
+            if(ithArg['name'] == endParamName)
+            {
+              break;
+            }
+        }
+        return result;
+      },
+
+      updateUiParams : function(startParamName, endParamName, storedParams, num_rows = -1, num_cols = -1) {
+        var result = {}
+        var numParams = $scope.config.function.arguments.length;
+        var paramIndex = -1;
+        for(let i = 0; i<numParams; i++)
+        {
+            var ithArg = $scope.config.function.arguments[i];
+            if (num_rows != -1 && num_cols != -1 && ithArg['name'] == 'LAYOUT'){
+                ithArg['value'] = num_rows.toString() + "\x00" + num_cols.toString();
+                var clonedStoredParam = Object.assign({}, ithArg)
+                $scope.config.function.arguments[i] = clonedStoredParam;
+                result[ithArg['name']] = clonedStoredParam['value'];
+              }
+            if(ithArg['name'] == startParamName)
+            {
+              paramIndex = 0;
+            }
+            if(paramIndex != -1){
+              var clonedStoredParam = Object.assign({}, storedParams[paramIndex])
+              $scope.config.function.arguments[i] = clonedStoredParam;
+              result[ithArg['name']] = clonedStoredParam['value'];
+              paramIndex++;
+            }
+            if(ithArg['name'] == endParamName)
+            {
+              break;
+            }
+        }
+        return result;
+      },
+
+      updatePlotTags: function (results) {
+
+          $('.teradata-tags').each(function() { 
+            let paramName = $(this).attr("param-name");
+            if(paramName == undefined)
+            {
+              return;
+            }
+            if(paramName in results)
+            {
+              var value = results[paramName].toString();
+              $(this).importTags(value); 
+            }
+          });
+      },
+
+      // Plot functions
+      plotSettingsLayout: function() {
+           $( "#dialog-param-plot-settings" ).dialog({
+                  resizable: false,
+                  height: "auto",
+                  width: 400,
+                  modal: true,
+                  buttons: {
+                    "Update": function() {
+                      // For the case where there is additional parameters i.e. for plot when we want multiple plots
+                      // Clear all plots so that there is none
+                      let num_rows = $("#row_setup").val()
+                      let num_cols = $("#column_setup").val()
+                      $scope.config.param_store = [];
+                      $scope.config.current_param_store_index = -1;
+                      
+                      
+                      // Loop through and add a plot for every cell in the row and column
+                      for (let row = 1; row <= num_rows; row++){
+                        for (let column = 1; column <= num_cols; column++){
+                          
+                          $scope.config.param_store.push([])
+                          $scope.config.current_param_store_index++;
+                          // First Reset the main UI
+                          $scope.resetUiParams("PLOTS", "PLOTS_GROUPEND", row, column);
+                          
+                          // copy UI parameters to the store
+                          $scope.config.param_store[$scope.config.current_param_store_index] = $scope.getUiParams("PLOTS", "PLOTS_GROUPEND");
+                        }
+                          
+                      }
+                      
+                      // Update the current Index - we want to show the first cell
+                      $scope.config.current_param_store_index = 0;
+                      // Update the UI parameters
+                      var results = $scope.updateUiParams("PLOTS", "PLOTS_GROUPEND", $scope.config.param_store[$scope.config.current_param_store_index], num_rows, num_cols)
+                      // Update all Tags
+                      $scope.updatePlotTags(results);
+                      
+                      // Refresh 
+                      $route.reload()
+
+                      $( this ).dialog( "close" );
+                    },
+                    Cancel: function() {
+                      $( this ).dialog( "close" );
+                    }
+                  }
+            });  //end confirm dialog
+      },
+
+      addPlot: function() {
+           $( "#dialog-param-add" ).dialog({
+                  resizable: false,
+                  height: "auto",
+                  width: 400,
+                  modal: true,
+                  buttons: {
+                    "Add": function() {
+                      // copy UI parameters to the store
+                      $scope.config.param_store[$scope.config.current_param_store_index] = $scope.getUiParams("PLOTS", "PLOTS_GROUPEND");
+                      // Add sentinal to param store
+                      $scope.config.param_store.push([])
+                      // Update the current index
+                      $scope.config.current_param_store_index = $scope.config.param_store.length-1;
+                      // Reset the UI parameters
+                      var results = $scope.resetUiParams("PLOTS", "PLOTS_GROUPEND");
+
+                      // Update all Tags
+                      $scope.updatePlotTags(results);
+                      // Refresh 
+                      $route.reload()
+                      $( this ).dialog( "close" );
+                    },
+                    Cancel: function() {
+                      $( this ).dialog( "close" );
+                    }
+                  }
+            });  //end confirm dialog
+      },
+
+      nextPlot: function() {
+        // copy UI parameters to the store
+        $scope.config.param_store[$scope.config.current_param_store_index] = $scope.getUiParams("PLOTS", "PLOTS_GROUPEND");
+        // Update the current Index
+        $scope.config.current_param_store_index++;
+        // Update the UI parameters
+        var results = $scope.updateUiParams("PLOTS", "PLOTS_GROUPEND", $scope.config.param_store[$scope.config.current_param_store_index])
+        // Update all Tags
+        $scope.updatePlotTags(results);
+        // Refresh 
+        $route.reload()
+      },
+
+      previousPlot: function() {
+        // copy UI parameters to the store
+        $scope.config.param_store[$scope.config.current_param_store_index] = $scope.getUiParams("PLOTS", "PLOTS_GROUPEND");
+        // Update the current Index
+        $scope.config.current_param_store_index--;
+        // Update the UI parameters
+        var results = $scope.updateUiParams("PLOTS", "PLOTS_GROUPEND", $scope.config.param_store[$scope.config.current_param_store_index])
+        // Update all Tags
+        $scope.updatePlotTags(results);
+        // Refresh 
+        $route.reload()
+      },
+
+      removePlot: function() {
+        $( "#dialog-param-remove" ).dialog({
+                  resizable: false,
+                  height: "auto",
+                  width: 400,
+                  modal: true,
+                  buttons: {
+                    "Remove": function() {
+                      // Remove from param store
+                      $scope.config.param_store.splice($scope.config.current_param_store_index, 1);
+                      // Update the current index
+                      $scope.config.current_param_store_index = $scope.config.param_store.length-1;
+                      // Update the UI parameters
+                      var results = $scope.updateUiParams("PLOTS", "PLOTS_GROUPEND", $scope.config.param_store[$scope.config.current_param_store_index])
+                      // Update all Tags
+                      $scope.updatePlotTags(results);
+                      // Refresh 
+                      $route.reload()
+                      $( this ).dialog( "close" );
+                    },
+                    Cancel: function() {
+                      $( this ).dialog( "close" );
+                    }
+                  }
+            });  //end confirm dialog
+      },
          
 
       // SKS: Version Dialog
@@ -651,6 +894,12 @@ removeOrderByColumn_WITHDIR: function(orderArray, orderDirArray, index) {
                       }
                       $scope.config.function = {};
                       $scope.config.function.name = selectedFunction;
+
+                      // Reset parameter store
+                      // For the case where there is additional parameters i.e. for plot when we want multiple plots
+                      $scope.config.param_store = [[]];
+                      $scope.config.current_param_store_index = 0;
+
                       $scope.refresh($scope.config.function.name);
                       $( this ).dialog( "close" );
                     },
@@ -685,6 +934,7 @@ removeOrderByColumn_WITHDIR: function(orderArray, orderDirArray, index) {
       showQueryDialog: function() {
           $scope.callPythonDo({"query":true}).then(
                     data => {
+                            if("error" in data) {alert(data["error"]);}
                             $('<div></div>').dialog({
                                 modal: true,
                                 width: 600,
@@ -737,19 +987,17 @@ removeOrderByColumn_WITHDIR: function(orderArray, orderDirArray, index) {
       },
 
 
-
-      // SKS: Explanation Dialog
-      showExplainDialog: function() {
-          $scope.callPythonDo({"explain":true}).then(
+      showPlotDialog: function() {
+          $scope.callPythonDo({"plot":true}).then(
                     data => {
+                            if("error" in data) {alert(data["error"]);}
                             $('<div></div>').dialog({
                                 modal: true,
                                 width: 600,
-                                height: 400,
-                                title: "Explanation of SQL",
+                                height: 500,
+                                title: "Plot",
                                 open: function() {
                                   var markup = data['result'];
-                                  markup = markup.replaceAll('\n', '<br>');
                                   $(this).html(markup);
                                 },
                                 buttons: {
@@ -1359,6 +1607,7 @@ removeOrderByColumn_WITHDIR: function(orderArray, orderDirArray, index) {
         var startTime = new Date();
         $scope.callPythonDo({}).then(
           data => {
+                    if("error" in data) {alert(data["error"]);}
                     var endTime = new Date();
                     var numSeconds = Math.round((endTime - startTime)/1000);
                     if (numSeconds > 6){
@@ -1390,6 +1639,11 @@ removeOrderByColumn_WITHDIR: function(orderArray, orderDirArray, index) {
                     $('#filter_valib').click(function() {
                         $scope.updateAvailableFunctions();
                     });
+
+                    $('#filter_uaf').click(function() {
+                        $scope.updateAvailableFunctions();
+                    });
+
 
                     $scope.updateAvailableFunctions();
                   
@@ -1435,7 +1689,9 @@ removeOrderByColumn_WITHDIR: function(orderArray, orderDirArray, index) {
         {
             
             if((keyword == "VALIB" && $("#filter_valib").is(':checked')) ||
-                (keyword == "SQLE"  && $("#filter_sqle").is(':checked'))) 
+                (keyword == "SQLE"  && $("#filter_sqle").is(':checked')) ||
+                (keyword == "UAF"  && $("#filter_uaf").is(':checked'))
+              ) 
             {
 
                 $("<option/>", {
@@ -1617,20 +1873,30 @@ removeOrderByColumn_WITHDIR: function(orderArray, orderDirArray, index) {
         const $a = $('.mainPane > div:first > div:first > div.recipe-settings-section2 > a');
 
         var doc_link;
+        var title;
         try 
         {
-          if($scope.config.function.name.includes('VAL'))
-            doc_link = 'https://docs.teradata.com/r/Vantage-Analytics-Library-User-Guide/January-2022';
-          else
-            doc_link = 'https://docs.teradata.com/r/Teradata-VantageTM-Advanced-SQL-Engine-Analytic-Functions/June-2022';
+          if($scope.config.function_type == "valib") {
+            doc_link = 'https://docs.teradata.com/r/Enterprise_IntelliFlex_Lake_VMware/Vantage-Analytics-Library-User-Guide';
+            title = "Learn more about Vantage Analytics Library";
+          }
+          else if($scope.config.function_type == "uaf") {
+            doc_link = 'https://docs.teradata.com/r/Enterprise_IntelliFlex_VMware/Teradata-VantageTM-Unbounded-Array-Framework-Time-Series-Reference-17.20';
+            title = "Learn more about Vantage Time Series";
+          }
+          else {
+            doc_link = 'https://docs.teradata.com/r/Enterprise_IntelliFlex_VMware/Teradata-VantageTM-Analytics-Database-Analytic-Functions-17.20';
+            title = "Learn more about Vantage Machine Learning";
+          }
         } 
         catch (e) {
           doc_link = 'https://docs.teradata.com';
+          title = "Learn more about Vantage Analytic Functions";
         }
         
 
         $a
-          .text('Learn more about Teradata Vantage Analytic Functions')
+          .text(title)
           .css('color', 'orange')
           .attr('target', '_blank')
           .attr('href', doc_link);
@@ -1785,9 +2051,9 @@ removeOrderByColumn_WITHDIR: function(orderArray, orderDirArray, index) {
         $scope.preprocessMetadata(false);
         $scope.activateUi();
 
-
-        // $scope.config.function.partitionAttributes = $scope.config.function.partitionAttributes || [];
-        // $scope.config.function.orderByColumn = $scope.config.function.orderByColumn || [];
+        // For the case where there is additional parameters i.e. for plot when we want multiple plots
+        $scope.config.param_store = $scope.config.param_store || [[]];
+        $scope.config.current_param_store_index = $scope.config.current_param_store_index || 0;
 
       },
       

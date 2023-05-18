@@ -1,0 +1,164 @@
+{
+    "JSONVersion": "1",
+    "FuncRName": "...",
+    "MaxInputFiles": 1,
+    "IsPlottable": true,
+    "InputFmt": false,
+    "OutputFmt": false,
+    "function_type": "uaf",
+    "json_schema_major_version": "1",
+    "json_schema_minor_version": "2",
+    "json_content_version": "1",
+    "function_name": "TD_PACF",
+    "function_r_name": "aa.td_pacf",
+    "ref_function_r_name": "aa.td_pacf",
+    "function_version": "...",
+    "short_description": "Computes the Partial Auto Correlation function of a series",
+    "long_description": "the TD_PACF, Partial Auto Correlation function, can be passed either a discrete series - time or spatial series (INPUT_TYPE(DATA_SERIES)) - as an input; or, alternatively, can be passed a series containing previously computed Auto Correlation coefficients - lag and magnitude (INPUT_TYPE(ACF)).   The passed in logical-runtime series is permitted to have elements which are either univariate or multivariate reals. Each input series produces a result series, which is indexed on 'LAG', and containing univariate or multivariate real number magnitudes as it result series elements.  This function provides the ability to generate 'on-demand' plots.  The generated plots can be either univariate, multivariate, or composite in nature. The chosen implementation\u2019s output and style specification closely match Matplotlib ( https://matplotlib.org/ ), an extremely popular Python plotting library. The primary purpose for this decision is to jump start existing Matplotlib users into TD_PLOT usage.  However, the Teradata implementation is a completely independent and separate one based on C/C++.",
+    "input_tables": [
+        {
+            "LangName": "data or object or newdata or ... --> Langauges team can work with UAF team to come up with this field",
+            "requiredInputKind": [
+                "PartitionByNone"
+            ],
+            "isOrdered": false,
+            "partitionByOne": false,
+            "alternateNames": [],
+            "isRequired": true,
+            "description": "discrete series - time or spatial series (INPUT_TYPE(DATA_SERIES)) - as an input; or, alternatively, can be passed a series containing previously computed Auto Correlation coefficients - lag and magnitude (INPUT_TYPE(ACF))",
+            "rDescription": "discrete series - time or spatial series (INPUT_TYPE(DATA_SERIES)) - as an input; or, alternatively, can be passed a series containing previously computed Auto Correlation coefficients - lag and magnitude (INPUT_TYPE(ACF))",
+            "datatype": "TABLE_ALIAS",
+            "allowsLists": false,
+            "name": "Input",
+            "rName": "Input",
+            "useInR": true,
+            "rOrderNum": 1,
+            "uaf": {
+                "requiredUafKind": [
+                    "SERIES",
+                    "ART"
+                ],
+                "is_row_sequence": "SEQUENCE",
+                "is_col_sequence": "SEQUENCE",
+                "row_axis_name": "",
+                "column_axis_name": "",
+                "id_name": "",
+                "id_sequence": "",
+                "payload_fields": "",
+                "payload_content": "",
+                "layer": "",
+                "where": "",
+                "time_duration": "",
+                "time_zero": "",
+                "time_type": "",
+                "seq_zero": "",
+                "interval": "Off",
+                "details": true,
+                "instance_names": "",
+                "data_type": "",
+                "payload_start_value": "",
+                "payload_offset_value": "",
+                "payload_num_entries": "",
+                "index": 0
+            },
+            "uafType": ""
+        }
+    ],
+    "output_tables": [
+        {
+            "Type": "ART",
+            "PrimaryLayer": true,
+            "LayerName": "ARTPRIMARY",
+            "ResultTableColumnTypes": [
+                "integer",
+                "float",
+                "float",
+                "float",
+                "float"
+            ],
+            "LangName": "data or object or newdata or ... --> Langauges team can work with UAF team to come up with this field",
+            "isOutputTable": true,
+            "omitPossible": true,
+            "partitionByOne": false,
+            "alternateNames": [],
+            "isRequired": false,
+            "description": "The TD_PACF function returns only a primary result set.   There are no secondary or tertiary result sets produced by this function.  The primary result set can be retrieved by issuing a SELECT against the analytical table containing the results.The last three float outputs are only returned if the ALPHA parameter was set to some NON-ZERO value. ",
+            "rDescription": "The TD_PACF function returns only a primary result set.   There are no secondary or tertiary result sets produced by this function.  The primary result set can be retrieved by issuing a SELECT against the analytical table containing the results.The last three float outputs are only returned if the ALPHA parameter was set to some NON-ZERO value. ",
+            "datatype": "TABLE_NAME",
+            "allowsLists": false,
+            "name": "OutputTable1",
+            "rName": "OutputTable1",
+            "useInR": true,
+            "rOrderNum": 2
+        }
+    ],
+    "argument_clauses": [
+        {
+            "name": "INPUT_TYPE",
+            "defaultValue": "DATA_SERIES",
+            "permittedValues": [
+                "DATA_SERIES",
+                "ACF"
+            ],
+            "allowsLists": false,
+            "Type": "enumeration",
+            "datatype": "STRING",
+            "description": "Optional parameter. Specifies whether to source 1D array contains a data series or contains previously generated ACF results.  Default is DATA_SERIES, meaning a data series is being passed in.DATA_SERIES - 1D input array contains time or spatial seriesACF - 1D input array is indexed by LAG and contains previously generated  ACF magnitudes",
+            "isRequired": false,
+            "rOrderNum": 3
+        },
+        {
+            "name": "ALGORITHM",
+            "defaultValue": "DATA_SERIES",
+            "permittedValues": [
+                "LEVINSON_DURBIN",
+                "OLS"
+            ],
+            "allowsLists": false,
+            "Type": "enumeration",
+            "datatype": "STRING",
+            "description": "Specifies algorithm that data scientist wishes to use to generate the PACF coefficientsLEVINSON_DURBIN - Uses the set of recursive formulas devised by Levinson-Durbin to solve for PACF coefficientsOLS - Solves incremental series of regression equations to determine the PACF coefficients",
+            "isRequired": true,
+            "rOrderNum": 4
+        },
+        {
+            "name": "MAXLAGS",
+            "lowerBound": 1,
+            "lowerBoundType": "INCLUSIVE",
+            "allowNaN": false,
+            "allowsLists": false,
+            "Type": "integer",
+            "datatype": "INTEGER",
+            "description": "Positive Integer value.  Maximum number of lags at which to calculate the partial autocorrelation. Default is 10*log10(N) where N is the number of observations. Is automatically limited to one less than the number of observations in the series.  If the numLags value specified by the user exceeds this limit, the user input value is ignored and replaced with the system defined max value.",
+            "isRequired": true,
+            "rOrderNum": 5
+        },
+        {
+            "name": "UNBIASED",
+            "defaultValue": 0,
+            "permittedValues": [
+                0,
+                1
+            ],
+            "allowsLists": false,
+            "Type": "integer",
+            "datatype": "INTEGER",
+            "description": "Only valid when INPUT_TYPE(DATA_SERIES). This effects the manner in which the auto-correlation intermediate values are calculated.Positive Integer value. If 0, then denominator for autocorrelation calculation is n-k (Jenkins & Watts formula), otherwise if 1, denominator for autocorrelation calculation is n (Box & Jenkins formula). Default is 0.",
+            "isRequired": false,
+            "rOrderNum": 6
+        },
+        {
+            "name": "ALPHA",
+            "defaultValue": 0,
+            "lowerBound": 0,
+            "lowerBoundType": "INCLUSIVE",
+            "allowNaN": false,
+            "allowsLists": false,
+            "Type": "float",
+            "datatype": "DOUBLE",
+            "description": "Positive Float value. If a non-zero positive number is given, the confidence intervals for the given level are returned.  For instance if alpha=.05, 95% confidence intervals are returned where the standard deviation is computed according to Bartlett\u2019s formula.   Passing in a positive number results in a CONFINT result column being returned.",
+            "isRequired": false,
+            "rOrderNum": 7
+        }
+    ]
+}

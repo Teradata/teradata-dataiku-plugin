@@ -45,15 +45,18 @@ def gen_series_uaf(stmts, input_table_name, req_input, space_count, input_db_nam
     id_name = req_input["uaf"].get("id_name", "")
     if not id_name:
         error += "Error {} has missing Series ID\n".format(verifyAttribute(req_input["uaf"].get("name")))
-    id_name = id_name.split('\x00')
+    if type(id_name) != list:
+        id_name = id_name.split('\x00')
     stmts.append("{}SERIES_ID ( {} ),".format(" "*space_count,  verifyAttribute(",".join(id_name))))
 
 
     # OPTIONAL ID_SEQUENCE
     id_sequence = req_input["uaf"].get("id_sequence", "")
     if id_sequence:
-        id_sequence = id_sequence.split('\x00')
-        stmts.append("{} ID_SEQUENCE( {} ),".format(" "*space_count, verifyAttribute(",".join(id_sequence))))
+        if type(id_sequence) != list:
+            id_sequence = id_sequence.split('\x00')
+        if len(id_sequence)>0:
+            stmts.append("{} ID_SEQUENCE( {} ),".format(" "*space_count, verifyAttribute(",".join(id_sequence))))
 
     # START PAYLOAD GROUP
     stmts.append("{}PAYLOAD (".format(" "*space_count))
@@ -63,7 +66,8 @@ def gen_series_uaf(stmts, input_table_name, req_input, space_count, input_db_nam
     payload_fields = req_input["uaf"].get("payload_fields", "")
     if not payload_fields:
         error += "Error {} has missing Payload Fields\n".format(verifyAttribute(req_input["uaf"].get("name")))
-    payload_fields = payload_fields.split('\x00')
+    if type(payload_fields) != list:
+        payload_fields = payload_fields.split('\x00')
     stmts.append("{}FIELDS ({}),".format(" "*space_count, verifyAttribute(",".join(payload_fields))))
 
     # PAYLOAD CONTENT
@@ -79,11 +83,22 @@ def gen_series_uaf(stmts, input_table_name, req_input, space_count, input_db_nam
     # OPTIONAL LAYER
     layer = req_input["uaf"].get("layer", "")
     if layer:
-        layer = layer.split('\x00')
+        if type(layer) != list:
+            layer = layer.split('\x00')
         stmts.append("{}LAYER ({}),".format(" "*space_count, verifyAttribute(",".join(layer))))
 
     # OPTIONAL INTERVAL
-    if req_input["uaf"].get("interval", "Off") == "On":
+    add_interval = False
+    if req_input["uaf"].get("time_duration", "") != "":
+        add_interval = True
+    if req_input["uaf"].get("time_zero", "") != "":
+        add_interval = True
+    if req_input["uaf"].get("time_type", "") != "":
+        add_interval = True
+    if req_input["uaf"].get("seq_zero", "") != "":
+        add_interval = True
+
+    if add_interval:
         # START INTERVAL GROUP
         stmts.append("{}INTERVAL (".format(" "*space_count))
         space_count+=1
@@ -174,14 +189,17 @@ def gen_matrix_uaf(stmts, input_table_name, req_input, space_count, input_db_nam
     id_name = req_input["uaf"].get("id_name", "")
     if not id_name:
         error += "Error {} has missing Matrix ID\n".format(verifyAttribute(req_input["uaf"].get("name")))
-    id_name = id_name.split('\x00')
+    if type(id_name) != list:
+        id_name = id_name.split('\x00')
     stmts.append("{}MATRIX_ID ( {} ),".format(" "*space_count,  verifyAttribute(",".join(id_name))))
 
     # OPTIONAL ID_SEQUENCE
     id_sequence = req_input["uaf"].get("id_sequence", "")
     if id_sequence:
-        id_sequence = id_sequence.split('\x00')
-        stmts.append("{} ID_SEQUENCE( {} ),".format(" "*space_count, verifyAttribute(",".join(id_sequence))))
+        if type(id_sequence) != list:
+            id_sequence = id_sequence.split('\x00')
+        if len(id_sequence)>0:
+            stmts.append("{} ID_SEQUENCE( {} ),".format(" "*space_count, verifyAttribute(",".join(id_sequence))))
 
     # START PAYLOAD GROUP
     stmts.append("{}PAYLOAD (".format(" "*space_count))
@@ -191,7 +209,8 @@ def gen_matrix_uaf(stmts, input_table_name, req_input, space_count, input_db_nam
     payload_fields = req_input["uaf"].get("payload_fields", "")
     if not payload_fields:
         error += "Error {} has missing Payload Fields\n".format(verifyAttribute(req_input["uaf"].get("name")))
-    payload_fields = payload_fields.split('\x00')
+    if type(payload_fields) != list:
+        payload_fields = payload_fields.split('\x00')
     stmts.append("{}FIELDS ({}),".format(" "*space_count, verifyAttribute(",".join(payload_fields))))
 
     # PAYLOAD CONTENT
@@ -207,7 +226,8 @@ def gen_matrix_uaf(stmts, input_table_name, req_input, space_count, input_db_nam
     # OPTIONAL LAYER
     layer = req_input["uaf"].get("layer", "")
     if layer:
-        layer = layer.split('\x00')
+        if type(layer) != list:
+            layer = layer.split('\x00')
         stmts.append("{}LAYER ({}),".format(" "*space_count, verifyAttribute(",".join(layer))))
 
     # strip the last comma
@@ -250,8 +270,10 @@ def gen_art_uaf(stmts, input_table_name, req_input, space_count, input_db_name="
     # OPTIONAL ID_SEQUENCE
     id_sequence = req_input["uaf"].get("id_sequence", "")
     if id_sequence:
-        id_sequence = id_sequence.split('\x00')
-        stmts.append("{} ID_SEQUENCE( {} ),".format(" "*space_count, verifyAttribute(",".join(id_sequence))))
+        if type(id_sequence) != list:
+            id_sequence = id_sequence.split('\x00')
+        if len(id_sequence)>0 and id_sequence[0]:
+            stmts.append("{} ID_SEQUENCE( {} ),".format(" "*space_count, verifyAttribute(",".join(id_sequence))))
 
     # if either payload fields or payload content exist then create payload group
     if req_input["uaf"].get("payload_fields", []) or req_input["uaf"].get("payload_content", ""):
@@ -261,7 +283,8 @@ def gen_art_uaf(stmts, input_table_name, req_input, space_count, input_db_name="
 
         # PAYLOAD FIELDS
         payload_fields = req_input["uaf"].get("payload_fields", "")
-        payload_fields = payload_fields.split('\x00')
+        if type(payload_fields) != list:
+            payload_fields = payload_fields.split('\x00')
         stmts.append("{}FIELDS ({}),".format(" "*space_count, verifyAttribute(",".join(payload_fields))))
 
         # PAYLOAD CONTENT
@@ -275,7 +298,8 @@ def gen_art_uaf(stmts, input_table_name, req_input, space_count, input_db_name="
     # OPTIONAL LAYER
     layer = req_input["uaf"].get("layer", "")
     if layer:
-        layer = layer.split('\x00')
+        if type(layer) != list:
+            layer = layer.split('\x00')
         stmts.append("{}LAYER ({}),".format(" "*space_count, verifyAttribute(",".join(layer))))
 
     # strip the last comma
@@ -334,30 +358,129 @@ def gen_genseries_uaf(stmts, input_table_name, req_input, space_count, input_db_
 
     return error
 
+def add_plot(function_arguments):
+    result = []
+    i = 0
+    for arg in function_arguments:
+        if arg['name'] == 'PLOTS.SERIES' and arg['datatype'] == 'GROUPSTART':
+            series_start_index = i
+        if arg['name'] == 'PLOTS.SERIES_GROUPEND' and arg['datatype'] == 'GROUPEND':
+            series_end_index = i
+            break
+        i+=1     
+    series_id_index = series_start_index + 1
+    
+    series_id_value = function_arguments[series_id_index]['value'] 
+    if type(series_id_value) == int:
+        series_id_value = str(series_id_value)
+    if type(series_id_value) == str:
+        num_series = len(series_id_value.split('\x00'))
+    
+    for series_num in range(0, num_series):
+        for param_index in range(series_start_index, series_end_index+1):
+            series_param = function_arguments[param_index].copy()
+            if 'value' not in series_param:
+                result.append(series_param)
+                continue
+            if series_param['datatype'] == 'GROUPSTART':
+                if series_num == 0:
+                    series_param['startarray'] = True
+                result.append(series_param)
+                continue
+            if series_param['datatype'] == 'GROUPEND':
+                if series_num == num_series-1:
+                    series_param['endarray'] = True
+                result.append(series_param)
+                continue
+            if series_param['value']== series_param['defaultValue']:
+                continue
+            if not(type(series_param['value']) == str or type(series_param['value']) == list)  :
+                continue
+            if type(series_param['value']) == str:
+                value_list = series_param['value'].split('\x00')
+            if len(value_list) == 0:
+                 series_param['value'] = series_param['defaultValue']
+            else:
+                series_param['value'] = value_list[series_num if series_num<len(value_list) else len(value_list)-1]
+            series_param['allowsLists'] = False
+            result.append(series_param)
+    function_arguments[series_start_index:series_end_index+1] = result
+    return function_arguments
+
+def update_plots(stmts, config_json, valid_inputs):
+    function_arguments = config_json['function']['arguments']
+    i = 0
+    for arg in function_arguments:
+        if arg['name'] == 'PLOTS' and arg['datatype'] == 'GROUPSTART':
+            plot_start_index = i
+        if arg['name'] == 'PLOTS_GROUPEND' and arg['datatype'] == 'GROUPEND':
+            plot_end_index = i
+            break
+        i+=1 
+
+    result = []
+    param_store = config_json.get("param_store", [[]]);
+    current_param_store_index = config_json.get("current_param_store_index",0)
+
+    num_plots = len(param_store)
+
+    for plot_index in range(num_plots):
+        # If input is not valid then do not show this plot
+        if not valid_inputs[plot_index]:
+            continue
+
+        if plot_index == current_param_store_index:
+            current_plot = function_arguments[plot_start_index:plot_end_index+1].copy()
+        else:
+            current_plot = param_store[plot_index]
+
+        # Set the PlotS.ID to have default value pf 0 which then forces 1 to show up in the query
+        current_plot[1]['defaultValue'] = 0
+        result.extend(add_plot(current_plot))
+    
+    # Markers for [ and ]
+    result[0]['startarray'] = True
+    result[-1]['endarray'] = True
+
+    # update the function arguments
+    function_arguments[plot_start_index:plot_end_index+1] = result
+
+    return function_arguments
+
+
 def gen_uaf_query(outputTable, config_json, outputDB = ""):
+
+
     stmts = []
     error = ""
     start_group_line = []
     space_count = 0
     stmts.append("{}EXECUTE FUNCTION INTO ART ({})".format(" "*space_count, verifyQualifiedTableName(outputDB, outputTable)))
     space_count += 1
-    #print("SKS", config_json["function"])
+    #print("SKS START", config_json["function"])
+    #pprint.pprint(config_json)
+    #print("SKS END")
     
     # Some functions do not have function_alias_name, in which case use name
     function_name = config_json["function"].get("function_alias_name")
     if function_name == None:
         function_name = config_json["function"].get("name")
 
+
     stmts.append("{}{}".format(" "*space_count, verifyAttribute(function_name)))
     stmts.append("{}(".format(" "*space_count))
     space_count += 1
 
+    valid_inputs = []
     for req_input in config_json["function"]["required_input"]:
         input_table_name = req_input.get("value", "")
         input_db_name = ""
         # Translate to full table name
         if ("inputtables" in config_json["function"]) and (input_table_name in config_json["function"]["inputschemas"]):
             input_db_name = config_json["function"]["inputschemas"][input_table_name]
+            valid_inputs.append(True)
+        else:
+            valid_inputs.append(False)
         # Translate to full table name
         if ("inputtables" in config_json["function"]) and (input_table_name in config_json["function"]["inputtables"]):
             input_table_name = config_json["function"]["inputtables"][input_table_name]
@@ -372,6 +495,10 @@ def gen_uaf_query(outputTable, config_json, outputDB = ""):
             error += gen_art_uaf(stmts, input_table_name, req_input, space_count, input_db_name)
         else:
             error += "Error {} has Unknown uafType\n".format(verifyAttribute(req_input["uaf"].get("name")))
+
+    # Update the Plot to convert the list SERIES into multiple SERIES
+    if function_name == "TD_PLOT":
+       config_json['function']['arguments'] = update_plots(stmts, config_json, valid_inputs)
 
 
     stmts.append("{}FUNC_PARAMS (".format(" "*space_count))
@@ -389,10 +516,12 @@ def gen_uaf_query(outputTable, config_json, outputDB = ""):
 
         if dataype == 'GROUPSTART':
             if '.' in name:
-                name = name.split('.')[1]
-            if function_name == "TD_PLOT" and (name == "PLOTS" or name == "SERIES"):
-                # Square bracket included too
-                stmts.append("{}{} [(".format(" "*space_count, verifyAttribute(name)))
+                name = name.split('.')[-1]
+            if function_name == "TD_PLOT" and (name == "SERIES" or name == "PLOTS"):
+                if argument_clause.get("startarray", False):
+                    stmts.append("{}{} [(".format(" "*space_count, verifyAttribute(name)))
+                else:
+                    stmts.append("{} (".format(" "*space_count))
             else:
                 if function_name == 'TD_RESAMPLE' and name == 'TIMECODE' and is_row_sequence=='SEQUENCE':
                     name = 'SEQUENCE'
@@ -402,7 +531,7 @@ def gen_uaf_query(outputTable, config_json, outputDB = ""):
             continue
         
         if '.' in name:
-            name = name.split('.')[1]
+            name = name.split('.')[-1]
 
         if dataype == 'GROUPEND':
             # strip the last comma
@@ -414,9 +543,11 @@ def gen_uaf_query(outputTable, config_json, outputDB = ""):
                 # nothing was added inside the group so remove the group start on prior line
                 stmts.pop()
             else:
-                if function_name == "TD_PLOT" and (name == "PLOTS" or name == "SERIES"):
-                    # Square bracket included too
-                    stmts.append("{})],".format(" "*space_count))
+                if function_name == "TD_PLOT" and (name == "SERIES_GROUPEND" or name == "PLOTS_GROUPEND"):
+                    if argument_clause.get("endarray", False):
+                        stmts.append("{})],".format(" "*space_count))
+                    else:
+                        stmts.append("{}),".format(" "*space_count))
                 else:
                     stmts.append("{}),".format(" "*space_count))
             continue
@@ -446,7 +577,8 @@ def gen_uaf_query(outputTable, config_json, outputDB = ""):
         stmts.append("{}{} (".format(" "*space_count, verifyAttribute(name)))
         add_quotes = dataype == "STRING" and argument_clause.get("Type", "") != "enumeration"
         if argument_clause.get("allowsLists", False):
-            split_list = value.split('\x00') # May need to be \x00
+            if type(value) != list:
+                split_list = value.split('\x00') # May need to be \x00
             if len(split_list)>0:
                 if add_quotes:
                     stmts[-1] += "'{}'".format(verifyAttribute(split_list[0]))

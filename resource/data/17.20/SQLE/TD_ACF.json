@@ -1,0 +1,186 @@
+{
+    "JSONVersion": "1.0",
+    "FuncRName": "To be investigated",
+    "Stages": 1,
+    "MaxInputFiles": 1,
+    "InvokesOther": false,
+    "IsPlottable": true,
+    "HasCostFunction": true,
+    "NeedSeriesMatrixMetadata": true,
+    "InputFmt": false,
+    "OutputFmt": false,
+    "function_type": "uaf",
+    "json_schema_major_version": "1",
+    "json_schema_minor_version": "2",
+    "json_content_version": "1",
+    "function_name": "TD_ACF",
+    "function_r_name": "aa.td_acf",
+    "ref_function_r_name": "aa.td_acf",
+    "function_version": "1.0",
+    "short_description": "Calculating auto-correlation and auto-covariance of a time series",
+    "long_description": "The auto-covariance and auto-correlation function compute how a time series covaries or correlates with itself, when delayed by a particular lag. Example:For a lag equal to 1, we calculate the covariance or correlation between time series Yt  and time series Yt-1 . for lag equal to 2, we calculate the covariance or correlation between time series Yt  and time series Yt-2 ",
+    "input_tables": [
+        {
+            "Stage": 1,
+            "File": 1,
+            "LangName": "data",
+            "Strategy": "UAF_DISTRIB_WHOLE_SERIES",
+            "requiredInputKind": [
+                "PartitionByNone"
+            ],
+            "isOrdered": false,
+            "partitionByOne": false,
+            "alternateNames": [],
+            "isRequired": true,
+            "description": "Specifies a series that is one dimensional array passed as an input to the function.",
+            "rDescription": "Specifies a series that is one dimensional array passed as an input to the function.",
+            "datatype": "TABLE_ALIAS",
+            "allowsLists": false,
+            "name": "Input",
+            "rName": "Input",
+            "useInR": true,
+            "rOrderNum": 1,
+            "uaf": {
+                "requiredUafKind": [
+                    "SERIES",
+                    "GENSERIES"
+                ],
+                "is_row_sequence": "SEQUENCE",
+                "is_col_sequence": "SEQUENCE",
+                "row_axis_name": "",
+                "column_axis_name": "",
+                "id_name": "",
+                "id_sequence": "",
+                "payload_fields": "",
+                "payload_content": "",
+                "layer": "",
+                "where": "",
+                "time_duration": "",
+                "time_zero": "",
+                "time_type": "",
+                "seq_zero": "",
+                "interval": "Off",
+                "details": true,
+                "instance_names": "",
+                "data_type": "",
+                "payload_start_value": "",
+                "payload_offset_value": "",
+                "payload_num_entries": "",
+                "index": 0
+            },
+            "uafType": ""
+        }
+    ],
+    "output_tables": [
+        {
+            "Stage": 1,
+            "Strategy": "UAF_DISTRIB_WHOLE_SERIES",
+            "isOutputTable": true,
+            "omitPossible": true,
+            "partitionByOne": false,
+            "alternateNames": [],
+            "isRequired": false,
+            "datatype": "TABLE_NAME",
+            "allowsLists": false,
+            "name": "OutputTable1",
+            "rName": "OutputTable1",
+            "useInR": true,
+            "rOrderNum": 2
+        }
+    ],
+    "argument_clauses": [
+        {
+            "name": "MAXLAGS",
+            "lowerBound": 1,
+            "lowerBoundType": "INCLUSIVE",
+            "allowNaN": false,
+            "langName": "max_lags",
+            "allowsLists": false,
+            "Type": "integer",
+            "datatype": "INTEGER",
+            "description": "Maximum number of lags at which to calculate the autocorrelation/autocovariance.Default is 10*log10(N) where N is the number of observations.Automatically limited to one less than the number of observations in the series.If the numLags value specified by the user exceeds this limit, the user input value is ignored and replaced with the system defined max value.",
+            "isRequired": false,
+            "rOrderNum": 3
+        },
+        {
+            "name": "FUNC_TYPE",
+            "defaultValue": 0,
+            "allowNaN": false,
+            "permittedValues": [
+                0,
+                1
+            ],
+            "allowsLists": false,
+            "Type": "integer",
+            "datatype": "INTEGER",
+            "description": "Specifies whether it is a auto-correlation or auto-covariance function.0 means execute the auto-correlation function.  1 means execute the auto-covariance function",
+            "isRequired": false,
+            "rOrderNum": 4
+        },
+        {
+            "name": "UNBIASED",
+            "defaultValue": 0,
+            "allowNaN": false,
+            "allowsLists": false,
+            "Type": "boolean",
+            "datatype": "BOOLEAN",
+            "description": "If 0, then denominator for autocovariance is n-k (Jenkins & Watts formula)otherwise if 1, denominator for autocovariance is n (Box & Jenkins formula). ",
+            "isRequired": false,
+            "rOrderNum": 5
+        },
+        {
+            "name": "DEMEAN",
+            "defaultValue": 1,
+            "allowNaN": false,
+            "allowsLists": false,
+            "Type": "boolean",
+            "datatype": "BOOLEAN",
+            "description": "If 1 (default), then subtract the mean x from each element of x, as specified in the formulas for autocorrelation or autocovariance.If 0, then we do NOT do the subtraction on each element before computing the autocorrelation or autocovariance.",
+            "isRequired": false,
+            "rOrderNum": 6
+        },
+        {
+            "name": "QSTAT",
+            "defaultValue": 0,
+            "allowNaN": false,
+            "allowsLists": false,
+            "Type": "boolean",
+            "datatype": "BOOLEAN",
+            "description": "1 means provide Ljung-Box q statistic for each autocorrelation coefficient.0 (default) means do not provide.   Requesting a QSTAT results in a QSTATVAL and PVALUE set of result columns being returned.",
+            "isRequired": false,
+            "rOrderNum": 7
+        },
+        {
+            "name": "ALPHA",
+            "allowNaN": false,
+            "allowsLists": false,
+            "Type": "double",
+            "datatype": "DOUBLE",
+            "description": "If a non-zero positive number is given, the confidence intervals for the given level are returned.For example, if alpha=.05 meaning the 95% level , then confidence intervals are returned where the standard deviation is computed according to Bartlett\u2019s formula.Passing in a positive number results in a CONFINT result column being returned",
+            "isRequired": false,
+            "rOrderNum": 8
+        },
+        {
+            "name": "RoundResults",
+            "defaultValue": 0,
+            "allowNaN": false,
+            "allowsLists": false,
+            "Type": "boolean",
+            "datatype": "BOOLEAN",
+            "description": "Determines whether rounding should be done or not.Passing in a value of \u201c1\u201d turns it ON.Passing in a value of \u201c0\u201d turns it OFF.If RoundResults(1), then results in the output row are rounded before inserting the row into the destination table (ART or response spool). ",
+            "isRequired": false,
+            "rOrderNum": 9
+        },
+        {
+            "name": "UAF_DIAGNOSTIC",
+            "defaultValue": 0,
+            "allowNaN": false,
+            "allowsLists": false,
+            "Type": "boolean",
+            "datatype": "BOOLEAN",
+            "description": "Bypasses the logic which plans out how much of the available PDE SEG memory is to be used for the purposes of: initial reading of series; proportioning of memory for the Xn and XnLag cache; as well as for the IV cache.Passing in a value of \u201c1\u201d turns it ON.  Passing in a value of \u201c0\u201d turns it OFF.",
+            "isRequired": false,
+            "rOrderNum": 10
+        }
+    ]
+}

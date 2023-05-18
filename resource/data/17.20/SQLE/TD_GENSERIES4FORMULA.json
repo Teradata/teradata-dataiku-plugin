@@ -1,0 +1,118 @@
+{
+    "JSONVersion": "1",
+    "FuncRName": "...",
+    "MaxInputFiles": 1,
+    "IsPlottable": false,
+    "InputFmt": false,
+    "OutputFmt": true,
+    "function_type": "uaf",
+    "json_schema_major_version": "1",
+    "json_schema_minor_version": "2",
+    "json_content_version": "1",
+    "function_name": "TD_GENSERIES4FORMULA",
+    "function_r_name": "aa.td_genseries4formula",
+    "ref_function_r_name": "aa.td_genseries4formula",
+    "function_version": "...",
+    "short_description": "Forms a new series with the trend and/or periodicities subtracted out",
+    "long_description": "In building statistical ARMA-style forecasting models, a necessary precondition is that the time series being modeled be stationary: stationary with respect to mean; stationary with respect to covariance; and, stationary with respect to variance.    Quite often, the time series that the data scientist wishes to model contains a trend - meaning that the time series is non-stationary with respect to the mean; or, alternatively may contain some periodicities (cyclic variance in data).  This trend and/or periodicities must be removed before modeling may begin. Once the data scientist has devised a formula to represent the trend or periodic behaviors, their next task is to generate a series using that formula; such that they can then input both the original series and formula driven series through a pointwise subtractor function, which forms a new series with the trend and/or periodicities subtracted out.",
+    "input_tables": [
+        {
+            "LangName": "data or object or newdata or ... --> Langauges team can work with UAF team to come up with this field",
+            "requiredInputKind": [
+                "PartitionByNone"
+            ],
+            "isOrdered": false,
+            "partitionByOne": false,
+            "alternateNames": [],
+            "isRequired": true,
+            "description": "The TD_GENSERIES4FORMULA function takes either: a self-generated series - GENSERIES_SPEC(); a pre-existing logical univariate series - SERIES_SPEC(CONTENT(REAL)); or, a logical multivariate series - SERIES_SPEC(CONTENT(MULTIVAR_REAL)); as input.   It then produces a formula driven univariate output series,  SERIES_SPEC(CONTENT(REAL)), in which the row-indexing mechanism is chosen by the user.",
+            "rDescription": "The TD_GENSERIES4FORMULA function takes either: a self-generated series - GENSERIES_SPEC(); a pre-existing logical univariate series - SERIES_SPEC(CONTENT(REAL)); or, a logical multivariate series - SERIES_SPEC(CONTENT(MULTIVAR_REAL)); as input.   It then produces a formula driven univariate output series,  SERIES_SPEC(CONTENT(REAL)), in which the row-indexing mechanism is chosen by the user.",
+            "datatype": "TABLE_ALIAS",
+            "allowsLists": false,
+            "name": "Input",
+            "rName": "Input",
+            "useInR": true,
+            "rOrderNum": 1,
+            "uaf": {
+                "requiredUafKind": [
+                    "SERIES",
+                    "GENSERIES"
+                ],
+                "is_row_sequence": "SEQUENCE",
+                "is_col_sequence": "SEQUENCE",
+                "row_axis_name": "",
+                "column_axis_name": "",
+                "id_name": "",
+                "id_sequence": "",
+                "payload_fields": "",
+                "payload_content": "",
+                "layer": "",
+                "where": "",
+                "time_duration": "",
+                "time_zero": "",
+                "time_type": "",
+                "seq_zero": "",
+                "interval": "Off",
+                "details": true,
+                "instance_names": "",
+                "data_type": "",
+                "payload_start_value": "",
+                "payload_offset_value": "",
+                "payload_num_entries": "",
+                "index": 0
+            },
+            "uafType": ""
+        }
+    ],
+    "output_tables": [
+        {
+            "Type": "ART",
+            "PrimaryLayer": true,
+            "LayerName": "ARTPRIMARY",
+            "ResultTableColumnTypes": [
+                "<varies>",
+                "float"
+            ],
+            "LangName": "data or object or newdata or ... --> Langauges team can work with UAF team to come up with this field",
+            "isOutputTable": true,
+            "omitPossible": true,
+            "partitionByOne": false,
+            "alternateNames": [],
+            "isRequired": false,
+            "description": "The TD_GENSERIES4FORMULA function returns only a primary result set.   There are no secondary or tertiary result sets produced by this function.  The primary result set can be accessed either via a subsequent SELECT * FROM <art table> statement or by issuing a TD_EXTRACT_RESULTS(\u2026,LAYER(ARTPRIMARY),\u2026) .<varies> Data type and values dependent upon the OUTPUT_FMT(INDEX()) declaration.",
+            "rDescription": "The TD_GENSERIES4FORMULA function returns only a primary result set.   There are no secondary or tertiary result sets produced by this function.  The primary result set can be accessed either via a subsequent SELECT * FROM <art table> statement or by issuing a TD_EXTRACT_RESULTS(\u2026,LAYER(ARTPRIMARY),\u2026) .<varies> Data type and values dependent upon the OUTPUT_FMT(INDEX()) declaration.",
+            "datatype": "TABLE_NAME",
+            "allowsLists": false,
+            "name": "OutputTable1",
+            "rName": "OutputTable1",
+            "useInR": true,
+            "rOrderNum": 2
+        }
+    ],
+    "argument_clauses": [
+        {
+            "name": "OutputFormat",
+            "defaultValue": "INDEX_STYLE(NUMERICAL_SEQUENCE)",
+            "permittedValues": [
+                "INDEX_STYLE(NUMERICAL_SEQUENCE)",
+                "INDEX_STYLE(FLOW_THROUGH)"
+            ],
+            "allowsLists": false,
+            "Type": "string",
+            "datatype": "STRING",
+            "description": "Output format",
+            "isRequired": false,
+            "rOrderNum": 3
+        },
+        {
+            "name": "FORMULA",
+            "langName": "...",
+            "allowsLists": false,
+            "Type": "string",
+            "datatype": "STRING",
+            "description": "A character string up to 64000 characters long which describes the formula to be applied.  See the general FORMULA section for a complete description of supported math operators and proper formulation rules.",
+            "isRequired": true,
+            "rOrderNum": 4
+        }
+    ]
+}

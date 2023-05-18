@@ -1,0 +1,155 @@
+{
+    "JSONVersion": "1",
+    "FuncRName": "...",
+    "MaxInputFiles": 2,
+    "IsPlottable": true,
+    "InputFmt": true,
+    "OutputFmt": false,
+    "function_type": "uaf",
+    "json_schema_major_version": "1",
+    "json_schema_minor_version": "2",
+    "json_content_version": "1",
+    "function_name": "TD_MATRIXMULTIPLY",
+    "function_r_name": "aa.td_matrixmultiply",
+    "ref_function_r_name": "aa.td_matrixmultiply",
+    "function_version": "...",
+    "short_description": "Perform a point-wise mathematical operation against two matrices having the same number of elements",
+    "long_description": "There is a need in data science to be able to create a new data series that is the result of performing a point-wise mathematical operation against two matrices having the same number of wavelets and having the same number of data-points within a same wavelet-point from the two matrices.. C = A * B is the matrix multiplication (Product) of matrix A and B. If A is an M-by-K and B is K-by-N matrix, then C is an M-by-N matrix and is defined by, C(m,n) = \u2211_{k=1 to n} A(m,k)*B(k,n). This definition says that C (m, n) is the inner product of the m-th row of A with n-th column of B. The number of columns of A must equal the number of rows of B. Matrix multiplication is not universally commutative for non-scalar inputs. That is, A * B is typically not equal to B *A.",
+    "input_tables": [
+        {
+            "LangName": "data or object or newdata or ... --> Langauges team can work with UAF team to come up with this field",
+            "requiredInputKind": [
+                "PartitionByNone"
+            ],
+            "isOrdered": false,
+            "partitionByOne": false,
+            "alternateNames": [],
+            "isRequired": true,
+            "description": "This function takes two equally sized data matrices as inputs, performs the specified mathematical operation - add, subtract, multiply, divide - on a sample point by sample point basis, producing a result matrix, which is the result of performing the mathematical operation.",
+            "rDescription": "This function takes two equally sized data matrices as inputs, performs the specified mathematical operation - add, subtract, multiply, divide - on a sample point by sample point basis, producing a result matrix, which is the result of performing the mathematical operation.",
+            "datatype": "TABLE_ALIAS",
+            "allowsLists": false,
+            "name": "Input",
+            "rName": "Input",
+            "useInR": true,
+            "rOrderNum": 1,
+            "uaf": {
+                "requiredUafKind": [
+                    "MATRIX"
+                ],
+                "is_row_sequence": "SEQUENCE",
+                "is_col_sequence": "SEQUENCE",
+                "row_axis_name": "",
+                "column_axis_name": "",
+                "id_name": "",
+                "id_sequence": "",
+                "payload_fields": "",
+                "payload_content": "",
+                "layer": "",
+                "where": "",
+                "time_duration": "",
+                "time_zero": "",
+                "time_type": "",
+                "seq_zero": "",
+                "interval": "Off",
+                "details": true,
+                "instance_names": "",
+                "data_type": "",
+                "payload_start_value": "",
+                "payload_offset_value": "",
+                "payload_num_entries": "",
+                "index": 0
+            },
+            "uafType": "MATRIX"
+        },
+        {
+            "LangName": "data or object or newdata or ... --> Langauges team can work with UAF team to come up with this field",
+            "requiredInputKind": [
+                "PartitionByNone"
+            ],
+            "isOrdered": false,
+            "partitionByOne": false,
+            "alternateNames": [],
+            "isRequired": true,
+            "description": "secondary matrix of equal size to be operated on",
+            "rDescription": "secondary matrix of equal size to be operated on",
+            "datatype": "TABLE_ALIAS",
+            "allowsLists": false,
+            "name": "Input2",
+            "rName": "Input2",
+            "useInR": true,
+            "rOrderNum": 2,
+            "uaf": {
+                "requiredUafKind": [
+                    "MATRIX"
+                ],
+                "is_row_sequence": "SEQUENCE",
+                "is_col_sequence": "SEQUENCE",
+                "row_axis_name": "",
+                "column_axis_name": "",
+                "id_name": "",
+                "id_sequence": "",
+                "payload_fields": "",
+                "payload_content": "",
+                "layer": "",
+                "where": "",
+                "time_duration": "",
+                "time_zero": "",
+                "time_type": "",
+                "seq_zero": "",
+                "interval": "Off",
+                "details": true,
+                "instance_names": "",
+                "data_type": "",
+                "payload_start_value": "",
+                "payload_offset_value": "",
+                "payload_num_entries": "",
+                "index": 1
+            },
+            "uafType": "MATRIX"
+        }
+    ],
+    "output_tables": [
+        {
+            "Type": "ART",
+            "PrimaryLayer": true,
+            "LayerName": "ARTPRIMARY",
+            "ResultTableColumnTypes": [
+                "<varies>",
+                "<varies>",
+                "float"
+            ],
+            "LangName": "data or object or newdata or ... --> Langauges team can work with UAF team to come up with this field",
+            "isOutputTable": true,
+            "omitPossible": true,
+            "partitionByOne": false,
+            "alternateNames": [],
+            "isRequired": false,
+            "description": "The TD_MATRIXMULTIPLY function returns only a primary result set.   There are no secondary or tertiary result sets produced by this function.  The primary result set can be retrieved by issuing a SELECT against the analytical table containing the results. <varies> data type and values dependent upon If the output index style is NUMERICAL_SEQUENCE, its type is INTEGER.  Otherwise, it will match the input matrix's row or column axis type.",
+            "rDescription": "The TD_MATRIXMULTIPLY function returns only a primary result set.   There are no secondary or tertiary result sets produced by this function.  The primary result set can be retrieved by issuing a SELECT against the analytical table containing the results. <varies> data type and values dependent upon If the output index style is NUMERICAL_SEQUENCE, its type is INTEGER.  Otherwise, it will match the input matrix's row or column axis type.",
+            "datatype": "TABLE_NAME",
+            "allowsLists": false,
+            "name": "OutputTable1",
+            "rName": "OutputTable1",
+            "useInR": true,
+            "rOrderNum": 3
+        }
+    ],
+    "argument_clauses": [
+        {
+            "name": "InputFormat",
+            "defaultValue": "",
+            "permittedValues": [
+                "INPUT_MODE(ONE2ONE)",
+                "INPUT_MODE(MANY2ONE)",
+                "INPUT_MODE(MATCH)"
+            ],
+            "allowsLists": false,
+            "Type": "string",
+            "datatype": "STRING",
+            "description": "Input format",
+            "isRequired": false,
+            "rOrderNum": 4
+        }
+    ]
+}

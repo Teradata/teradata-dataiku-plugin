@@ -1,0 +1,205 @@
+{
+    "JSONVersion": "1",
+    "FuncRName": "...",
+    "MaxInputFiles": 1,
+    "IsPlottable": true,
+    "InputFmt": true,
+    "OutputFmt": false,
+    "function_type": "uaf",
+    "json_schema_major_version": "1",
+    "json_schema_minor_version": "2",
+    "json_content_version": "1",
+    "function_name": "TD_UNDIFF",
+    "function_r_name": "aa.td_undiff",
+    "ref_function_r_name": "aa.td_undiff",
+    "function_version": "...",
+    "short_description": "The Teradata TD_UNDIFF reconstructs a series using a differenced series as input.",
+    "long_description": "Because differenced series are series of differences, the reconstruction is simply a cumulative sum of the input values. Which values are summed together is dependent on the lag of the differenced series \u2013 for example, if the series was differenced with a lag of 1, then reconstruction each reconstructed value would be a sum of the previous reconstructed value and the corresponding value in the difference series. If the series was differenced with a lag of 2, then it would be a sum of the reconstructed value 2 steps prior, with the corresponding value, and so on. If the series was differenced multiple times, the previous steps would occur that many times, using the partially reconstructed series as input.. It is important to note that to completely reconstruct the original series, the initial values of the original series must be given. If the series was differenced with lag 1, then the initial value of the original series must be present for a full reconstruction. With a lag of 2, the initial 2 values must be present, and so on. If the series was differenced multiple times, then the initial values of the intermediate steps must be given.. Reconstruction can be done without initial values, but the output series will not be identical to the original series, merely similar in characteristics.",
+    "input_tables": [
+        {
+            "LangName": "data or object or newdata or ... --> Langauges team can work with UAF team to come up with this field",
+            "requiredInputKind": [
+                "PartitionByNone"
+            ],
+            "isOrdered": false,
+            "partitionByOne": false,
+            "alternateNames": [],
+            "isRequired": true,
+            "description": "The TD_UNDIFF function takes a differenced series as input ",
+            "rDescription": "The TD_UNDIFF function takes a differenced series as input ",
+            "datatype": "TABLE_ALIAS",
+            "allowsLists": false,
+            "name": "Input",
+            "rName": "Input",
+            "useInR": true,
+            "rOrderNum": 1,
+            "uaf": {
+                "requiredUafKind": [
+                    "SERIES"
+                ],
+                "is_row_sequence": "SEQUENCE",
+                "is_col_sequence": "SEQUENCE",
+                "row_axis_name": "",
+                "column_axis_name": "",
+                "id_name": "",
+                "id_sequence": "",
+                "payload_fields": "",
+                "payload_content": "",
+                "layer": "",
+                "where": "",
+                "time_duration": "",
+                "time_zero": "",
+                "time_type": "",
+                "seq_zero": "",
+                "interval": "Off",
+                "details": true,
+                "instance_names": "",
+                "data_type": "",
+                "payload_start_value": "",
+                "payload_offset_value": "",
+                "payload_num_entries": "",
+                "index": 0
+            },
+            "uafType": "SERIES"
+        },
+        {
+            "LangName": "data or object or newdata or ... --> Langauges team can work with UAF team to come up with this field",
+            "requiredInputKind": [
+                "PartitionByNone"
+            ],
+            "isOrdered": false,
+            "partitionByOne": false,
+            "alternateNames": [],
+            "isRequired": true,
+            "description": "Pass in the undiff series and let function compute initial values",
+            "rDescription": "Pass in the undiff series and let function compute initial values",
+            "datatype": "TABLE_ALIAS",
+            "allowsLists": false,
+            "name": "Input2",
+            "rName": "Input2",
+            "useInR": true,
+            "rOrderNum": 2,
+            "uaf": {
+                "requiredUafKind": [
+                    "SERIES"
+                ],
+                "is_row_sequence": "SEQUENCE",
+                "is_col_sequence": "SEQUENCE",
+                "row_axis_name": "",
+                "column_axis_name": "",
+                "id_name": "",
+                "id_sequence": "",
+                "payload_fields": "",
+                "payload_content": "",
+                "layer": "",
+                "where": "",
+                "time_duration": "",
+                "time_zero": "",
+                "time_type": "",
+                "seq_zero": "",
+                "interval": "Off",
+                "details": true,
+                "instance_names": "",
+                "data_type": "",
+                "payload_start_value": "",
+                "payload_offset_value": "",
+                "payload_num_entries": "",
+                "index": 1
+            },
+            "uafType": "SERIES"
+        }
+    ],
+    "output_tables": [
+        {
+            "Type": "SERIES",
+            "PrimaryLayer": true,
+            "LayerName": "ARTPRIMARY",
+            "ResultTableColumnTypes": [
+                "integer",
+                "float"
+            ],
+            "LangName": "data or object or newdata or ... --> Langauges team can work with UAF team to come up with this field",
+            "isOutputTable": true,
+            "omitPossible": true,
+            "partitionByOne": false,
+            "alternateNames": [],
+            "isRequired": false,
+            "description": ".  In its simplest form, the function returns a row index column and an output column, where the output is the result of applying the TD_UNDIFF function against the input series.Invoking this UAF function generates only a primary analytical result set, there are no secondary or other result sets  generated by invoking this function.  The primary result set can be accessed via a subsequent SELECT  statement issued against the analytical result table.",
+            "rDescription": ".  In its simplest form, the function returns a row index column and an output column, where the output is the result of applying the TD_UNDIFF function against the input series.Invoking this UAF function generates only a primary analytical result set, there are no secondary or other result sets  generated by invoking this function.  The primary result set can be accessed via a subsequent SELECT  statement issued against the analytical result table.",
+            "datatype": "TABLE_NAME",
+            "allowsLists": false,
+            "name": "OutputTable1",
+            "rName": "OutputTable1",
+            "useInR": true,
+            "rOrderNum": 3
+        }
+    ],
+    "argument_clauses": [
+        {
+            "name": "InputFormat",
+            "defaultValue": "",
+            "permittedValues": [
+                "INPUT_MODE(ONE2ONE)",
+                "INPUT_MODE(MANY2ONE)",
+                "INPUT_MODE(MATCH)"
+            ],
+            "allowsLists": false,
+            "Type": "string",
+            "datatype": "STRING",
+            "description": "Input format",
+            "isRequired": false,
+            "rOrderNum": 4
+        },
+        {
+            "name": "LAG",
+            "defaultValue": 0,
+            "lowerBound": 0,
+            "lowerBoundType": "INCLUSIVE",
+            "allowNaN": false,
+            "allowsLists": false,
+            "Type": "integer",
+            "datatype": "INTEGER",
+            "description": "Zero or Positive Integer value.  References, relative to any time series element, Yt, another time series element located at Yt-LAG .  ",
+            "isRequired": true,
+            "rOrderNum": 5
+        },
+        {
+            "name": "DIFFERENCES",
+            "defaultValue": 0,
+            "lowerBound": 0,
+            "lowerBoundType": "INCLUSIVE",
+            "allowNaN": false,
+            "allowsLists": false,
+            "Type": "integer",
+            "datatype": "INTEGER",
+            "description": "Zero or Positive Integer value.  Referenced formula as (1-B^LAG)^DIFFERENCES * Y_t  ",
+            "isRequired": true,
+            "rOrderNum": 6
+        },
+        {
+            "name": "SEASONAL_MULTIPLIER",
+            "defaultValue": "",
+            "lowerBound": 0,
+            "lowerBoundType": "INCLUSIVE",
+            "allowNaN": false,
+            "allowsLists": false,
+            "Type": "integer",
+            "datatype": "INTEGER",
+            "description": "Zero or Positive Integer value.  Computed diff according to it as if SEASONAL_MULTIPLIER is 0 then result is (1-B^LAG)^DIFFERENCES * Y_t, otherwise multiply same result by (1-B)^SEASONAL_MULTIPLIER",
+            "isRequired": false,
+            "rOrderNum": 7
+        },
+        {
+            "name": "INITIAL_VALUES",
+            "listType": "float",
+            "checkDuplicates": false,
+            "langName": "...",
+            "allowsLists": true,
+            "Type": "float",
+            "datatype": "DOUBLE",
+            "description": "Required parameter if no <orign undiff series> is passed in. When passed in, it is used to provide starting values for the undifferencing operation. As many or as few values can be provided, there is no specified size.",
+            "isRequired": false,
+            "rOrderNum": 8
+        }
+    ]
+}

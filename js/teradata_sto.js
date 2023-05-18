@@ -898,8 +898,9 @@
           $scope.activateTabs();
           console.log('Starting activation of Multi tags input')
           $scope.activateMultiTagsInput();
-          console.log('Starting activation validation')
-          $scope.activateValidation();
+          // old code that is no longer used
+          //console.log('Starting activation validation')
+          //$scope.activateValidation();
           console.log('Initializing first tab')
           document.getElementById("defaultOpen").click();
           console.log('All is complete on activation')

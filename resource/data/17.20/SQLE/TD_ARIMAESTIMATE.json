@@ -1,0 +1,460 @@
+{
+    "JSONVersion": "1",
+    "FuncRName": "...",
+    "MaxInputFiles": 1,
+    "IsPlottable": true,
+    "InputFmt": false,
+    "OutputFmt": true,
+    "function_type": "uaf",
+    "json_schema_major_version": "1",
+    "json_schema_minor_version": "2",
+    "json_content_version": "1",
+    "function_name": "TD_ARIMAESTIMATE",
+    "function_r_name": "aa.td_arimaestimate",
+    "ref_function_r_name": "aa.td_arimaestimate",
+    "function_version": "...",
+    "short_description": "performs parameter estimation for both seasonal and non-seasonal AR (auto-regressive), MA (moving-average) models",
+    "long_description": "ARIMAESTIMATE function performs parameter estimation for both seasonal and non-seasonal AR (auto-regressive), MA (moving-average), combined ARMA, as ARIMA models.  It supports the seasonally extended Box and Jenkins ARIMA model formula. Both 'continuous' and 'non-continuous' AR and MA models are supported - where 'continuous' means that the associated 'lags' are continuous, and non-continuous means the associated lags are non-continuous.  ",
+    "input_tables": [
+        {
+            "LangName": "data or object or newdata or ... --> Langauges team can work with UAF team to come up with this field",
+            "requiredInputKind": [
+                "PartitionByNone"
+            ],
+            "isOrdered": false,
+            "partitionByOne": false,
+            "alternateNames": [],
+            "isRequired": true,
+            "description": "Passed in a logical univariate series, this function estimates the coefficients corresponding to the ARMA model ",
+            "rDescription": "Passed in a logical univariate series, this function estimates the coefficients corresponding to the ARMA model ",
+            "datatype": "TABLE_ALIAS",
+            "allowsLists": false,
+            "name": "Input",
+            "rName": "Input",
+            "useInR": true,
+            "rOrderNum": 1,
+            "uaf": {
+                "requiredUafKind": [
+                    "SERIES"
+                ],
+                "is_row_sequence": "SEQUENCE",
+                "is_col_sequence": "SEQUENCE",
+                "row_axis_name": "",
+                "column_axis_name": "",
+                "id_name": "",
+                "id_sequence": "",
+                "payload_fields": "",
+                "payload_content": "",
+                "layer": "",
+                "where": "",
+                "time_duration": "",
+                "time_zero": "",
+                "time_type": "",
+                "seq_zero": "",
+                "interval": "Off",
+                "details": true,
+                "instance_names": "",
+                "data_type": "",
+                "payload_start_value": "",
+                "payload_offset_value": "",
+                "payload_num_entries": "",
+                "index": 0
+            },
+            "uafType": "SERIES"
+        }
+    ],
+    "output_tables": [
+        {
+            "Type": "ART",
+            "PrimaryLayer": true,
+            "LayerName": "ARTPRIMARY",
+            "ResultTableColumnTypes": [
+                "integer",
+                "varchar(120)",
+                "float",
+                "float",
+                "float",
+                "float"
+            ],
+            "LangName": "data or object or newdata or ... --> Langauges team can work with UAF team to come up with this field",
+            "isOutputTable": true,
+            "omitPossible": true,
+            "partitionByOne": false,
+            "alternateNames": [],
+            "isRequired": false,
+            "description": "The TD_ARIMAESTIMATE function can create a multilayered ART table.  Invoking this UAF Function generates up to five analytical result sets: a primary  result set containing the calculated coefficientsThe RETURNS TABLE for this primary analytical result set is described in this subsection.  The primary analytical result set can be retrieved by issuing a SELECT against the table created by the INTO <tablespec> clause. Last two float values are only returned if MLE or OLE is chosen",
+            "rDescription": "The TD_ARIMAESTIMATE function can create a multilayered ART table.  Invoking this UAF Function generates up to five analytical result sets: a primary  result set containing the calculated coefficientsThe RETURNS TABLE for this primary analytical result set is described in this subsection.  The primary analytical result set can be retrieved by issuing a SELECT against the table created by the INTO <tablespec> clause. Last two float values are only returned if MLE or OLE is chosen",
+            "datatype": "TABLE_NAME",
+            "allowsLists": false,
+            "name": "OutputTable1",
+            "rName": "OutputTable1",
+            "useInR": true,
+            "rOrderNum": 2
+        },
+        {
+            "Type": "ART",
+            "PrimaryLayer": false,
+            "LayerName": "ARTFITMETADATA",
+            "ResultTableColumnTypes": [
+                "integer",
+                "integer",
+                "float",
+                "float",
+                "float",
+                "float",
+                "float",
+                "float",
+                "float",
+                "float",
+                "float",
+                "float",
+                "float",
+                "float",
+                "float",
+                "float",
+                "float",
+                "float",
+                "varchar(16)"
+            ],
+            "LangName": "data or object or newdata or ... --> Langauges team can work with UAF team to come up with this field",
+            "isOutputTable": true,
+            "omitPossible": true,
+            "partitionByOne": false,
+            "alternateNames": [],
+            "isRequired": false,
+            "description": "a secondary result set containing \u201cgoodness of fit\u201d metricsThe RETURNS TABLE for this optional result set, containing 'goodness of fit' metadata, is described in this subsection.   This result set is generated in response to the FUNC_PARAMS (FIT_METRICS(1) having a passed in flag value of '1'.   The result set can be retrieved by invoking the TD_EXTRACT_RESULTS function against the analytical result table containing the metadata. This layer will be deposited in LAYER1 under the name ARTFITMETADATA.There is one result row returned for each unique series acted upon. The returned columns are a subset of the columns returned by the independent \u201cTD_FITMETRICS\u201d function.  Absent are the multivariate regression related F-statistics, since this is an ARIMA exercise.",
+            "rDescription": "a secondary result set containing \u201cgoodness of fit\u201d metricsThe RETURNS TABLE for this optional result set, containing 'goodness of fit' metadata, is described in this subsection.   This result set is generated in response to the FUNC_PARAMS (FIT_METRICS(1) having a passed in flag value of '1'.   The result set can be retrieved by invoking the TD_EXTRACT_RESULTS function against the analytical result table containing the metadata. This layer will be deposited in LAYER1 under the name ARTFITMETADATA.There is one result row returned for each unique series acted upon. The returned columns are a subset of the columns returned by the independent \u201cTD_FITMETRICS\u201d function.  Absent are the multivariate regression related F-statistics, since this is an ARIMA exercise.",
+            "datatype": "TABLE_NAME",
+            "allowsLists": false,
+            "name": "OutputTable2",
+            "rName": "OutputTable2",
+            "useInR": true,
+            "rOrderNum": 3
+        },
+        {
+            "Type": "ART",
+            "PrimaryLayer": false,
+            "LayerName": "ARTFITRESIDUALS",
+            "ResultTableColumnTypes": [
+                "integer",
+                "float",
+                "float",
+                "float"
+            ],
+            "LangName": "data or object or newdata or ... --> Langauges team can work with UAF team to come up with this field",
+            "isOutputTable": true,
+            "omitPossible": true,
+            "partitionByOne": false,
+            "alternateNames": [],
+            "isRequired": false,
+            "description": "a tertiary result set containing residuals left over from the fitting exerciseThe RETURNS TABLE for this optional analytical result set is described in this subsection.   This result set is generated in response to the FUNC_PARAMS( RESIDUALS(1)) having a passed in flag value of '1'.   The result set can be retrieved by invoking the TD_EXTRACT_RESULTS function against the analytical result table containing the metadata. This result set will be deposited into LAYER2 under the name ARTFITRESIDUALS.",
+            "rDescription": "a tertiary result set containing residuals left over from the fitting exerciseThe RETURNS TABLE for this optional analytical result set is described in this subsection.   This result set is generated in response to the FUNC_PARAMS( RESIDUALS(1)) having a passed in flag value of '1'.   The result set can be retrieved by invoking the TD_EXTRACT_RESULTS function against the analytical result table containing the metadata. This result set will be deposited into LAYER2 under the name ARTFITRESIDUALS.",
+            "datatype": "TABLE_NAME",
+            "allowsLists": false,
+            "name": "OutputTable3",
+            "rName": "OutputTable3",
+            "useInR": true,
+            "rOrderNum": 4
+        },
+        {
+            "Type": "ART",
+            "PrimaryLayer": false,
+            "LayerName": "ARTMODEL",
+            "ResultTableColumnTypes": [
+                "integer",
+                "integer",
+                "varbyte(64000)"
+            ],
+            "LangName": "data or object or newdata or ... --> Langauges team can work with UAF team to come up with this field",
+            "isOutputTable": true,
+            "omitPossible": true,
+            "partitionByOne": false,
+            "alternateNames": [],
+            "isRequired": false,
+            "description": "a quaternary result set containing the 'validation series'The RETURNS TABLE for this optional analytical result set is described in this subsection.   This result set is always generated and contains the MODEL context which can subsequently be used to facilitate forecasting with the model.   Note that the main 'model' context is present in binary form and is not meant for human consumption.   The result set can be retrieved by invoking the TD_EXTRACT_RESULTS function against the analytical result table containing the metadata. This result set will be deposited into LAYER2 under the name ARTMODEL.",
+            "rDescription": "a quaternary result set containing the 'validation series'The RETURNS TABLE for this optional analytical result set is described in this subsection.   This result set is always generated and contains the MODEL context which can subsequently be used to facilitate forecasting with the model.   Note that the main 'model' context is present in binary form and is not meant for human consumption.   The result set can be retrieved by invoking the TD_EXTRACT_RESULTS function against the analytical result table containing the metadata. This result set will be deposited into LAYER2 under the name ARTMODEL.",
+            "datatype": "TABLE_NAME",
+            "allowsLists": false,
+            "name": "OutputTable4",
+            "rName": "OutputTable4",
+            "useInR": true,
+            "rOrderNum": 5
+        },
+        {
+            "Type": "ART",
+            "PrimaryLayer": false,
+            "LayerName": "ARTMODEL",
+            "ResultTableColumnTypes": [
+                "integer",
+                "float",
+                "float",
+                "float"
+            ],
+            "LangName": "data or object or newdata or ... --> Langauges team can work with UAF team to come up with this field",
+            "isOutputTable": true,
+            "omitPossible": true,
+            "partitionByOne": false,
+            "alternateNames": [],
+            "isRequired": false,
+            "description": "a quinary result set, containing the validation model context, which is used during the TD_ARIMAVALIDATION processingThe RETURNS TABLE for this optional analytical result set is described in this subsection.   This result set is always generated and contains the MODEL context which can subsequently be used to facilitate forecasting with the model.   Note that the main 'model' context is present in binary form and is not meant for human consumption.   The result set can be retrieved by invoking the TD_EXTRACT_RESULTS function against the analytical result table containing the metadata. This result set will be deposited into LAYER2 under the name ARTMODEL.First column could be integer or flow through type given by input series.",
+            "rDescription": "a quinary result set, containing the validation model context, which is used during the TD_ARIMAVALIDATION processingThe RETURNS TABLE for this optional analytical result set is described in this subsection.   This result set is always generated and contains the MODEL context which can subsequently be used to facilitate forecasting with the model.   Note that the main 'model' context is present in binary form and is not meant for human consumption.   The result set can be retrieved by invoking the TD_EXTRACT_RESULTS function against the analytical result table containing the metadata. This result set will be deposited into LAYER2 under the name ARTMODEL.First column could be integer or flow through type given by input series.",
+            "datatype": "TABLE_NAME",
+            "allowsLists": false,
+            "name": "OutputTable5",
+            "rName": "OutputTable5",
+            "useInR": true,
+            "rOrderNum": 6
+        }
+    ],
+    "argument_clauses": [
+        {
+            "name": "OutputFormat",
+            "defaultValue": "INDEX_STYLE(NUMERICAL_SEQUENCE)",
+            "permittedValues": [
+                "INDEX_STYLE(NUMERICAL_SEQUENCE)",
+                "INDEX_STYLE(FLOW_THROUGH)"
+            ],
+            "allowsLists": false,
+            "Type": "string",
+            "datatype": "STRING",
+            "description": "Output format",
+            "isRequired": false,
+            "rOrderNum": 7
+        },
+        {
+            "name": "NONSEASONAL",
+            "allowsLists": false,
+            "Type": "GROUPSTART",
+            "datatype": "GROUPSTART",
+            "description": "Multiple plots can be specified.  It contains an array of plot entries, separated by comma.",
+            "isRequired": true,
+            "rOrderNum": 8
+        },
+        {
+            "name": "NONSEASONAL.MODEL_ORDER",
+            "listType": "integer",
+            "listSize": 3,
+            "checkDuplicates": false,
+            "allowsLists": true,
+            "Type": "integer",
+            "datatype": "INTEGER",
+            "description": "The non-seasonal 'p,  d and q' values.  A list containing three integer values, which are each greater than or equal to 0:First value is 'p', the non-seasonal auto-regressive order, AR(p)Second value is 'd', the non-seasonal differencing order Third value is 'q', the non-seasonal moving average order, MA(q) ",
+            "isRequired": true,
+            "rOrderNum": 9
+        },
+        {
+            "name": "NONSEASONAL_GROUPEND",
+            "allowsLists": false,
+            "Type": "GROUPEND",
+            "datatype": "GROUPEND",
+            "description": "Multiple plots can be specified.  It contains an array of plot entries, separated by comma.",
+            "isRequired": true,
+            "rOrderNum": 10
+        },
+        {
+            "name": "INIT",
+            "listType": "float",
+            "checkDuplicates": false,
+            "allowsLists": true,
+            "Type": "float",
+            "datatype": "DOUBLE",
+            "description": "p+q+P+Q length list if CONSTANT(0). p+q+P+Q+1 length list if CONSTANT(1).Position sensitive list that specifies the initial values to be associated with the 'p' non-seasonal AR regression coefficients, followed by 'q' non-seasonal MA coefficients, and 'P' seasonal SAR regression coefficients and 'Q' seasonal SMA coefficients. If intercept needed, one more value at the end to specify if intercept coefficient initial value. Associating a particular coefficient to a value of  0 should be used to indicate that the TD_ARIMAESTIMATE function is to use 0 as the initial value when calculate the coefficient. If some of the coefficients specified particular value as the initial values, the rest should be filled by 0 as well.If any specified init value at the same time provided in FIXED, provided init value will be ignored (overwrite) by FIXED.Only for MLE / CSS_MLE method.",
+            "isRequired": true,
+            "rOrderNum": 11
+        },
+        {
+            "name": "FIXED",
+            "listType": "float",
+            "checkDuplicates": false,
+            "allowsLists": true,
+            "Type": "float",
+            "datatype": "DOUBLE",
+            "description": "p+q+P+Q length list if CONSTANT(0). p+q+P+Q+1 length list if CONSTANT(1).Position sensitive list that specifies the fixed values to be associated with the 'p' non-seasonal AR regression coefficients, followed by 'q' non-seasonal MA coefficients, and 'P' seasonal SAR regression coefficients and 'Q' seasonal SMA coefficients. If intercept needed, one more value at the end to specify if intercept coefficient needs to be fixed value or not. Associating a particular coefficient to a value of NULL, means that the TD_ARIMAESTIMATE function is to determine/calculate the coefficient. Otherwise, the coefficient will be fixed on the given values.   Default is FIXED(NULL, NULL\u2026 NULL).Only for MLE / CSS_MLE method.",
+            "isRequired": true,
+            "rOrderNum": 12
+        },
+        {
+            "name": "CONSTANT",
+            "permittedValues": [
+                0,
+                1
+            ],
+            "allowsLists": false,
+            "Type": "integer",
+            "datatype": "INTEGER",
+            "description": " Flag indicating whether or not the TD_ARIMAESTIMATE function should calculate an intercept. A value of '1' indicates CONSTANT/intercept should be calculated.  A value of '0' indicated no CONSTANT/intercept should be calculated.",
+            "isRequired": true,
+            "rOrderNum": 13
+        },
+        {
+            "name": "ALGORITHM",
+            "permittedValues": [
+                "OLE",
+                "MLE",
+                "CSS_MLE"
+            ],
+            "allowsLists": false,
+            "Type": "enumeration",
+            "datatype": "STRING",
+            "description": "Specifies the approach used by TD_ARIMAESTIMATE to estimate the coefficients.  ALGORITHM (OLE) means the sum of least squares approach should be applied.  Then, FIXED, INIT will be disabled. ALGORITHM (MLE) means the maximum likelihood approach should be pursued. ALGORITHM (CSS_MLE) means to use conditional sum-of-squares to find a start value and then do maximum likelihood.",
+            "isRequired": true,
+            "rOrderNum": 14
+        },
+        {
+            "name": "MAX_ITERATIONS",
+            "defaultValue": 100,
+            "lowerBound": 1,
+            "lowerBoundType": "INCLUSIVE",
+            "allowsLists": false,
+            "Type": "integer",
+            "datatype": "INTEGER",
+            "description": "This is an optional parameter.  Places a cap on the maximum number of iterations that can be employed to estimate the ARMA parameters. Only relevant for MLE processing.  If not present, then default is 100 iterations. ",
+            "isRequired": false,
+            "rOrderNum": 15
+        },
+        {
+            "name": "FIT_PERCENTAGE",
+            "defaultValue": 100,
+            "lowerBound": 1,
+            "upperBound": 100,
+            "lowerBoundType": "INCLUSIVE",
+            "upperBoundType": "INCLUSIVE",
+            "allowsLists": false,
+            "Type": "integer",
+            "datatype": "INTEGER",
+            "description": "Percentage of passed in sample points that will be used for the model fitting / parameter estimation exercise.  The default is 100, meaning 100%.",
+            "isRequired": true,
+            "rOrderNum": 16
+        },
+        {
+            "name": "FIT_METRICS",
+            "permittedValues": [
+                0,
+                1
+            ],
+            "allowsLists": false,
+            "Type": "integer",
+            "datatype": "INTEGER",
+            "description": "Flag indicating whether or not to generate the secondary result set that contains the model metadata statistics.  A value of FIT_METRICS(1) means generate the secondary result set.   A value of FIT_METRICS(0) means do not generate the secondary result set.  Default is FIT_METRICS(0).  The generated result set can be retrieved by issuing a TD_EXTRACT_RESULTS against the analytical result table containing the results.",
+            "isRequired": false,
+            "rOrderNum": 17
+        },
+        {
+            "name": "RESIDUALS",
+            "permittedValues": [
+                0,
+                1
+            ],
+            "allowsLists": false,
+            "Type": "integer",
+            "datatype": "INTEGER",
+            "description": "Flag indicating whether or not to generate the tertiary result set that contains the model residuals.  A value of RESIDUALS(1) means generate the tertiary result set.   A value of RESIDUALS(0) means do not generate the tertiary result set.  Default is RESIDUALS(0).  The generated result set can be retrieved by issuing a TD_EXTRACT_RESULTS against the analytical result table containing the results.",
+            "isRequired": false,
+            "rOrderNum": 18
+        },
+        {
+            "name": "SEASONAL",
+            "allowsLists": false,
+            "Type": "GROUPSTART",
+            "datatype": "GROUPSTART",
+            "description": "Multiple plots can be specified.  It contains an array of plot entries, separated by comma.",
+            "isRequired": true,
+            "rOrderNum": 19
+        },
+        {
+            "name": "SEASONAL.MODEL_ORDER",
+            "listType": "integer",
+            "listSize": 3,
+            "checkDuplicates": false,
+            "allowsLists": true,
+            "Type": "integer",
+            "datatype": "INTEGER",
+            "description": "The seasonal 'P, D and Q' values.  A list containing three integer values, which are each greater than or equal to 0:First value is 'P', the seasonal auto-regressive orderSecond value is 'D', the seasonal differencing orderThird value is 'Q', the seasonal moving average order ",
+            "isRequired": true,
+            "rOrderNum": 20
+        },
+        {
+            "name": "SEASONAL.PERIOD",
+            "lowerBound": 1,
+            "lowerBoundType": "INCLUSIVE",
+            "allowNaN": false,
+            "allowsLists": false,
+            "Type": "integer",
+            "datatype": "INTEGER",
+            "description": "SEASONAL parameter.   The number of periods per season, 'S'.",
+            "isRequired": true,
+            "rOrderNum": 21
+        },
+        {
+            "name": "SEASONAL.LAGS",
+            "allowsLists": false,
+            "Type": "GROUPSTART",
+            "datatype": "GROUPSTART",
+            "description": "It is used to specify a data series for a plot.  It contains an array of series entries, separate by comma.",
+            "isRequired": true,
+            "rOrderNum": 22
+        },
+        {
+            "name": "SEASONAL.LAGS.AR",
+            "listType": "integer",
+            "checkDuplicates": false,
+            "allowsLists": true,
+            "Type": "integer",
+            "datatype": "INTEGER",
+            "description": "p-length list.  Position sensitive  list that specifies the lags to be associated with the 'p' non-seasonal AR regression terms.  Default is LAGS( AR(1,2,3,...p)).",
+            "isRequired": true,
+            "rOrderNum": 23
+        },
+        {
+            "name": "SEASONAL.LAGS.SAR",
+            "listType": "integer",
+            "checkDuplicates": false,
+            "allowsLists": true,
+            "Type": "integer",
+            "datatype": "INTEGER",
+            "description": "P-length list.  Position sensitive  list that specifies the lags associated with the 'P' seasonal AR regression terms.  Default is LAGS(SAR(1xS, 2xS, ...., PxS))",
+            "isRequired": true,
+            "rOrderNum": 24
+        },
+        {
+            "name": "SEASONAL.LAGS.MA",
+            "listType": "integer",
+            "checkDuplicates": false,
+            "allowsLists": true,
+            "Type": "integer",
+            "datatype": "INTEGER",
+            "description": "q-length list.  Position sensitive  list that specifies the lags associated with the 'q' non-seasonal MA terms. Default is LAGS(MA(1,2,3,...q)).",
+            "isRequired": true,
+            "rOrderNum": 25
+        },
+        {
+            "name": "SEASONAL.LAGS.SMA",
+            "listType": "integer",
+            "checkDuplicates": false,
+            "allowsLists": true,
+            "Type": "integer",
+            "datatype": "INTEGER",
+            "description": "Q-length list. Position sensitive  list that specifies the lags associated with the 'Q' seasonal MA terms. Default is LAGS(SMA(1xS, 2xS, ..., PxS)).",
+            "isRequired": true,
+            "rOrderNum": 26
+        },
+        {
+            "name": "SEASONAL.LAGS_GROUPEND",
+            "allowsLists": false,
+            "Type": "GROUPEND",
+            "datatype": "GROUPEND",
+            "description": "It is used to specify a data series for a plot.  It contains an array of series entries, separate by comma.",
+            "isRequired": true,
+            "rOrderNum": 27
+        },
+        {
+            "name": "SEASONAL_GROUPEND",
+            "allowsLists": false,
+            "Type": "GROUPEND",
+            "datatype": "GROUPEND",
+            "description": "Multiple plots can be specified.  It contains an array of plot entries, separated by comma.",
+            "isRequired": true,
+            "rOrderNum": 28
+        }
+    ]
+}

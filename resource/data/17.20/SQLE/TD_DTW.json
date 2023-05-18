@@ -1,0 +1,198 @@
+{
+    "JSONVersion": "1",
+    "FuncRName": "...",
+    "MaxInputFiles": 2,
+    "IsPlottable": true,
+    "InputFmt": true,
+    "OutputFmt": false,
+    "function_type": "uaf",
+    "json_schema_major_version": "1",
+    "json_schema_minor_version": "2",
+    "json_content_version": "1",
+    "function_name": "TD_DTW",
+    "function_r_name": "aa.td_dtw",
+    "ref_function_r_name": "aa.td_dtw",
+    "function_version": "...",
+    "short_description": "Dynamic time warping (DTW) is used to the measure the similarity of two time series",
+    "long_description": "Dynamic time warping (DTW) is used to the measure the similarity of two time series.  The generic DTW algorithm is O(n2) in both space and time.  Thus, it is not well suited for large data.  There are a lot of variant algorithms that attempt to address such limitation.  One of the most well-known algorithms is FastDTW by Stan Salvador and Philip Chan, which is O(n) in both space and time.  This algorithm can find the optimal, or a close to optimal warp path between two series, depending on the search radius used.. TD_DTW implements the algorithm from scratch using C++.  The behavior mostly matches the FastDTW Java implementation done by the original authors.  It should be noted that the Python fastdtw package has several algorithm differences with the Java version.  So, the result of TD_DTW may not match that of Python fastdtw, but it should closely match the Java implementation.. TD_DTW does have a slightly different behaviors from the Java implementation.  In Java implementation, the shrunk (i.e. reduced) series is half of the parent series.  If the parent series has odd number of elements, while most of the elements of the shrunk series are the average of two parent elements, the last element of the shrunk series is the average of the last three elements of the parent series.  TD_DTW instead chooses to have the last element to match the last element of the parent.  As the result, TD_DTW can have slightly larger size in the shrunk series in each recursion.  While there can be edge cases, this slight deviation mostly has little effect in finding the best warp path within the radius.",
+    "input_tables": [
+        {
+            "LangName": "data or object or newdata or ... --> Langauges team can work with UAF team to come up with this field",
+            "requiredInputKind": [
+                "PartitionByNone"
+            ],
+            "isOrdered": false,
+            "partitionByOne": false,
+            "alternateNames": [],
+            "isRequired": true,
+            "description": "The two series inputs must have the same number of payload columns.",
+            "rDescription": "The two series inputs must have the same number of payload columns.",
+            "datatype": "TABLE_ALIAS",
+            "allowsLists": false,
+            "name": "Input",
+            "rName": "Input",
+            "useInR": true,
+            "rOrderNum": 1,
+            "uaf": {
+                "requiredUafKind": [
+                    "SERIES"
+                ],
+                "is_row_sequence": "SEQUENCE",
+                "is_col_sequence": "SEQUENCE",
+                "row_axis_name": "",
+                "column_axis_name": "",
+                "id_name": "",
+                "id_sequence": "",
+                "payload_fields": "",
+                "payload_content": "",
+                "layer": "",
+                "where": "",
+                "time_duration": "",
+                "time_zero": "",
+                "time_type": "",
+                "seq_zero": "",
+                "interval": "Off",
+                "details": true,
+                "instance_names": "",
+                "data_type": "",
+                "payload_start_value": "",
+                "payload_offset_value": "",
+                "payload_num_entries": "",
+                "index": 0
+            },
+            "uafType": "SERIES"
+        },
+        {
+            "LangName": "data or object or newdata or ... --> Langauges team can work with UAF team to come up with this field",
+            "requiredInputKind": [
+                "PartitionByNone"
+            ],
+            "isOrdered": false,
+            "partitionByOne": false,
+            "alternateNames": [],
+            "isRequired": true,
+            "description": "The two series inputs must have the same number of payload columns.",
+            "rDescription": "The two series inputs must have the same number of payload columns.",
+            "datatype": "TABLE_ALIAS",
+            "allowsLists": false,
+            "name": "Input2",
+            "rName": "Input2",
+            "useInR": true,
+            "rOrderNum": 2,
+            "uaf": {
+                "requiredUafKind": [
+                    "SERIES"
+                ],
+                "is_row_sequence": "SEQUENCE",
+                "is_col_sequence": "SEQUENCE",
+                "row_axis_name": "",
+                "column_axis_name": "",
+                "id_name": "",
+                "id_sequence": "",
+                "payload_fields": "",
+                "payload_content": "",
+                "layer": "",
+                "where": "",
+                "time_duration": "",
+                "time_zero": "",
+                "time_type": "",
+                "seq_zero": "",
+                "interval": "Off",
+                "details": true,
+                "instance_names": "",
+                "data_type": "",
+                "payload_start_value": "",
+                "payload_offset_value": "",
+                "payload_num_entries": "",
+                "index": 1
+            },
+            "uafType": "SERIES"
+        }
+    ],
+    "output_tables": [
+        {
+            "Type": "ART",
+            "PrimaryLayer": true,
+            "LayerName": "ARTPRIMARY",
+            "ResultTableColumnTypes": [
+                "integer",
+                "float",
+                "integer",
+                "integer",
+                "<varies>",
+                "<varies>"
+            ],
+            "LangName": "data or object or newdata or ... --> Langauges team can work with UAF team to come up with this field",
+            "isOutputTable": true,
+            "omitPossible": true,
+            "partitionByOne": false,
+            "alternateNames": [],
+            "isRequired": false,
+            "description": "Last two columns have types that are the same as series 1 and 2 row axis type. ",
+            "rDescription": "Last two columns have types that are the same as series 1 and 2 row axis type. ",
+            "datatype": "TABLE_NAME",
+            "allowsLists": false,
+            "name": "OutputTable1",
+            "rName": "OutputTable1",
+            "useInR": true,
+            "rOrderNum": 3
+        }
+    ],
+    "argument_clauses": [
+        {
+            "name": "InputFormat",
+            "defaultValue": "",
+            "permittedValues": [
+                "INPUT_MODE(ONE2ONE)",
+                "INPUT_MODE(MANY2ONE)",
+                "INPUT_MODE(MATCH)"
+            ],
+            "allowsLists": false,
+            "Type": "string",
+            "datatype": "STRING",
+            "description": "Input format",
+            "isRequired": false,
+            "rOrderNum": 4
+        },
+        {
+            "name": "RADIUS",
+            "lowerBound": 0,
+            "upperBound": 1000,
+            "lowerBoundType": "EXCLUSIVE",
+            "upperBoundType": "EXCLUSIVE",
+            "allowsLists": false,
+            "Type": "integer",
+            "datatype": "INTEGER",
+            "description": "The search radius for the FastDTW algorithm.  It cannot be negative.  The range of the values is between 0 and 1000.Because of how FastDTW works, bigger radiuses can cause significant performance issues without providing a better result.  Oftentimes, small radius is good enough for finding the optimal match.",
+            "isRequired": false,
+            "rOrderNum": 5
+        },
+        {
+            "name": "DISTANCE",
+            "permittedValues": [
+                "euclidean",
+                "manhattan",
+                "binary"
+            ],
+            "allowsLists": false,
+            "Type": "string",
+            "datatype": "STRING",
+            "description": "The distance function to be used.  The currently supported names are: 'euclidean' - for Euclidean distance function; 'manhattan' - for Manhattan distance function; 'binary' - For binary distance function. The match is case in-sensitive.",
+            "isRequired": false,
+            "rOrderNum": 6
+        },
+        {
+            "name": "WARPPATH",
+            "lowerBound": 0,
+            "upperBound": 3,
+            "lowerBoundType": "INCLUSIVE",
+            "upperBoundType": "INCLUSIVE",
+            "allowsLists": false,
+            "Type": "integer",
+            "datatype": "INTEGER",
+            "description": "The valid values are between 0 and 3.'0' indicates that no warp paths should be generated.  Only the warp distance is calculated.'1' indicates that warp paths should be generated with 'WarpX' and 'WarpY' output columns being the path index.'2' indicates that warp paths should be generated with 'WarpX_I' and 'WarpY_I' being the series 1 and series 2 ROW_I values at the path index.'3' indicates that warp paths should be generated with both the output columns of 1 and 2.",
+            "isRequired": false,
+            "rOrderNum": 7
+        }
+    ]
+}

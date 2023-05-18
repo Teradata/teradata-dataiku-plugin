@@ -1,0 +1,183 @@
+{
+    "JSONVersion": "1",
+    "FuncRName": "...",
+    "MaxInputFiles": 1,
+    "IsPlottable": true,
+    "InputFmt": true,
+    "OutputFmt": true,
+    "function_type": "uaf",
+    "json_schema_major_version": "1",
+    "json_schema_minor_version": "2",
+    "json_content_version": "1",
+    "function_name": "TD_BINARYSERIESOP",
+    "function_r_name": "aa.td_binaryseriesop",
+    "ref_function_r_name": "aa.td_binaryseriesop",
+    "function_version": "...",
+    "short_description": "Perform a point-wise mathematical operation against two series having the same number of elements",
+    "long_description": "There is a need in data science to be able to create a new data series that is the result of performing a point-wise mathematical operation against two series having the same number of elements.   The principal mathematical operations of interest being that of subtraction, addition, multiplication, and division.  It is called a point-wise operation because it performs the mathematical operation on one sample point at a time.  For example, if the mathematical operation being performed is subtraction, then for two series each with N sample points,  a new series is generated in which:  ResultSeries1 =  MinuendSeries1 - SubtrahendSeries1 ; ResultSeries2 =  MinuendSeries2 - SubtrahendSeries2 ; ResultSeries3 =  MinuendSeries3 - SubtrahendSeries3 ;  ..., up to ResultSeriesN  = MinuendSeriesN  - SubtrahendSeriesN.   The result series/1D array produced by the TD_BINARYSERIES_OP is the same size, 'N', as its inputs and inherits the identifiers, SERIES_ID(), in this case, from the minuend series.. Thus the TD_BINARYSERIES_OP takes two equally sized logical-runtime series as input - the first series referenced in the function call is referred to as being the 'primary series', whereas the second series referenced is the secondary series.  The result series always inherits the identifiers, SERIES_ID() from the primary series.  Mathematically, the significance of being a primary series or secondary series is as follows:. For MATHOP(SUB), subtraction, the secondary series is subtracted from the primary series.. For MATHOP(ADD), addition, the secondary series is added to the primary series.. For MATHOP(MUL), multiply, the primary series is multiplied by the secondary series.. For MATHOP(DIV), divide, the primary series is divided by the secondary series.. The TD_BINARYSERIES_OP function can be configured to operate in one of three input modes - ONE2ONE, MANY2ONE, and MATCH. These modes determine the number of primary series and number of secondary series involved in the operation, as well as determining how the primary and secondary series will be matched together. See the INPUT_FMT section for more information.. Some Use Case Examples for these Operators include:. A use for the subtraction - MATHOP(SUB) - and addition - MATHOP(ADD) - operations is to respectively remove trends from the original series and to later restore the trends while engaged in forecasting with the model.  Some background for this is: In building statistical ARMA-style forecasting models, a necessary precondition is that the time series being modelled be stationary: stationary with respect to mean; stationary with respect to covariance; and, stationary with respect to variance.    Transforming a non-stationary series into a stationary series typically requires the completion of two main tasks: the first task requiring the data scientist to model the trend or periodicity inherent in the data, then use that model to generate a representative series; the second task being to execute an operator that forms a new series, formed by subtracting the just generated trend or periodicity series from the original series.  The TD_BINARYSERIES_OP function supplies just such an operator, it forms one or more new series by enabling the data scientist to perform a point-wise subtraction between the original series, aka, the 'minuend-series', and the series to be subtracted, aka, the 'subtrahend', so minuend minus subtrahend.. A use case for the multiplication - MATHOP(SUB) - comes with respect to applying a filter function against a time series.   To apply a filter function - low pass, band pass, high pass - to a time series in the time domain requires a complex operation known as conjugation.  In contrast, if one first were to take the Fourier Transform of the time series and the Fourier Transform of the filter series; transitioning both data series from the time domain over to the frequency domain, then while in the frequency domain, the filter could be applied simply by running the two Fourier result series through a point-wise multiplier to produce a filtered result in the frequency domain.  In other words, conjugation in the time domain (a complex process) is equivalent to point-wise multiplication in the frequency domain.  Once the multiplication operation is complete, the data scientist could then take the inverse transform of the multiplied result set, obtaining the filtered version of the time series.. Use case for TD_BINARYSERIES_OP - Removal of trends present within a time series.   One task frequently performed by the Forecast Model developer is the removal of a trend from a time series, prior to modelling that series.   There are several different approaches available to the data scientist for removing trends.   As inferred in the below diagram, most of those involve executing a function against the original series that produces a new series containing the \u201ctrend\u201d.   This initial processing step is followed by another processing step in which the original series and \u201ctrend\u201d series is run through a point-wise subtractor, which subtracts - for each sample time point - the trend series from the original, producing a third 'detrended' series.  In other words, given an original series and a 'trend' series with five sample points at times: T0, T1, T2, T2, T4; the subtractor performs, original(T0) - trend(T0); original(T1) - trend(T1); \u2026; original(T4) - trend(T4); producing a detrended series with five sample points.   The net effect of this operation, see diagram below, is to create a new series that is \u201crotated down\u201d, once the trend has been removed.   Forecast Modelling can then proceed on the 'detrended' series.",
+    "input_tables": [
+        {
+            "LangName": "data or object or newdata or ... --> Langauges team can work with UAF team to come up with this field",
+            "requiredInputKind": [
+                "PartitionByNone"
+            ],
+            "isOrdered": false,
+            "partitionByOne": false,
+            "alternateNames": [],
+            "isRequired": true,
+            "description": "This function takes two equally sized data series as inputs, performs the specified mathematical operation - add, subtract, multiply, divide - on a sample point by sample point basis, producing a result series, which is the result of performing the mathematical operation.",
+            "rDescription": "This function takes two equally sized data series as inputs, performs the specified mathematical operation - add, subtract, multiply, divide - on a sample point by sample point basis, producing a result series, which is the result of performing the mathematical operation.",
+            "datatype": "TABLE_ALIAS",
+            "allowsLists": false,
+            "name": "Input",
+            "rName": "Input",
+            "useInR": true,
+            "rOrderNum": 1,
+            "uaf": {
+                "requiredUafKind": [
+                    "SERIES"
+                ],
+                "is_row_sequence": "SEQUENCE",
+                "is_col_sequence": "SEQUENCE",
+                "row_axis_name": "",
+                "column_axis_name": "",
+                "id_name": "",
+                "id_sequence": "",
+                "payload_fields": "",
+                "payload_content": "",
+                "layer": "",
+                "where": "",
+                "time_duration": "",
+                "time_zero": "",
+                "time_type": "",
+                "seq_zero": "",
+                "interval": "Off",
+                "details": true,
+                "instance_names": "",
+                "data_type": "",
+                "payload_start_value": "",
+                "payload_offset_value": "",
+                "payload_num_entries": "",
+                "index": 0
+            },
+            "uafType": "SERIES"
+        },
+        {
+            "LangName": "data or object or newdata or ... --> Langauges team can work with UAF team to come up with this field",
+            "requiredInputKind": [
+                "PartitionByNone"
+            ],
+            "isOrdered": false,
+            "partitionByOne": false,
+            "alternateNames": [],
+            "isRequired": true,
+            "description": "secondary series of equal size to be operated on",
+            "rDescription": "secondary series of equal size to be operated on",
+            "datatype": "TABLE_ALIAS",
+            "allowsLists": false,
+            "name": "Input2",
+            "rName": "Input2",
+            "useInR": true,
+            "rOrderNum": 2,
+            "uaf": {
+                "requiredUafKind": [
+                    "SERIES"
+                ],
+                "is_row_sequence": "SEQUENCE",
+                "is_col_sequence": "SEQUENCE",
+                "row_axis_name": "",
+                "column_axis_name": "",
+                "id_name": "",
+                "id_sequence": "",
+                "payload_fields": "",
+                "payload_content": "",
+                "layer": "",
+                "where": "",
+                "time_duration": "",
+                "time_zero": "",
+                "time_type": "",
+                "seq_zero": "",
+                "interval": "Off",
+                "details": true,
+                "instance_names": "",
+                "data_type": "",
+                "payload_start_value": "",
+                "payload_offset_value": "",
+                "payload_num_entries": "",
+                "index": 1
+            },
+            "uafType": "SERIES"
+        }
+    ],
+    "output_tables": [
+        {
+            "Type": "ART",
+            "PrimaryLayer": true,
+            "LayerName": "ARTPRIMARY",
+            "ResultTableColumnTypes": [
+                "<varies>",
+                "float"
+            ],
+            "LangName": "data or object or newdata or ... --> Langauges team can work with UAF team to come up with this field",
+            "isOutputTable": true,
+            "omitPossible": true,
+            "partitionByOne": false,
+            "alternateNames": [],
+            "isRequired": false,
+            "description": "The TD_BINARYSERIES_OP function returns only a primary result set.   There are no secondary or tertiary result sets produced by this function.  The primary result set can be retrieved by issuing a SELECT against the analytical table containing the results.<varies> data type and values dependent upon the OUTPUT_FMT(INDEX_STYLE()) declaration.",
+            "rDescription": "The TD_BINARYSERIES_OP function returns only a primary result set.   There are no secondary or tertiary result sets produced by this function.  The primary result set can be retrieved by issuing a SELECT against the analytical table containing the results.<varies> data type and values dependent upon the OUTPUT_FMT(INDEX_STYLE()) declaration.",
+            "datatype": "TABLE_NAME",
+            "allowsLists": false,
+            "name": "OutputTable1",
+            "rName": "OutputTable1",
+            "useInR": true,
+            "rOrderNum": 3
+        }
+    ],
+    "argument_clauses": [
+        {
+            "name": "OutputFormat",
+            "defaultValue": "INDEX_STYLE(NUMERICAL_SEQUENCE)",
+            "permittedValues": [
+                "INDEX_STYLE(NUMERICAL_SEQUENCE)",
+                "INDEX_STYLE(FLOW_THROUGH)"
+            ],
+            "allowsLists": false,
+            "Type": "string",
+            "datatype": "STRING",
+            "description": "Output format",
+            "isRequired": false,
+            "rOrderNum": 4
+        },
+        {
+            "name": "InputFormat",
+            "defaultValue": "",
+            "permittedValues": [
+                "INPUT_MODE(ONE2ONE)",
+                "INPUT_MODE(MANY2ONE)",
+                "INPUT_MODE(MATCH)"
+            ],
+            "allowsLists": false,
+            "Type": "string",
+            "datatype": "STRING",
+            "description": "Input format",
+            "isRequired": true,
+            "rOrderNum": 5
+        },
+        {
+            "name": "MATHOP",
+            "permittedValues": [
+                "SUB",
+                "ADD",
+                "MUL",
+                "DIV"
+            ],
+            "allowsLists": false,
+            "Type": "enumeration",
+            "datatype": "STRING",
+            "description": "Dictates mathematical operation to be performed between the passed in primary and secondary series.  It is an operation, where:  result-series = primary-series MATHOP secondary-series.   Specifics of the operation depend on the passed in PAYLOAD(CONTENT(); meaning that the operation will be a real operation, a multivariate real operation, a complex number operation, or an amplitude phase operation. ",
+            "isRequired": true,
+            "rOrderNum": 6
+        }
+    ]
+}

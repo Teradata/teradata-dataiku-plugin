@@ -1,0 +1,151 @@
+{
+    "JSONVersion": "1",
+    "FuncRName": "...",
+    "MaxInputFiles": 1,
+    "IsPlottable": false,
+    "InputFmt": false,
+    "OutputFmt": false,
+    "function_type": "uaf",
+    "json_schema_major_version": "1",
+    "json_schema_minor_version": "2",
+    "json_content_version": "1",
+    "function_name": "TD_FITMETRICS",
+    "function_r_name": "aa.td_fitmetrics",
+    "ref_function_r_name": "aa.td_fitmetrics",
+    "function_version": "...",
+    "short_description": "The TD_FIT_METRICS function performs several calculations",
+    "long_description": "The TD_FIT_METRICS function performs several calculations, using as its input: the original series; the series predicted from the model; the original series mean; and, the residuals left over from a modeling fit exercise.  The purpose of the generated metrics is to enable the data scientist to judge the 'Goodness of Fit' afforded by the modeling fit exercise.",
+    "input_tables": [
+        {
+            "LangName": "data or object or newdata or ... --> Langauges team can work with UAF team to come up with this field",
+            "requiredInputKind": [
+                "PartitionByNone"
+            ],
+            "isOrdered": false,
+            "partitionByOne": false,
+            "alternateNames": [],
+            "isRequired": true,
+            "description": "This section outlines the syntax associated with invoking the TD_FIT_METRICS function.   This function can accept either a single multivariate series as an input, or alternatively can accept an ART table containing the residual results from a previously run regression operation. For the case in which the input is a single multivariate series, the fields in the SERIES_SPEC(PAYLOAD(FIELDS(). CONTENT(MULTIVAR_REAL)) must consists of: First field referenced is the original series value; Second field referenced is the calculated series value produced by the model; Third field is the calculated residual: original_value minus calculated_valueFor the scenario in which the residuals reside within the tertiary result set associated with an ART table, then the caller merely needs to pass in the TABLE_NAME identify the ART containing the residuals - the DBS software will perform the extraction of the original series, calculated series, and residuals as part of the execution of this function. ",
+            "rDescription": "This section outlines the syntax associated with invoking the TD_FIT_METRICS function.   This function can accept either a single multivariate series as an input, or alternatively can accept an ART table containing the residual results from a previously run regression operation. For the case in which the input is a single multivariate series, the fields in the SERIES_SPEC(PAYLOAD(FIELDS(). CONTENT(MULTIVAR_REAL)) must consists of: First field referenced is the original series value; Second field referenced is the calculated series value produced by the model; Third field is the calculated residual: original_value minus calculated_valueFor the scenario in which the residuals reside within the tertiary result set associated with an ART table, then the caller merely needs to pass in the TABLE_NAME identify the ART containing the residuals - the DBS software will perform the extraction of the original series, calculated series, and residuals as part of the execution of this function. ",
+            "datatype": "TABLE_ALIAS",
+            "allowsLists": false,
+            "name": "Input",
+            "rName": "Input",
+            "useInR": true,
+            "rOrderNum": 1,
+            "uaf": {
+                "requiredUafKind": [
+                    "SERIES",
+                    "ART"
+                ],
+                "is_row_sequence": "SEQUENCE",
+                "is_col_sequence": "SEQUENCE",
+                "row_axis_name": "",
+                "column_axis_name": "",
+                "id_name": "",
+                "id_sequence": "",
+                "payload_fields": "",
+                "payload_content": "",
+                "layer": "",
+                "where": "",
+                "time_duration": "",
+                "time_zero": "",
+                "time_type": "",
+                "seq_zero": "",
+                "interval": "Off",
+                "details": true,
+                "instance_names": "",
+                "data_type": "",
+                "payload_start_value": "",
+                "payload_offset_value": "",
+                "payload_num_entries": "",
+                "index": 0
+            },
+            "uafType": ""
+        }
+    ],
+    "output_tables": [
+        {
+            "Type": "ART",
+            "PrimaryLayer": true,
+            "LayerName": "ARTPRIMARY",
+            "ResultTableColumnTypes": [
+                "integer",
+                "integer",
+                "float",
+                "float",
+                "float",
+                "float",
+                "float",
+                "float",
+                "float",
+                "float",
+                "float",
+                "float",
+                "float",
+                "float",
+                "float",
+                "float",
+                "float",
+                "float",
+                "varchar(16)"
+            ],
+            "LangName": "data or object or newdata or ... --> Langauges team can work with UAF team to come up with this field",
+            "isOutputTable": true,
+            "omitPossible": true,
+            "partitionByOne": false,
+            "alternateNames": [],
+            "isRequired": false,
+            "description": "The TD_FITMETRICS  function returns only a primary result set consisting of one row per unique series acted upon.   There are no secondary or tertiary result sets produced by this function.  The primary result set can be retrieved by issuing a SELECT against the analytical result table (ART) containing the results of the function invocation.",
+            "rDescription": "The TD_FITMETRICS  function returns only a primary result set consisting of one row per unique series acted upon.   There are no secondary or tertiary result sets produced by this function.  The primary result set can be retrieved by issuing a SELECT against the analytical result table (ART) containing the results of the function invocation.",
+            "datatype": "TABLE_NAME",
+            "allowsLists": false,
+            "name": "OutputTable1",
+            "rName": "OutputTable1",
+            "useInR": true,
+            "rOrderNum": 2
+        }
+    ],
+    "argument_clauses": [
+        {
+            "name": "VAR_COUNT",
+            "lowerBound": 0,
+            "lowerBoundType": "INCLUSIVE",
+            "allowNaN": false,
+            "allowsLists": false,
+            "Type": "integer",
+            "datatype": "INTEGER",
+            "description": "An integer indicating how many explanatory variables (N), including the constant, are to be assumed while calculating the various fit-related metrics. ",
+            "isRequired": true,
+            "rOrderNum": 3
+        },
+        {
+            "name": "FSTAT",
+            "defaultValue": 0,
+            "permittedValues": [
+                0,
+                1
+            ],
+            "allowsLists": false,
+            "Type": "integer",
+            "datatype": "INTEGER",
+            "description": "Flag indicating whether to calculate an F-Statistic for the regression.",
+            "isRequired": true,
+            "rOrderNum": 4
+        },
+        {
+            "name": "SIGNIFICANCE_LEVEL",
+            "lowerBound": 0,
+            "upperBound": 1,
+            "lowerBoundType": "EXCLUSIVE",
+            "upperBoundType": "EXCLUSIVE",
+            "allowNaN": false,
+            "allowsLists": false,
+            "Type": "double",
+            "datatype": "DOUBLE",
+            "description": "This parameter is only valid when FSTAT(1).  The chosen level of significance:  0 < SIGNIFICANCE_LEVEL < 0",
+            "isRequired": false,
+            "rOrderNum": 5
+        }
+    ]
+}

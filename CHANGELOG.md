@@ -1,8 +1,14 @@
 # Teradata Plugin Changelog
 
-## Version 2.2.1 (eFix - February 2023)
+## Version 2.3.0 (May 2023)
 
 Current version
+
+* Support for the Unbounded Array Framework (UAF) time series functions.
+* Bug fix: BYOM recipes did not by default run queries in TERA mode.
+* Bug fix: If the user should have inadequate permissions to access a recipe, the plugin no longer produces a generic "External Code Failed" error; a permissions-related message is now issued upon accessing a recipe, instead.
+
+## Version 2.2.1 (eFix - February 2023)
 
 * Bug fix: An issue prevented non-admin users from running plugin recipes.
 
@@ -44,4 +50,4 @@ Current version
 
 ## Version 0.2.2 (July 2021)
 
-* First officially supported release; features the Teradata Advanced SQL Engine Functions and SCRIPT Table Operator plugins.
+* First officially supported release; features the Teradata Analytics Database Functions and SCRIPT Table Operator plugins.

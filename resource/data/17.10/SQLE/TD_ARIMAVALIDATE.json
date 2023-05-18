@@ -1,0 +1,238 @@
+{
+    "JSONVersion": "1",
+    "FuncRName": "...",
+    "MaxInputFiles": 1,
+    "IsPlottable": true,
+    "InputFmt": false,
+    "OutputFmt": true,
+    "function_type": "uaf",
+    "json_schema_major_version": "1",
+    "json_schema_minor_version": "2",
+    "json_content_version": "1",
+    "function_name": "TD_ARIMAVALIDATE",
+    "function_r_name": "aa.td_arimavalidate",
+    "ref_function_r_name": "aa.td_arimavalidate",
+    "function_version": "...",
+    "short_description": "performs in-sample forecasting and then generates a residual series from the forecasted values with the observed 'test data' values",
+    "long_description": "The TD_ARIMAVALIDATE function first performs an \u201cIn-Sample\u201d forecast, followed by an analysis of the produced residuals.  The aim of this analysis is to provide the data scientist with a collection of metrics which are useful for model selection and expose the produced residuals, such that a number of model validation statistical tests can be conducted.",
+    "input_tables": [
+        {
+            "LangName": "data or object or newdata or ... --> Langauges team can work with UAF team to come up with this field",
+            "requiredInputKind": [
+                "PartitionByNone"
+            ],
+            "isOrdered": false,
+            "partitionByOne": false,
+            "alternateNames": [],
+            "isRequired": true,
+            "description": "Passed in an art table in ART_SPEC without specifying layer",
+            "rDescription": "Passed in an art table in ART_SPEC without specifying layer",
+            "datatype": "TABLE_ALIAS",
+            "allowsLists": false,
+            "name": "Input",
+            "rName": "Input",
+            "useInR": true,
+            "rOrderNum": 1,
+            "uaf": {
+                "requiredUafKind": [
+                    "ART"
+                ],
+                "is_row_sequence": "SEQUENCE",
+                "is_col_sequence": "SEQUENCE",
+                "row_axis_name": "",
+                "column_axis_name": "",
+                "id_name": "",
+                "id_sequence": "",
+                "payload_fields": "",
+                "payload_content": "",
+                "layer": "",
+                "where": "",
+                "time_duration": "",
+                "time_zero": "",
+                "time_type": "",
+                "seq_zero": "",
+                "interval": "Off",
+                "details": true,
+                "instance_names": "",
+                "data_type": "",
+                "payload_start_value": "",
+                "payload_offset_value": "",
+                "payload_num_entries": "",
+                "index": 0
+            },
+            "uafType": "ART"
+        }
+    ],
+    "output_tables": [
+        {
+            "Type": "ART",
+            "PrimaryLayer": true,
+            "LayerName": "ARTPRIMARY",
+            "ResultTableColumnTypes": [
+                "integer",
+                "integer",
+                "float",
+                "float",
+                "float",
+                "float",
+                "float"
+            ],
+            "LangName": "data or object or newdata or ... --> Langauges team can work with UAF team to come up with this field",
+            "isOutputTable": true,
+            "omitPossible": true,
+            "partitionByOne": false,
+            "alternateNames": [],
+            "isRequired": false,
+            "description": "a primary layer containing the model selection metricsThe primary result set can be retrieved by issuing a SELECT against the analytical result table (ART) containing the results",
+            "rDescription": "a primary layer containing the model selection metricsThe primary result set can be retrieved by issuing a SELECT against the analytical result table (ART) containing the results",
+            "datatype": "TABLE_NAME",
+            "allowsLists": false,
+            "name": "OutputTable1",
+            "rName": "OutputTable1",
+            "useInR": true,
+            "rOrderNum": 2
+        },
+        {
+            "Type": "ART",
+            "PrimaryLayer": false,
+            "LayerName": "ARTFITMETADATA",
+            "ResultTableColumnTypes": [
+                "integer",
+                "integer",
+                "float",
+                "float",
+                "float",
+                "float",
+                "float",
+                "float",
+                "float",
+                "float",
+                "float",
+                "float",
+                "float",
+                "integer",
+                "integer",
+                "float",
+                "float",
+                "float",
+                "varchar(16)"
+            ],
+            "LangName": "data or object or newdata or ... --> Langauges team can work with UAF team to come up with this field",
+            "isOutputTable": true,
+            "omitPossible": true,
+            "partitionByOne": false,
+            "alternateNames": [],
+            "isRequired": false,
+            "description": "a secondary layer containing the goodness-of-fit metricsThis result set is generated in response to the FUNC_PARAMS (FIT_METRICS(1) having a passed in flag value of '1'.   The result set can be retrieved by invoking the TD_EXTRACT_RESULTS function against the analytical result table containing the metadata. This result set will be deposited into LAYER1 under the name ARTFITMETADATA.",
+            "rDescription": "a secondary layer containing the goodness-of-fit metricsThis result set is generated in response to the FUNC_PARAMS (FIT_METRICS(1) having a passed in flag value of '1'.   The result set can be retrieved by invoking the TD_EXTRACT_RESULTS function against the analytical result table containing the metadata. This result set will be deposited into LAYER1 under the name ARTFITMETADATA.",
+            "datatype": "TABLE_NAME",
+            "allowsLists": false,
+            "name": "OutputTable2",
+            "rName": "OutputTable2",
+            "useInR": true,
+            "rOrderNum": 3
+        },
+        {
+            "Type": "ART",
+            "PrimaryLayer": false,
+            "LayerName": "ARTFITRESIDUALS",
+            "ResultTableColumnTypes": [
+                "integer",
+                "float",
+                "float",
+                "float"
+            ],
+            "LangName": "data or object or newdata or ... --> Langauges team can work with UAF team to come up with this field",
+            "isOutputTable": true,
+            "omitPossible": true,
+            "partitionByOne": false,
+            "alternateNames": [],
+            "isRequired": false,
+            "description": "a tertiary layer containing the residuals left over from the validation exerciseThis result set is generated in response to the FUNC_PARAMS( RESIDUALS(1)) having a passed in flag value of '1'.   The result set can be retrieved by invoking the TD_EXTRACT_RESULTS function against the analytical result table containing the metadata. This result set will be deposited into LAYER2 under the name ARTFITRESIDUALS.",
+            "rDescription": "a tertiary layer containing the residuals left over from the validation exerciseThis result set is generated in response to the FUNC_PARAMS( RESIDUALS(1)) having a passed in flag value of '1'.   The result set can be retrieved by invoking the TD_EXTRACT_RESULTS function against the analytical result table containing the metadata. This result set will be deposited into LAYER2 under the name ARTFITRESIDUALS.",
+            "datatype": "TABLE_NAME",
+            "allowsLists": false,
+            "name": "OutputTable3",
+            "rName": "OutputTable3",
+            "useInR": true,
+            "rOrderNum": 4
+        },
+        {
+            "Type": "ART",
+            "PrimaryLayer": false,
+            "LayerName": "ARTMODEL",
+            "ResultTableColumnTypes": [
+                "integer",
+                "integer",
+                "varbyte(64000)"
+            ],
+            "LangName": "data or object or newdata or ... --> Langauges team can work with UAF team to come up with this field",
+            "isOutputTable": true,
+            "omitPossible": true,
+            "partitionByOne": false,
+            "alternateNames": [],
+            "isRequired": false,
+            "description": "a quaternary layer, containing the model context, which can subsequently be used for forecasting with the model.This result set is always generated and contains the MODEL context which can subsequently be used to facilitate forecasting with the model.   Note that the main 'model' context is present in binary form and is not meant for human consumption.   The result set can be retrieved by invoking the TD_EXTRACT_RESULTS function against the analytical result table containing the metadata. This result set will be deposited into LAYER3 under the name ARTMODEL.",
+            "rDescription": "a quaternary layer, containing the model context, which can subsequently be used for forecasting with the model.This result set is always generated and contains the MODEL context which can subsequently be used to facilitate forecasting with the model.   Note that the main 'model' context is present in binary form and is not meant for human consumption.   The result set can be retrieved by invoking the TD_EXTRACT_RESULTS function against the analytical result table containing the metadata. This result set will be deposited into LAYER3 under the name ARTMODEL.",
+            "datatype": "TABLE_NAME",
+            "allowsLists": false,
+            "name": "OutputTable4",
+            "rName": "OutputTable4",
+            "useInR": true,
+            "rOrderNum": 5
+        }
+    ],
+    "argument_clauses": [
+        {
+            "name": "OutputFormat",
+            "defaultValue": "INDEX_STYLE(NUMERICAL_SEQUENCE)",
+            "permittedValues": [
+                "INDEX_STYLE(NUMERICAL_SEQUENCE)",
+                "INDEX_STYLE(FLOW_THROUGH)"
+            ],
+            "allowsLists": false,
+            "Type": "string",
+            "datatype": "STRING",
+            "description": "Output format",
+            "isRequired": false,
+            "rOrderNum": 6
+        },
+        {
+            "name": "FIT_METRICS",
+            "permittedValues": [
+                0,
+                1
+            ],
+            "allowsLists": false,
+            "Type": "integer",
+            "datatype": "INTEGER",
+            "description": "Flag indicating whether or not to generate the secondary result set that contains the model metadata statistics.  A value of FIT_METRICS(1) means generate the secondary result set.   A value of FIT_METRICS(0) means do not generate the secondary result set.  Default is FIT_METRICS(0).  The generated result set can be retrieved by issuing a TD_EXTRACT_RESULTS against the analytical result table containing the results.",
+            "isRequired": true,
+            "rOrderNum": 7
+        },
+        {
+            "name": "RESIDUALS",
+            "permittedValues": [
+                0,
+                1
+            ],
+            "allowsLists": false,
+            "Type": "integer",
+            "datatype": "INTEGER",
+            "description": "Flag indicating whether or not to generate the tertiary result set that contains the model residuals.  A value of RESIDUALS(1) means generate the tertiary result set.   A value of RESIDUALS(0) means do not generate the tertiary result set.  Default is RESIDUALS(0).  The generated result set can be retrieved by issuing a TD_EXTRACT_RESULTS against the analytical result table containing the results.",
+            "isRequired": true,
+            "rOrderNum": 8
+        },
+        {
+            "name": "MODEL_NUMBER",
+            "defaultValue": 0,
+            "allowNaN": false,
+            "allowsLists": false,
+            "Type": "integer",
+            "datatype": "INTEGER",
+            "description": "OPTIONAL: Data Scientist assigned model number for this model. If not present, then default is '0'.",
+            "isRequired": false,
+            "rOrderNum": 9
+        }
+    ]
+}

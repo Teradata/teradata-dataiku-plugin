@@ -23,6 +23,7 @@ import logging
 import pprint
 import os
 
+from dataiku.customrecipe import get_output_names_for_role
 from dataiku.customrecipe import get_recipe_resource
 # SKS: Import vantage version number
 import sys
@@ -271,7 +272,7 @@ def load_json(json_dict, inputs):
 def getConnectionParamsFromDataset(inputDataset):
     return inputDataset.get_location_info(sensitive_info=True)['info']
 
-def do(payload, config, plugin_config, inputs):
+def do_execute(payload, config, plugin_config, inputs):
     """
     Returns a dictionary of possible functions based on the configuration. 
     
@@ -313,18 +314,54 @@ def do(payload, config, plugin_config, inputs):
     # SKS: Get vantage version number
     use_version_jsons = True
     vantage_version_number = vantage_version.get_vantage_version(  DataikuQueryEngineWrapper(executor)  )
-    
 
-    if "explain" in payload:
+
+    if "plot" in payload:
         try:
-            sql_generator = OpenEndedQueryGenerator('output', config)
-            my_query = sql_generator.create_query()
-            my_query_explanation = executor.query_to_df('EXPLAIN ' + my_query)
-            pd.set_option("display.max_colwidth", 150)
-            explain_string = my_query_explanation.to_string(index= False, justify='left')
-            return {'result' : explain_string}
+            # TODO
+            arguments = config["function"]["arguments"]
+            for arg in arguments:
+                name = arg.get("name", "")
+                if name == 'IMAGE':
+                    arg['value'] = 'PNG'
+                if name == 'WIDTH':
+                    arg['value'] = 400
+                if name == 'HEIGHT':
+                    arg['value'] = 400
+
+            connections = {}
+            connectionName = input_dataset.get_location_info()['info']['connectionName']
+            connections = auth.addConnection(connections, connectionName)
+            defaultDatabase = input_dataset.get_config()['params'].get('schema', '')
+            if defaultDatabase=='' and connectionName in connections and 'defaultDatabase' in connections[connectionName]['params']:
+                defaultDatabase = connections[connectionName]['params']['defaultDatabase']
+            full_table_name = input_dataset.get_location_info()['info']['table']
+            config["function"]["inputtables"] = {}
+            config["function"]["inputtables"][input_table_name] = full_table_name
+            config["function"]["inputschemas"] = {}
+            config["function"]["inputschemas"][input_table_name] = defaultDatabase
+            
+            
+            sql_generator = OpenEndedQueryGenerator('SHOWPLOTIMG', config)
+            query = "DROP TABLE SHOWPLOTIMG;"
+            try:
+                executor.query_to_df(query)
+            except:
+                pass
+            query = sql_generator.create_query()
+            try:
+                executor.query_to_df(query)
+            except:
+                pass
+            # Now get the resulting image from output table
+            
+            query = "SELECT CAST(FROM_BYTES(TBL.IMAGE, 'Base64M') AS VARCHAR(30000)) AS IMAGE FROM SHOWPLOTIMG AS TBL"
+            plot_df = executor.query_to_df(query = query)
+            result = '<img src="data:image/png;base64,'+plot_df.IMAGE.iloc[0]+'">'
+            
         except:
-            return {'result' : "Error"}
+           result = "No plot present to report."
+        return {'result' : result}
 
     # Recipe inputs
     #env = os.getenv("DKU_CUSTOM_RESOURCE_FOLDER")
@@ -356,12 +393,21 @@ def do(payload, config, plugin_config, inputs):
         category_names += ["VALIB"]
     
     choices = []
+    uaf_toc_json = []
     plugin_version_number = vantage_version_number
     for category in category_names:
         if category == "VALIB":
             fallback_directory = os.path.join(env, 'data', category)
         else:
+            # SQLE case
             fallback_directory = os.path.join(env, 'data', plugin_version_number, category)
+            try:
+                uaf_toc_file_path = os.path.join(env, 'data', plugin_version_number, category, "uaf_toc.json")
+                if os.path.exists(uaf_toc_file_path):
+                    with open(uaf_toc_file_path) as f:
+                        uaf_toc_json = json.loads(f.read())
+            except:
+                pass
     
         # Check if fallback directory exists
         if not os.path.isdir(fallback_directory):
@@ -388,18 +434,26 @@ def do(payload, config, plugin_config, inputs):
         # SKS : Call common code to query all JSONs of this category
         fallback_files = os.listdir(fallback_directory)
         fallback_files.sort()
+        
+
         for filename in fallback_files:
             if not filename.endswith(".json"):
                 continue
+            if "uaf_toc" in filename:
+                continue
+            keyword = category
             function_dict = {}
             if category == "VALIB":
                 filepath = os.path.join(category, filename)
             else:
+                # SQLE case
                 filepath = os.path.join(plugin_version_number, category, filename)
+                if filename in uaf_toc_json:
+                    keyword = "UAF"
             function_dict["name"] = filename.replace(".json", "")
             function_dict["function_alias_name"] = function_dict["name"]
             function_dict["json_file_path"] = filepath
-            function_dict["keyword"] = category
+            function_dict["keyword"] = keyword
             choices.append(function_dict)
 
 
@@ -428,7 +482,7 @@ def do(payload, config, plugin_config, inputs):
         inputtablename = inputdataset['fullName'].split('.')[1]
         inputdataset = dataiku.Dataset(inputtablename)
         inputschemas[inputtablename] = inputdataset.read_schema()
-    
+
     connection = getConnectionParamsFromDataset(input_dataset)
     if connection:
         aafschema = ([property.get('value', '') for property in connection.\
@@ -441,6 +495,16 @@ def do(payload, config, plugin_config, inputs):
     
     val_db, default_db = get_val_default_database(inputdataset)
 
+    # Establish you have privileges to read the connection
+    connectionErrorMessage = ""
+    try:
+        connectionName = inputdataset.get_location_info()['info']['connectionName']
+        client = dataiku.api_client()
+        if client.get_connection(name=connectionName).get_info():
+            connectionErrorMessage = ""
+    except:
+        connectionErrorMessage = "Permissions error: Contact your Dataiku admin user to have 'Details Readable by' granted to 'Every Analyst' for the connection : " + connectionName
+
     print('I am done')
     return {'choices' : choices,
             'schema': schema,
@@ -449,7 +513,8 @@ def do(payload, config, plugin_config, inputs):
             'aafschema': aafschema,
             'valDatabase' : val_db,
             'defaultDatabase' : default_db,
-            'versionInfo' : versionInfo}
+            'versionInfo' : versionInfo,
+            'connectionErrorMessage' : connectionErrorMessage}
 
 def isMultipleTagsInput(item):
     """
@@ -499,6 +564,21 @@ def inNativeCheck(a, a_n):
             print(arg.get('name'))
             arg["inNative"] = True
     return a 
+
+def do(payload, config, plugin_config, inputs):
+    """
+    Returns a dictionary of possible functions based on the configuration. 
+    
+    :param payload: Unused.
+    :param config: Contains the category to filter functions from.
+    :param plugin_config: Unused.
+    :param inputs: Input Datasets. Used to find the schemas to be used.
+    """
+    try:
+        return do_execute(payload, config, plugin_config, inputs)
+    except Exception as e:
+        return {"error" : str(e)}
+
 
 
 if __name__ == "__main__":

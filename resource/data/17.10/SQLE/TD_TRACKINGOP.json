@@ -1,0 +1,151 @@
+{
+    "JSONVersion": "1",
+    "FuncRName": "...",
+    "MaxInputFiles": 1,
+    "IsPlottable": false,
+    "InputFmt": false,
+    "OutputFmt": false,
+    "function_type": "uaf",
+    "json_schema_major_version": "1",
+    "json_schema_minor_version": "2",
+    "json_content_version": "1",
+    "function_name": "TD_TRACKINGOP",
+    "function_r_name": "aa.td_trackingop",
+    "ref_function_r_name": "aa.td_trackingop",
+    "function_version": "...",
+    "short_description": "Perform Space-Time Analytics",
+    "long_description": "Perform Space-Time Analytics",
+    "input_tables": [
+        {
+            "LangName": "data or object or newdata or ... --> Langauges team can work with UAF team to come up with this field",
+            "requiredInputKind": [
+                "PartitionByNone"
+            ],
+            "isOrdered": false,
+            "partitionByOne": false,
+            "alternateNames": [],
+            "isRequired": true,
+            "description": "a multivariate series containing object 'tracking' context.  Minimally, the payload contains three fields: an arrival time, a departure time, and a geospatial ST_POINT specifying the location; additionally, the multivariate series may contain any number of auxiliary non-LOB payload fields.",
+            "rDescription": "a multivariate series containing object 'tracking' context.  Minimally, the payload contains three fields: an arrival time, a departure time, and a geospatial ST_POINT specifying the location; additionally, the multivariate series may contain any number of auxiliary non-LOB payload fields.",
+            "datatype": "TABLE_ALIAS",
+            "allowsLists": false,
+            "name": "Input",
+            "rName": "Input",
+            "useInR": true,
+            "rOrderNum": 1,
+            "uaf": {
+                "requiredUafKind": [
+                    "SERIES"
+                ],
+                "is_row_sequence": "SEQUENCE",
+                "is_col_sequence": "SEQUENCE",
+                "row_axis_name": "",
+                "column_axis_name": "",
+                "id_name": "",
+                "id_sequence": "",
+                "payload_fields": "",
+                "payload_content": "",
+                "layer": "",
+                "where": "",
+                "time_duration": "",
+                "time_zero": "",
+                "time_type": "",
+                "seq_zero": "",
+                "interval": "Off",
+                "details": true,
+                "instance_names": "",
+                "data_type": "",
+                "payload_start_value": "",
+                "payload_offset_value": "",
+                "payload_num_entries": "",
+                "index": 0
+            },
+            "uafType": "SERIES"
+        }
+    ],
+    "output_tables": [
+        {
+            "Type": "ART",
+            "PrimaryLayer": true,
+            "LayerName": "ARTPRIMARY",
+            "ResultTableColumnTypes": [
+                "<varies>",
+                "float",
+                "ST_GEOMETRYLINESTRING",
+                "float",
+                "float",
+                "float",
+                "float",
+                "float"
+            ],
+            "LangName": "data or object or newdata or ... --> Langauges team can work with UAF team to come up with this field",
+            "isOutputTable": true,
+            "omitPossible": true,
+            "partitionByOne": false,
+            "alternateNames": [],
+            "isRequired": false,
+            "description": "The TD_TRACKING function returns only a primary result set consisting of one row per unique series acted upon.   There are no secondary or tertiary result sets produced by this function.  The primary result set can be retrieved by issuing a SELECT against the analytical table containing the results.The primary result set contains one row per processed 'tracking' series.",
+            "rDescription": "The TD_TRACKING function returns only a primary result set consisting of one row per unique series acted upon.   There are no secondary or tertiary result sets produced by this function.  The primary result set can be retrieved by issuing a SELECT against the analytical table containing the results.The primary result set contains one row per processed 'tracking' series.",
+            "datatype": "TABLE_NAME",
+            "allowsLists": false,
+            "name": "OutputTable1",
+            "rName": "OutputTable1",
+            "useInR": true,
+            "rOrderNum": 2
+        }
+    ],
+    "argument_clauses": [
+        {
+            "name": "DISTANCE",
+            "permittedValues": [
+                0,
+                1
+            ],
+            "allowsLists": false,
+            "Type": "integer",
+            "datatype": "INTEGER",
+            "description": "'1' signifies true, meaning calculate the track distance; '0' is false; no action taken.",
+            "isRequired": false,
+            "rOrderNum": 3
+        },
+        {
+            "name": "SPEED",
+            "permittedValues": [
+                0,
+                1
+            ],
+            "allowsLists": false,
+            "Type": "integer",
+            "datatype": "INTEGER",
+            "description": "'1' signifies true, meaning calculate the trip's avg speed along with max and min speeds in that trip; '0' is false; no action taken.",
+            "isRequired": false,
+            "rOrderNum": 4
+        },
+        {
+            "name": "TIME_SPENT",
+            "permittedValues": [
+                0,
+                1
+            ],
+            "allowsLists": false,
+            "Type": "integer",
+            "datatype": "INTEGER",
+            "description": "'1' signifies true, meaning calculate the total time spent of the trip; '0' is false; no action taken.",
+            "isRequired": false,
+            "rOrderNum": 5
+        },
+        {
+            "name": "METRIC",
+            "permittedValues": [
+                0,
+                1
+            ],
+            "allowsLists": false,
+            "Type": "integer",
+            "datatype": "INTEGER",
+            "description": "'1' signifies true, meaning that the distance and speed should be expressed in kilometer and Km/Hr; '0' signifies 'false', meaning that the distance and speed should be expressed in miles and miles/Hr",
+            "isRequired": false,
+            "rOrderNum": 6
+        }
+    ]
+}

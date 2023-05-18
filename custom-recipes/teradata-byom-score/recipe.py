@@ -140,16 +140,18 @@ except:
     autocommit = connections[inputConnectionName]['params']['autocommitMode']
 
 logging.info(SEP)
-
-logging.info("Assuming TERA mode.")
-pre_query = ["BEGIN TRANSACTION;"]
-post_query = ["END TRANSACTION;"]
-for prop in properties:
-    if prop['name'] == 'TMODE':
-        if prop['value'] == 'ANSI':
-            logging.info("ANSI mode.")
-            pre_query = [";"]
-            post_query = ["COMMIT WORK;"]
+pre_query = None
+post_query = None
+if not autocommit:
+    logging.info("Assuming TERA mode.")
+    pre_query = ["BEGIN TRANSACTION;"]
+    post_query = ["END TRANSACTION;"]
+    for prop in properties:
+        if prop['name'] == 'TMODE':
+            if prop['value'] == 'ANSI':
+                logging.info("ANSI mode.")
+                pre_query = [";"]
+                post_query = ["COMMIT WORK;"]
 
 logging.info(SEP)
 
@@ -167,6 +169,7 @@ try:
     logging.info(SEP)
 except Exception as e:
     logging.info(e)
+
 
 # Create the query 
 if scoring_type == 'dataiku':

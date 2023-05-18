@@ -1,0 +1,115 @@
+{
+    "JSONVersion": "1",
+    "FuncRName": "...",
+    "MaxInputFiles": 1,
+    "IsPlottable": false,
+    "InputFmt": false,
+    "OutputFmt": false,
+    "function_type": "uaf",
+    "json_schema_major_version": "1",
+    "json_schema_minor_version": "2",
+    "json_content_version": "1",
+    "function_name": "TD_SIGNIF_RESIDMEAN",
+    "function_r_name": "aa.td_signif_residmean",
+    "ref_function_r_name": "aa.td_signif_residmean",
+    "function_version": "...",
+    "short_description": "Help selecting the model which best describes the data modeled",
+    "long_description": "The Significance of Residual Mean statistical test is aimed at assisting the data scientist in selecting the model candidate which is the best choice for the data they are modeling.  The test which works off the residuals generated during the model validation / model selection processing phase.  As mentioned previously, typically the data scientists divide their series sample set into two portions: the first portion to be used for the \u201cmodel fitting\u201d exercise; and, the second portion to be used for the \u201cmodel validation\u201d exercise.  The TD_SIGNIF_RESIDMEAN function is usually executed against the residuals produced during the second \u201cmodel validation\u201d exercise, meaning against the \u201cin-sample\u201d forecasted data points.",
+    "input_tables": [
+        {
+            "LangName": "data or object or newdata or ... --> Langauges team can work with UAF team to come up with this field",
+            "requiredInputKind": [
+                "PartitionByNone"
+            ],
+            "isOrdered": false,
+            "partitionByOne": false,
+            "alternateNames": [],
+            "isRequired": true,
+            "description": "This function can accept either a single univariate series (containing the in-sample generated residuals) as an input, or alternatively can accept an ART table containing the residual results from a previously run validation (TD_ARIMAVALIDATE) operation. For the case in which the input is a univariate series, the payload should contain a reference to a single field containing the residuals: the single field references the calculated residual: original_value minus calculated_valueFor the scenario in which the residuals reside within the tertiary result set associated with an ART table, then the caller merely needs to pass in the TABLE_NAME identify the ART containing the residuals - the DBS software will perform the extraction of the original series, calculated series, and residuals as part of the execution of this function.",
+            "rDescription": "This function can accept either a single univariate series (containing the in-sample generated residuals) as an input, or alternatively can accept an ART table containing the residual results from a previously run validation (TD_ARIMAVALIDATE) operation. For the case in which the input is a univariate series, the payload should contain a reference to a single field containing the residuals: the single field references the calculated residual: original_value minus calculated_valueFor the scenario in which the residuals reside within the tertiary result set associated with an ART table, then the caller merely needs to pass in the TABLE_NAME identify the ART containing the residuals - the DBS software will perform the extraction of the original series, calculated series, and residuals as part of the execution of this function.",
+            "datatype": "TABLE_ALIAS",
+            "allowsLists": false,
+            "name": "Input",
+            "rName": "Input",
+            "useInR": true,
+            "rOrderNum": 1,
+            "uaf": {
+                "requiredUafKind": [
+                    "SERIES",
+                    "ART"
+                ],
+                "is_row_sequence": "SEQUENCE",
+                "is_col_sequence": "SEQUENCE",
+                "row_axis_name": "",
+                "column_axis_name": "",
+                "id_name": "",
+                "id_sequence": "",
+                "payload_fields": "",
+                "payload_content": "",
+                "layer": "",
+                "where": "",
+                "time_duration": "",
+                "time_zero": "",
+                "time_type": "",
+                "seq_zero": "",
+                "interval": "Off",
+                "details": true,
+                "instance_names": "",
+                "data_type": "",
+                "payload_start_value": "",
+                "payload_offset_value": "",
+                "payload_num_entries": "",
+                "index": 0
+            },
+            "uafType": ""
+        }
+    ],
+    "output_tables": [
+        {
+            "Type": "ART",
+            "PrimaryLayer": true,
+            "LayerName": "ARTPRIMARY",
+            "ResultTableColumnTypes": [
+                "integer",
+                "float",
+                "float",
+                "float",
+                "float",
+                "float",
+                "float",
+                "float",
+                "float"
+            ],
+            "LangName": "data or object or newdata or ... --> Langauges team can work with UAF team to come up with this field",
+            "isOutputTable": true,
+            "omitPossible": true,
+            "partitionByOne": false,
+            "alternateNames": [],
+            "isRequired": false,
+            "description": "The TD_SIGNIF_RESIDMEAN  function returns only a primary result set consisting of one row per unique series acted upon.   There are no secondary or tertiary result sets produced by this function.  The primary result set can be retrieved by issuing a SELECT against the analytical result table (ART) containing the results.There is one result row returned for each unique series acted upon. ",
+            "rDescription": "The TD_SIGNIF_RESIDMEAN  function returns only a primary result set consisting of one row per unique series acted upon.   There are no secondary or tertiary result sets produced by this function.  The primary result set can be retrieved by issuing a SELECT against the analytical result table (ART) containing the results.There is one result row returned for each unique series acted upon. ",
+            "datatype": "TABLE_NAME",
+            "allowsLists": false,
+            "name": "OutputTable1",
+            "rName": "OutputTable1",
+            "useInR": true,
+            "rOrderNum": 2
+        }
+    ],
+    "argument_clauses": [
+        {
+            "name": "SIGNIFICANCE_LEVEL",
+            "lowerBound": 0,
+            "upperBound": 1,
+            "lowerBoundType": "EXCLUSIVE",
+            "upperBoundType": "EXCLUSIVE",
+            "allowNaN": false,
+            "allowsLists": false,
+            "Type": "double",
+            "datatype": "DOUBLE",
+            "description": "The significance level for the statistical t-test",
+            "isRequired": true,
+            "rOrderNum": 3
+        }
+    ]
+}

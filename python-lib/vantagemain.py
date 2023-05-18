@@ -68,6 +68,7 @@ def vantageDo():
     # Datasets
     input_table_names = []
     output_table_names = []
+    # Get the Input Tables/Schema's
     try:
         # Map dataset names to table names
         inputtables = {}
@@ -111,7 +112,14 @@ def vantageDo():
             table_map["datasetName"] = datasetnames[user_table_name]
             input_table_names.append(table_map)
         recipe_config["function"]["input_table_names"] = input_table_names
+    except Exception as error:
+        # Allow Plot to have empty input tables
+        if recipe_config.get('function', {}).get('name','') != "TD_PLOT":
+            raise RuntimeError("""Error obtaining connection settings from one of the input tables."""                           
+                           """This plugin only supports Teradata tables. Specify a default database name in your Teradata connection or a Schema in the input table connection settings.""")
 
+    # Get the Output Tables/Schema's
+    try:
         # generate parameter output tables map: name, datasetName, table and schema
         for output_name in get_output_names_for_role('main'):
             outputDataset = dataiku.Dataset(output_name)
@@ -133,7 +141,7 @@ def vantageDo():
 
     except Exception as error:
         raise RuntimeError("""Error obtaining connection settings from one of the input tables."""                           
-                           """This plugin only supports Teradata tables. Specify a default database name in your Teradata connection or a Schema in the input table connection settings.""")
+                       """This plugin only supports Teradata tables. Specify a default database name in your Teradata connection or a Schema in the input table connection settings.""")
 
     
     # Connection properties.
@@ -175,10 +183,10 @@ def vantageDo():
     # Recipe function param
     debug = False
     if debug:
-    	logging.info(SEP)
-    	logging.info('DSS Function:')
-    	logging.info(pp.pformat(dss_function))
-    	logging.info(SEP)
+        logging.info(SEP)
+        logging.info('DSS Function:')
+        logging.info(pp.pformat(dss_function))
+        logging.info(SEP)
 
     logging.info(SEP)
     logging.info('get_recipe_config():')
@@ -228,6 +236,7 @@ def vantageDo():
 
     # Create new query based on open ended approach
     sql_generator = OpenEndedQueryGenerator(outputTable, recipe_config, verbose=True, outputDatabaseName=outputDatabase)
+
     logging.info(SEP)
     logging.info("OpenEndedQueryGenerator query:")
     my_query = sql_generator.create_query()

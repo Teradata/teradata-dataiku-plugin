@@ -45,15 +45,32 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SO
       <p class="inner-label">These parameter values will be reset to the defaults. Are you sure?</p>
     </div>
 
+    <div id="dialog-param-plot-settings" title="Setup Layout Settings">
+      <label for="row_setup">Row:</label>
+      <input type="number" id="row_setup" name="row_setup" value="2" min="1" max="6">
+      <label for="column_setup">Column:</label>
+      <input type="number" id="column_setup" name="column_setup" value="2" min="1" max="6">
+
+    </div>
+
+
+    <div id="dialog-param-add" title="Add a New Plot?">
+      <p class="inner-label">A new plot will be added to this recipe. Are you sure?</p>
+    </div>
+
+    <div id="dialog-param-remove" title="Remove Current Plot?">
+      <p class="inner-label">The current plot will be removed from this recipe. Are you sure?</p>
+    </div>
+
     <!-- search filters -->
     <table style="width:100%">
-      <tr>
-        <td style="width:150px;"><label class="unselectable">
-          <input type="checkbox" checked id="filter_sqle">&nbsp&nbspAnalytics Database</label></td>
-        <td style="width:150px;"><label class="unselectable">
-          <input type="checkbox" checked id="filter_valib">&nbsp&nbspVAL</label></td>
-        <td>
-          <div>
+      <tr  style="width:100%">
+        <td  style="width:100%">
+          <div  style="width:100%">
+
+              <input type="checkbox" checked id="filter_sqle">&nbsp&nbspAnalytics Database&nbsp&nbsp</input>&nbsp
+              <input type="checkbox" checked id="filter_valib">&nbsp&nbspVAL&nbsp&nbsp</input>&nbsp
+              <input type="checkbox" checked id="filter_uaf">&nbsp&nbspUAF Time Series&nbsp&nbsp</input>&nbsp&nbsp
 
               <!-- SKS: Add version button -->
               <button type="button" ng-click="showVersionDialog()" data-toggle="tooltip" data-container="body" data-html="true" 
@@ -61,10 +78,32 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SO
               <!-- SKS: Add query button -->
               <button type="button" ng-click="showQueryDialog()" data-toggle="tooltip" data-container="body" data-html="true" 
               title="See what your output query will look like.">Query</button>
+
+               <!-- SKS: Settings Layout -->
+              <button ng-if="config.function.name=='TD_PLOT'" type="button" ng-click="plotSettingsLayout()" data-toggle="tooltip" data-container="body" data-html="true" class="plot-button"
+              title="Choose your plot layout."><span class="glyphicon glyphicon-cog orange"></span></button>
+
+              <!-- SKS: Previous plot button -->
+              <button id="previous-plot-button" ng-if="config.function.name=='TD_PLOT'" type="button" ng-click="previousPlot()" data-toggle="tooltip" data-container="body" data-html="true" ng-disabled="config.current_param_store_index == 0" class="plot-button" 
+              title="Navigate to a previous plot."><span class="glyphicon glyphicon-backward orange"></span></button>
+              <!-- SKS: Add plot button -->
+              <button ng-if="config.function.name=='TD_PLOT'" type="button" ng-click="addPlot()" data-toggle="tooltip" data-container="body" data-html="true" class="plot-button"
+              title="Add a new plot."><span class="glyphicon glyphicon-plus-sign orange"></span></button>
+              <!-- SKS: Remove plot button -->
+              <button ng-if="config.function.name=='TD_PLOT'" type="button" ng-click="removePlot()" data-toggle="tooltip" data-container="body" data-html="true" ng-disabled="config.param_store.length < 2" class="plot-button"
+              title="Remove an existing plot."><span class="glyphicon glyphicon-minus-sign orange"></span></button>
+              <!-- SKS: Next plot button -->
+              <button ng-if="config.function.name=='TD_PLOT'" type="button" ng-click="nextPlot()" data-toggle="tooltip" data-container="body" data-html="true" ng-disabled="config.current_param_store_index == config.param_store.length-1" class="plot-button"
+              title="Navigate to the next plot."><span class="glyphicon glyphicon-forward orange"></span></button>
+              <!-- SKS: Show plot button -->
+              <button ng-if="config.function.name=='TD_PLOT'" type="button" ng-click="showPlotDialog()" data-toggle="tooltip" data-container="body" data-html="true" class="plot-button" 
+              title="See what your output plot will look like."><span class="glyphicon glyphicon-picture orange"></span></button>
+
               <!-- SKS: Documentation Icon -->
               <a href ="https://www.dataiku.com/product/plugins/teradata" class="link1" target="_blank">
                 <span class="glyphicon glyphicon-question-sign"></span>
               </a>
+
           </div>
         </td>
       </tr>
@@ -104,6 +143,9 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SO
       <div class="controls" style="max-width: 80%; overflow-y:scroll; max-height:150px;">
         {{ getFunctionDescription() }}
       </div>
+      <label ng-show=" connectionErrorMessage!='' "  style="color:red;display: inline-block">
+              {{connectionErrorMessage}}
+      </label>
       <label ng-show=" config.function.name.includes('VAL') && valDatabase=='' " style="color:red;display: inline-block">
               Error: To use this VAL function, specify first a database name for the VAL_DATABASE custom property in your connection settings. 
       </label>
@@ -178,7 +220,12 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SO
               </td>
             </tr>
             
-            <tr ng-repeat="item in config.function.required_input" ng-model="config.function.required_input" ng-if="item.hasOwnProperty('name') && item.isRequired">
+            <tr 
+            ng-repeat="item in config.function.required_input" 
+            ng-model="config.function.required_input" 
+            ng-if="item.hasOwnProperty('name') && item.isRequired"
+            ng-hide="config.function.name =='TD_PLOT' && item.uaf.index!=config.current_param_store_index"> <!-- Only show curretnt Plot-->
+
               <td style="text-transform: capitalize">{{ cleanName(item.name) }} {{ cleanKind(item.kind) }}</td>
               <td>
                 <!-- Aliased Input Table Selection-->
@@ -187,10 +234,9 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SO
                       <option value="" selected>--No Selection--</option>
                   </select>
 
-
                   <!-- Add UAF Type-->
                   <div ng-if="item.hasOwnProperty('uafType')">
-                    <label class="fixed-label-size">UAF Type </label>
+                    <label class="fixed-label-size">Input Type </label>
                     <select required ng-model="item.uafType" data-container="body" data-toggle="tooltip" title="{{ getToolTip('UAF_FUNCTION') }}" data-placement="right">
                       <option value="">--No Selection--</option>
                       <option ng-if="item.uaf.requiredUafKind.includes('SERIES')" value="SERIES">SERIES</option>
@@ -304,15 +350,19 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SO
                       <input type="text" ng-model="item.uaf.layer" data-toggle="tooltip" data-container="body" 
                          data-html="true" title="Sets the UAF Layer" data-placement="right" />
                       &nbsp;&nbsp;&nbsp;&nbsp;
+
+                      <!-- 
                        <select ng-model="item.uaf.interval" data-container="body" data-toggle="tooltip" title="Interval Enable" data-placement="right"
                         ng-if="item.uafType=='SERIES'">
                         <option value="Off">Off</option>
                         <option value="On">On</option>
-                      </select>
+                       </select>
+                      -->
+
                     </span>
 
 
-                    <span ng-if="item.uaf.interval=='On' && item.uafType=='SERIES'">
+                    <span ng-if="item.uafType=='SERIES'">
                       <label class="fixed-label-size">Interval </label>
                       
                       <select ng-model="item.uaf.time_duration" data-container="body" data-toggle="tooltip" title="Interval Time Duration" data-placement="right">
@@ -335,7 +385,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SO
                         <option value="integer">Integer</option>
                       </select>
                     </span>
-                    <span  ng-if="item.uaf.interval=='On' && item.uafType=='SERIES'">
+                    <span  ng-if="item.uafType=='SERIES'">
                       <label class="fixed-label-size">Zero </label>
                      <select ng-model="item.uaf.time_zero" data-container="body" data-toggle="tooltip" title="Time Zero" data-placement="right">
                         <option value=""></option>
@@ -360,6 +410,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SO
                     </span>
 
                   </div>
+
 
                   <!-- Aliased Input Table Partition if multiple-->
 
@@ -564,7 +615,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SO
                   data-placement="right" />
 
 
-                <input required class="teradata-tags" ng-model="item.value" type="text" ng-if="['STRING','DOUBLE','INTEGER','DRIVER','SQLEXPR', 'LONG', 'DOUBLE PRECISION'].indexOf(item.datatype) >= 0 && item.allowsLists && !getPermittedValuesWithName(item)"
+                <input required class="teradata-tags" param-name="{{item.name}}" ng-model="item.value" type="text" ng-if="['STRING','DOUBLE','INTEGER','DRIVER','SQLEXPR', 'LONG', 'DOUBLE PRECISION'].indexOf(item.datatype) >= 0 && item.allowsLists && !getPermittedValuesWithName(item)"
                   data-toggle="tooltip" data-container="body" data-html="true" title="{{ getArgumentDescriptionWithName(item.name) }}"
                   data-placement="right"></input>
 
@@ -908,7 +959,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SO
                   data-toggle="tooltip" data-container="body" data-html="true" title="{{ getArgumentDescriptionWithName(item.name) }}"
                   data-placement="right" />
 
-                <input required class="teradata-tags" ng-model="item.value" type="text" ng-if="['STRING','DOUBLE','INTEGER','DRIVER','SQLEXPR', 'LONG', 'DOUBLE PRECISION'].indexOf(item.datatype) >= 0 && item.allowsLists && !getPermittedValuesWithName(item)"
+                <input required class="teradata-tags" param-name="{{item.name}}" ng-model="item.value" type="text" ng-if="['STRING','DOUBLE','INTEGER','DRIVER','SQLEXPR', 'LONG', 'DOUBLE PRECISION'].indexOf(item.datatype) >= 0 && item.allowsLists && !getPermittedValuesWithName(item)"
                   data-toggle="tooltip" data-container="body" data-html="true" title="{{ getArgumentDescriptionWithName(item.name) }}"
                   data-placement="right"></input>
 
@@ -1142,7 +1193,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SO
                     data-toggle="tooltip" data-container="body" data-html="true" title="{{ getArgumentDescriptionWithName(item.name) }}"
                     data-placement="right" />
 
-                <input class="teradata-tags" ng-model="item.value" type="text" ng-if="['STRING','DOUBLE','INTEGER','DRIVER','SQLEXPR', 'LONG', 'DOUBLE PRECISION'].indexOf(item.datatype) >= 0 && item.allowsLists && !getPermittedValuesWithName(item)"
+                <input class="teradata-tags" param-name="{{item.name}}" ng-model="item.value" type="text" ng-if="['STRING','DOUBLE','INTEGER','DRIVER','SQLEXPR', 'LONG', 'DOUBLE PRECISION'].indexOf(item.datatype) >= 0 && item.allowsLists && !getPermittedValuesWithName(item)"
                   data-toggle="tooltip" data-container="body" data-html="true" title="{{ getArgumentDescriptionWithName(item.name) }}"
                   data-placement="right"></input>
 
@@ -1371,7 +1422,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SO
                     data-toggle="tooltip" data-container="body" data-html="true" title="{{ getArgumentDescriptionWithName(item.name) }}"
                     data-placement="right" />
         
-                  <input class="teradata-tags" ng-model="item.value" type="text" ng-if="['STRING','DOUBLE','INTEGER','DRIVER','SQLEXPR', 'LONG', 'DOUBLE PRECISION'].indexOf(item.datatype) >= 0 && item.allowsLists && !getPermittedValuesWithName(item)"
+                  <input class="teradata-tags" param-name="{{item.name}}" ng-model="item.value" type="text" ng-if="['STRING','DOUBLE','INTEGER','DRIVER','SQLEXPR', 'LONG', 'DOUBLE PRECISION'].indexOf(item.datatype) >= 0 && item.allowsLists && !getPermittedValuesWithName(item)"
                     data-toggle="tooltip" data-container="body" data-html="true" title="{{ getArgumentDescriptionWithName(item.name) }}"
                     data-placement="right"></input>
         

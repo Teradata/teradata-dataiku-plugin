@@ -67,18 +67,9 @@ def get_all_functions(query_engine_wrapper, fallback_directory, category_name = 
         if that exists, otherwise from the fallback directory of JSONs.
     """ 
 
-    lst = []
-
-    # If the VCT does not have many functions then it is not correct, mark is as false
-    min_num_functions = 20
-    if len(lst) < min_num_functions:
-        logging.info("teradata_analytic_lib: " +table_name+ " does not have enough functions!, only", len(lst))
-        lst = []
-    if not lst:
-        # In this case VCT doesnt exist, so use JSONs on filesystem with the appropriate version
-        lst = os.listdir(fallback_directory)
-        lst.sort()
-        lst = [file_name.replace(".json", "") for file_name in lst if file_name.index(".json") != -1]
+    lst = os.listdir(fallback_directory)
+    lst.sort()
+    lst = [file_name.replace(".json", "") for file_name in lst if file_name.endswith(".json")]
     return lst
     
 
@@ -188,7 +179,7 @@ def get_all_function_jsons(query_engine_wrapper, fallback_directory, category_na
     
     result = []           
     sql_query_worked = False
-    
+
 
     if len(result)==0 and os.path.isdir(fallback_directory):
         # In this case VCT doesnt exist, so use JSONs on filesystem with the appropriate version and function name

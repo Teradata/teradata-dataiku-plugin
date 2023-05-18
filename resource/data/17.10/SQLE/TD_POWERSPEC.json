@@ -1,0 +1,234 @@
+{
+    "JSONVersion": "1",
+    "FuncRName": "...",
+    "MaxInputFiles": 1,
+    "IsPlottable": true,
+    "InputFmt": false,
+    "OutputFmt": false,
+    "function_type": "uaf",
+    "json_schema_major_version": "1",
+    "json_schema_minor_version": "2",
+    "json_content_version": "1",
+    "function_name": "TD_POWERSPEC",
+    "function_r_name": "aa.td_powerspec",
+    "ref_function_r_name": "aa.td_powerspec",
+    "function_version": "...",
+    "short_description": "Converts a series from the time or spatial domain over to the frequency domain in order to facilitate Frequency Domain Analysis",
+    "long_description": "The Power Spectrum function is another function which converts a series from the time or spatial domain over to the frequency domain in order to facilitate Frequency Domain Analysis.  Once in the frequency domain, it makes it easier for the data scientist to identify periodicities that are inherent in the series, thereby enabling the data scientist to then eliminate them from the series.   ",
+    "input_tables": [
+        {
+            "LangName": "data or object or newdata or ... --> Langauges team can work with UAF team to come up with this field",
+            "requiredInputKind": [
+                "PartitionByNone"
+            ],
+            "isOrdered": false,
+            "partitionByOne": false,
+            "alternateNames": [],
+            "isRequired": true,
+            "description": "At its core, this function takes a logical-runtime series as an input and transforms the series from  the time or spatial domain to the temporal frequency or spatial frequency domain, respectively.  Like TD_LINESPEC, the input series can contain either real or complex numbers as array elements, aka, PAYLOAD(CONTENT(REAL/MULTIVAR_REAL/COMPLEX/MULTIVAR_COMPLEX)).  ",
+            "rDescription": "At its core, this function takes a logical-runtime series as an input and transforms the series from  the time or spatial domain to the temporal frequency or spatial frequency domain, respectively.  Like TD_LINESPEC, the input series can contain either real or complex numbers as array elements, aka, PAYLOAD(CONTENT(REAL/MULTIVAR_REAL/COMPLEX/MULTIVAR_COMPLEX)).  ",
+            "datatype": "TABLE_ALIAS",
+            "allowsLists": false,
+            "name": "Input",
+            "rName": "Input",
+            "useInR": true,
+            "rOrderNum": 1,
+            "uaf": {
+                "requiredUafKind": [
+                    "SERIES"
+                ],
+                "is_row_sequence": "SEQUENCE",
+                "is_col_sequence": "SEQUENCE",
+                "row_axis_name": "",
+                "column_axis_name": "",
+                "id_name": "",
+                "id_sequence": "",
+                "payload_fields": "",
+                "payload_content": "",
+                "layer": "",
+                "where": "",
+                "time_duration": "",
+                "time_zero": "",
+                "time_type": "",
+                "seq_zero": "",
+                "interval": "Off",
+                "details": true,
+                "instance_names": "",
+                "data_type": "",
+                "payload_start_value": "",
+                "payload_offset_value": "",
+                "payload_num_entries": "",
+                "index": 0
+            },
+            "uafType": "SERIES"
+        }
+    ],
+    "output_tables": [
+        {
+            "Type": "ART",
+            "PrimaryLayer": true,
+            "LayerName": "ARTPRIMARY",
+            "ResultTableColumnTypes": [
+                "float",
+                "float"
+            ],
+            "LangName": "data or object or newdata or ... --> Langauges team can work with UAF team to come up with this field",
+            "isOutputTable": true,
+            "omitPossible": true,
+            "partitionByOne": false,
+            "alternateNames": [],
+            "isRequired": false,
+            "description": "The TD_POWERSPEC function returns only a primary result set.   There are no secondary or tertiary result sets produced by this function.  The primary result set can be retrieved by issuing a SELECT against the analytical table containing the results.The scaled frequency, ROW_AXIS.  Depends on passed in value of FREQ_STYLE. FREQ_STYLE(\u201cK_RADIANS) means the ROW_AXIS is the angular frequency, 2\u03c0k/N, which varies from 0 to \u03c0. FREQ_STYLE (\u201cK_SAMPLE_RATE) means the ROW_AXIS is the frequency k/N, which varies from 0 to 1/2.  FREQ_STYLE (\u201cPERIODICITY\u201d) means the ROW_AXIS is the Periodicity.",
+            "rDescription": "The TD_POWERSPEC function returns only a primary result set.   There are no secondary or tertiary result sets produced by this function.  The primary result set can be retrieved by issuing a SELECT against the analytical table containing the results.The scaled frequency, ROW_AXIS.  Depends on passed in value of FREQ_STYLE. FREQ_STYLE(\u201cK_RADIANS) means the ROW_AXIS is the angular frequency, 2\u03c0k/N, which varies from 0 to \u03c0. FREQ_STYLE (\u201cK_SAMPLE_RATE) means the ROW_AXIS is the frequency k/N, which varies from 0 to 1/2.  FREQ_STYLE (\u201cPERIODICITY\u201d) means the ROW_AXIS is the Periodicity.",
+            "datatype": "TABLE_NAME",
+            "allowsLists": false,
+            "name": "OutputTable1",
+            "rName": "OutputTable1",
+            "useInR": true,
+            "rOrderNum": 2
+        }
+    ],
+    "argument_clauses": [
+        {
+            "name": "FREQ_STYLE",
+            "permittedValues": [
+                "K_INTEGRAL",
+                "K_SAMPLE_RATE",
+                "K_RADIANS",
+                "K_HERTZ",
+                "K_PERIODICITY"
+            ],
+            "allowsLists": false,
+            "Type": "string",
+            "datatype": "STRING",
+            "description": "FREQ_STYLE (FK) - The ROW_AXIS scale if frequency:  fk  =  k/N =  wk/2\u03c0  =  1/P    FREQ_STYLE (WK) - The ROW_AXIS scale if angular frequency:  wk  =  2\u03c0k/N =  2\u03c0fk  =  2\u03c0/P     FREQ_STYLE (PERIODICITY) - Periodicity = P = 1/fk  = 2\u03c0/wk  = N/k",
+            "isRequired": false,
+            "rOrderNum": 3
+        },
+        {
+            "name": "HERTZ_SAMPLE_RATE",
+            "lowerBound": 0,
+            "lowerBoundType": "INCLUSIVE",
+            "allowsLists": false,
+            "Type": "float",
+            "datatype": "DOUBLE",
+            "description": "Floating point constant representing the sample rate, in hertz.  A value of 10000.0 means that the sample points were obtained by sampling at a rate of 10,000 hertz.",
+            "isRequired": false,
+            "rOrderNum": 4
+        },
+        {
+            "name": "ZERO_PADDING_OK",
+            "defaultValue": 1,
+            "permittedValues": [
+                0,
+                1
+            ],
+            "allowsLists": false,
+            "Type": "integer",
+            "datatype": "INTEGER",
+            "description": "Determines whether it is OK to add zeros to the end of a given Series to achieve a more efficient computation of the FFT coefficients.  A value of '1' means true; a value of '0' means false.  Default is true.",
+            "isRequired": false,
+            "rOrderNum": 5
+        },
+        {
+            "name": "ALGORITHM",
+            "permittedValues": [
+                "AUTOCOV",
+                "AUTOCORR",
+                "FOURIER",
+                "INCRFOURIER"
+            ],
+            "allowsLists": false,
+            "Type": "string",
+            "datatype": "STRING",
+            "description": "ALGORITHM(\u201cAUTOCOV\u201c) - Use the Fourier Cosine of the Auto covariance approach to calculate power spectrumALGORITHM(\u201cAUTOCORR\u201c) - Use the Fourier Cosine of the Auto correlation approach to calculate power spectrumALGORITHM(\u201cFOURIER\u201c) - Use the Fourier Transform approach to calculate power spectrumALGORITHM(\u201cINCRFOURIER\u201c) - Use the Incremental Fourier Transform approach to calculate power spectrum",
+            "isRequired": false,
+            "rOrderNum": 6
+        },
+        {
+            "name": "INCRFOURIER",
+            "allowsLists": false,
+            "Type": "GROUPSTART",
+            "datatype": "GROUPSTART",
+            "description": "Only valid when ALGORITHM(INCRFOURIER).  Provides spacing interval (K) and interval sampling lengths (L)",
+            "isRequired": false,
+            "rOrderNum": 7
+        },
+        {
+            "name": "INCRFOURIER.INTERVAL_LENGTH",
+            "lowerBound": 0,
+            "lowerBoundType": "INCLUSIVE",
+            "allowsLists": false,
+            "Type": "integer",
+            "datatype": "INTEGER",
+            "description": "",
+            "isRequired": false,
+            "rOrderNum": 8
+        },
+        {
+            "name": "INCRFOURIER.SPACING_INTERVAL",
+            "lowerBound": 0,
+            "lowerBoundType": "INCLUSIVE",
+            "allowsLists": false,
+            "Type": "integer",
+            "datatype": "INTEGER",
+            "description": "",
+            "isRequired": false,
+            "rOrderNum": 9
+        },
+        {
+            "name": "INCRFOURIER_GROUPEND",
+            "allowsLists": false,
+            "Type": "GROUPEND",
+            "datatype": "GROUPEND",
+            "description": "Only valid when ALGORITHM(INCRFOURIER).  Provides spacing interval (K) and interval sampling lengths (L)",
+            "isRequired": true,
+            "rOrderNum": 10
+        },
+        {
+            "name": "WINDOW",
+            "allowsLists": false,
+            "Type": "GROUPSTART",
+            "datatype": "GROUPSTART",
+            "description": "",
+            "isRequired": false,
+            "rOrderNum": 11
+        },
+        {
+            "name": "WINDOW.WINDOW_NAME",
+            "permittedValues": [
+                "NONE",
+                "TUKEY",
+                "BARTLETT",
+                "PARZEN",
+                "WELCH"
+            ],
+            "allowsLists": false,
+            "Type": "string",
+            "datatype": "STRING",
+            "description": "WINDOW(\u201cNONE\u201c) - Do not apply a smoothing window.  Theoretically this translates into the application of a square wave window, which has a magnitude of '1.0' for the whole duration of the window.WINDOW_NAME(\u201cTUKEY\u201c) - Apply a Tukey smoothing window with the supplied alpha valueWINDOW_NAME (\u201cBARTLETT\u201c) - Apply a Bartlett smoothing windowWINDOW_NAME (\u201cPARZEN\u201c) - Apply a Parzen smoothing windowWINDOW_NAME (\u201cWELCH\u201c) - Apply a Welch smoothing window",
+            "isRequired": false,
+            "rOrderNum": 12
+        },
+        {
+            "name": "WINDOW.WINDOW_PARAM",
+            "lowerBound": 0,
+            "lowerBoundType": "INCLUSIVE",
+            "allowsLists": false,
+            "Type": "float",
+            "datatype": "DOUBLE",
+            "description": "Optional Parameter.  Only valid with a FREQ_STYLE(K_HERTZ).  A Floating point constant representing the sample rate, in hertz.  A value of 10000.0 means that the sample points were obtained by sampling at a rate of 10,000 hertz.",
+            "isRequired": false,
+            "rOrderNum": 13
+        },
+        {
+            "name": "WINDOW_GROUPEND",
+            "allowsLists": false,
+            "Type": "GROUPEND",
+            "datatype": "GROUPEND",
+            "description": "",
+            "isRequired": true,
+            "rOrderNum": 14
+        }
+    ]
+}

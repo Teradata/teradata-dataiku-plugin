@@ -35,6 +35,22 @@ p:not(.inner-label) {
 #dialog-reset {
     display: none;
 }
+#dialog-param-plot-settings {
+    display: none;
+}
+#dialog-param-add {
+    display: none;
+}
+#dialog-param-remove {
+    display: none;
+}
+.plot-button {
+    border:none;
+    background-color: transparent;
+}
+.plot-button:disabled {
+    opacity:0.5;
+}
 #tag-enter-form {
     display: none;
 }
@@ -386,6 +402,10 @@ div.inner-cell {
 }
 
 /* Add icons you will be using below */
+.glyphicon-cog:before {
+  content:"\e019";
+}
+
 .glyphicon-plus:before {
   content:"\2b";	
 }

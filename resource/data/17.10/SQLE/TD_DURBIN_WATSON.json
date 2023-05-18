@@ -1,0 +1,154 @@
+{
+    "JSONVersion": "1",
+    "FuncRName": "...",
+    "MaxInputFiles": 1,
+    "IsPlottable": false,
+    "InputFmt": false,
+    "OutputFmt": false,
+    "function_type": "uaf",
+    "json_schema_major_version": "1",
+    "json_schema_minor_version": "2",
+    "json_content_version": "1",
+    "function_name": "TD_DURBIN_WATSON",
+    "function_r_name": "aa.td_durbin_watson",
+    "ref_function_r_name": "aa.td_durbin_watson",
+    "function_version": "...",
+    "short_description": "The Durbin-Watson statistical test which is run against the residuals associated with a fitted model",
+    "long_description": "It is a test which looks for the presence of serial correlation amongst the error/residual terms.  It is mainly employed to analyze the residuals produced by a univariate or multivariate regression (cross-sectional data sets).  With respect to regression models, it is expected that there would exist no serial correlation amongst the error terms in contrast, with time series, the expectation is that most likely their will exist serial correlation amongst the error terms. ",
+    "input_tables": [
+        {
+            "LangName": "data or object or newdata or ... --> Langauges team can work with UAF team to come up with this field",
+            "requiredInputKind": [
+                "PartitionByNone"
+            ],
+            "isOrdered": false,
+            "partitionByOne": false,
+            "alternateNames": [],
+            "isRequired": true,
+            "description": "The input of this function is executed against the residuals left over after running a regression.  These residuals may either reside within an independent table, or may exist in the form of tertiary results resident within an analytical result table",
+            "rDescription": "The input of this function is executed against the residuals left over after running a regression.  These residuals may either reside within an independent table, or may exist in the form of tertiary results resident within an analytical result table",
+            "datatype": "TABLE_ALIAS",
+            "allowsLists": false,
+            "name": "Input",
+            "rName": "Input",
+            "useInR": true,
+            "rOrderNum": 1,
+            "uaf": {
+                "requiredUafKind": [
+                    "SERIES",
+                    "ART"
+                ],
+                "is_row_sequence": "SEQUENCE",
+                "is_col_sequence": "SEQUENCE",
+                "row_axis_name": "",
+                "column_axis_name": "",
+                "id_name": "",
+                "id_sequence": "",
+                "payload_fields": "",
+                "payload_content": "",
+                "layer": "",
+                "where": "",
+                "time_duration": "",
+                "time_zero": "",
+                "time_type": "",
+                "seq_zero": "",
+                "interval": "Off",
+                "details": true,
+                "instance_names": "",
+                "data_type": "",
+                "payload_start_value": "",
+                "payload_offset_value": "",
+                "payload_num_entries": "",
+                "index": 0
+            },
+            "uafType": ""
+        }
+    ],
+    "output_tables": [
+        {
+            "Type": "ART",
+            "PrimaryLayer": true,
+            "LayerName": "ARTPRIMARY",
+            "ResultTableColumnTypes": [
+                "integer",
+                "integer",
+                "integer",
+                "varchar(16)",
+                "float",
+                "float",
+                "float",
+                "float",
+                "varchar(16)"
+            ],
+            "LangName": "data or object or newdata or ... --> Langauges team can work with UAF team to come up with this field",
+            "isOutputTable": true,
+            "omitPossible": true,
+            "partitionByOne": false,
+            "alternateNames": [],
+            "isRequired": false,
+            "description": "The TD_DURBIN_WATSON function returns only a primary result set consisting of one row per unique series acted upon.   There are no secondary or tertiary result sets produced by this function.  The primary result set can be retrieved by issuing a SELECT against the analytical table containing the results.",
+            "rDescription": "The TD_DURBIN_WATSON function returns only a primary result set consisting of one row per unique series acted upon.   There are no secondary or tertiary result sets produced by this function.  The primary result set can be retrieved by issuing a SELECT against the analytical table containing the results.",
+            "datatype": "TABLE_NAME",
+            "allowsLists": false,
+            "name": "OutputTable1",
+            "rName": "OutputTable1",
+            "useInR": true,
+            "rOrderNum": 2
+        }
+    ],
+    "argument_clauses": [
+        {
+            "name": "EXPLANATORY_COUNT",
+            "defaultValue": "",
+            "lowerBound": 1,
+            "lowerBoundType": "INCLUSIVE",
+            "allowNaN": false,
+            "allowsLists": false,
+            "Type": "integer",
+            "datatype": "INTEGER",
+            "description": "Positive Integer value.  The number of explanatory variables in the original regression.  The number of explanatory variables plus the INCLUDE_CONSTANT information is needed to perform the lookup in the DW tables.",
+            "isRequired": true,
+            "rOrderNum": 3
+        },
+        {
+            "name": "INCLUDE_CONSTANT",
+            "permittedValues": [
+                0,
+                1
+            ],
+            "allowsLists": false,
+            "Type": "integer",
+            "datatype": "INTEGER",
+            "description": "Flag indicating whether the original regression equation contained a 'constant' (an 'intercept').  A value of '0' indicates that no constant was present.  A value of '1' indicates that a constant was present.  Default is 0.  ",
+            "isRequired": true,
+            "rOrderNum": 4
+        },
+        {
+            "name": "METHOD",
+            "permittedValues": [
+                "DW_FORMULA",
+                "ACR_LAG1"
+            ],
+            "allowsLists": false,
+            "Type": "enumeration",
+            "datatype": "STRING",
+            "description": "Enumerated value specifying the formula the data scientist wishes to use to calculate the DW test statistic value.  A value of 'DW_FORMULA' means use the full summation formula to calculate the value.  A value of ACR_LAG1, means execute the regression, '\u03bct =  \u03c1 (\u03bct-1) + \u03bdt ';  where  '\u03c1' is the estimate of the autocorrelation at lag 1, and serves the role of the DW statistic.",
+            "isRequired": true,
+            "rOrderNum": 5
+        },
+        {
+            "name": "SIGNIFICANCE_LEVEL",
+            "lowerBound": 0,
+            "upperBound": 1,
+            "lowerBoundType": "EXCLUSIVE",
+            "upperBoundType": "EXCLUSIVE",
+            "allowNaN": false,
+            "allowsLists": false,
+            "Type": "double",
+            "datatype": "DOUBLE",
+            "description": "The desired significance level for the test: 0.01, 0.05, etc ",
+            "isRequired": true,
+            "rOrderNum": 6
+        }
+    ]
+}

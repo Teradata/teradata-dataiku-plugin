@@ -1,0 +1,108 @@
+{
+    "JSONVersion": "1",
+    "FuncRName": "...",
+    "MaxInputFiles": 1,
+    "IsPlottable": true,
+    "InputFmt": false,
+    "OutputFmt": false,
+    "function_type": "uaf",
+    "json_schema_major_version": "1",
+    "json_schema_minor_version": "2",
+    "json_content_version": "1",
+    "function_name": "TD_INPUTVALIDATOR",
+    "function_r_name": "aa.td_inputvalidator",
+    "ref_function_r_name": "aa.td_inputvalidator",
+    "function_version": "...",
+    "short_description": "AF Utility function used to return in-discrete data",
+    "long_description": "The TD_INPUTVALIDATOR, function is an AF Utility function used to return in-discrete data, which is passed to either SERIES_SPEC or MATRIX_SPEC through TABLE_NAME (input data). Few UAF functions required discrete data, so this function is used to find that in-discrete data. In-discrete data is classified differently for series and matrices.",
+    "input_tables": [
+        {
+            "LangName": "data or object or newdata or ... --> Langauges team can work with UAF team to come up with this field",
+            "requiredInputKind": [
+                "PartitionByNone"
+            ],
+            "isOrdered": false,
+            "partitionByOne": false,
+            "alternateNames": [],
+            "isRequired": true,
+            "description": "Series - Interval of ROW_AXIS field is stable (interval to be same); No duplicate row_axis in same seriesMatrix - Interval of ROW_AXIS field is stable; Interval of COLUMN_AXIS field is stable; No duplicate row_axis( column major) or no duplicate column_axis(row major) in same matrix; Number of rows in each walelet is same; or each wavelet, column_axis (row_axis) starts from same value under row major ( column major); Execute function returns the following columns to either user or ART is created with.",
+            "rDescription": "Series - Interval of ROW_AXIS field is stable (interval to be same); No duplicate row_axis in same seriesMatrix - Interval of ROW_AXIS field is stable; Interval of COLUMN_AXIS field is stable; No duplicate row_axis( column major) or no duplicate column_axis(row major) in same matrix; Number of rows in each walelet is same; or each wavelet, column_axis (row_axis) starts from same value under row major ( column major); Execute function returns the following columns to either user or ART is created with.",
+            "datatype": "TABLE_ALIAS",
+            "allowsLists": false,
+            "name": "Input",
+            "rName": "Input",
+            "useInR": true,
+            "rOrderNum": 1,
+            "uaf": {
+                "requiredUafKind": [
+                    "SERIES",
+                    "MATRIX"
+                ],
+                "is_row_sequence": "SEQUENCE",
+                "is_col_sequence": "SEQUENCE",
+                "row_axis_name": "",
+                "column_axis_name": "",
+                "id_name": "",
+                "id_sequence": "",
+                "payload_fields": "",
+                "payload_content": "",
+                "layer": "",
+                "where": "",
+                "time_duration": "",
+                "time_zero": "",
+                "time_type": "",
+                "seq_zero": "",
+                "interval": "Off",
+                "details": true,
+                "instance_names": "",
+                "data_type": "",
+                "payload_start_value": "",
+                "payload_offset_value": "",
+                "payload_num_entries": "",
+                "index": 0
+            },
+            "uafType": ""
+        }
+    ],
+    "output_tables": [
+        {
+            "Type": "ART",
+            "PrimaryLayer": true,
+            "LayerName": "ARTPRIMARY",
+            "ResultTableColumnTypes": [
+                "list<N, float>",
+                "VARCHAR(256)"
+            ],
+            "LangName": "data or object or newdata or ... --> Langauges team can work with UAF team to come up with this field",
+            "isOutputTable": true,
+            "omitPossible": true,
+            "partitionByOne": false,
+            "alternateNames": [],
+            "isRequired": false,
+            "description": "Invoking this AF utility function generates only a primary analytical result set. There are no secondary or other results generated. The primary result set can be accessed via a subsequent SELECT statement issued against the analytical result table. ",
+            "rDescription": "Invoking this AF utility function generates only a primary analytical result set. There are no secondary or other results generated. The primary result set can be accessed via a subsequent SELECT statement issued against the analytical result table. ",
+            "datatype": "TABLE_NAME",
+            "allowsLists": false,
+            "name": "OutputTable1",
+            "rName": "OutputTable1",
+            "useInR": true,
+            "rOrderNum": 2
+        }
+    ],
+    "argument_clauses": [
+        {
+            "name": "FAILURE_MODE",
+            "permittedValues": [
+                "FUNC_FIRST",
+                "FUNC_ALL"
+            ],
+            "langName": "...",
+            "allowsLists": false,
+            "Type": "string",
+            "datatype": "STRING",
+            "description": "Either of the parameters are requiredFIRST - If row found to be in-discrete, then store this row and procede with next series / matrix. So only one row per series / marix.Use FUNC_FIRST to determine first in-discrete row, so that first and second rows are good. We have a valid interval. This helps, if first two rows are duplicates.ALL - If it is specified, all the rows that are in-discrete to be stored in series/ matrix. Then procede to next series / matrix and again follow the same as mentioned.Use FUNC_ALL, to see remaining rows are in-discrete. There may be a scenario, as first and second row determines the interval. If interval is different from third row onwards and consistent throughout the series / matrix. Still you see all rows, except first and second rows. Here first and second rows are in-discrete. User can take action on first and second rows.",
+            "isRequired": true,
+            "rOrderNum": 3
+        }
+    ]
+}

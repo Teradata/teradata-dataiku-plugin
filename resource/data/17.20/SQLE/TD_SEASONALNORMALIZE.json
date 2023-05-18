@@ -1,0 +1,198 @@
+{
+    "JSONVersion": "1",
+    "FuncRName": "...",
+    "MaxInputFiles": 1,
+    "IsPlottable": false,
+    "InputFmt": false,
+    "OutputFmt": true,
+    "function_type": "uaf",
+    "json_schema_major_version": "1",
+    "json_schema_minor_version": "2",
+    "json_content_version": "1",
+    "function_name": "TD_SEASONALNORMALIZE",
+    "function_r_name": "aa.td_seasonalnormalize",
+    "ref_function_r_name": "aa.td_seasonalnormalize",
+    "function_version": "...",
+    "short_description": "Generates a series has been normalized with respect to its internal period as a season and interval cycles",
+    "long_description": "This section outlines the syntax associated with invoking the TD_SEASONALNORMALIZE, 'Seasonal Normalize' table function.    The TD_SEASONALNORMALIZE function takes a logical-runtime series, with real number elements (containing the original series, Xt), as an input, with a SERIES_SPEC(INTERVAL()) and a FUNC_PARAMS(SEASON_CYCLE()) declaration, specifying the season and cycle duration respectively for data normalization.  The function then generates a series having the same number of sample points as the input series, where the generated series has been normalized with respect to its internal period as a season and interval cycles.  The data scientist can then perform a statistical test to see whether or not the generated series is stationary and thus ready to model.",
+    "input_tables": [
+        {
+            "LangName": "data or object or newdata or ... --> Langauges team can work with UAF team to come up with this field",
+            "requiredInputKind": [
+                "PartitionByNone"
+            ],
+            "isOrdered": false,
+            "partitionByOne": false,
+            "alternateNames": [],
+            "isRequired": true,
+            "description": "It takes a logical-runtime series, with real number elements (containing the original series, Xt), as an input",
+            "rDescription": "It takes a logical-runtime series, with real number elements (containing the original series, Xt), as an input",
+            "datatype": "TABLE_ALIAS",
+            "allowsLists": false,
+            "name": "Input",
+            "rName": "Input",
+            "useInR": true,
+            "rOrderNum": 1,
+            "uaf": {
+                "requiredUafKind": [
+                    "SERIES"
+                ],
+                "is_row_sequence": "SEQUENCE",
+                "is_col_sequence": "SEQUENCE",
+                "row_axis_name": "",
+                "column_axis_name": "",
+                "id_name": "",
+                "id_sequence": "",
+                "payload_fields": "",
+                "payload_content": "",
+                "layer": "",
+                "where": "",
+                "time_duration": "",
+                "time_zero": "",
+                "time_type": "",
+                "seq_zero": "",
+                "interval": "Off",
+                "details": true,
+                "instance_names": "",
+                "data_type": "",
+                "payload_start_value": "",
+                "payload_offset_value": "",
+                "payload_num_entries": "",
+                "index": 0
+            },
+            "uafType": "SERIES"
+        }
+    ],
+    "output_tables": [
+        {
+            "Type": "ART",
+            "PrimaryLayer": true,
+            "LayerName": "ARTPRIMARY",
+            "ResultTableColumnTypes": [
+                "<varies>",
+                "big_integer",
+                "big_integer"
+            ],
+            "LangName": "data or object or newdata or ... --> Langauges team can work with UAF team to come up with this field",
+            "isOutputTable": true,
+            "omitPossible": true,
+            "partitionByOne": false,
+            "alternateNames": [],
+            "isRequired": false,
+            "description": "The primary layer payload contains the computed seasonal normalized values.The primary result set can be accessed either via a subsequent SELECT * FROM <art table> statement or by issuing a TD_EXTRACT_RESULTS(\u2026,LAYER(ARTPRIMARY),\u2026) .",
+            "rDescription": "The primary layer payload contains the computed seasonal normalized values.The primary result set can be accessed either via a subsequent SELECT * FROM <art table> statement or by issuing a TD_EXTRACT_RESULTS(\u2026,LAYER(ARTPRIMARY),\u2026) .",
+            "datatype": "TABLE_NAME",
+            "allowsLists": false,
+            "name": "OutputTable1",
+            "rName": "OutputTable1",
+            "useInR": true,
+            "rOrderNum": 2
+        },
+        {
+            "Type": "ART",
+            "PrimaryLayer": false,
+            "LayerName": "ARTFITMETADATA",
+            "ResultTableColumnTypes": [
+                "<varies>",
+                "float",
+                "float"
+            ],
+            "LangName": "data or object or newdata or ... --> Langauges team can work with UAF team to come up with this field",
+            "isOutputTable": true,
+            "omitPossible": true,
+            "partitionByOne": false,
+            "alternateNames": [],
+            "isRequired": false,
+            "description": "A second layer ARTMETADATA payload contains the <mean, standardDeviation> for each payload column in the primary layer for a season.  The prefix for the payload column is MEAN_ and SD_.The secondary result set can be accessed by issuing a TD_EXTRACT_RESULTS(\u2026,LAYER(ARTFITMETADATA),\u2026)",
+            "rDescription": "A second layer ARTMETADATA payload contains the <mean, standardDeviation> for each payload column in the primary layer for a season.  The prefix for the payload column is MEAN_ and SD_.The secondary result set can be accessed by issuing a TD_EXTRACT_RESULTS(\u2026,LAYER(ARTFITMETADATA),\u2026)",
+            "datatype": "TABLE_NAME",
+            "allowsLists": false,
+            "name": "OutputTable2",
+            "rName": "OutputTable2",
+            "useInR": true,
+            "rOrderNum": 3
+        }
+    ],
+    "argument_clauses": [
+        {
+            "name": "OutputFormat",
+            "defaultValue": "INDEX_STYLE(NUMERICAL_SEQUENCE)",
+            "permittedValues": [
+                "INDEX_STYLE(NUMERICAL_SEQUENCE)",
+                "INDEX_STYLE(FLOW_THROUGH)"
+            ],
+            "allowsLists": false,
+            "Type": "string",
+            "datatype": "STRING",
+            "description": "Output format",
+            "isRequired": false,
+            "rOrderNum": 4
+        },
+        {
+            "name": "SEASON_CYCLE",
+            "allowsLists": false,
+            "Type": "GROUPSTART",
+            "datatype": "GROUPSTART",
+            "description": "Multiple plots can be specified.  It contains an array of plot entries, separated by comma.",
+            "isRequired": true,
+            "rOrderNum": 5
+        },
+        {
+            "name": "SEASON_CYCLE.CYCLES",
+            "permittedValues": [
+                "CAL_YEARS",
+                "CAL_MONTHS",
+                "CAL_DAYS",
+                "WEEKS",
+                "DAYS",
+                "HOURS",
+                "MINUTES",
+                "SECONDS",
+                "MILLISECONDS",
+                "MICROSECONDS"
+            ],
+            "allowsLists": false,
+            "Type": "enumeration<time-unit>",
+            "datatype": "STRING",
+            "description": "The CYCLE is a logical time-unit with one of the enum values: TS_CAL_YEARS, TS_CAL_MONTHS, TS_CAL_DAYS, TS_WEEKS, TS_DAYS,  TS_HOURS, TS_MINUTES, TS_SECONDS,  TS_MILLISECONDS, TS_MICROSECONDS.",
+            "isRequired": true,
+            "rOrderNum": 6
+        },
+        {
+            "name": "SEASON_CYCLE.DURATION",
+            "lowerBound": 1,
+            "lowerBoundType": "INCLUSIVE",
+            "allowNaN": false,
+            "allowsLists": false,
+            "Type": "integer",
+            "datatype": "INTEGER",
+            "description": "duration - positive INTEGERThe duration is the number of the time-units as the duration of each seasonal cycle.",
+            "isRequired": true,
+            "rOrderNum": 7
+        },
+        {
+            "name": "SEASON_CYCLE_GROUPEND",
+            "allowsLists": false,
+            "Type": "GROUPEND",
+            "datatype": "GROUPEND",
+            "description": "Multiple plots can be specified.  It contains an array of plot entries, separated by comma.",
+            "isRequired": true,
+            "rOrderNum": 8
+        },
+        {
+            "name": "SEASON_INFO",
+            "permittedValues": [
+                0,
+                1,
+                2,
+                3
+            ],
+            "allowsLists": false,
+            "Type": "integer",
+            "datatype": "INTEGER",
+            "description": "This flag is used to generate additional columns CYCLE_NO and SEASON_NO.SEASON_NO is the season for the data.  The value starts from 1.CYCLE_NO is the n-th cycle of the season.  The value starts from 1.The flag value is between 0 and 3.0 - indicates no extra columns being generated.1 - indicates SEASON_NO column being generated.2 - indicates CYCLE_NO column being generated.3 - indicates both SEASON_NO and CYCLE_NO columns being generated.",
+            "isRequired": true,
+            "rOrderNum": 9
+        }
+    ]
+}

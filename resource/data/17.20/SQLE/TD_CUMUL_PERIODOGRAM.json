@@ -1,0 +1,140 @@
+{
+    "JSONVersion": "1",
+    "FuncRName": "...",
+    "MaxInputFiles": 1,
+    "IsPlottable": true,
+    "InputFmt": false,
+    "OutputFmt": false,
+    "function_type": "uaf",
+    "json_schema_major_version": "1",
+    "json_schema_minor_version": "2",
+    "json_content_version": "1",
+    "function_name": "TD_CUMUL_PERIODOGRAM",
+    "function_r_name": "aa.td_cumul_periodogram",
+    "ref_function_r_name": "aa.td_cumul_periodogram",
+    "function_version": "...",
+    "short_description": "Help selecting the model which best describes the data modeled",
+    "long_description": "The Cumulative Periodogram statistical test, also known as the Bartlett\u2019s test, is aimed at assisting the data scientist in selecting the model candidate which is the best choice for the data they are modeling.  The test which works off the residuals generated during the model validation / model selection processing phase.  As mentioned previously, typically the data scientists divide their series sample set into two portions: the first portion to be used for the 'model fitting' exercise; and, the second portion to be used for the 'model validation' exercise.  The TD_CUMUL_PERIODOGRAM function is usually executed against the residuals produced during the second 'model validation' exercise, meaning against the 'in-sample' forecasted data points.",
+    "input_tables": [
+        {
+            "LangName": "data or object or newdata or ... --> Langauges team can work with UAF team to come up with this field",
+            "requiredInputKind": [
+                "PartitionByNone"
+            ],
+            "isOrdered": false,
+            "partitionByOne": false,
+            "alternateNames": [],
+            "isRequired": true,
+            "description": "This section outlines the syntax associated with invoking the TD_CUMUL_PERIODOGRAM function.   This function can accept either a single univariate series (containing the in-sample generated residuals) as an input, or alternatively can accept an ART table containing the residual results from a previously run validation (example: TD_ARIMAVALIDATE) operation. For the case in which the input is a univariate series, the payload should contain a reference to a single field containing the residuals: the single field references the calculated residual: original_value minus calculated_valueFor the scenario in which the residuals reside within the tertiary result set associated with an ART table, then the caller merely needs to pass in the TABLE_NAME identify the ART containing the residuals - the DBS software will perform the extraction of the original series, calculated series, and residuals as part of the execution of this function.The TD_CUMUL_PERIODOGRAM function will create a two layered art table.   ",
+            "rDescription": "This section outlines the syntax associated with invoking the TD_CUMUL_PERIODOGRAM function.   This function can accept either a single univariate series (containing the in-sample generated residuals) as an input, or alternatively can accept an ART table containing the residual results from a previously run validation (example: TD_ARIMAVALIDATE) operation. For the case in which the input is a univariate series, the payload should contain a reference to a single field containing the residuals: the single field references the calculated residual: original_value minus calculated_valueFor the scenario in which the residuals reside within the tertiary result set associated with an ART table, then the caller merely needs to pass in the TABLE_NAME identify the ART containing the residuals - the DBS software will perform the extraction of the original series, calculated series, and residuals as part of the execution of this function.The TD_CUMUL_PERIODOGRAM function will create a two layered art table.   ",
+            "datatype": "TABLE_ALIAS",
+            "allowsLists": false,
+            "name": "Input",
+            "rName": "Input",
+            "useInR": true,
+            "rOrderNum": 1,
+            "uaf": {
+                "requiredUafKind": [
+                    "SERIES",
+                    "ART"
+                ],
+                "is_row_sequence": "SEQUENCE",
+                "is_col_sequence": "SEQUENCE",
+                "row_axis_name": "",
+                "column_axis_name": "",
+                "id_name": "",
+                "id_sequence": "",
+                "payload_fields": "",
+                "payload_content": "",
+                "layer": "",
+                "where": "",
+                "time_duration": "",
+                "time_zero": "",
+                "time_type": "",
+                "seq_zero": "",
+                "interval": "Off",
+                "details": true,
+                "instance_names": "",
+                "data_type": "",
+                "payload_start_value": "",
+                "payload_offset_value": "",
+                "payload_num_entries": "",
+                "index": 0
+            },
+            "uafType": ""
+        }
+    ],
+    "output_tables": [
+        {
+            "Type": "ART",
+            "PrimaryLayer": true,
+            "LayerName": "ARTPRIMARY",
+            "ResultTableColumnTypes": [
+                "float",
+                "float",
+                "varchar(40)"
+            ],
+            "LangName": "data or object or newdata or ... --> Langauges team can work with UAF team to come up with this field",
+            "isOutputTable": true,
+            "omitPossible": true,
+            "partitionByOne": false,
+            "alternateNames": [],
+            "isRequired": false,
+            "description": "This primary layer will contain the Bartlett test statistics and p-value, significant level and test results.The primary result set can be retrieved by issuing a SELECT against the analytical result table (ART) containing the results whereas the secondary results set can be accessed via the TD_EXTRACT_RESULTS utility function. For the case in which the input is a univariate series, the payload should contain a reference to a single field containing the residuals: the single field references the calculated residual: original_value minus calculated_valuethere is one result row per series for each series acted upon.",
+            "rDescription": "This primary layer will contain the Bartlett test statistics and p-value, significant level and test results.The primary result set can be retrieved by issuing a SELECT against the analytical result table (ART) containing the results whereas the secondary results set can be accessed via the TD_EXTRACT_RESULTS utility function. For the case in which the input is a univariate series, the payload should contain a reference to a single field containing the residuals: the single field references the calculated residual: original_value minus calculated_valuethere is one result row per series for each series acted upon.",
+            "datatype": "TABLE_NAME",
+            "allowsLists": false,
+            "name": "OutputTable1",
+            "rName": "OutputTable1",
+            "useInR": true,
+            "rOrderNum": 2
+        },
+        {
+            "Type": "ART",
+            "PrimaryLayer": false,
+            "LayerName": "ARTCPDATA",
+            "ResultTableColumnTypes": [
+                "integer",
+                "integer",
+                "float",
+                "float",
+                "float",
+                "float",
+                "float",
+                "float",
+                "float",
+                "float"
+            ],
+            "LangName": "data or object or newdata or ... --> Langauges team can work with UAF team to come up with this field",
+            "isOutputTable": true,
+            "omitPossible": true,
+            "partitionByOne": false,
+            "alternateNames": [],
+            "isRequired": false,
+            "description": "The secondary layer ARTCPDATA will contain the cumulative periodogram at each periodicity, related intermediate calculation result and confidence band result at each periodicity in order to be used to plot the cumulative periodograms.there will be one result row per unique periodicity returned for each series acted upon.",
+            "rDescription": "The secondary layer ARTCPDATA will contain the cumulative periodogram at each periodicity, related intermediate calculation result and confidence band result at each periodicity in order to be used to plot the cumulative periodograms.there will be one result row per unique periodicity returned for each series acted upon.",
+            "datatype": "TABLE_NAME",
+            "allowsLists": false,
+            "name": "OutputTable2",
+            "rName": "OutputTable2",
+            "useInR": true,
+            "rOrderNum": 3
+        }
+    ],
+    "argument_clauses": [
+        {
+            "name": "SIGNIFICANCE_LEVEL",
+            "permittedValues": [
+                0.05,
+                0.01
+            ],
+            "allowNaN": false,
+            "allowsLists": false,
+            "Type": "double",
+            "datatype": "DOUBLE",
+            "description": "The significance level to be associated with the Cumulative Periodogram test.  Choices are limited to 0.05 (95%) or 0.01 (99%) .",
+            "isRequired": true,
+            "rOrderNum": 4
+        }
+    ]
+}

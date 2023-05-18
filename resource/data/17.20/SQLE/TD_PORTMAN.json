@@ -1,0 +1,168 @@
+{
+    "JSONVersion": "1",
+    "FuncRName": "...",
+    "MaxInputFiles": 1,
+    "IsPlottable": true,
+    "InputFmt": false,
+    "OutputFmt": false,
+    "function_type": "uaf",
+    "json_schema_major_version": "1",
+    "json_schema_minor_version": "2",
+    "json_content_version": "1",
+    "function_name": "TD_PORTMAN",
+    "function_r_name": "aa.td_portman",
+    "ref_function_r_name": "aa.td_portman",
+    "function_version": "...",
+    "short_description": "The Portmanteau statistical tests are a series of tests ",
+    "long_description": "They are executed against the residuals left over after a modeling fit operation and are aimed at determining whether the residuals can be classified as being \u201cwhite noise\u201d \u2013 meaning: zero mean, no evidence of serial correlation amongst the residual/error terms, and the residuals exhibit homoscedastic variance.. All these portmanteau tests treat the residuals as an input series and then use that series as an input to calculate the auto-correlation coefficients or partial auto-correlation coefficients associated with that series.  Finally, these coefficients are then used in a subsequent formula to calculate the test statistic value.. The Null Hypothesis associated with all these tests is that the ARIMA model is adequate and that there is no evidence of serial correlation amongst the residuals.",
+    "input_tables": [
+        {
+            "LangName": "data or object or newdata or ... --> Langauges team can work with UAF team to come up with this field",
+            "requiredInputKind": [
+                "PartitionByNone"
+            ],
+            "isOrdered": false,
+            "partitionByOne": false,
+            "alternateNames": [],
+            "isRequired": true,
+            "description": "This function requires that a series of residuals -  left over after running the original regression \u2013 be passed into the function.  These residuals may either reside within an independent table, or may exist in the form of tertiary results resident within an analytical result table (ART).   If the residual series exists as a tertiary result set within an analytical result table, then the caller merely needs to pass in the TABLE_NAME to identify the ART containing the residuals - the DBS software will perform the extraction of the residuals as part of the execution of this function.",
+            "rDescription": "This function requires that a series of residuals -  left over after running the original regression \u2013 be passed into the function.  These residuals may either reside within an independent table, or may exist in the form of tertiary results resident within an analytical result table (ART).   If the residual series exists as a tertiary result set within an analytical result table, then the caller merely needs to pass in the TABLE_NAME to identify the ART containing the residuals - the DBS software will perform the extraction of the residuals as part of the execution of this function.",
+            "datatype": "TABLE_ALIAS",
+            "allowsLists": false,
+            "name": "Input",
+            "rName": "Input",
+            "useInR": true,
+            "rOrderNum": 1,
+            "uaf": {
+                "requiredUafKind": [
+                    "SERIES",
+                    "ART"
+                ],
+                "is_row_sequence": "SEQUENCE",
+                "is_col_sequence": "SEQUENCE",
+                "row_axis_name": "",
+                "column_axis_name": "",
+                "id_name": "",
+                "id_sequence": "",
+                "payload_fields": "",
+                "payload_content": "",
+                "layer": "",
+                "where": "",
+                "time_duration": "",
+                "time_zero": "",
+                "time_type": "",
+                "seq_zero": "",
+                "interval": "Off",
+                "details": true,
+                "instance_names": "",
+                "data_type": "",
+                "payload_start_value": "",
+                "payload_offset_value": "",
+                "payload_num_entries": "",
+                "index": 0
+            },
+            "uafType": ""
+        }
+    ],
+    "output_tables": [
+        {
+            "Type": "ART",
+            "PrimaryLayer": true,
+            "LayerName": "ARTPRIMARY",
+            "ResultTableColumnTypes": [
+                "integer",
+                "integer",
+                "float",
+                "float",
+                "float",
+                "float",
+                "float",
+                "varchar(16)"
+            ],
+            "LangName": "data or object or newdata or ... --> Langauges team can work with UAF team to come up with this field",
+            "isOutputTable": true,
+            "omitPossible": true,
+            "partitionByOne": false,
+            "alternateNames": [],
+            "isRequired": false,
+            "description": "The TD_PORTMAN  function returns only a primary result set consisting of one row per series acted upon.   There are no secondary or tertiary result sets produced by this function.  The primary result set can be retrieved by issuing a SELECT against the analytical table containing the results. ",
+            "rDescription": "The TD_PORTMAN  function returns only a primary result set consisting of one row per series acted upon.   There are no secondary or tertiary result sets produced by this function.  The primary result set can be retrieved by issuing a SELECT against the analytical table containing the results. ",
+            "datatype": "TABLE_NAME",
+            "allowsLists": false,
+            "name": "OutputTable1",
+            "rName": "OutputTable1",
+            "useInR": true,
+            "rOrderNum": 2
+        }
+    ],
+    "argument_clauses": [
+        {
+            "name": "MAXLAG",
+            "lowerBound": 0,
+            "lowerBoundType": "INCLUSIVE",
+            "allowNaN": false,
+            "allowsLists": false,
+            "Type": "integer",
+            "datatype": "INTEGER",
+            "description": "An integer indicating how many explanatory variables (N) are referenced within the PAYLOAD() declaration embedded within the original series specification.  These N explanatory variable are the variables that are to be fed into the auxiliary regression.",
+            "isRequired": true,
+            "rOrderNum": 3
+        },
+        {
+            "name": "TEST",
+            "permittedValues": [
+                "BP",
+                "LB",
+                "LM",
+                "MQ",
+                "ML"
+            ],
+            "allowsLists": false,
+            "Type": "enumeration",
+            "datatype": "STRING",
+            "description": "Chooses the desired Portmanteau diagnostic; BP : Box-Pierce Q test; LB : Ljung-Box Q test; LM : Li-McLeod Q test; MQ : Monti\u2019s Q test; ML : McLeod-Li Q test",
+            "isRequired": true,
+            "rOrderNum": 4
+        },
+        {
+            "name": "DEGREES_FREEDOM",
+            "lowerBound": 0,
+            "lowerBoundType": "INCLUSIVE",
+            "allowNaN": false,
+            "allowsLists": false,
+            "Type": "integer",
+            "datatype": "INTEGER",
+            "description": "Degrees of freedom (aka, p+q) to be subtracted from chosen MAXLAG: meaning: DFTEST = MAXLAG \u2013 DEGREES_FREEDOM ",
+            "isRequired": true,
+            "rOrderNum": 5
+        },
+        {
+            "name": "PACF_METHOD",
+            "permittedValues": [
+                "YULE_WALKER",
+                "LEVINSON_DURBIN",
+                "OLS"
+            ],
+            "allowsLists": false,
+            "Type": "enumeration",
+            "datatype": "STRING",
+            "description": "Only valid when the TEST(MQ), Monti\u2019s Q test, is chosen.Chooses underlying algorithm that will be employed to calculate the partial auto-correlation coefficients.LEVINSON_DURBIN - Uses the set of recursive formulas devised by Levinson-Durbin to solve for PACF coefficientsOLS - Solves incremental series of regression equations to determine the PACF coefficients",
+            "isRequired": false,
+            "rOrderNum": 6
+        },
+        {
+            "name": "SIGNIFICANCE_LEVEL",
+            "lowerBound": 0,
+            "upperBound": 1,
+            "lowerBoundType": "EXCLUSIVE",
+            "upperBoundType": "EXCLUSIVE",
+            "allowNaN": false,
+            "allowsLists": false,
+            "Type": "double",
+            "datatype": "DOUBLE",
+            "description": "The desired significance level for the test.",
+            "isRequired": true,
+            "rOrderNum": 7
+        }
+    ]
+}

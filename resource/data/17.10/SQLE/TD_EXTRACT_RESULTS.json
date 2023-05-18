@@ -1,0 +1,89 @@
+{
+    "JSONVersion": "1",
+    "FuncRName": "...",
+    "MaxInputFiles": 1,
+    "IsPlottable": true,
+    "InputFmt": false,
+    "OutputFmt": false,
+    "function_type": "uaf",
+    "json_schema_major_version": "1",
+    "json_schema_minor_version": "2",
+    "json_content_version": "1",
+    "function_name": "TD_EXTRACT_RESULTS",
+    "function_r_name": "aa.td_extract_results",
+    "ref_function_r_name": "aa.td_extract_results",
+    "function_version": "...",
+    "short_description": "Retrieve additional result sets within the ART table.",
+    "long_description": "The TD_EXTRACT_RESULTS utility function is used to retrieve auxiliary result sets stored within the ART table. ",
+    "input_tables": [
+        {
+            "LangName": "data or object or newdata or ... --> Langauges team can work with UAF team to come up with this field",
+            "requiredInputKind": [
+                "PartitionByNone"
+            ],
+            "isOrdered": false,
+            "partitionByOne": false,
+            "alternateNames": [],
+            "isRequired": true,
+            "description": "This AF function is passed an ART table specification, ART_SPEC. Within the ART_SPEC, the only thing that has to be passed in is the TABLE_NAME and LAYER. The PAYLOAD option can be omitted since all available payload columns need to be passed in to this function.",
+            "rDescription": "This AF function is passed an ART table specification, ART_SPEC. Within the ART_SPEC, the only thing that has to be passed in is the TABLE_NAME and LAYER. The PAYLOAD option can be omitted since all available payload columns need to be passed in to this function.",
+            "datatype": "TABLE_ALIAS",
+            "allowsLists": false,
+            "name": "Input",
+            "rName": "Input",
+            "useInR": true,
+            "rOrderNum": 1,
+            "uaf": {
+                "requiredUafKind": [
+                    "ART"
+                ],
+                "is_row_sequence": "SEQUENCE",
+                "is_col_sequence": "SEQUENCE",
+                "row_axis_name": "",
+                "column_axis_name": "",
+                "id_name": "",
+                "id_sequence": "",
+                "payload_fields": "",
+                "payload_content": "",
+                "layer": "",
+                "where": "",
+                "time_duration": "",
+                "time_zero": "",
+                "time_type": "",
+                "seq_zero": "",
+                "interval": "Off",
+                "details": true,
+                "instance_names": "",
+                "data_type": "",
+                "payload_start_value": "",
+                "payload_offset_value": "",
+                "payload_num_entries": "",
+                "index": 0
+            },
+            "uafType": "ART"
+        }
+    ],
+    "output_tables": [
+        {
+            "Type": "ART",
+            "PrimaryLayer": true,
+            "LayerName": "ARTPRIMARY",
+            "ResultTableColumnTypes": "varies",
+            "LangName": "data or object or newdata or ... --> Langauges team can work with UAF team to come up with this field",
+            "isOutputTable": true,
+            "omitPossible": true,
+            "partitionByOne": false,
+            "alternateNames": [],
+            "isRequired": false,
+            "description": "The output of this function are wavelets from the specified LAYER of the ART table.Invoking this AF utility function retrieves all wavelets from one specified layer in the ART table. Please see the specific function\u2019s RETURNS TABLE specification section to determine the output column descriptions for well-known layers.",
+            "rDescription": "The output of this function are wavelets from the specified LAYER of the ART table.Invoking this AF utility function retrieves all wavelets from one specified layer in the ART table. Please see the specific function\u2019s RETURNS TABLE specification section to determine the output column descriptions for well-known layers.",
+            "datatype": "TABLE_NAME",
+            "allowsLists": false,
+            "name": "OutputTable1",
+            "rName": "OutputTable1",
+            "useInR": true,
+            "rOrderNum": 2
+        }
+    ],
+    "argument_clauses": []
+}
