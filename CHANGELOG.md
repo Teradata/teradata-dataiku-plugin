@@ -1,8 +1,10 @@
 # Teradata Plugin Changelog
 
-## Version 2.3.0 (May 2023)
+## Versions 2.3.11, 2.3.12 (July 2023)
 
-Current version
+* Dataiku 12 is incompatible with preceding Dataiku releases. This plugin release begins support for both Dataiku 11 (or older) and 12 (and newer) releases. For as long as the plugin supports concurrently these 2 different Dataiku release families, the plugin will be using the efix version number to designate compatibility with the corresponding Dataiku release family. To this end: Releasing distinct versions for Dataiku 11 or older (v.2.3.11) and Dataiku 12 (v.2.3.12) platforms. Version 2.3.0 is otherwise identical to 2.3.11.
+
+## Version 2.3.0 (May 2023)
 
 * Support for the Unbounded Array Framework (UAF) time series functions.
 * Bug fix: BYOM recipes did not by default run queries in TERA mode.
