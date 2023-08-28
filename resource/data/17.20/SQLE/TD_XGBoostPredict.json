@@ -1,0 +1,182 @@
+{
+  "json_schema_major_version": "1",
+  "json_schema_minor_version": "1",
+  "json_content_version": "1",
+  "function_name": "TD_XGBoostPredict",
+  "function_version": "1.0",
+  "function_alias_name": "TD_XGBoostPredict",
+  "function_type": "fastpath",
+  "function_category": "Model Scoring",
+  "function_r_name": "aa.td_xgboost.predict",
+  "ref_function_r_name": "aa.td_xgboost",
+  "short_description": "This function generates predictions on a response variable for a data set",
+  "long_description": "This function uses a xgboost model from the td_xgboost function to create predictions on a response variable for a test set",
+  "input_tables": [
+    {
+      "requiredInputKind": [
+        "PartitionByAny"
+      ],
+      "isOrdered": false,
+      "partitionByOne": false,
+      "name": "inputtable",
+      "alternateNames": [],
+      "isRequired": true,
+      "rDescription": "Specifies the table containing the input test data.",
+      "description": "Specifies the table containing the input test data.",
+      "datatype": "TABLE_ALIAS",
+      "allowsLists": false,
+      "rName": "newdata",
+      "useInR": true,
+      "rFormulaUsage": false,
+      "rOrderNum": 2
+    },
+    {
+      "requiredInputKind": [
+        "Dimension"
+      ],
+      "isOrdered": true,
+      "partitionByOne": false,
+      "name": "ModelTable",
+      "alternateNames": ["Model"],
+      "isRequired": true,
+      "rDescription": "Specifies the table containing the model data.",
+      "description": "Specifies the table containing the model data.",
+      "datatype": "TABLE_ALIAS",
+      "allowsLists": false,
+      "rName": "object",
+      "useInR": true,
+      "rFormulaUsage": false,
+      "rOrderNum": 1
+    }
+  ],
+  "argument_clauses": [
+    {
+      "targetTable": [
+        "inputtable"
+      ],
+      "checkDuplicate": true,
+      "allowedTypes": [],
+      "allowedTypeGroups": [
+        "ALL"
+      ],
+      "requiredLength": 1,
+      "matchLengthOfArgument": "",
+      "allowPadding": false,
+      "name": "IdColumn",
+      "alternateNames": [],
+      "isRequired": true,
+      "rDescription": "Specifies a column containing a unique identifier for each test point in the test set",
+      "description": "Specifies a column containing a unique identifier for each test point in the test set",
+      "datatype": "COLUMNS",
+      "allowsLists": false,
+      "rName": "id.column",
+      "useInR": true,
+      "rOrderNum": 3
+    },
+    {   
+      "lowerBound": 0,
+      "upperBound": 65536,
+      "lowerBoundType": "EXCLUSIVE",
+      "upperBoundType": "INCLUSIVE",
+      "allowNaN": false,
+      "name": "NumBoostedTrees",
+      "alternateNames": [], 
+      "isRequired": false,
+      "defaultValue": 1000,
+      "rDescription": "Specify number of boosted trees to be loaded from model table", 
+      "description": "Specify number of boosted trees to be loaded from model table",
+      "datatype": "NUMERIC",
+      "allowsLists": false,
+      "rName": "num.boosted.tree",
+      "useInR": true,
+      "rOrderNum": 4
+    },  
+    {   
+      "lowerBound": 0,
+      "upperBound": 65536,
+      "lowerBoundType": "EXCLUSIVE",
+      "upperBoundType": "INCLUSIVE",
+      "allowNaN": false,
+      "name": "IterNum",
+      "alternateNames": [], 
+      "isRequired": false,
+      "defaultValue": 3,
+      "rDescription": "Specify number of iterations within a boosted trees to be loaded from model table", 
+      "description": "Specify number of iterations within a boosted trees to be loaded from model table",
+      "datatype": "NUMERIC",
+      "allowsLists": false,
+      "rName": "iter.num",
+      "useInR": true,
+      "rOrderNum": 5
+    }, 
+    {
+      "targetTable": [
+        "inputtable"
+      ],
+      "checkDuplicate": true,
+      "allowedTypes": [],
+      "allowedTypeGroups": [
+        "ALL"
+      ],
+      "matchLengthOfArgument": "",
+      "allowPadding": false,
+      "name": "Accumulate",
+      "alternateNames": [],
+      "isRequired": false,
+      "rDescription": "Specifies the names of the input columns to copy to the output table.",
+      "description": "Specifies the names of the input columns to copy to the output table.",
+      "datatype": "COLUMNS",
+      "allowsLists": true,
+      "rName": "accumulate",
+      "useInR": true,
+      "rOrderNum": 6
+    },
+    {
+      "defaultValue": false,
+      "name": "OutputProb",
+      "alternateNames": [],
+      "isRequired": false,
+      "rDescription": "Specifies whether to output probabilities.",
+      "description": "Specifies whether to output probabilities.",
+      "datatype": "BOOLEAN",
+      "allowsLists": false,
+      "rName": "output.prob",
+      "useInR": true,
+      "rOrderNum": 7
+    },
+    {   
+      "permittedValues": ["REGRESSION","CLASSIFICATION"],
+      "isOutputColumn": false,
+      "matchLengthOfArgument": "", 
+      "allowPadding": true,
+      "name": "ModelType",
+      "alternateNames": [
+      ],  
+      "isRequired": false,
+      "defaultValue": "REGRESSION",
+      "rDescription": "Specify one of the following methods, precisely to change the output shcema of predictions for classification",
+      "description": "Specify one of the following methods, precisely to change the output shcema of predictions for classification",
+      "datatype": "STRING",
+      "allowsLists": false,
+      "rName": "model.type",
+      "useInR": true,
+      "rOrderNum": 8
+    },  
+    {
+      "permittedValues": [],
+      "isOutputColumn": false,
+      "matchLengthOfArgument": "",
+      "allowPadding": false,
+      "name": "Responses",
+      "alternateNames": [],
+      "isRequired": false,
+      "rDescription": "Specifies responses for which to output probabilitites.",
+      "description": "Specifies responses for which to output probabilitites.",
+      "datatype": "STRING",
+      "allowsLists": true,
+      "rName": "output.responses",
+      "useInR": true,
+      "rOrderNum": 9
+    }
+  ]
+}

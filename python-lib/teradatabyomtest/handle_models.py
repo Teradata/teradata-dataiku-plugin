@@ -3,20 +3,35 @@ import os
 import sys
 import json
 import dataiku
+import logging
 from dataiku.customrecipe import get_input_names_for_role, get_output_names_for_role, get_recipe_config
 
-def get_input_output(has_model_as_second_input=False):
+def get_input_object(input_id,project_name):
+    # Purpose of the function is to return the object type of a given input in a project.
+    # param 1 :string: input id or name 
+    # param 2 :string: project name in which input is present.
+    # returns the type of input such as a dataiku.Folder or dataiku.Model or dataiku.Dataset
 
-    if has_model_as_second_input:
-        if len(get_input_names_for_role('model')) == 0:
-            raise ValueError('No input model.')
-        model_name = get_input_names_for_role('model')[0]
-        model = dataiku.Model(model_name)
-        return (model)
+    # Obtaining project reference. 
+    client = dataiku.api_client()
+    project = client.get_project(project_name)
+    # obtain list of existing objects and compare.
+    models = project.list_saved_models()
+    model_list = []
+    for m in models:
+        name = m['id']
+        model_list.append(name)
+
+    folders = project.list_managed_folders()
+    folder_list = []
+    for f in folders:
+        name = f['id']
+        folder_list.append(name)
+ 
+    # return if found in one of the list
+    if input_id in model_list:
+        return 'model'
+    elif input_id in folder_list:
+        return 'folder'
     else:
-        if len(get_input_names_for_role('original')) == 0:
-            raise ValueError('No original dataset.')
-
-        original_dataset_name = get_input_names_for_role('original')[0]
-        original_dataset = dataiku.Dataset(original_dataset_name)
-        return (original_dataset)
+        raise ValueError('Unacceptable data object type.')

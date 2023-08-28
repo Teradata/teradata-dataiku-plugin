@@ -1,0 +1,142 @@
+{
+  "json_schema_major_version": "1",
+  "json_schema_minor_version": "1",
+  "json_content_version": "1",
+  "function_name": "TD_TrainTestSplit",
+  "function_version": "1.0",
+  "function_type": "fastpath",
+  "function_category": "Model Evaluation",
+  "function_alias_name": "TD_TrainTestSplit",
+  "function_r_name": "aa.TD_TrainTestSplit",
+  "short_description": "Fast path function to split input table into train and test datasets",
+  "long_description": "Fast path function to split input dataset into train dataset and test dataset as per mentioned trainSize and testSize as arguments",
+  "input_tables": [
+    {
+      "isOrdered": false,
+      "partitionByOne": false,
+      "omitPossible": false,
+      "name": "InputTable",
+      "alternateNames": [],
+      "isRequired": true,
+      "rDescription": "Specifies the name of the table that contains input dataset on which split to be performed.",
+      "description": "Specifies the name of the table that contains input dataset on which split to be performed.",
+      "datatype": "TABLE_ALIAS",
+      "allowsLists": false,
+      "rName": "data",
+      "useInR": true,
+      "rOrderNum": 1
+    }
+  ],
+  "argument_clauses": [
+    {
+      "targetTable": [
+        "InputTable"
+      ],
+      "checkDuplicate": true,
+      "allowedTypes": [],
+      "allowedTypeGroups": [
+        "NUMERIC",
+        "STRING"
+      ],
+      "requiredLength": 1,
+      "matchLengthOfArgument": "",
+      "allowPadding": false,
+      "name": "IDColumn",
+      "alternateNames": [],
+      "isRequired": false,
+      "rDescription": "Specifies the name of the input table column that contains the IDColumn.",
+      "description": "Specify the name of the InputTable column that contains the unique value for to get the deterministic row in each function call.",
+      "datatype": "COLUMNS",
+      "allowsLists": false,
+      "rName": "id.column",
+      "useInR": true,
+      "rOrderNum": 4
+    },
+    {
+      "targetTable": [
+        "InputTable"
+      ],
+      "checkDuplicate": true,
+      "allowedTypes": [],
+      "allowedTypeGroups": [
+        "NUMERIC",
+        "STRING"
+      ],
+      "requiredLength": 1,
+      "matchLengthOfArgument": "",
+      "allowPadding": false,
+      "name": "StratifyColumn",
+      "alternateNames": [],
+      "isRequired": false,
+      "rDescription": "Specifies the name of the input table column that contains the stratify classes. ",
+      "description": "Specify the name of the InputTable column that contains the stratify classes of the TD_TrainTestSplit.",
+      "datatype": "COLUMNS",
+      "allowsLists": false,
+      "rName": "stratify.column",
+      "useInR": true,
+      "rOrderNum": 5
+    },
+    {
+      "lowerBound": 0,
+      "upperBound": 2147483647,
+      "lowerBoundType": "INCLUSIVE",
+      "upperBoundType": "INCLUSIVE",
+      "allowNaN": false,
+      "isOutputColumn": false,
+      "matchLengthOfArgument": "",
+      "allowPadding": false,
+      "name": "seed",
+      "alternateNames": [],
+      "isRequired": false,
+      "rDescription": "Specifies the seed value for the function to select the rows for train and test randomly . The seed must be a NUMERIC value in the range [1, 2147483647]. The seed is used in function for uniform real distribution to randomly select the rows for train and test dataset.",
+      "description": "Specifies the seed value for the function to select the rows for train and test randomly . The seed must be a NUMERIC value in the range [1, 2147483647]. The seed is used in function for uniform real distribution to randomly select the rows for train and test dataset.",
+      "datatype": "INTEGER",
+      "allowsLists": false,
+      "rName": "seed",
+      "useInR": true,
+      "rOrderNum": 6
+    },
+    {
+      "defaultValue": 0.75,
+      "lowerBound": 0.0,
+      "upperBound": 1.0,
+      "lowerBoundType": "EXCLUSIVE",
+      "upperBoundType": "EXCLUSIVE",
+      "allowNaN": false,
+      "isOutputColumn": false,
+      "matchLengthOfArgument": "",
+      "allowPadding": false,
+      "name": "trainSize",
+      "alternateNames": [],
+      "isRequired": false,
+      "rDescription": "Specifies the trainSize value for the function to select the number of rows for train table . The trainSize must be a FLOAT value in the range (0.0, 1.0). The default value for the trainSize is 0.75 .",
+      "description": "Specifies the trainSize value for the function to select the number of rows for train table . The trainSize must be a FLOAT value in the range (0.0, 1.0). The default value for the trainSize is 0.75 .",
+      "datatype": "FLOAT",
+      "allowsLists": false,
+      "rName": "train.size",
+      "useInR": true,
+      "rOrderNum": 7
+    },
+    {
+      "defaultValue": 0.25,
+      "lowerBound": 0.0,
+      "upperBound": 1.0,
+      "lowerBoundType": "EXCLUSIVE",
+      "upperBoundType": "EXCLUSIVE",
+      "allowNaN": false,
+      "isOutputColumn": false,
+      "matchLengthOfArgument": "",
+      "allowPadding": false,
+      "name": "testSize",
+      "alternateNames": [],
+      "isRequired": false,
+      "rDescription": "Specifies the testSize value for the function to select the number of rows for test table . The testSize must be a FLOAT value in the range (0.0, 1.0). The default value for the testSize is 0.25 .",
+      "description": "Specifies the testSize value for the function to select the number of rows for test table . The testSize must be a FLOAT value in the range (0.0, 1.0). The default value for the testSize is 0.25 .",
+      "datatype": "FLOAT",
+      "allowsLists": false,
+      "rName": "test.size",
+      "useInR": true,
+      "rOrderNum": 8
+    }
+  ]
+}

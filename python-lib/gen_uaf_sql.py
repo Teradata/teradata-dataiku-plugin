@@ -398,6 +398,8 @@ def add_plot(function_arguments):
                 continue
             if type(series_param['value']) == str:
                 value_list = series_param['value'].split('\x00')
+            else:
+                value_list = series_param['value']
             if len(value_list) == 0:
                  series_param['value'] = series_param['defaultValue']
             else:

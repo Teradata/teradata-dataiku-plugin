@@ -55,7 +55,7 @@ def execute(recipe_config, function_name, valib_query_wrapper=None):
         optional_args += "index=" + ",".join(recipe_config['pca2_index_columns']) + ";"
 
     if 'pca2_accumulate' in recipe_config and recipe_config['pca2_accumulate']:
-        optional_args = "retain=" + ",".join(recipe_config['pca2_accumulate']) + ";"
+        optional_args += "retain=" + ",".join(recipe_config['pca2_accumulate']) + ";"
 
 
     # evaluate

@@ -8,6 +8,7 @@
   "function_category": "Feature Engineering Transform",
   "function_alias_name": "TD_FunctionTransform",
   "function_r_name": "aa.td_functiontransform",
+  "ref_function_r_name": "aa.td_functionfit",
   "short_description": "fastpath function that performs transformations on the InputTable depending on the parameters in the FitTable.",
   "long_description":  "fastpath function that performs transformations on the InputTable depending on the parameters in the FitTable.",
   "input_tables": [

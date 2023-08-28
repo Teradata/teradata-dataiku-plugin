@@ -171,13 +171,14 @@ except Exception as e:
     logging.info(e)
 
 
-# Create the query 
-if scoring_type == 'dataiku':
+#PMML scoring segment. 
+if scoring_type == 'pmml':
     if modeloutputfields_user == False:
         query = f"CREATE TABLE {verifyQualifiedTableName(outputDatabase, outputTable)} AS (SELECT * FROM {verifyDatabaseName(PMMLPredict_db)}.PMMLPredict ( ON (select * from {verifyDatabaseName(database_name)}.{verifyDatabaseName(testing_dataset)}) AS InputTable ON (SELECT * FROM {verifyDatabaseName(database_name)}.{verifyTableName(table_name)} WHERE model_id = {verifyModelName(model_name)}) AS ModelTable DIMENSION USING {verifyAccumulate(accumulate)} {verifyOverwriteCache(overwrite_cache, model_name)})AS td) WITH DATA;"
     else:
         query = f"CREATE TABLE {verifyQualifiedTableName(outputDatabase, outputTable)} AS (SELECT * FROM {verifyDatabaseName(PMMLPredict_db)}.PMMLPredict ( ON (select * from {verifyDatabaseName(database_name)}.{verifyDatabaseName(testing_dataset)}) AS InputTable ON (SELECT * FROM {verifyDatabaseName(database_name)}.{verifyTableName(table_name)} WHERE model_id = {verifyModelName(model_name)}) AS ModelTable DIMENSION USING {verifyAccumulate(accumulate)} {verifyModelOutputValues(modeloutputfields_values)} {verifyOverwriteCache(overwrite_cache, model_name)})AS td) WITH DATA;"
-    
+
+#H2O scoring segment
 if scoring_type == 'h2o':
     h2o_model_type = str(get_recipe_config()["H2O_Model_Type"])
     dia_license_table_name=""
@@ -207,7 +208,20 @@ if scoring_type == 'h2o':
             query = f"CREATE TABLE {verifyQualifiedTableName(outputDatabase, outputTable)} AS (SELECT * FROM {verifyDatabaseName(PMMLPredict_db)}.H2OPredict ( ON (select * from {verifyDatabaseName(database_name)}.{verifyDatabaseName(testing_dataset)}) AS InputTable ON (SELECT model_id, model FROM {verifyDatabaseName(database_name)}.{verifyTableName(table_name)} WHERE model_id = {verifyModelName(model_name)}) AS ModelTable DIMENSION USING {verifyAccumulate(accumulate)} {verifyOverwriteCache(overwrite_cache, model_name)})AS td) WITH DATA;"
         else:
             query = f"CREATE TABLE {verifyQualifiedTableName(outputDatabase, outputTable)} AS (SELECT * FROM {verifyDatabaseName(PMMLPredict_db)}.H2OPredict ( ON (select * from {verifyDatabaseName(database_name)}.{verifyDatabaseName(testing_dataset)}) AS InputTable ON (SELECT model_id, model FROM {verifyDatabaseName(database_name)}.{verifyTableName(table_name)} WHERE model_id = {verifyModelName(model_name)}) AS ModelTable DIMENSION USING {verifyAccumulate(accumulate)} {verifyModelOutputValues(modeloutputfields_values)} {verifyOverwriteCache(overwrite_cache, model_name)})AS td) WITH DATA;"
-    
+# Native dataiku scoring segment
+if scoring_type == 'native':
+    if modeloutputfields_user == False:
+        query = f"CREATE TABLE {verifyQualifiedTableName(outputDatabase, outputTable)} AS (SELECT * FROM {verifyDatabaseName(PMMLPredict_db)}.DataikuPredict ( ON (select * from {verifyDatabaseName(database_name)}.{verifyDatabaseName(testing_dataset)}) AS InputTable ON (SELECT * FROM {verifyDatabaseName(database_name)}.{verifyTableName(table_name)} WHERE model_id = {verifyModelName(model_name)}) AS ModelTable DIMENSION USING {verifyAccumulate(accumulate)} {verifyOverwriteCache(overwrite_cache, model_name)})AS td) WITH DATA;"
+    else:
+        query = f"CREATE TABLE {verifyQualifiedTableName(outputDatabase, outputTable)} AS (SELECT * FROM {verifyDatabaseName(PMMLPredict_db)}.DataikuPredict ( ON (select * from {verifyDatabaseName(database_name)}.{verifyDatabaseName(testing_dataset)}) AS InputTable ON (SELECT * FROM {verifyDatabaseName(database_name)}.{verifyTableName(table_name)} WHERE model_id = {verifyModelName(model_name)}) AS ModelTable DIMENSION USING {verifyAccumulate(accumulate)} {verifyModelOutputValues(modeloutputfields_values)} {verifyOverwriteCache(overwrite_cache, model_name)})AS td) WITH DATA;"
+# ONNX scoring segment
+if scoring_type == 'onnx':
+    if modeloutputfields_user == False:
+        query = f"CREATE TABLE {verifyQualifiedTableName(outputDatabase, outputTable)} AS (SELECT * FROM {verifyDatabaseName(PMMLPredict_db)}.ONNXPredict ( ON (select * from {verifyDatabaseName(database_name)}.{verifyDatabaseName(testing_dataset)}) AS InputTable ON (SELECT * FROM {verifyDatabaseName(database_name)}.{verifyTableName(table_name)} WHERE model_id = {verifyModelName(model_name)}) AS ModelTable DIMENSION USING {verifyAccumulate(accumulate)} {verifyOverwriteCache(overwrite_cache, model_name)})AS td) WITH DATA;"
+    else:
+        query = f"CREATE TABLE {verifyQualifiedTableName(outputDatabase, outputTable)} AS (SELECT * FROM {verifyDatabaseName(PMMLPredict_db)}.ONNXPredict ( ON (select * from {verifyDatabaseName(database_name)}.{verifyDatabaseName(testing_dataset)}) AS InputTable ON (SELECT * FROM {verifyDatabaseName(database_name)}.{verifyTableName(table_name)} WHERE model_id = {verifyModelName(model_name)}) AS ModelTable DIMENSION USING {verifyAccumulate(accumulate)} {verifyModelOutputValues(modeloutputfields_values)} {verifyOverwriteCache(overwrite_cache, model_name)})AS td) WITH DATA;"
+
+
 logging.info(f"Prediction Query ==> {query}")
 
 # Execute the query

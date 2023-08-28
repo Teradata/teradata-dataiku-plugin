@@ -218,7 +218,7 @@ def load_json(json_dict, inputs):
                 if type(arg["datatype"]) != str:
                     arg["datatype"] = "STRING"
                 arg["datatype"] = arg["datatype"].upper()
-                if arg["datatype"] == "NUMERIC":
+                if arg["datatype"] == "NUMERIC" or arg["datatype"] == "FLOAT":
                     arg["datatype"] = "DOUBLE PRECISION"
                 if arg["datatype"] == "COLUMN":
                     arg["datatype"] = "COLUMNS"

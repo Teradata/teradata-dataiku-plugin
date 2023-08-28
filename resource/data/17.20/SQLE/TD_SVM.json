@@ -2,15 +2,14 @@
   "json_schema_major_version": "1",
   "json_schema_minor_version": "2",
   "json_content_version": "1",
-  "function_name": "TD_GLM",
+  "function_name": "TD_SVM",
   "function_version": "1.0",
   "function_type": "fastpath",
   "function_category": "Model Training",
-  "function_alias_name": "TD_GLM",
-  "function_r_name": "aa.td_glm",
-  "ref_function_r_name": "aa.td_glm",
-  "short_description": "This function gives score according to generalized linear model.",
-  "long_description": "This function gives score according to generalized linear model.",
+  "function_alias_name": "TD_SVM",
+  "function_r_name": "aa.td_svm",
+  "short_description": "This function performs classification and regression analysis on data sets.",
+  "long_description": "This function performs classification and regression analysis on data sets.",
   "input_tables": [
     {
       "requiredInputKind": [
@@ -30,7 +29,7 @@
       "rOrderNum": 1
     }
   ],
-  "output_tables": [
+    "output_tables": [
     {
       "isOutputTable": true,
       "omitPossible": false,
@@ -61,8 +60,8 @@
       "name": "InputColumns",
       "alternateNames": [],
       "isRequired": true,
-      "rDescription": "Specify the names of the input table columns that need to be used for training the model (predictors, features or independent variables).",
-      "description": "Specify the names of the input table columns that need to be used for training the model (predictors, features or independent variables).",
+      "rDescription": "Specify the names of the input table columns that need to be used for training the model (predictors, features or independent variables)",
+      "description": "Specify the names of the input table columns that need to be used for training the model (predictors, features or independent variables)",
       "datatype": "COLUMNS",
       "allowsLists": true,
       "rName": "input.columns",
@@ -94,20 +93,20 @@
       "rOrderNum": 0
     },
     {
-      "defaultValue": "GAUSSIAN",
       "permittedValues": [
-        "BINOMIAL",
-        "GAUSSIAN"
+        "Regression",
+        "Classification"
       ],
+      "defaultValue": "Classification",
       "isOutputColumn": false,
-      "name": "Family",
+      "name": "ModelType",
       "alternateNames": [],
       "isRequired": false,
-      "rDescription": "Specify the distribution exponential family. Acceptable values are Gaussian, Binomial.",
-      "description": "Specify the distribution exponential family. Acceptable values are Gaussian, Binomial.",
+      "rDescription": "Specify the type of the analysis. Acceptable values are Regression, Classification.",
+      "description": "Specify the type of the analysis. Acceptable values are Regression, Classification.",
       "datatype": "STRING",
       "allowsLists": false,
-      "rName": "family",
+      "rName": "model.type",
       "useInR": true,
       "rOrderNum": 3
     },
@@ -121,13 +120,31 @@
       "name": "MaxIterNum",
       "alternateNames": [],
       "isRequired": false,
-      "rDescription": "Specify the maximum number of iterations over the training data batches. If the batch size is 0, MaxIterNum equals the number of epochs (an epoch is a single pass over entire training data). If there are 1000 rows in an AMP, and batch size is 10, then 100 iterations will result into one epoch and 500 iterations will result into 5 epochs over this AMP’s data. Because it is not guaranteed that the data will be equally distributed on all AMPs, this may result into different number of epochs for other AMPs. Must be a positive value less than 10,000,000.",
-      "description": "Specify the maximum number of iterations over the training data batches. If the batch size is 0, MaxIterNum equals the number of epochs (an epoch is a single pass over entire training data). If there are 1000 rows in an AMP, and batch size is 10, then 100 iterations will result into one epoch and 500 iterations will result into 5 epochs over this AMP’s data. Because it is not guaranteed that the data will be equally distributed on all AMPs, this may result into different number of epochs for other AMPs. Must be a positive value less than 10,000,000.",
+      "rDescription": "Specify the maximum number of iterations (minibatches) over the training data batches. Value is a positive integer less than 10,000,000.",
+      "description": "Specify the maximum number of iterations (minibatches) over the training data batches. Value is a positive integer less than 10,000,000.",
       "datatype": "INTEGER",
       "allowsLists": false,
       "rName": "iter.max",
       "useInR": true,
       "rOrderNum": 4
+    },
+    {
+      "defaultValue": 0.1,
+      "lowerBound": 0,
+      "upperBound": 1e7,
+      "lowerBoundType": "INCLUSIVE",
+      "upperBoundType": "INCLUSIVE",
+      "allowNaN": false,
+      "name": "Epsilon",
+      "alternateNames": [],
+      "isRequired": false,
+      "rDescription": "Specify the epsilon threshold for Regression (the value of epsilon for epsilon_insensitive loss). Any difference between the current prediction and the correct label is ignored within this threshold.",
+      "description": "Specify the epsilon threshold for Regression (the value of epsilon for epsilon_insensitive loss). Any difference between the current prediction and the correct label is ignored within this threshold.",
+      "datatype": "DOUBLE",
+      "allowsLists": false,
+      "rName": "epsilon",
+      "useInR": true,
+      "rOrderNum": 6
     },
     {
       "defaultValue": 10,
@@ -139,8 +156,8 @@
       "name": "BatchSize",
       "alternateNames": [],
       "isRequired": false,
-      "rDescription": "Specify the number of observations ( training samples ) to be parsed in one mini-batch. Must be a non-negative integer value. A value of 0 indicates no mini-batches, the entire dataset is processed in each iteration, and the algorithm becomes Gradient Descent. A value higher than the number of rows on any AMP will also default to Gradient Descent.",
-      "description": "Specify the number of observations ( training samples ) to be parsed in one mini-batch. Must be a non-negative integer value. A value of 0 indicates no mini-batches, the entire dataset is processed in each iteration, and the algorithm becomes Gradient Descent. A value higher than the number of rows on any AMP will also default to Gradient Descent.",
+      "rDescription": "Specify the number of observations (training samples) processed in a single minibatch per AMP. A value of 0 or higher than the number of rows on an AMP processes all rows on the AMP, such that the entire dataset is processed in a single iteration, and the algorithm becomes Gradient Descent. Value is a positive integer.",
+      "description": "Specify the number of observations (training samples) processed in a single minibatch per AMP. A value of 0 or higher than the number of rows on an AMP processes all rows on the AMP, such that the entire dataset is processed in a single iteration, and the algorithm becomes Gradient Descent. Value is a positive integer.",
       "datatype": "INTEGER",
       "allowsLists": false,
       "rName": "batch.size",
@@ -193,8 +210,8 @@
       "name": "IterNumNoChange",
       "alternateNames": [],
       "isRequired": false,
-      "rDescription": "Specify the number of iterations (batches) with no improvement in loss (including the tolerance) to stop training (early stopping). Must be a non-negative integer. A value of 0 indicates no early stopping and the algorithm will continue till MaxIterNum iterations are reached.",
-      "description": "Specify the number of iterations (batches) with no improvement in loss (including the tolerance) to stop training (early stopping). Must be a non-negative integer. A value of 0 indicates no early stopping and the algorithm will continue till MaxIterNum iterations are reached.",
+      "rDescription": "Specify the number of iterations (minibatches) with no improvement in loss including the tolerance to stop training. A value of 0 indicates no early stopping and the algorithm continues until MaxIterNum iterations are reached. Value is a positive integer.",
+      "description": "Specify the number of iterations (minibatches) with no improvement in loss including the tolerance to stop training. A value of 0 indicates no early stopping and the algorithm continues until MaxIterNum iterations are reached. Value is a positive integer.",
       "datatype": "INTEGER",
       "allowsLists": false,
       "rName": "iter.num.no.change",
@@ -211,8 +228,8 @@
       "name": "Tolerance",
       "alternateNames": [],
       "isRequired": false,
-      "rDescription": "Specify the stopping criteria in terms of loss function improvement. Only applicable when IterNumNoChange > 0. Training stops when loss > best_loss – tolerance for IterNumNoChange times. Must be a non-negative value.",
-      "description": "Specify the stopping criteria in terms of loss function improvement. Only applicable when IterNumNoChange > 0. Training stops when loss > best_loss – tolerance for IterNumNoChange times. Must be a non-negative value.",
+      "rDescription": "Specify the stopping criteria in terms of loss function improvement. Applicable when IterNumNoChange is greater than 0. Value is a positive integer.",
+      "description": "Specify the stopping criteria in terms of loss function improvement. Applicable when IterNumNoChange is greater than 0. Value is a positive integer.",
       "datatype": "DOUBLE",
       "allowsLists": false,
       "rName": "tolerance",
@@ -238,8 +255,8 @@
       "name": "ClassWeights",
       "alternateNames": [],
       "isRequired": false,
-      "rDescription": "Specify weights associated with classes. Only applicable for Binomial Family. The format is ‘0:weight,1:weight’. For example, ‘0:1.0,1:0.5’ will give twice the weight to each observation in class 0. If the weight of a class is omitted, it is assumed to be 1.0.",
-      "description": "Specify weights associated with classes. Only applicable for Binomial Family. The format is ‘0:weight,1:weight’. For example, ‘0:1.0,1:0.5’ will give twice the weight to each observation in class 0. If the weight of a class is omitted, it is assumed to be 1.0.",
+      "rDescription": "Specify weights associated with classes. Only applicable for Classification ModelType. The format is ‘0:weight,1:weight’. For example, ‘0:1.0,1:0.5’ will give twice the weight to each observation in class 0. If the weight of a class is omitted, it is assumed to be 1.0.",
+      "description": "Specify weights associated with classes. Only applicable for Classification ModelType. The format is ‘0:weight,1:weight’. For example, ‘0:1.0,1:0.5’ will give twice the weight to each observation in class 0. If the weight of a class is omitted, it is assumed to be 1.0.",
       "datatype": "STRING",
       "allowsLists": false,
       "rName": "class.weights",
@@ -311,8 +328,8 @@
       "name": "DecaySteps",
       "alternateNames": [],
       "isRequired": false,
-      "rDescription": "Specify the decay steps (number of iterations) for the ‘adaptive’ learning rate. The learning rate changes by decay rate after this many number of iterations.",
-      "description": "Specify the decay steps (number of iterations) for the ‘adaptive’ learning rate. The learning rate changes by decay rate after this many number of iterations.",
+      "rDescription": "Specify the number of iterations without decay for the adaptive learning rate. The learning rate changes by decay rate after this many iterations.",
+      "description": "Specify the number of iterations without decay for the adaptive learning rate. The learning rate changes by decay rate after this many iterations.",
       "datatype": "INTEGER",
       "allowsLists": false,
       "rName": "decay.steps",
@@ -338,7 +355,7 @@
       "rOrderNum": 16
     },
     {
-      "defaultValue": true,
+      "defaultValue": false,
       "name": "Nesterov",
       "alternateNames": [],
       "isRequired": false,
@@ -367,66 +384,6 @@
       "rName": "local.sgd.iterations",
       "useInR": true,
       "rOrderNum": 18
-    },
-    {
-      "permittedValues": [
-        "FORWARD",
-        "BACKWARD",
-        "BOTH",
-        "BIDIRECTIONAL"
-      ],
-      "isOutputColumn": false,
-      "name": "StepwiseDirection",
-      "alternateNames": [],
-      "isRequired": false,
-      "rDescription": "Specify the type of algorithm to be used. Acceptable values are 'forward', 'backward', 'both', and 'bidirectional'.",
-      "description": "Specify the type of algorithm to be used. Acceptable values are 'forward', 'backward', 'both', and 'bidirectional'.",
-      "datatype": "STRING",
-      "allowsLists": false,
-      "rName": "stepwise.direction",
-      "useInR": true,
-      "rOrderNum": 19
-    },
-    {
-      "defaultValue": 5,
-      "lowerBound": 1,
-      "upperBound": 2147483647,
-      "lowerBoundType": "INCLUSIVE",
-      "upperBoundType": "INCLUSIVE",
-      "allowNaN": false,
-      "name": "MaxStepsNum",
-      "alternateNames": [],
-      "isRequired": false,
-      "rDescription": "Specify the maximum number of steps to be used for the Stepwise Algorithm.",
-      "description": "Specify the maximum number of steps to be used for the Stepwise Algorithm.",
-      "datatype": "INTEGER",
-      "allowsLists": false,
-      "rName": "max.steps.num",
-      "useInR": true,
-      "rOrderNum": 20
-    },
-    {
-      "targetTable": [
-        "inputtable"
-      ],
-      "checkDuplicate": true,
-      "allowedTypes": [],
-      "allowedTypeGroups": [
-        "NUMERIC"
-      ],
-      "matchLengthOfArgument": "",
-      "allowPadding": false,
-      "name": "InitialStepwiseColumns",
-      "alternateNames": [],
-      "isRequired": false,
-      "rDescription": "Specify the names of the initial state model columns that need to be used as starting point for Stepwise Regression algorithm (predictors, features or independent variables).",
-      "description": "Specify the names of the initial state model columns that need to be used as starting point for Stepwise Regression algorithm (predictors, features or independent variables).",
-      "datatype": "COLUMNS",
-      "allowsLists": true,
-      "rName": "initial.stepwise.columns",
-      "useInR": true,
-      "rFormulaUsage": true,
-      "rOrderNum": 21
     }
   ]
 }

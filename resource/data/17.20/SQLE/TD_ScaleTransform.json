@@ -8,6 +8,7 @@
   "function_category": "Feature Engineering Transform",
   "function_alias_name": "TD_ScaleTransform",
   "function_r_name": "aa.td_scale.transform",
+  "ref_function_r_name": "aa.td_scale.fit",
   "short_description": "fastpath function to scale/standardize numeric columns.",
   "long_description": "fastpath function to scale/standardize numeric columns.",
   "input_tables": [

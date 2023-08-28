@@ -1,0 +1,248 @@
+{
+  "json_schema_major_version": "1",
+  "json_schema_minor_version": "1",
+  "json_content_version": "1",
+  "function_name": "TD_TargetEncodingFit",
+  "function_version": "1.0",
+  "function_alias_name": "TD_TargetEncodingFit",
+  "function_type": "fastpath",
+  "function_category": "Feature Engineering Transform",
+  "function_r_name": "aa.td.target.encoding.fit",
+  "short_description": "This function generates hyperparameters for each unique category in the target columns.",
+  "long_description": "This function takes an input table partitioned by ANY and a category table as Dimension and generates hyperparameters for each unique category in the target columns.",
+  "input_tables": [
+    {
+      "requiredInputKind": [
+        "PartitionByAny"
+      ],
+      "isOrdered": false,
+      "partitionByOne": false,
+      "name": "InputTable",
+      "alternateNames": [],
+      "isRequired": true,
+      "rDescription": "Specifies the table containing the input categorical target columns.",
+      "description": "Specifies the table containing the input categorical target columns.",
+      "datatype": "TABLE_ALIAS",
+      "allowsLists": false,
+      "rName": "data",
+      "useInR": true,
+      "rOrderNum": 1
+    },
+    {
+      "requiredInputKind": [
+        "Dimension"
+      ],
+      "isOrdered": false,
+      "partitionByOne": false,
+      "name": "CategoryTable",
+      "alternateNames": [],
+      "isRequired": true,
+      "rDescription": "Specifies the table containing the unique categories and their counts for each target columns.",
+      "description": "Specifies the table containing the unique categories and their counts for each target columns.",
+      "datatype": "TABLE_ALIAS",
+      "allowsLists": false,
+      "rName": "category.table",
+      "useInR": true,
+      "rOrderNum": 2
+    }
+  ],
+  "output_tables": [
+    {
+      "isOutputTable": true,
+      "omitPossible": false,
+      "name": "OutputTable",
+      "alternateNames": [],
+      "isRequired": false,
+      "rDescription": "Name for the table that the function will generate when OUT clause is provided.",
+      "description": "Name for the table that the function will generate when OUT clause is provided.",
+      "datatype": "TABLE_NAME",
+      "allowsLists": false,
+      "rName": "output.table",
+      "useInR": true,
+      "rOrderNum": 3
+    }
+  ],
+  "argument_clauses": [
+    {
+      "permittedValues": [
+        "CBM_BETA",
+        "CBM_DIRICHLET",
+        "CBM_GAUSSIAN_INVERSE_GAMMA"
+      ],
+      "isOutputColumn": false,
+      "matchLengthOfArgument": "",
+      "allowPadding": false,
+      "name": "EncoderMethod",
+      "alternateNames": [],
+      "isRequired": true,
+      "rDescription": "Specifies the EncoderMethod as CBM_BETA, CBM_DIRICHLET, CBM_GAUSSIAN_INVERSE_GAMMA if the response is following binomial (0 or 1) or multinomial (1, ..., k) or Gaussian (continous numeric values) respectively.",
+      "description": "Specifies the EncoderMethod as CBM_BETA, CBM_DIRICHLET, CBM_GAUSSIAN_INVERSE_GAMMA if the response is following binomial (0 or 1) or multinomial (1, ..., k) or Gaussian (continous numeric values) respectively.",
+      "datatype": "STRING",
+      "allowsLists": false,
+      "rName": "encoder.method",
+      "useInR": true,
+      "rOrderNum": 4
+    },
+    {
+      "targetTable": [
+        "InputTable"
+      ],
+      "checkDuplicate": true,
+      "allowedTypes": [],
+      "allowedTypeGroups": [
+        "STRING"
+      ],
+      "matchLengthOfArgument": "",
+      "allowPadding": false,
+      "name": "TargetColumns",
+      "alternateNames": [],
+      "isRequired": true,
+      "rDescription": "Specify the columns which contains the categorical values to be encoded.",
+      "description": "Specify the columns which contains the categorical values to be encoded.",
+      "datatype": "COLUMNS",
+      "allowsLists": true,
+      "rName": "target.columns",
+      "useInR": true,
+      "rOrderNum": 5
+    },
+    {
+      "targetTable": [
+        "InputTable"
+      ],
+      "checkDuplicate": true,
+      "allowedTypes": [],
+      "allowedTypeGroups": [
+        "NUMERIC"
+      ],
+      "matchLengthOfArgument": "",
+      "allowPadding": false,
+      "name": "ResponseColumn",
+      "alternateNames": [],
+      "isRequired": true,
+      "rDescription": "Specify the columns which contains the response values.",
+      "description": "Specify the columns which contains the response values.",
+      "datatype": "COLUMNS",
+      "allowsLists": false,
+      "rName": "response.column",
+      "useInR": true,
+      "rOrderNum": 6
+    },
+    {
+      "allowNaN": false,
+      "name": "AlphaPrior",
+      "alternateNames": [],
+      "isRequired": false,
+      "rDescription": "Specify the prior parameter of the CBM_BETA encoder method.",
+      "description": "Specify the prior parameter of the CBM_BETA encoder method.",
+      "datatype": "NUMERIC",
+      "allowsLists": false,
+      "rName": "alpha.prior",
+      "useInR": true,
+      "rOrderNum": 7
+    },
+    {
+      "allowNaN": false,
+      "name": "BetaPrior",
+      "alternateNames": [],
+      "isRequired": false,
+      "rDescription": "Specify the prior parameter of the CBM_BETA encoder method.",
+      "description": "Specify the prior parameter of the CBM_BETA encoder method.",
+      "datatype": "NUMERIC",
+      "allowsLists": false,
+      "rName": "beta.prior",
+      "useInR": true,
+      "rOrderNum": 8
+    },
+    {
+      "allowNaN": false,
+      "name": "AlphaPriors",
+      "alternateNames": [],
+      "isRequired": false,
+      "rDescription": "Specify the prior parameter of the CBM_DIRICHLET encoder method. The number of values specified in this argument must be equal to NumDistinctResponses value.",
+      "description": "Specify the prior parameter of the CBM_DIRICHLET encoder method. The number of values specified in this argument must be equal to NumDistinctResponses value.",
+      "datatype": "NUMERIC",
+      "allowsLists": true,
+      "rName": "alpha.priors",
+      "useInR": true,
+      "rOrderNum": 9
+    },
+    {
+      "allowNaN": false,
+      "name": "NumDistinctResponses",
+      "alternateNames": [],
+      "isRequired": false,
+      "rDescription": "Specify the number of distinct values present in the ResponseColumn. Required if EncoderMethod is CBM_DIRICHLET, otherwise not required.",
+      "description": "Specify the number of distinct values present in the ResponseColumn. Required if EncoderMethod is CBM_DIRICHLET, otherwise not required.",
+      "datatype": "INTEGER",
+      "allowsLists": false,
+      "rName": "num.distinct.responses",
+      "useInR": true,
+      "rOrderNum": 10
+    },
+    {
+      "allowNaN": false,
+      "name": "U0Prior",
+      "alternateNames": [],
+      "isRequired": false,
+      "rDescription": "Specify the prior parameter of the CBM_GAUSSIAN_INVERSE_GAMMA encoder method.",
+      "description": "Specify the prior parameter of the CBM_GAUSSIAN_INVERSE_GAMMA encoder method.",
+      "datatype": "NUMERIC",
+      "allowsLists": false,
+      "rName": "u0.prior",
+      "useInR": true,
+      "rOrderNum": 11
+    },
+    {
+      "allowNaN": false,
+      "name": "V0Prior",
+      "alternateNames": [],
+      "isRequired": false,
+      "rDescription": "Specify the prior parameter of the CBM_GAUSSIAN_INVERSE_GAMMA encoder method.",
+      "description": "Specify the prior parameter of the CBM_GAUSSIAN_INVERSE_GAMMA encoder method.",
+      "datatype": "NUMERIC",
+      "allowsLists": false,
+      "rName": "v0.prior",
+      "useInR": true,
+      "rOrderNum": 12
+    },
+    {
+      "allowNaN": false,
+      "name": "Alpha0Prior",
+      "alternateNames": [],
+      "isRequired": false,
+      "rDescription": "Specify the prior parameter of the CBM_GAUSSIAN_INVERSE_GAMMA encoder method.",
+      "description": "Specify the prior parameter of the CBM_GAUSSIAN_INVERSE_GAMMA encoder method.",
+      "datatype": "NUMERIC",
+      "allowsLists": false,
+      "rName": "alpha0.prior",
+      "useInR": true,
+      "rOrderNum": 13
+    },
+    {
+      "allowNaN": false,
+      "name": "Beta0Prior",
+      "alternateNames": [],
+      "isRequired": false,
+      "rDescription": "Specify the prior parameter of the CBM_GAUSSIAN_INVERSE_GAMMA encoder method.",
+      "description": "Specify the prior parameter of the CBM_GAUSSIAN_INVERSE_GAMMA encoder method.",
+      "datatype": "NUMERIC",
+      "allowsLists": false,
+      "rName": "beta0.prior",
+      "useInR": true,
+      "rOrderNum": 14
+    },	
+    {
+      "allowNaN": false,
+      "name": "DefaultValues",
+      "alternateNames": [],
+      "isRequired": false,
+      "rDescription": "Specify the target encoded value/values to use when category is not found during transform. One value for all target column or multiple value for multiple target column.",
+      "description": "Specify the target encoded value/values to use when category is not found during transform. One value for all target column or multiple value for multiple target column.",
+      "datatype": "NUMERIC",
+      "allowsLists": true,
+      "rName": "default.values",
+      "useInR": true,
+      "rOrderNum": 15
+    }
+  ]
+}

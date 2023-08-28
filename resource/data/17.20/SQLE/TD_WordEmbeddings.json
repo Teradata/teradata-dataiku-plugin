@@ -1,0 +1,241 @@
+{
+  "json_schema_major_version": "1",
+  "json_schema_minor_version": "1",
+  "json_content_version": "1",
+  "function_name": "TD_WordEmbeddings",
+  "function_version": "1.0",
+  "function_alias_name": "TD_WordEmbeddings",
+  "function_type": "fastpath",
+  "function_category": "Text Analytic",
+  "function_r_name": "td.word.embeddings",
+  "short_description": "This function generates embeddings of documents and words. It also finds similarity between the texts.",
+  "long_description": "This function generates embeddings of documents and words. It also finds similarity between the texts. This helps in machine learning applications because many machine learning algorithms process real values rather than text.",
+  "input_tables": [
+    {
+      "requiredInputKind": [
+        "PartitionByAny"
+      ],
+      "isOrdered": false,
+      "partitionByOne": false,
+      "name": "InputTable",
+      "alternateNames": [],
+      "isRequired": true,
+      "rDescription": "Specifies the table containing the input text data from user.",
+      "description": "Specifies the table containing the input text data from user.",
+      "datatype": "TABLE_ALIAS",
+      "allowsLists": false,
+      "rName": "data",
+      "useInR": true,
+      "rOrderNum": 1
+    },
+    {
+      "requiredInputKind": [
+        "Dimension"
+      ],
+      "isOrdered": false,
+      "partitionByOne": false,
+      "name": "ModelTable",
+      "alternateNames": [],
+      "isRequired": true,
+      "rDescription": "Specifies the table containing the vectors for all the possible tokens.",
+      "description": "Specifies the table containing the vectors for all the possible tokens.",
+      "datatype": "TABLE_ALIAS",
+      "allowsLists": false,
+      "rName": "model",
+      "useInR": true,
+      "rOrderNum": 2
+    }
+  ],
+  "argument_clauses": [
+    {
+      "targetTable": [
+        "InputTable"
+      ],
+      "checkDuplicate": true,
+      "allowedTypes": [],
+      "allowedTypeGroups": [
+        "STRING"
+      ],
+      "matchLengthOfArgument": "",
+      "allowPadding": false,
+      "name": "IDColumn",
+      "alternateNames": [],
+      "isRequired": true,
+      "rDescription": "Specify the IDColumn in InputTable which contains unique values.",
+      "description": "Specify the IDColumn in InputTable which contains unique values.",
+      "datatype": "COLUMNS",
+      "allowsLists": false,
+      "rName": "id.column",
+      "useInR": true,
+      "rOrderNum": 3
+    },
+    {
+      "targetTable": [
+        "ModelTable"
+      ],
+      "checkDuplicate": true,
+      "allowedTypes": [],
+      "allowedTypeGroups": [
+        "STRING"
+      ],
+      "matchLengthOfArgument": "",
+      "allowPadding": false,
+      "name": "ModelTextColumn",
+      "alternateNames": [],
+      "isRequired": true,
+      "rDescription": "Specify the ModelTable column which contains the token in ModelTable.",
+      "description": "Specify the ModelTable column which contains the token in ModelTable.",
+      "datatype": "COLUMNS",
+      "allowsLists": false,
+      "rName": "model.text.column",
+      "useInR": true,
+      "rOrderNum": 4
+    },
+    {
+      "targetTable": [
+        "ModelTable"
+      ],
+      "checkDuplicate": true,
+      "allowedTypes": [],
+      "allowedTypeGroups": [
+        "STRING"
+      ],
+      "matchLengthOfArgument": "",
+      "allowPadding": false,
+      "name": "ModelVectorColumns",
+      "alternateNames": [],
+      "isRequired": true,
+      "rDescription": "Specify the ModelTable columns which contains the vectors for each token.",
+      "description": "Specify the ModelTable columns which contains the vectors for each token.",
+      "datatype": "COLUMNS",
+      "allowsLists": true,
+      "rName": "model.vector.columns",
+      "useInR": true,
+      "rOrderNum": 5
+    },
+    {
+      "targetTable": [
+        "InputTable"
+      ],
+      "checkDuplicate": true,
+      "allowedTypes": [],
+      "allowedTypeGroups": [
+        "STRING"
+      ],
+      "matchLengthOfArgument": "",
+      "allowPadding": false,
+      "name": "PrimaryColumn",
+      "alternateNames": [],
+      "isRequired": true,
+      "rDescription": "Specify the PrimaryColumn which contains the text data.",
+      "description": "Specify the PrimaryColumn which contains the text data.",
+      "datatype": "COLUMNS",
+      "allowsLists": false,
+      "rName": "primary.column",
+      "useInR": true,
+      "rOrderNum": 6
+    },
+    {
+      "targetTable": [
+        "InputTable"
+      ],
+      "checkDuplicate": true,
+      "allowedTypes": [],
+      "allowedTypeGroups": [
+        "STRING"
+      ],
+      "matchLengthOfArgument": "",
+      "allowPadding": false,
+      "name": "SecondaryColumn",
+      "alternateNames": [],
+      "isRequired": false,
+      "rDescription": "Specify the SecondaryColumn which contains the text data applicable only if operation is token2token-similarity or Doc2Doc-similarity.",
+      "description": "Specify the SecondaryColumn which contains the text data applicable only if operation is token2token-similarity or Doc2Doc-similarity.",
+      "datatype": "COLUMNS",
+      "allowsLists": false,
+      "rName": "secondary.column",
+      "useInR": true,
+      "rOrderNum": 7
+    },
+    {
+      "permittedValues": [
+        "token-embedding",
+        "doc-embedding",
+        "token2token-similarity",
+        "doc2doc-similarity"
+      ],
+      "defaultValue": "token-embedding",
+      "name": "Operation",
+      "alternateNames": [],
+      "isRequired": false,
+      "rDescription": "Specify which operation needs to be performmed on the data.",
+      "description": "Specify which operation needs to be performmed on the data.",
+      "datatype": "STRING",
+      "allowsLists": false,
+      "rName": "operation",
+      "useInR": true,
+      "rOrderNum": 8
+    },
+    {
+      "targetTable": [
+        "InputTable"
+      ],
+      "checkDuplicate": true,
+      "allowedTypes": [],
+      "allowedTypeGroups": [
+        "STRING"
+      ],
+      "matchLengthOfArgument": "",
+      "allowPadding": false,
+      "name": "Accumulate",
+      "alternateNames": [],
+      "isRequired": false,
+      "rDescription": "Specify which columns to be accumulated from input to output.",
+      "description": "Specify which columns to be accumulated from input to output.",
+      "datatype": "COLUMNS",
+      "allowsLists": true,
+      "rName": "accumulate",
+      "useInR": true,
+      "rOrderNum": 9
+    },
+    {
+      "defaultValue": true,
+      "name": "ConvertToLowerCase",
+      "alternateNames": [],
+      "isRequired": false,
+      "rDescription": "Specify whether to convert input data to lower case.",
+      "description": "Specify whether to convert input data to lower case.",
+      "datatype": "BOOLEAN",
+      "allowsLists": false,
+      "rName": "convert.to.lowercase",
+      "useInR": true,
+      "rOrderNum": 10
+    },
+    {
+      "defaultValue": false,
+      "name": "RemoveStopWords",
+      "alternateNames": [],
+      "isRequired": false,
+      "rDescription": "Specify whether to remove stop words the input data.",
+      "description": "Specify whether to remove stop words the input data.",
+      "datatype": "BOOLEAN",
+      "allowsLists": false,
+      "rName": "remove.stopwords",
+      "useInR": true,
+      "rOrderNum": 11
+    },
+    {
+      "defaultValue": false,
+      "name": "StemTokens",
+      "alternateNames": [],
+      "isRequired": false,
+      "rDescription": "Specify whether to stem tokens from the input data.",
+      "description": "Specify whether to stem tokens from the input data.",
+      "datatype": "BOOLEAN",
+      "allowsLists": false,
+      "rName": "stem.tokens",
+      "useInR": true,
+      "rOrderNum": 12
+    }
+  ]
+}

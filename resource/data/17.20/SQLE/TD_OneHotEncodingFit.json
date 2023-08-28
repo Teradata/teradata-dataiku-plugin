@@ -8,7 +8,7 @@
   "function_category": "Feature Engineering Transform",
   "function_alias_name": "TD_OneHotEncodingFit",
   "function_r_name": "aa.td_one.hot.encoding.fit",
-  "short_description": "fastpath function records all the parameters required for TD_OneHotEncodingTransform t",
+  "short_description": "fastpath function records all the parameters required for TD_OneHotEncodingTransform",
   "long_description": "fastpath function records all the parameters required for TD_OneHotEncodingTransform function. i.e, target attributes and their categorical values to be encoded and other parameters. Output of TD_OneHotEncodingFit function is used by TD_OneHotEncodingTransform function for encoding the input data. It supports inputs in both sparse and dense format",
   "input_tables": [
     {
@@ -24,6 +24,24 @@
       "rName": "data",
       "useInR": true,
       "rOrderNum": 1
+    },
+    {
+      "requiredInputKind": [
+        "Dimension"
+      ],
+      "isOrdered": false,
+      "partitionByOne": false,
+      "name": "CategoryTable",
+      "alternateNames": [],
+      "isRequired": false,
+      "rDescription": "Specifies the table containing the input categories for LIST approach.",
+      "description": "Specifies the table containing the input categories for LIST approach.",
+      "datatype": "TABLE_ALIAS",
+      "allowsLists": false,
+      "rName": "category.table",
+      "useInR": true,
+      "rFormulaUsage": false,
+      "rOrderNum": 2
     }
   ],
   "argument_clauses": [
@@ -32,35 +50,31 @@
         "InputTable"
       ],
       "checkDuplicate": true,
-      "allowedTypes": [
-		"VARCHAR",
-		"CHAR"
-	  ],
+      "allowedTypes": [],
       "allowedTypeGroups": [
+        "STRING"
       ],
       "matchLengthOfArgument": "",
       "allowPadding": false,
       "name": "TargetColumn",
       "alternateNames": [],
       "isRequired": false,
-      "rDescription": "Specifies the input table column which is to be encoded. This argument is used when Input is in dense format.",
-      "description": "Specifies the input table column which is to be encoded. This argument is used when Input is in dense format.",
+      "rDescription": "Specifies the input table columns which is to be encoded. This argument is used when Input is in dense format.",
+      "description": "Specifies the input table columns which is to be encoded. This argument is used when Input is in dense format.",
       "datatype": "COLUMNS",
-      "allowsLists": false,
+      "allowsLists": true,
       "rName": "target.column",
       "useInR": true,
-      "rOrderNum": 2
+      "rOrderNum": 3
     },
     {
       "targetTable": [
         "InputTable"
       ],
       "checkDuplicate": true,
-      "allowedTypes": [
-		"VARCHAR",
-		"CHAR"
-	  ],
+      "allowedTypes": [],
       "allowedTypeGroups": [
+        "STRING"
       ],
       "matchLengthOfArgument": "",
       "allowPadding": false,
@@ -73,18 +87,16 @@
       "allowsLists": false,
       "rName": "attribute.column",
       "useInR": true,
-      "rOrderNum": 3
+      "rOrderNum": 4
     },
     {
       "targetTable": [
         "InputTable"
       ],
       "checkDuplicate": true,
-      "allowedTypes": [
-		"VARCHAR",
-		"CHAR"
-	  ],
+      "allowedTypes": [],
       "allowedTypeGroups": [
+        "STRING"
       ],
       "matchLengthOfArgument": "",
       "allowPadding": false,
@@ -97,7 +109,7 @@
       "allowsLists": false,
       "rName": "value.column",
       "useInR": true,
-      "rOrderNum": 4
+      "rOrderNum": 5
     },
     {
       "isOutputColumn": false,
@@ -112,7 +124,27 @@
       "allowsLists": false,
       "rName": "is.input.dense",
       "useInR": true,
-      "rOrderNum": 5
+      "rOrderNum": 6
+    },
+    {
+      "permittedValues": [
+        "AUTO",
+        "LIST"
+      ],  
+      "defaultValue": "LIST",
+      "isOutputColumn": false,
+      "matchLengthOfArgument": "",
+      "allowPadding": false,
+      "name": "Approach",
+      "alternateNames": [],
+      "isRequired": false,
+      "rDescription": "Specifies whether to determine categories automatically from the input table data (AUTO approach) or the user provided list (LIST approach).",
+      "description": "Specifies whether to determine categories automatically from the input table data (AUTO approach) or the user provided list (LIST approach).",
+      "datatype": "STRING",
+      "allowsLists": false,
+      "rName": "approach",
+      "useInR": true,
+      "rOrderNum": 7
     },
     {
       "permittedValues": [],
@@ -128,10 +160,55 @@
       "allowsLists": true,
       "rName": "categorical.values",
       "useInR": true,
-      "rOrderNum": 6
+      "rOrderNum": 8
+    },
+    {
+      "targetTable": [
+        "CategoryTable"
+      ],
+      "checkDuplicate": true,
+      "allowedTypes": [],
+      "allowedTypeGroups": [
+        "STRING"
+      ],
+      "matchLengthOfArgument": "",
+      "allowPadding": false,
+      "name": "TargetColumnNames",
+      "alternateNames": [],
+      "isRequired": false,
+      "rDescription": "Specify the CategoryTable column which contains the names of the target columns.",
+      "description": "Specify the CategoryTable column which contains the names of the target columns.",
+      "datatype": "COLUMNS",
+      "allowsLists": false,
+      "rName": "target.column.names",
+      "useInR": true,
+      "rOrderNum": 9
+    },
+    {
+      "targetTable": [
+        "CategoryTable"
+      ],
+      "checkDuplicate": true,
+      "allowedTypes": [],
+      "allowedTypeGroups": [
+        "STRING"
+      ],
+      "matchLengthOfArgument": "",
+      "allowPadding": false,
+      "name": "CategoriesColumn",
+      "alternateNames": [],
+      "isRequired": false,
+      "rDescription": "Specify the CategoryTable column which contains the category values.",
+      "description": "Specify the CategoryTable column which contains the category values.",
+      "datatype": "COLUMNS",
+      "allowsLists": false,
+      "rName": "categories.column",
+      "useInR": true,
+      "rOrderNum": 10
     },
     {
       "permittedValues": [],
+      "defaultValue": "other",
       "isOutputColumn": false,
       "matchLengthOfArgument": "",
       "allowPadding": false,
@@ -141,10 +218,22 @@
       "rDescription": "Column name for the column representing one-hot encoding for values other than the ones specified in the CategoricalValues argument. This argument should be used when the Input format is dense. Default: 'other'",
       "description": "Column name for the column representing one-hot encoding for values other than the ones specified in the CategoricalValues argument. This argument should be used when the Input format is dense. Default: 'other'",
       "datatype": "STRING",
-      "allowsLists": false,
+      "allowsLists": true,
       "rName": "other.column",
       "useInR": true,
-      "rOrderNum": 7
+      "rOrderNum": 11
+    },
+    {
+      "name": "CategoryCounts",
+      "alternateNames": [],
+      "isRequired": false,
+      "rDescription": "Specifies category counts for each of the TargetColumns. The number of values in CategoryCounts should be the same as the number of TargetColumns.",
+      "description": "Specifies category counts for each of the TargetColumns. The number of values in CategoryCounts should be the same as the number of TargetColumns.",
+      "datatype": "INTEGER",
+      "allowsLists": true,
+      "rName": "category.counts",
+      "useInR": true,
+      "rOrderNum": 12
     },
     {
       "permittedValues": [],
@@ -160,7 +249,7 @@
       "allowsLists": true,
       "rName": "target.attributes",
       "useInR": true,
-      "rOrderNum": 8
+      "rOrderNum": 13
     },
     {
       "permittedValues": [],
@@ -176,7 +265,7 @@
       "allowsLists": true,
       "rName": "other.attributes",
       "useInR": true,
-      "rOrderNum": 9
+      "rOrderNum": 14
     }
   ]
 }

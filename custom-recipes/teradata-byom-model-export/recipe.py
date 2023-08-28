@@ -1,49 +1,66 @@
-
 import dataiku
-# Import the helpers for custom recipes
+# Importing helpers for custom recipes
 from dataiku.customrecipe import *
 from teradatabyomtest import handle_models
 import json
 import logging
 from verifyTableColumns import *
 import auth
-
-
-model= handle_models.get_input_output(has_model_as_second_input=True)
-
-logging.info('=========================== MODEL')
-logging.info(model)
-# get whatever information you need from your model here
-
-model_def = model.get_definition()
-logging.info('================================ DEFINITION')
-logging.info(model_def)
-# view model definition 
-
-version_id = model_def.get('activeVersion')
-logging.info('======================================== Version ID')
-logging.info(version_id)
-
-project_key = model_def.get('projectKey')
-logging.info('======================================== Project Key')
-logging.info(project_key)
-
-saved_model_id = model_def.get('id')
-logging.info('======================================== Saved Model ID')
-logging.info(saved_model_id)
-
+import dataiku
 import dataiku
 import pandas as pd, numpy as np
 from dataiku import pandasutils as pdu
 
 # Read recipe inputs
-# Own_env_model
-#model_1 = dataiku.Model("9K5HCVpz")
-#pred_1 = model_1.get_predictor()
-valid_connection = 1
 
+valid_connection = 1
 client = dataiku.api_client()
-pmml_model = client.get_project(project_key).get_saved_model(saved_model_id).get_version_details(version_id).get_scoring_pmml_stream().content
+# Obtiaining input name and project names.
+in_name = get_input_names_for_role("source")[0]
+project_name = in_name.split(".")[0]
+input_name = in_name.split(".")[-1]
+sourcetype = handle_models.get_input_object(str(input_name),str(project_name))
+
+# Eliciting input information.
+logging.info(sourcetype)
+
+if sourcetype == 'model':
+    model = dataiku.Model(get_input_names_for_role('source')[0])
+    logging.info('=========================== MODEL')
+    logging.info(model)
+    # get whatever information you need from your model here
+    
+    model_def = model.get_definition()
+    logging.info('================================ DEFINITION')
+    logging.info(model_def)
+    # view model definition 
+    
+    version_id = model_def.get('activeVersion')
+    logging.info('======================================== Version ID')
+    logging.info(version_id)
+    
+    project_key = model_def.get('projectKey')
+    logging.info('======================================== Project Key')
+    logging.info(project_key)
+    
+    saved_model_id = model_def.get('id')
+    logging.info('======================================== Saved Model ID')
+    logging.info(saved_model_id)
+if sourcetype == 'folder':
+    folder = dataiku.Folder(get_input_names_for_role('source')[0])
+    logging.info('=========================== FOLDER')
+    logging.info(folder)
+
+    logging.info('================================ DEFINITION')
+    logging.info(folder.get_info())
+
+    logging.info('======================================== PATH')
+    logging.info(folder.get_info().get("path"))
+
+    logging.info('======================================== Folder ID')
+    logging.info(folder.get_info().get("id"))
+
+
 
 connection_name = str(get_recipe_config()["connection_name"][0])
 dss_connection_prams = client.get_connection(name=connection_name).get_info().get_params()
@@ -84,7 +101,7 @@ logging.info(logmech_param)
 create_new_table_param = bool(get_recipe_config()["create"])
 table_name_param = str(get_recipe_config()["tablename"])
 modelname_param = str(get_recipe_config()["modelname"])
-
+modeltype_param = str(get_recipe_config()["exporttype"])
 # For optional parameters, you should provide a default value in case the parameter is not present:
 #my_variable = get_recipe_config().get('parameter_name', None)
 
@@ -120,14 +137,28 @@ if valid_connection == 1:
             eng.execute(create_table);
 
         delete_record_if_exists = f"delete from {verifyDatabaseName(database_param)}.{verifyTableName(table_name_param)} where model_id = {verifyModelName(modelname_param)};"
-        #Push the pmml
-        insert_model = f"insert into {verifyDatabaseName(database_param)}.{verifyTableName(table_name_param)} (model_id, model) values(?,?);"
-        eng.execute(insert_model, modelname_param, pmml_model)
     else:
         delete_record_if_exists = f"delete from {verifyDatabaseName(database_param)}.{verifyTableName(table_name_param)} where model_id = {verifyModelName(modelname_param[0:30])};"
-        insert_model = f"insert into {verifyDatabaseName(database_param)}.{verifyTableName(table_name_param)} (model_id, model) values(?,?);"
         eng.execute(delete_record_if_exists)
-        eng.execute(insert_model, modelname_param, pmml_model)
+
+
+
+insert_model = f"insert into {verifyDatabaseName(database_param)}.{verifyTableName(table_name_param)} (model_id, model) values(?,?);"
+
+if modeltype_param=='pmml':
+    model_data = client.get_project(project_key).get_saved_model(saved_model_id).get_version_details(version_id).get_scoring_pmml_stream().content    
+
+elif modeltype_param=='native':
+    model_data = client.get_project(project_key).get_saved_model(saved_model_id).get_version_details(version_id).get_scoring_jar_stream(include_libs=True).content
+
+elif modeltype_param=='onnx' or modeltype_param=='h2o':
+    # Initially the name of the file is given to 'file' then iterated over the existing paths to see if a path name contains the file name,
+    # if true it is obtained as a byte stream and uploaded else a error is raised.
+    file = str(get_recipe_config()["files"])
+    with folder.get_download_stream(file) as stream:
+            model_data = stream.read()
+eng.execute(insert_model, modelname_param, model_data)
+
 
 output_dataset_name = get_output_names_for_role('output_dataset')[0]
 output_dataset = dataiku.Dataset(output_dataset_name) 
