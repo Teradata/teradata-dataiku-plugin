@@ -1,5 +1,5 @@
 import dataiku
-import dataiku
+import os
 from dataiku.customrecipe import *
 from dataiku import SQLExecutor2
 from verifyTableColumns import *
@@ -86,6 +86,30 @@ def do(payload, config, plugin_config, inputs):
         choices = []
         for key in dict_names:
             dict = { "value" : dict_names[key].strip(), "label" : dict_names[key].strip()}
+            choices.append(dict)
+        return {"choices": choices}
+    
+    if payload.get('parameterName')=='files':
+        
+        # Get the input managed folder object
+        for input in inputs:
+            if(input.get('role') == 'main'):
+                inputtablename = input['fullName'].split('.')[1]
+                project = input['fullName'].split('.')[0]
+                inputDataSets.append(inputtablename)
+                if not connection:
+                    inputdataset = dataiku.Dataset(inputtablename)
+                    connection = getConnectionParamsFromDataset(inputdataset).get('connectionParams', {})
+            else:
+                inputfoldername = input['fullName'].split('.')[1]
+                input_folder =  dataiku.Folder(inputfoldername)
+        #input_folder = dataiku.Folder("onnxmodelorigin")
+        
+        files = input_folder.list_paths_in_partition()
+        dict_names={file:file for file in files}
+        choices = []
+        for key in dict_names:
+            dict = { "value" : dict_names[key].strip("/"), "label" : dict_names[key].strip("/")}
             choices.append(dict)
         return {"choices": choices}
 

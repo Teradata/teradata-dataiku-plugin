@@ -45,12 +45,37 @@
             "rOrderNum": 2
         }
     ],
-    "argument_clauses": [],
+    "argument_clauses": [
+        {
+            "targetTable": [
+                "input_A_role"
+            ],
+            "checkDuplicate": false,
+            "allowedTypes": [],
+            "allowedTypeGroups": [
+                "ALL"
+            ],
+            "matchLengthOfArgument": "",
+            "allowPadding": false,
+            "name": "IndexColumns",
+            "alternateNames": [],
+            "isRequired": false,
+            "rDescription": "Specifies the name(s) of the column(s) representing the primary index of the score output.",
+            "description": "Specifies the name(s) of the column(s) representing the primary index of the score output.",
+            "datatype": "COLUMNS",
+            "allowsLists": true,
+            "rName": "exclude",
+            "useInR": true,
+            "rOrderNum": 3
+        }
+    ],
     "name_map": {
-        "LinearRegressionEvaluate": "linreg2"
+        "LinearRegressionEvaluate": "linreg2",
+        "IndexColumns": "linreg2_index_columns"
     },
     "type_map": {
-        "LinearRegressionEvaluate": "SEPARATOR"
+        "LinearRegressionEvaluate": "SEPARATOR",
+        "IndexColumns": "COLUMNS"
     },
     "choices_map": {}
 }

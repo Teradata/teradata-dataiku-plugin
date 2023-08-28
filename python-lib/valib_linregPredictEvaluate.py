@@ -46,10 +46,11 @@ def execute(recipe_config, function_name, valib_query_wrapper=None):
 
     model = linreg_input_name
 
+    index_columns = ",".join(recipe_config['linreg2_index_columns'])
+        
     # predict
     if 'Predict' in function_name:
 
-        index_columns = ",".join(recipe_config['linreg2_index_columns'])
         response_column = recipe_config['linreg2_response_column']
 
         if 'linreg2_accumulate' in recipe_config and recipe_config['linreg2_accumulate']:
@@ -74,7 +75,8 @@ def execute(recipe_config, function_name, valib_query_wrapper=None):
         outputtablename={};
         modeldatabase={};
         modeltablename={};
-        scoringmethod=scoreandevaluate;')""".format(verifyAttribute(val_location), verifyAttribute(database), verifyAttribute(tablename), verifyAttribute(outputdatabase), verifyAttribute(outputtablename), verifyAttribute(modeldatabase), verifyAttribute(model))
+        index={};
+        scoringmethod=scoreandevaluate;')""".format(verifyAttribute(val_location), verifyAttribute(database), verifyAttribute(tablename), verifyAttribute(outputdatabase), verifyAttribute(outputtablename), verifyAttribute(modeldatabase), verifyAttribute(model), verifyAttribute(index_columns))
 
     
     if not valib_query_wrapper:

@@ -2,23 +2,22 @@
   "json_schema_major_version": "1",
   "json_schema_minor_version": "2",
   "json_content_version": "1",
-  "function_name": "TD_GLM",
+  "function_name": "TD_GLMPerSegment",
   "function_version": "1.0",
   "function_type": "fastpath",
   "function_category": "Model Training",
-  "function_alias_name": "TD_GLM",
-  "function_r_name": "aa.td_glm",
-  "ref_function_r_name": "aa.td_glm",
-  "short_description": "This function gives score according to generalized linear model.",
-  "long_description": "This function gives score according to generalized linear model.",
+  "function_alias_name": "TD_GLMPerSegment",
+  "function_r_name": "aa.td_glmpersegment",
+  "short_description": "This function trains data to get generalized linear models. This function can train multiple models simutanously.",
+  "long_description": "This function trains data to get generalized linear models. This function can train multiple models simutanously.",
   "input_tables": [
     {
       "requiredInputKind": [
-        "PartitionByAny"
+        "PartitionByKey"
       ],
       "isOrdered": false,
       "partitionByOne": false,
-      "name": "inputtable",
+      "name": "InputTable",
       "alternateNames": [],
       "isRequired": true,
       "rDescription": "Specifies the table containing the input data.",
@@ -28,77 +27,95 @@
       "rName": "data",
       "useInR": true,
       "rOrderNum": 1
-    }
-  ],
-  "output_tables": [
+    },
     {
-      "isOutputTable": true,
-      "omitPossible": false,
-      "name": "MetaInformationTable",
+      "requiredInputKind": [
+        "PartitionByKey"
+      ],
+      "isOrdered": false,
+      "partitionByOne": false,
+      "name": "AttributeTable",
       "alternateNames": [],
       "isRequired": false,
-      "rDescription": "Specifies the name of the table in which the training progress information per iteration is stored.",
-      "description": "Specifies the name of the table in which the training progress information per iteration is stored.",
-      "datatype": "TABLE_NAME",
+      "rDescription": "Specifies the name of the attribute table.",
+      "description": "Specifies the name of the attribute table.",
+      "datatype": "TABLE_ALIAS",
       "allowsLists": false,
-      "rName": "output.table",
+      "rName": "attribute.data",
       "useInR": true,
       "rOrderNum": 2
+    },
+    {
+      "requiredInputKind": [
+        "PartitionByKey"
+      ],
+      "isOrdered": false,
+      "partitionByOne": false,
+      "name": "ParameterTable",
+      "alternateNames": [],
+      "isRequired": false,
+      "rDescription": "Specifies the name of the parameter table.",
+      "description": "Specifies the name of the parameter table.",
+      "datatype": "TABLE_ALIAS",
+      "allowsLists": false,
+      "rName": "parameter.data",
+      "useInR": true,
+      "rOrderNum": 3
     }
   ],
   "argument_clauses": [
     {
-      "targetTable": [
-        "inputtable"
-      ],
-      "checkDuplicate": true,
-      "allowedTypes": [],
-      "allowedTypeGroups": [
-        "NUMERIC"
-      ],
-      "matchLengthOfArgument": "",
-      "allowPadding": false,
-      "name": "InputColumns",
-      "alternateNames": [],
-      "isRequired": true,
-      "rDescription": "Specify the names of the input table columns that need to be used for training the model (predictors, features or independent variables).",
-      "description": "Specify the names of the input table columns that need to be used for training the model (predictors, features or independent variables).",
-      "datatype": "COLUMNS",
-      "allowsLists": true,
-      "rName": "input.columns",
-      "useInR": true,
-      "rFormulaUsage": true,
-      "rOrderNum": -1
+        "targetTable": [
+          "InputTable"
+        ],
+        "checkDuplicate": true,
+        "allowedTypes": [],
+        "allowedTypeGroups": [
+          "NUMERIC"
+        ],
+        "matchLengthOfArgument": "",
+        "allowPadding": false,
+        "name": "InputColumns",
+        "alternateNames": [],
+        "isRequired": true,
+        "rDescription": "Specify the names of the input table columns that need to be used for training the model (predictors, features or independent variables).",
+        "description": "Specify the names of the input table columns that need to be used for training the model (predictors, features or independent variables).",
+        "datatype": "COLUMNS",
+        "allowsLists": true,
+        "rName": "input.columns",
+        "useInR": true,
+        "rFormulaUsage": true,
+        "rOrderNum": -1
     },
     {
-      "targetTable": [
-        "inputtable"
-      ],
-      "checkDuplicate": true,
-      "allowedTypes": [],
-      "allowedTypeGroups": [
-        "NUMERIC"
-      ],
-      "matchLengthOfArgument": "",
-      "allowPadding": false,
-      "name": "ResponseColumn",
-      "alternateNames": [],
-      "isRequired": true,
-      "rDescription": "Specify the name of the column that contains the class label for classification or target value (dependent variable) for regression.",
-      "description": "Specify the name of the column that contains the class label for classification or target value (dependent variable) for regression.",
-      "datatype": "COLUMNS",
-      "allowsLists": false,
-      "rName": "response.column",
-      "useInR": true,
-      "rFormulaUsage": true,
-      "rOrderNum": 0
+        "targetTable": [
+          "InputTable"
+        ],
+        "checkDuplicate": true,
+        "allowedTypes": [],
+        "allowedTypeGroups": [
+          "NUMERIC"
+        ],
+        "matchLengthOfArgument": "",
+        "allowPadding": false,
+        "name": "ResponseColumn",
+        "alternateNames": [],
+        "isRequired": true,
+        "rDescription": "Specify the name of the column that contains the class label for classification or target value (dependent variable) for regression.",
+        "description": "Specify the name of the column that contains the class label for classification or target value (dependent variable) for regression.",
+        "datatype": "COLUMNS",
+        "allowsLists": false,
+        "rName": "response.column",
+        "useInR": true,
+        "rFormulaUsage": true,
+        "rOrderNum": 0
     },
     {
-      "defaultValue": "GAUSSIAN",
       "permittedValues": [
         "BINOMIAL",
         "GAUSSIAN"
       ],
+      "defaultValue": "GAUSSIAN",
       "isOutputColumn": false,
       "name": "Family",
       "alternateNames": [],
@@ -109,7 +126,7 @@
       "allowsLists": false,
       "rName": "family",
       "useInR": true,
-      "rOrderNum": 3
+      "rOrderNum": 4
     },
     {
       "defaultValue": 300,
@@ -121,13 +138,13 @@
       "name": "MaxIterNum",
       "alternateNames": [],
       "isRequired": false,
-      "rDescription": "Specify the maximum number of iterations over the training data batches. If the batch size is 0, MaxIterNum equals the number of epochs (an epoch is a single pass over entire training data). If there are 1000 rows in an AMP, and batch size is 10, then 100 iterations will result into one epoch and 500 iterations will result into 5 epochs over this AMP’s data. Because it is not guaranteed that the data will be equally distributed on all AMPs, this may result into different number of epochs for other AMPs. Must be a positive value less than 10,000,000.",
-      "description": "Specify the maximum number of iterations over the training data batches. If the batch size is 0, MaxIterNum equals the number of epochs (an epoch is a single pass over entire training data). If there are 1000 rows in an AMP, and batch size is 10, then 100 iterations will result into one epoch and 500 iterations will result into 5 epochs over this AMP’s data. Because it is not guaranteed that the data will be equally distributed on all AMPs, this may result into different number of epochs for other AMPs. Must be a positive value less than 10,000,000.",
+      "rDescription": "Specify the maximum number of iterations over the training data batches. In epoch mode, MaxIterNum equals the number of epochs (an epoch is a single pass over entire training data). In batch mode, if the batch size is 0, MaxIterNum equals the number of epochs. If there are 1000 rows in an AMP, and batch size is 10, then 100 iterations will result into one epoch and 500 iterations will result into 5 epochs over this AMP’s data.",
+      "description": "Specify the maximum number of iterations over the training data batches. In epoch mode, MaxIterNum equals the number of epochs (an epoch is a single pass over entire training data). In batch mode, if the batch size is 0, MaxIterNum equals the number of epochs. If there are 1000 rows in an AMP, and batch size is 10, then 100 iterations will result into one epoch and 500 iterations will result into 5 epochs over this AMP’s data.",
       "datatype": "INTEGER",
       "allowsLists": false,
       "rName": "iter.max",
       "useInR": true,
-      "rOrderNum": 4
+      "rOrderNum": 5
     },
     {
       "defaultValue": 10,
@@ -145,7 +162,7 @@
       "allowsLists": false,
       "rName": "batch.size",
       "useInR": true,
-      "rOrderNum": 5
+      "rOrderNum": 6
     },
     {
       "defaultValue": 0.02,
@@ -163,7 +180,7 @@
       "allowsLists": false,
       "rName": "lambda1",
       "useInR": true,
-      "rOrderNum": 6
+      "rOrderNum": 7
     },
     {
       "defaultValue": 0.15,
@@ -181,7 +198,7 @@
       "allowsLists": false,
       "rName": "alpha",
       "useInR": true,
-      "rOrderNum": 7
+      "rOrderNum": 8
     },
     {
       "defaultValue": 50,
@@ -199,7 +216,7 @@
       "allowsLists": false,
       "rName": "iter.num.no.change",
       "useInR": true,
-      "rOrderNum": 8
+      "rOrderNum": 9
     },
     {
       "defaultValue": 0.001,
@@ -217,7 +234,7 @@
       "allowsLists": false,
       "rName": "tolerance",
       "useInR": true,
-      "rOrderNum": 9
+      "rOrderNum": 10
     },
     {
       "defaultValue": true,
@@ -230,7 +247,7 @@
       "allowsLists": false,
       "rName": "intercept",
       "useInR": true,
-      "rOrderNum": 10
+      "rOrderNum": 11
     },
     {
       "defaultValue": "0:1.0, 1:1.0",
@@ -244,7 +261,7 @@
       "allowsLists": false,
       "rName": "class.weights",
       "useInR": true,
-      "rOrderNum": 11
+      "rOrderNum": 12
     },
     {
       "permittedValues": [
@@ -263,7 +280,7 @@
       "allowsLists": false,
       "rName": "learning.rate",
       "useInR": true,
-      "rOrderNum": 12
+      "rOrderNum": 13
     },
     {
       "defaultValue": 0.05,
@@ -281,7 +298,7 @@
       "allowsLists": false,
       "rName": "initial.eta",
       "useInR": true,
-      "rOrderNum": 13
+      "rOrderNum": 14
     },
     {
       "defaultValue": 0.25,
@@ -299,7 +316,7 @@
       "allowsLists": false,
       "rName": "decay.rate",
       "useInR": true,
-      "rOrderNum": 14
+      "rOrderNum": 15
     },
     {
       "defaultValue": 5,
@@ -317,7 +334,7 @@
       "allowsLists": false,
       "rName": "decay.steps",
       "useInR": true,
-      "rOrderNum": 15
+      "rOrderNum": 16
     },
     {
       "defaultValue": 0.0,
@@ -335,7 +352,7 @@
       "allowsLists": false,
       "rName": "momentum",
       "useInR": true,
-      "rOrderNum": 16
+      "rOrderNum": 17
     },
     {
       "defaultValue": true,
@@ -348,85 +365,47 @@
       "allowsLists": false,
       "rName": "nesterov",
       "useInR": true,
-      "rOrderNum": 17
-    },
-    {
-      "defaultValue": 0,
-      "lowerBound": 0,
-      "upperBound": 1e7,
-      "lowerBoundType": "INCLUSIVE",
-      "upperBoundType": "INCLUSIVE",
-      "allowNaN": false,
-      "name": "LocalSGDIterations",
-      "alternateNames": [],
-      "isRequired": false,
-      "rDescription": "Specify the number of local iterations to be used for Local SGD algorithm. Must be a positive integer value. A value of 0 implies Local SGD is disabled. A value higher than 0 enables Local SGD and that many local iterations are performed before updating the weights for the global model. With Local SGD algorithm, recommended values for arguments are as follows: LocalSGDIterations: 10, MaxIterNum: 100, BatchSize: 50, IterNumNoChange: 5.",
-      "description": "Specify the number of local iterations to be used for Local SGD algorithm. Must be a positive integer value. A value of 0 implies Local SGD is disabled. A value higher than 0 enables Local SGD and that many local iterations are performed before updating the weights for the global model. With Local SGD algorithm, recommended values for arguments are as follows: LocalSGDIterations: 10, MaxIterNum: 100, BatchSize: 50, IterNumNoChange: 5.",
-      "datatype": "INTEGER",
-      "allowsLists": false,
-      "rName": "local.sgd.iterations",
-      "useInR": true,
       "rOrderNum": 18
     },
     {
       "permittedValues": [
-        "FORWARD",
-        "BACKWARD",
-        "BOTH",
-        "BIDIRECTIONAL"
+        "BATCH", 
+        "EPOCH"
       ],
+      "defaultValue": "BATCH",
       "isOutputColumn": false,
-      "name": "StepwiseDirection",
+      "name": "IterationMode",
       "alternateNames": [],
       "isRequired": false,
-      "rDescription": "Specify the type of algorithm to be used. Acceptable values are 'forward', 'backward', 'both', and 'bidirectional'.",
-      "description": "Specify the type of algorithm to be used. Acceptable values are 'forward', 'backward', 'both', and 'bidirectional'.",
+      "rDescription": "Specify the iteration mode. Acceptable values are Batch, Epoch, where Batch is one iteration per batch and Epoch is one iteration per epoch.",
+      "description": "Specify the iteration mode. Acceptable values are Batch, Epoch, where Batch is one iteration per batch and Epoch is one iteration per epoch.",
       "datatype": "STRING",
       "allowsLists": false,
-      "rName": "stepwise.direction",
+      "rName": "iteration.mode",
       "useInR": true,
       "rOrderNum": 19
     },
     {
-      "defaultValue": 5,
-      "lowerBound": 1,
-      "upperBound": 2147483647,
-      "lowerBoundType": "INCLUSIVE",
-      "upperBoundType": "INCLUSIVE",
-      "allowNaN": false,
-      "name": "MaxStepsNum",
-      "alternateNames": [],
-      "isRequired": false,
-      "rDescription": "Specify the maximum number of steps to be used for the Stepwise Algorithm.",
-      "description": "Specify the maximum number of steps to be used for the Stepwise Algorithm.",
-      "datatype": "INTEGER",
-      "allowsLists": false,
-      "rName": "max.steps.num",
-      "useInR": true,
-      "rOrderNum": 20
-    },
-    {
-      "targetTable": [
-        "inputtable"
-      ],
-      "checkDuplicate": true,
-      "allowedTypes": [],
-      "allowedTypeGroups": [
-        "NUMERIC"
-      ],
-      "matchLengthOfArgument": "",
-      "allowPadding": false,
-      "name": "InitialStepwiseColumns",
-      "alternateNames": [],
-      "isRequired": false,
-      "rDescription": "Specify the names of the initial state model columns that need to be used as starting point for Stepwise Regression algorithm (predictors, features or independent variables).",
-      "description": "Specify the names of the initial state model columns that need to be used as starting point for Stepwise Regression algorithm (predictors, features or independent variables).",
-      "datatype": "COLUMNS",
-      "allowsLists": true,
-      "rName": "initial.stepwise.columns",
-      "useInR": true,
-      "rFormulaUsage": true,
-      "rOrderNum": 21
+        "targetTable": [
+          "InputTable"
+        ],
+        "checkDuplicate": false,
+        "allowedTypes": [],
+        "allowedTypeGroups": [
+          "STRING"
+        ],
+        "matchLengthOfArgument": "",
+        "allowPadding": false,
+        "name": "PartitionColumn",
+        "alternateNames": [],
+        "isRequired": false,
+        "rDescription": "Specify the name of the InputTable columns on which to partition the input. The name should be consistent with the partition_by_column in the ON clause. If the partition_by_column is unicode with foreign language characters, it is necessary to specify PartitionColumn argument. Note: Column range is not supported for PartitionColumn argument.",
+        "description": "Specify the name of the InputTable columns on which to partition the input. The name should be consistent with the partition_by_column in the ON clause. If the partition_by_column is unicode with foreign language characters, it is necessary to specify PartitionColumn argument. Note: Column range is not supported for PartitionColumn argument.",
+        "datatype": "COLUMNS",
+        "allowsLists": false,
+        "rName": "partition.column",
+        "useInR": true,
+        "rOrderNum": 20
     }
   ]
 }

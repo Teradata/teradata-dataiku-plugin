@@ -1,0 +1,139 @@
+{
+  "json_schema_major_version": "1",
+  "json_schema_minor_version": "1",
+  "json_content_version": "1",
+  "function_name": "TD_DecisionForestPredict",
+  "function_version": "1.0",
+  "function_type": "fastpath",
+  "function_category": "Model Scoring",
+  "function_alias_name": "TDDecisionForestPredict",
+  "function_r_name": "td.decisionforest.predict",
+  "ref_function_r_name": "aa.td_decisionforest",
+  "short_description": "This function generates predictions on a response variable for a dataset.",
+  "long_description": "This function uses a decision forest model from the TD_DecisionForest function to create predictions on a response variable for a test dataset.",
+  "input_tables": [
+    {
+      "requiredInputKind": [
+        "PartitionByAny"
+      ],
+      "isOrdered": false,
+      "partitionByOne": false,
+      "name": "InputTable",
+      "alternateNames": [],
+      "isRequired": true,
+      "rDescription": "Specifies the table containing the input test data.",
+      "description": "Specifies the table containing the input test data.",
+      "datatype": "TABLE_ALIAS",
+      "allowsLists": false,
+      "rName": "data",
+      "useInR": true,
+      "rOrderNum": 1
+    },
+    {
+      "requiredInputKind": [
+        "Dimension"
+      ],
+      "isOrdered": false,
+      "partitionByOne": false,
+      "name": "ModelTable",
+      "alternateNames": [],
+      "isRequired": true,
+      "rDescription": "Specifies the table containing the model data.",
+      "description": "Specifies the table containing the model data.",
+      "datatype": "TABLE_ALIAS",
+      "allowsLists": false,
+      "rName": "object",
+      "useInR": true,
+      "rOrderNum": 2
+    }
+  ],
+  "argument_clauses": [
+    {
+      "targetTable": [
+        "InputTable"
+      ],
+      "checkDuplicate": true,
+      "allowedTypes": [],
+      "allowedTypeGroups": [
+        "ALL"
+      ],
+      "requiredLength": 1,
+      "matchLengthOfArgument": "",
+      "allowPadding": false,
+      "name": "IDColumn",
+      "alternateNames": [],
+      "isRequired": true,
+      "rDescription": "Specifies a column containing a unique identifier for each test point in the test set.",
+      "description": "Specifies a column containing a unique identifier for each test point in the test set.",
+      "datatype": "COLUMNS",
+      "allowsLists": false,
+      "rName": "id.column",
+      "useInR": true,
+      "rOrderNum": 3
+    },
+    {
+      "defaultValue": false,
+      "name": "Detailed",
+      "alternateNames": [],
+      "isRequired": false,
+      "rDescription": "Specifies whether to output detailed information about the forest trees; that is, the decision tree and the specific tree information, including task index and tree index for each tree. The default value is 'false'.",
+      "description": "Specifies whether to output detailed information about the forest trees; that is, the decision tree and the specific tree information, including task index and tree index for each tree. The default value is 'false'.",
+      "datatype": "BOOLEAN",
+      "allowsLists": false,
+      "rName": "detailed",
+      "useInR": true,
+      "rOrderNum": 4
+    },
+    {
+      "defaultValue": false,
+      "name": "OutputProb",
+      "alternateNames": [],
+      "isRequired": false,
+      "rDescription": "Specifies whether to output probabilities. The default value is 'false'.",
+      "description": "Specifies whether to output probabilities. The default value is 'false'.",
+      "datatype": "BOOLEAN",
+      "allowsLists": false,
+      "rName": "output.prob",
+      "useInR": true,
+      "rOrderNum": 5
+    },
+    {
+      "permittedValues": [],
+      "isOutputColumn": false,
+      "matchLengthOfArgument": "",
+      "allowPadding": false,
+      "name": "Responses",
+      "alternateNames": [],
+      "isRequired": false,
+      "rDescription": "Specifies responses for which to output probabilitites.",
+      "description": "Specifies responses for which to output probabilitites.",
+      "datatype": "STRING",
+      "allowsLists": true,
+      "rName": "responses",
+      "useInR": true,
+      "rOrderNum": 6
+    },
+    {
+      "targetTable": [
+        "InputTable"
+      ],
+      "checkDuplicate": true,
+      "allowedTypes": [],
+      "allowedTypeGroups": [
+        "ALL"
+      ],
+      "matchLengthOfArgument": "",
+      "allowPadding": false,
+      "name": "Accumulate",
+      "alternateNames": [],
+      "isRequired": false,
+      "rDescription": "Specifies the names of the input columns to copy to the output table.",
+      "description": "Specifies the names of the input columns to copy to the output table.",
+      "datatype": "COLUMNS",
+      "allowsLists": true,
+      "rName": "accumulate",
+      "useInR": true,
+      "rOrderNum": 7
+    }
+  ]
+}

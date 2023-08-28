@@ -25,12 +25,13 @@
 
     "inputRoles": [
         {
-            "name": "model",
+            "name": "source",
             "label": "Deployed model",
             "arity": "UNARY",
-            "required": true,
-            "acceptsDataset": false,
-            "acceptsSavedModel": true
+            "acceptsSavedModel": true,
+            "acceptsManagedFolder": true,
+            "acceptsDataset":false,
+            "required": true
         }
         // ...
     ],
@@ -57,7 +58,65 @@
     */
     "paramsPythonSetup": "computechoices.py",
     "params": [
-      
+        {
+            "name": "sep0",
+            "label": "Export Format",
+            "type": "SEPARATOR"
+        },
+        {
+            "name": "exporttype",
+            "label":"Export Model As",
+            "description": "Select the format in which model has to be exported",
+            "defaultValue": "native",
+            "type": "SELECT",
+            "selectChoices": [
+                {
+                    "value": "pmml",
+                    "label": "PMML"
+                },
+                {
+                    "value": "h2o",
+                    "label": "H2O MOJO"
+                },
+                {
+                    "value": "native",
+                    "label": "Dataiku"
+                },
+                {
+                    "value": "onnx",
+                    "label": "ONNX"
+                }
+            ]
+        },
+        {
+            "name": "files",
+            "label": "Select model file",
+            "getChoicesFromPython": true,
+            "type": "SELECT",
+            "description": "Select the model saved locally",
+            "visibilityCondition": "model.exporttype == 'h2o' || model.exporttype == 'onnx'"
+        },
+        // Will be removed once dataikuPredict function update releases.
+        // {
+        //     "name": "classname",
+        //     "label": "Class name",
+        //     "type":"STRING",
+        //     "defaultValue":"com.company.project.Model",
+        //     "description":"The model is exported as a Java class. You need to enter its fully-qualified name.",
+        //     "visibilityCondition": "model.exporttype == 'native'",
+        //     "mandatory":true
+        // },
+        // This is to include scoring libs in download or not. By default we currently do a Full download i.e packed with dependancy and might support thin download i.e download scoring libs seperately, later 
+        // {
+        //     "name": "include_lib",
+        //     "label": "Include libraries",
+        //     "type":"BOOLEAN",
+        //     "defaultValue":true,
+        //     "description":"Check this box to pack required dependancies, uncheck to include your own libraries for scoring",
+        //     "visibilityCondition": "model.exporttype == 'native'",
+        //     "mandatory":true
+
+        // },
         {
             "name": "sep1",
             "label": "Vantage Connection Properties",
@@ -117,7 +176,6 @@
         }
         // The 'COLUMNS' type works in the same way, except that it is a list of strings.
     ],
-
     // The field "resourceKeys" holds a list of keys that allows to limit the number
     // of concurrent executions and activities triggered by this recipe.
     //

@@ -8,6 +8,7 @@
   "function_category": "Feature Engineering Transform",
   "function_alias_name": "TD_OneHotEncodingTransform",
   "function_r_name": "aa.td_one.hot.encoding.transform",
+  "ref_function_r_name": "aa.td_one.hot.encoding.fit",
   "short_description": "fastpath function used to encode categorical features as a one-hot numeric vectors using the information from the TD_OneHotEncodingFit function",
   "long_description": "fastpath function used to encode categorical features as a one-hot numeric vectors using the information from the TD_OneHotEncodingFit function",
   "input_tables": [

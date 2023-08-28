@@ -88,7 +88,6 @@
             "rOrderNum": 4
         },
         {
-            "defaultValue": 0,
             "lowerBound": 0,
             "upperBound": 2147483647,
             "lowerBoundType": "INCLUSIVE",

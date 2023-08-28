@@ -2,7 +2,7 @@
   "json_schema_major_version": "1",
   "json_schema_minor_version": "1",
   "json_content_version": "1",
-  "function_name": "TD_FillRowId",
+  "function_name": "TD_FillRowID",
   "function_version": "1.0",
   "function_type": "fastpath",
   "function_category": "Feature Engineering Utility",

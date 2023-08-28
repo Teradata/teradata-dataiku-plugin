@@ -949,6 +949,12 @@
             "name": "PLOTS.SERIES.LINESTYLE",
             "listType": "string",
             "defaultValue": "-",
+            "permittedValues": [
+                "-",
+                "--",
+                "-.",
+                ":"
+            ],
             "allowsLists": true,
             "Type": "string",
             "datatype": "STRING",
@@ -1138,6 +1144,12 @@
         {
             "name": "PLOTS.GRID.LINESTYLE",
             "defaultValue": "-",
+            "permittedValues": [
+                "-",
+                "--",
+                "-.",
+                ":"
+            ],
             "allowsLists": false,
             "Type": "string",
             "datatype": "STRING",
@@ -1183,7 +1195,7 @@
             "allowsLists": false,
             "Type": "string",
             "datatype": "STRING",
-            "description": "The name of the color map to be used with mesh plot.  The default is \u2018viridis\u2019.",
+            "description": "The name of the color map to be used with mesh plot.  The default is \u2018viridis\u2019. The following color maps are supported (https://matplotlib.org/stable/tutorials/colors/colormaps.html ) and ( https://matplotlib.org/cmocean/ )",
             "isRequired": false,
             "rOrderNum": 52
         },
@@ -1278,6 +1290,11 @@
         {
             "name": "IMAGE",
             "defaultValue": "PNG",
+            "permittedValues": [
+                "PNG",
+                "JPEG",
+                "SVG"
+            ],
             "allowsLists": false,
             "Type": "string",
             "datatype": "STRING",

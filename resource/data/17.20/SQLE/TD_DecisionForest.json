@@ -192,7 +192,7 @@
       ],
       "defaultValue": "REGRESSION",
       "isOutputColumn": false,
-      "name": "TreeType",
+      "name": "ModelType",
       "alternateNames": [],
       "isRequired": false,
       "rDescription": "Specify whether the analysis is a regression (continuous response variable) or a multiple-class classification (predicting result from the number of classes).",

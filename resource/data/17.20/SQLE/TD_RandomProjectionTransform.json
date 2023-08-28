@@ -8,6 +8,7 @@
   "function_category": "Feature Engineering Transform",
   "function_alias_name": "TD_RandomProjectionTransform",
   "function_r_name": "aa.td_randomprojection.transform",
+  "ref_function_r_name": "aa.td_randomprojection.fit",
   "short_description": "fastpath function for transforming the data from high dimensional space to low dimensional space using RandomProjection algorithm.",
   "long_description": "fastpath function for transforming the data from high dimensional space to low dimensional space using RandomProjection algorithm.",
   "input_tables": [

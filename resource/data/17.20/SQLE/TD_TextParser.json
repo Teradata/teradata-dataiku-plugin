@@ -141,7 +141,7 @@
 			"rOrderNum": 7
 		},
 		{
-			"defaultValue": " \\\\t\\\\n\\\\f\\\\r",
+			"defaultValue": " \\t\\n\\f\\r",
 			"isOutputColumn": false,
 			"matchLengthOfArgument": "",
 			"allowPadding": false,
@@ -157,7 +157,7 @@
 			"rOrderNum": 8
 		},
 		{
-			"defaultValue": "!#$%&()*+,-./:;?@\\\\^_`{|}~",
+			"defaultValue": "!#$%&()*+,-./:;?@\\^_`{|}~",
 			"isOutputColumn": false,
 			"matchLengthOfArgument": "",
 			"allowPadding": false,
