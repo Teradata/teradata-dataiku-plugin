@@ -113,8 +113,8 @@
                 "HR_TO_RAW"
             ],
             "allowsLists": false,
-            "Type": "integer",
-            "datatype": "INTEGER",
+            "Type": "string",
+            "datatype": "STRING",
             "description": "Required Parameter that specifies the type of conversion to be performed by this function: convert from human readable to raw form; or, convert from raw form to human readable form.",
             "isRequired": true,
             "rOrderNum": 4

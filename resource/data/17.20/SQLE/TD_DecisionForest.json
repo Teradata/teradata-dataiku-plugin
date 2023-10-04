@@ -18,7 +18,7 @@
       ],
       "isOrdered": false,
       "partitionByOne": false,
-      "name": "input",
+      "name": "inputtable",
       "alternateNames": [],
       "isRequired": true,
       "rDescription": "Specifies the table containing the input data.",
@@ -33,7 +33,7 @@
   "argument_clauses": [
     {
       "targetTable": [
-        "input"
+        "inputtable"
       ],
       "checkDuplicate": true,
       "allowedTypes": [],
@@ -56,7 +56,7 @@
     },
     {
       "targetTable": [
-        "input"
+        "inputtable"
       ],
       "checkDuplicate": true,
       "allowedTypes": [],
