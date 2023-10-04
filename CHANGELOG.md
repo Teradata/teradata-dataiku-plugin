@@ -1,7 +1,9 @@
 # Teradata Plugin Changelog
 
-## Versions 2.4.11, 2.4.12 (September 2023)
+# Versions 3.0.11, 3.0.12 (October 2023)
 
+* This version fully supports connections to all Teradata Vantage systems (VantageCloud Lake, VantageCloud Enterprise, and Vantage Core.)
+* New feature: The in-database scripting recipe has been expanded to include using the Open Analytics Framework and the APPLY Table Operator in VantageCloud Lake systems. The recipe adjusts to the corresponding suitable interface depending on the Teradata Vantage system type where the inputs reside.
 * Support for ONNX and Dataiku native model formats in BYOM recipes.
 * Minor updates to some of the Analytic Functions definition JSON files.
 

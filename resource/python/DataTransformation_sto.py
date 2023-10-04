@@ -1,11 +1,5 @@
-import dataiku
-import json
-import os
-import logging
-
-# -*- coding: utf-8 -*-
 '''
-Copyright © 2018 by Teradata.
+Copyright Â© 2018 by Teradata.
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
 associated documentation files (the "Software"), to deal in the Software without restriction,
 including without limitation the rights to use, copy, modify, merge, publish, distribute,
@@ -19,13 +13,93 @@ NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FO
 DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 '''
-
+import platform
+import dataiku
+import json
+import os
+import logging
 import sys
+import httpx as requests
+from time import time, sleep
+import keyring as kr 
+from keyrings.cryptfile.cryptfile import CryptFileKeyring
 sys.path.append('../../python-lib')
+
+from teradataml.scriptmgmt import list_base_envs, list_user_envs, create_env, remove_env,get_env
+from teradataml.scriptmgmt import UserEnv,set_auth_token
+from teradataml.options import configure
+from teradataml.datetime_helpers import (
+    datetime_from_iso_string,
+    datetime_plus_seconds,
+    now_datetime,
+)
+from query_engine_wrapper import QueryEngineWrapper
 import auth
+import jwt
+
+
+
+
+def get_access_token():
+        """
+        Sets the access token
+        """
+        jwt_first_half=kr.get_password("openAF", "jwt_first_half")
+        jwt_second_half=kr.get_password("openAF", "jwt_second_half")
+        jwt_expiry=kr.get_password("openAF", "jwt_expiry")
+        if jwt_first_half and jwt_second_half:
+                jwt = jwt_first_half + jwt_second_half
+        # if JWT is not expired setting it to CONFIGURE and use it in OPENAF service calls
+                if (
+                    jwt 
+                    and jwt_expiry
+                    and now_datetime() < datetime_from_iso_string(jwt_expiry)
+                ):
+                    configure.auth_token=jwt
+
+                else:
+                    # if JWT is expired deleting JWT and JWT_EXPIRY from key ring
+                    if jwt_first_half:
+                        kr.delete_password(
+                            "openAF", "jwt_first_half"
+                        )
+                    if jwt_second_half:
+                        kr.delete_password(
+                            "openAF", "jwt_second_half"
+                        )
+                    if jwt_expiry:
+                        kr.delete_password(
+                            "openAF", "jwt_expiry"
+                        )
+                    jwt = None
+                # Decode and verify the JWT, and print the subject claim
+                if not jwt:
+                    raise Exception("Authentication Error.Please Try again!")
+                jwt="0000"
+                    
 
 
 FUNCTION_CATEGORY="Data Transformation"
+
+# client is a dataikuapi.DSSClient
+client = dataiku.api_client()
+auth_info = client.get_auth_info(with_secrets=True)
+
+# Subclass of query engine wrapper implemented with a Dataiku SQLExecutor2
+# An instance of this class will be created when we use the functions in analytic_function_utility and vantage_version
+class DataikuQueryEngineWrapper(QueryEngineWrapper):
+    def __init__(self, executor):
+        self.executor = executor
+
+
+    def execute(self, query_string):
+        return self.executor.query_to_df(query_string)
+
+    def iteratable(self, result):
+        return result.iterrows()
+
+    def row_value(self, row, column_name):
+        return row[1][column_name]
 
 def sto_database(inputdataset):
     if inputdataset == None:
@@ -45,26 +119,8 @@ def sto_database(inputdataset):
     return result
 
 
-def get_auth_token(inputdataset):
-    if inputdataset == None:
-        return ''
-    connections = {}
-    connectionName = inputdataset.get_location_info()['info']['connectionName']
-    connections = auth.addConnection(connections, connectionName)
-    result = None
-    if "dkuProperties" in connections[connectionName]['params']:
-        dkuProperties = connections[connectionName]['params']['dkuProperties']
-        for item in dkuProperties:
-            if item['name'] == "Auth_token":
-                result = item['value']
-                break
-    if not result:
-        return ''
-    return result
-    
-
 def getCurrentConnectionName(inputDataset):
-    #input Dataset is the output of dataiku.Dataset("dataset name"
+    #input Dataset is the output of dataiku.Dataset("dataset name")
     return inputDataset.get_location_info().get('info', {}).get('connectionName',
                                                                 '')
 
@@ -79,13 +135,19 @@ def getConnectionParamsFromDataset(inputDataset):
 # paylaod is sent from the javascript's callPythonDo()
 # config and plugin_config are the recipe/dataset and plugin configured values
 # inputs is the list of input roles (in case of a recipe)
-def do(payload, config, plugin_config, inputs):
+def do_execute(payload, config, plugin_config, inputs):
     inputDataSets = []
     # print(inputtablename)
     connection = {}
     project = ''
     inputFolderLocation = None
     inputdataset = None
+    
+    # SKS initiate Dataset/SQLExecuter2
+    input_table_name = inputs[0]['fullName'].split('.')[1]
+    input_dataset =  dataiku.Dataset(input_table_name)
+    
+
     for input in inputs:
         if(input.get('role') == 'main'):
             inputtablename = input['fullName'].split('.')[1]
@@ -100,6 +162,468 @@ def do(payload, config, plugin_config, inputs):
 
     folderpath = inputFolderLocation.get_path() if inputFolderLocation else ''
 
+    # Create the Dataiku SQL Executor
+    # executor = dataiku.core.sql.SQLExecutor2(dataset=input_dataset) 
+    # Acessing username using DBC table present in every connection
+    def get_username():
+        jwt_first_half=kr.get_password("openAF", "jwt_first_half")
+        jwt_second_half=kr.get_password("openAF", "jwt_second_half")
+        jwt_expiry=kr.get_password("openAF", "jwt_expiry")
+        if jwt_first_half and jwt_second_half:
+                jwt_token = jwt_first_half + jwt_second_half
+
+        decoded_token = jwt.decode(jwt=jwt_token, verify=False, options={'verify_signature': False})
+        user_name = decoded_token['given_name']
+        return user_name
+       
+    if "tabs_auth" in payload:
+       try:
+           
+           values = set_auth_token(payload.get('ues_url'))
+           uri = values['uri']
+           result=uri+""
+           
+           return {'result' : result, 'poll_data' : values['poll_data'] }
+       
+       except Exception as e:
+            return {'result' :  "Authentication failed. Please try again."}
+    
+     
+    if "poll_req" in payload:
+        try:
+                poll_data =payload.get('poll_data')
+                access_token=''
+                if platform.system()=='Linux' or platform.system()=='Darwin':
+                    # cryptfile as backend only for  Linux
+                    cryptfile = CryptFileKeyring()
+                    cryptfile.keyring_key = "tdextroutine_key"
+                    kr.set_keyring(cryptfile)
+                start_time = time()
+                while time() - start_time <= 120:
+                    poll_response = requests.post(
+                        url=poll_data[1],
+                        data=poll_data[2],
+                        verify=True)
+        
+                    if poll_response.status_code == 200:
+                        access_token = poll_response.json()['access_token'] 
+                        expires_in = poll_response.json()["expires_in"]
+                        expires_at = datetime_plus_seconds(
+                        now_datetime(),
+                        expires_in - 30,  # to be safe, subtract 30s from expiry
+                        ).isoformat()
+                        jwt_first_half, jwt_second_half = (
+                        access_token[: len(access_token) // 2],
+                        access_token[len(access_token) // 2 :],
+                        )
+                        kr.set_password(
+                            "openAF",
+                            "jwt_first_half",
+                            jwt_first_half,
+                        )
+                        kr.set_password(
+                           "openAF",
+                            "jwt_second_half",
+                            jwt_second_half,
+                        )
+                        kr.set_password(
+                            "openAF",
+                            "jwt_expiry",
+                            expires_at,
+                        )
+                        jwt_first_half="000000"
+                        jwt_second_half="000000"
+
+                        break
+                    
+                    else:
+                        # Poll the token endpoint at the specified interval for an access token.
+                        sleep(poll_data[3])
+                        
+                if access_token:
+                    access_token="00000"
+                    return {'result' : "Authentication has been completed successfully."}
+                else:
+                    return {'result' : "Authentication Failed. Please try again."}
+
+        except Exception as e:
+                    return {'result' : "Authentication Failed. Please try again."}
+
+    
+           
+    if "delete_env" in payload:
+        try:
+                try:
+                    get_access_token()
+
+                       
+                except Exception as e:
+                    return {'result' : "Authentication Failed. Please try again."}                
+                remove_env(env_name=payload['environment_name'],user=get_username())
+                result = "User environment  " + payload["environment_name"] + " has been removed."
+                configure.auth_token="0000"
+                return {'result' : result}
+            
+        except Exception as e:
+               return {'result' :  str(e).replace("<"," ").replace(">", " ")}
+
+    
+    if "base_env" in payload:
+       try:
+           
+           get_access_token()
+           a = list_base_envs()
+           a=a.to_dict('split')
+           result =[]
+           for l in a['data']:
+               result.append(l[0])
+           result.append("Click to refresh list")
+           configure.auth_token="0000"
+
+
+           return {'choices' : result}
+       
+       except:
+               return {'choices' : ["N/A","Click to refresh list"]}
+    if "environment_name" in payload:
+       try:
+           get_access_token()
+
+           a=list_user_envs(user=get_username())
+           a=a.to_dict('split')
+           result =[]
+           for l in a['data']:
+               result.append(l[2])
+           result.append("Click to refresh list")
+           configure.auth_token="0000"
+
+
+           return {'names' : result}
+       
+       except:
+               return {'names' : ['N/A',"Click to refresh list"]}
+
+    if "create_env" in payload:
+        try:
+            try:
+                get_access_token()
+                       
+            except Exception as e:
+                    return {'result' : "Authentication failed. Please try again."}
+            
+            demo_env = create_env(env_name = payload["envName"] ,
+                          base_env = payload["baseEnv"],
+                          desc = payload["des"],user=get_username())
+            if demo_env:
+                result = "User environment  " + payload["envName"] + " has been created."
+                configure.auth_token="0000"
+
+                return {'result' : result}
+        except Exception as e:
+               return {'result' :  str(e).replace("<"," ").replace(">", " ")}
+            
+            
+
+    if "file_name" in payload:
+       try:
+           
+           get_access_token()
+           env=get_env(env_name=payload["envName"],user=get_username())
+           
+           a=env.files(user=get_username())
+           a=a.values.tolist()
+           
+           result =[]
+           
+           for l in a:
+               result.append(l[1])
+           result.append("Click to refresh list")
+           
+           configure.auth_token="0000"
+           return {'files' : result}
+       
+       
+       except:
+           return {'files' : ["N/A","Click to refresh list"]}
+       
+       
+
+    if "lib_name" in payload:
+       try:
+           get_access_token()
+           env=get_env(env_name=payload["envName"],user=get_username())
+           
+           a=env.libs(user=get_username())
+           a=a.values.tolist()
+
+           result =[]
+           
+           for l in a:
+               i=0
+               j=1
+               result.append(""+l[i]+"=="+l[j])
+               i+=1
+               j+=1
+           result.append("Click to refresh list")
+           configure.auth_token="0000"
+
+           return {'libs' : result}
+       
+       except:
+           return {'libs' : ["N/A","Click to refresh list"]}
+    
+    if "install_libs" in payload:
+        try:
+                try:
+                    get_access_token()
+                       
+                except Exception as e:
+                    return {'result' : "Authentication failed. Please try again."}
+                libs=payload.get("libs")
+                env=get_env(env_name=payload["envName"],user=get_username())
+                if len(libs)==0:
+                    file_path= os.path.join(folderpath,payload.get("req_lib"))
+                    claim_id=env.install_lib(libs_file_path=file_path, asynchronous=True,user=get_username())
+                    
+                else:
+                    # Split the string into a list of strings based on commas
+                    libs = libs.split(',')
+                    claim_id=env.install_lib(libs, asynchronous=True,user=get_username())
+
+                df=env.status(payload.get('claim_id'),user=get_username())
+                df_string = ""
+                # To directly convert the output to html:
+                #df = df[['Claim Id','File/Libs', 'Method Name', 'Timestamp']]
+                #df_string=df.to_html(border=1)+""
+                for index, row in df.iterrows():
+                    for column_name, value in row.items():
+                        if column_name in ['Claim Id','File/Libs', 'Method Name', 'Timestamp']:
+                            df_string += f"{column_name}: {value} <br>"
+                    df_string+=f"<br>"
+                result="Installation is initiated. Check the status using 'Status' button with the claim id:"+ claim_id 
+                configure.auth_token="0000"
+
+                return {'result': result,'status':df_string}
+        except Exception as e:
+               return {'result' : str(e).replace("<"," ").replace(">", " ")}
+           
+    if "uninstall_libs" in payload:
+        try:
+            try:
+                get_access_token()
+                       
+            except Exception as e:
+                    return {'result' : "Authentication failed. Please try again."}
+            libs=payload.get("libs")
+            libs = libs.split(',')
+            env=get_env(env_name=payload["envName"],user=get_username())
+            claim_id=env.uninstall_lib(libs, asynchronous=True,user=get_username())
+            result="Uninstallation is initiated. Check the status using 'Status' button with the claim id:" +claim_id
+            df=env.status(payload.get('claim_id'),user=get_username())
+            df_string=""
+            status=''
+                # To directly convert the output to html:
+
+                #df = df[['Claim Id','File/Libs', 'Method Name', 'Timestamp']]
+                #df_string=df.to_html(border=1)+""
+                
+            for index, row in df.iterrows():
+                for column_name, value in row.items():
+                    if column_name in ['Claim Id','File/Libs', 'Method Name', 'Timestamp']:
+                        df_string += f"{column_name}: {value} <br>"
+                df_string+=f"<br>"
+                
+            configure.auth_token="0000"
+
+            return {'result': result, 'status':df_string}
+        except Exception as e:
+               return {'result' :  str(e).replace("<"," ").replace(">", " ")}
+  
+    if "update_libs" in payload:
+        try:
+                try:
+                    get_access_token()
+                       
+                except Exception as e:
+                    return {'result' : "Authentication failed. Please try again."}                
+                libs=payload.get("libs")
+                env=get_env(env_name=payload["envName"],user=get_username())
+                claim_id=env.update_lib(libs, asynchronous=True,user=get_username())
+                result="Update request is initiated. Check the status using 'Status' button with the claim id:"+ claim_id
+                df=env.status(payload.get('claim_id'),user=get_username())
+                
+                df_string=""
+                # To directly convert the output to html:
+                #df = df[['Claim Id','File/Libs', 'Method Name', 'Timestamp']]
+                #df_string=df.to_html(border=1)+""
+                for index, row in df.iterrows():
+                    for column_name, value in row.items():
+                        if column_name in ['Claim Id','File/Libs', 'Method Name', 'Timestamp']:
+                            df_string += f"{column_name}: {value} <br>"
+                    df_string+=f"<br>"
+                configure.auth_token="0000"
+
+                return {'result': result, 'status':df_string}
+        except Exception as e:
+               return {'result' : str(e).replace("<"," ").replace(">", " ")}
+           
+    if "install_file" in payload:
+         try:
+                 try:
+                    get_access_token()
+                       
+                 except Exception as e:
+                    return {'result' : "Authentication failed. Please try again."}                
+                 #file=payload.get("file")
+                 env=get_env(env_name=payload["envName"],user=get_username())
+                 file_path= os.path.join(folderpath,payload.get("file"))
+                 res=env.install_file(file_path,user=get_username())
+                 status = ''
+                 df_string=''
+                 if res is True:
+                     result= payload.get("file")+" uploaded successfully to the remote user environment "+payload.get("envName")
+                 elif res is not bool:
+                     result="Installation is initiated.As the file size is larger than 10mb, kindly check the status using 'Status' button with the claim id:"+ claim_id
+                     df=env.status(payload.get('claim_id'),user=get_username())
+                     # To directly convert the output to html:
+
+                     #df = df[['Claim Id','File/Libs', 'Method Name', 'Timestamp']]
+                     #df_string=df.to_html(border=1)+""
+                     for index, row in df.iterrows():
+                        for column_name, value in row.items():
+                            if column_name in ['Claim Id','File/Libs', 'Method Name', 'Timestamp']:
+                                df_string += f"{column_name}: {value} <br>"
+                        df_string+=f"<br>"
+                 configure.auth_token="0000"
+
+                 return {'result': result, 'status':df_string}
+         except Exception as e:
+                return {'result' : str(e).replace("<"," ").replace(">", " ")}            
+                       
+           
+           
+    if "uninstall_file" in payload:
+        try:
+                try:
+                    get_access_token()
+                       
+                except Exception as e:
+                    return {'result' : "Authentication failed. Please try again."}                
+                file=payload.get("file")
+                env=get_env(env_name=payload["envName"],user=get_username())
+                res=env.remove_file(file,user=get_username())
+                if res is True:
+                    result= payload.get("file")+" removed successfully from the remote user environment "+payload.get("envName")
+                configure.auth_token="0000"
+
+                return {'result': result}
+        except Exception as e:
+               return {'result' : str(e).replace("<"," ").replace(">", " ")}            
+           
+
+           
+    if "refresh" in payload:
+        try:
+                try:
+                    get_access_token()
+                       
+                except Exception as e:
+                    return {'result' : "Authentication failed. Please try again."}                
+                env=get_env(env_name=payload["envName"],user=get_username())
+                env.refresh()
+                result="User environment: " + payload.get('envName') + " has been refreshed"
+                configure.auth_token="0000"
+
+                return {'result': result}
+        except Exception as e:
+               return {'result' : str(e).replace("<"," ").replace(">", " ")}
+           
+            
+    if "status" in payload:
+        try:
+                try:
+                    get_access_token()
+                       
+                except Exception as e:
+                    return {'result' : "Authentication failed. Please try again."}                
+                env=get_env(env_name=payload.get('envName'),user=get_username())
+                if payload.get('claim_id'):
+                    df=env.status(payload.get('claim_id'),user=get_username())
+                    # To directly convert the output to html:
+                    #df = df[['Claim Id', 'Stage', 'Timestamp','Additional Details']]
+                    #result=df.to_html()+""
+                    result=''
+                    for index, row in df.iterrows():
+                        for column_name, value in row.items():
+                            if column_name in ['Claim Id', 'Stage', 'Timestamp','Additional Details']:
+                                result += f"{column_name}: {value} <br>"
+                        result+=f"<br>"
+                else:
+                    all_status=payload.get('all_status')
+                    if len(all_status)==0:
+                        result="No Claim ID available for the current session."
+                    else:
+                        result=payload.get('all_status')
+                configure.auth_token="0000"
+
+                return {'result': result}
+        except Exception as e:
+               return {'result' :  str(e).replace("<"," ").replace(">", " ")}
+           
+    if "view" in payload:
+        try:
+                try:
+                    get_access_token()
+                       
+                except Exception as e:
+                    return {'result' : "Authentication failed. Please try again."}               
+                env=get_env(env_name=payload.get("envName"),user=get_username())
+                a=env.libs(user=get_username())
+                lib =[]
+                lib_str=""
+                if a is not None:
+                    a=a.values.tolist()
+
+                    for l in a:
+                        i=0
+                        j=1
+                        lib.append(""+l[i]+"=="+l[j])
+                        i+=1
+                        j+=1
+                
+                    lib_str=" , "
+                    lib_str=lib_str.join(lib)
+                
+                name=env.env_name
+                des=env.desc
+                base=env.base_env
+                
+                File =[]
+                File_str=""
+                
+                try:
+                    a=env.files(user=get_username())
+
+                    a=a.values.tolist() 
+
+                    for l in a:
+                        File.append(l[1])
+                    File_str=" , "
+                    File_str=File_str.join(File)
+                except:
+                    File_str=""        
+
+                finally:
+                    result="Details:\n \n "+"Name: "+name+"\n \n Base Environment: "+ base+ "\n \n Description: "+des+ "\n \n Libraries: "+lib_str+ "\n \n Files: "+ File_str
+                    configure.auth_token="0000"
+
+                    return {'result': result}
+
+        except Exception as e:
+               return {'result' : str(e).replace("<"," ").replace(">", " ")}
+    
+    
+
     fileList = os.listdir(folderpath) if folderpath else []
     DATA_DIR = os.environ["DIP_HOME"]
     PYNBDIR = "config/ipython_notebooks/"
@@ -111,6 +635,7 @@ def do(payload, config, plugin_config, inputs):
 
     # Find Vantage Version
     vantage_version = ""
+    is_vantage_cloud = False
     if inputdataset:
         # Execute query to find out the version and establish if it is Vantage Cloud or not
         executor = dataiku.core.sql.SQLExecutor2(dataset=inputdataset) 
@@ -121,12 +646,13 @@ def do(payload, config, plugin_config, inputs):
             # This code should be made more robust
             logging.info("teradata_analytic_lib: the pm.versionInfo table returns", vantage_version)
             break
-
-    # Find if Vantage Cloud based on vantage version
-    auth_token = get_auth_token(inputdataset)
-    is_vantage_cloud = False
-    if auth_token:
-        is_vantage_cloud = True
+        # Find if Vantage Cloud based on vantage version
+        if vantage_version.count(".") == 3:
+            major_version = vantage_version[-2:]
+            minor_version = vantage_version[0:2]
+            vantage_version = major_version + '.'+ minor_version
+            if int(minor_version) >= 20:
+                is_vantage_cloud = True
 
     # Establish you have privileges to read the connection
     connectionErrorMessage = ""
@@ -148,5 +674,12 @@ def do(payload, config, plugin_config, inputs):
             'inputs': inputs,
             'isVantageCloudLake' : is_vantage_cloud,
             'vantageVersion' : vantage_version,
-            'auth_token' : auth_token,
-            'connectionErrorMessage' : connectionErrorMessage}
+            'connectionErrorMessage' : connectionErrorMessage
+            }
+
+def do(payload, config, plugin_config, inputs):
+    try:
+      return do_execute(payload, config, plugin_config, inputs)
+    except Exception as e:
+      return {'error': str(e)}
+

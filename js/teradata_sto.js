@@ -1,5 +1,5 @@
 /**
- * Copyright © 2018 by Teradata.
+ * Copyright Â© 2018 by Teradata.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
  * associated documentation files (the "Software"), to deal in the Software without restriction,
@@ -15,6 +15,7 @@
  * DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
+ 
 
 (function (window, document, angular, $) {
 
@@ -31,6 +32,7 @@
   const app = angular.module('teradata_sto.module', []);
 
   app.controller('TeradataControllerScriptTO', function ($scope, $timeout) {
+  
 
     /**
      * A wrapper function that delays execution so that
@@ -38,7 +40,7 @@
      * running the given function f.
      */
     const $delay = f => $timeout(f, 100);
-
+    
     /**
      * Default separator for list-like objects.
      */
@@ -59,6 +61,8 @@
      * A private variable containing the function to run the given recipe.
      */
     let runFunction;
+   
+
 
     /**
      * Dialog container.
@@ -101,6 +105,7 @@
     const LISTEN_INTERVAL = 50;
 
     let fileArraySize = 0;
+    $scope.config.status="";
 
     /**
      * Object keys that are repeatedly used in this script.
@@ -161,7 +166,7 @@
       DATA_PARTITION_TYPE: 'If other than None, SCRIPT will partition the data sent to your script. In Vantage, instances of your script will execute with different data partitions as input until all partitions are exhausted. The column values option determines partitioning by means of different values in one or more columns (note: This option corresponds to using the PARTITION BY clause in SQL). The Database AMP hash option partitions data in a different way, where data are distributed to Database AMPs based on AMP hash values in one or more columns (note: This option corresponds to using the HASH BY clause in SQL).'
     }
 
-    
+    const fieldsContainer = document.getElementById("fieldsContainer");
 
     /** Regex for locating HTML entities. */
     const ENTITY_REGEX = /[\u00A0-\u9999<>\&]/gim
@@ -251,17 +256,89 @@
         for (i = 0; i < tabcontent.length; i++) {
             tabcontent[i].style.display = "none";
         }
+        tabcontent = document.getElementsByClassName("subtab");
+        for (i = 0; i < tabcontent.length; i++) {
+            tabcontent[i].style.display = "none";
+              }
+  
+      tabcontent = document.getElementsByClassName("subtabcontent");
+      for (i = 0; i < tabcontent.length; i++) {
+            tabcontent[i].style.display = "none";
+              }
     
         // Get all elements with class="tablinks" and remove the class "active"
         tablinks = document.getElementsByClassName("tablinks");
+        
         for (i = 0; i < tablinks.length; i++) {
             tablinks[i].className = tablinks[i].className.replace(" active", "");
         }
+
     
         // Show the current tab, and add an "active" class to the button that opened the tab
         document.getElementById(tabName).style.display = "block";
         evt.currentTarget.className += " active";
     },
+      openSub: function(evt, tabName) {
+      // Declare all variables
+      var i, tabcontent, tablinks;
+      console.log(evt); 
+      // Get all elements with class="tabcontent" and hide them
+      tabcontent = document.getElementsByClassName("plugintabcontent");
+      for (i = 0; i < tabcontent.length; i++) {
+          tabcontent[i].style.display = "none";
+      }
+      tabcontent = document.getElementsByClassName("subtab");
+      for (i = 0; i < tabcontent.length; i++) {
+        tabcontent[i].style.display = "block";
+      }
+  
+      tabcontent = document.getElementsByClassName("subtabcontent");
+      for (i = 0; i < tabcontent.length; i++) {
+        tabcontent[i].style.display = "none";
+      }
+  
+      // Get all elements with class="tablinks" and remove the class "active"
+      tablinks = document.getElementsByClassName("tablinks");
+      
+      for (i = 0; i < tablinks.length; i++) {
+          tablinks[i].className = tablinks[i].className.replace(" active", "");
+      }
+        
+      // Show the current tab, and add an "active" class to the button that opened the tab
+      document.getElementById(tabName).style.display = "block";
+      evt.currentTarget.className += " active";
+  },
+  
+      openSubTabs: function(evt, tabName) {
+      // Declare all variables
+      var i, tabcontent, tablinks;
+      console.log(evt); 
+      // Get all elements with class="tabcontent" and hide them
+      tabcontent = document.getElementsByClassName("plugintabcontent");
+      for (i = 0; i < tabcontent.length; i++) {
+          tabcontent[i].style.display = "none";
+      }
+      tabcontent = document.getElementsByClassName("subtabcontent");
+      for (i = 0; i < tabcontent.length; i++) {
+        tabcontent[i].style.display = "none";
+      }
+  
+  
+      // Get all elements with class="tablinks" and remove the class "active"
+      tablinks = document.getElementsByClassName("subtablinks");
+      
+      for (i = 0; i < tablinks.length; i++) {
+          tablinks[i].className = tablinks[i].className.replace(" active", "");
+      }
+        
+      // Show the current tab, and add an "active" class to the button that opened the tab
+      document.getElementById(tabName).style.display = "block";
+      evt.currentTarget.className += " active";
+  },
+  
+
+      
+      
 
       addMoreFilesClick: function () {
         $scope.config.function.files.push({});
@@ -272,6 +349,9 @@
           $scope.config.function.return_clause.push({output:'false'});
       },
 
+      getEnvName: function(index) {
+          $scope.config.function.EnvName.push(index);
+      },
       removeReturnClause: function(index) {
           if (index > -1) {
               $scope.config.function.return_clause.splice(index, 1);
@@ -768,10 +848,20 @@
        * Communicates with Python backend 
        * and acquires necessary data to display in the recipe UI.
        */
+      
       communicateWithBackend: function () {
 
         $scope.callPythonDo({}).then(
-          data => $.extend($scope, data),
+          data=> {
+            if(data['error'])
+            {
+              alert(data['error'])
+            }
+            $.extend($scope,data)
+            $('#function_name').css('display', 'block');
+            // moved to later as initialisation is too slow
+            $scope.activateCosmeticImprovements();
+          },
           () => {}
         ).then(
           () => { $scope.config.function.input_table = $scope.inputs.find(
@@ -787,6 +877,7 @@
           () => {}
         );
       },
+
 
       /**
        * Activates the tabbing functionality of this recipe.
@@ -868,11 +959,31 @@
       activateCosmeticImprovements: function () {
 
         const $a = $('.mainPane > div:first > div:first > div.recipe-settings-section2 > a');
+        var doc_link;
+        var title;
+        try 
+        {
+          if($scope['isVantageCloudLake']==true) {
+            doc_link = 'https://docs.teradata.com/r/Teradata-VantageCloud-Lake/Analyzing-Your-Data/Build-Scalable-Python-Analytics-with-Open-Analytics-Framework/User-Environments-and-the-APPLY-Table-Operator';
+            title ="Learn more about Vantage APPLY Table Operator";
+          }
+          else{
+            doc_link = 'https://docs.teradata.com/r/Teradata-VantageTM-SQL-Operators-and-User-Defined-Functions/July-2021/Table-Operators/SCRIPT';
+            title = "Learn more about Teradata Vantage SCRIPT Table Operator";
+          }
+
+        }
+        catch (e) {
+          doc_link = 'https://docs.teradata.com';
+          title = "Learn more about Teradata Vantage Table Operators";
+        }
+        
+        
         $a
-          .text('Learn more about Teradata Vantage SCRIPT Table Operator')
+          .text(title)
           .css('color', 'orange')
           .attr('target', '_blank')
-          .attr('href', 'https://docs.teradata.com/r/Teradata-VantageTM-SQL-Operators-and-User-Defined-Functions/July-2021/Table-Operators/SCRIPT');
+          .attr('href', doc_link);
         $a.parent().css('text-align', 'center');
 
 
@@ -892,15 +1003,12 @@
         $delay(() => {
           console.log('I can actually run');
           $scope.initializeBootstrap();
-          console.log('Starting activation of cosmetic improvements')
-          $scope.activateCosmeticImprovements();
           console.log('Starting activation of Tab activation')
           $scope.activateTabs();
           console.log('Starting activation of Multi tags input')
           $scope.activateMultiTagsInput();
-          // old code that is no longer used
-          //console.log('Starting activation validation')
-          //$scope.activateValidation();
+          console.log('Starting activation validation')
+          $scope.activateValidation();
           console.log('Initializing first tab')
           document.getElementById("defaultOpen").click();
           console.log('All is complete on activation')
@@ -984,7 +1092,511 @@
         });
 
       },
+      confirmDelete: function() {
+        $('<div></div>').dialog({
+          modal: true,
+          width: 400,
+          title: "Environment Update",
+          open: function() {
+            var markup = "You have requested to remove the user environment: "+$scope.config.environment_name ;
+            $(this).html(markup);
+          },
+          buttons: {
+            Confirm: function() {
+              $(this).dialog("close");
+              // Perform desired action on confirmation
+              $scope.deleteEnvironment();
+            },
+            Cancel: function() {
+              $(this).dialog("close");
+              // Perform desired action on cancellation
+            }
+          }
+        });
+      },
+      
+      deleteEnvironment: function() {
+      
+            $scope.callPythonDo({
+            'delete_env':true,
+            'environment_name': $scope.config.environment_name
+            }).then(
+            data => {
+                var message;
+                if (data.result)
+                message = "Env Removed"
+                else
+                message = "error"
+                $('<div></div>').dialog({
+                modal: true,
+                width: 700,
+                title: "Environment Update",
+                open: function() {
+                $(this).html(data.result);
+                },
+                buttons: {
+                OK: function() {
+                $( this ).dialog( "close" );
+                }
+                }
+                });
+                },
+                () => { }
+                ).then(
+                () => {
+                // Do nothing
+                },
+                () => {}
+                );
+            },
+      
+      createEnvironment: function() {
+      
 
+            $scope.callPythonDo({
+            'create_env':true,
+            'baseEnv': $scope.config.base_env,
+            'envName': $scope.config.env_name,
+            'des': $scope.config.des
+            }).then(
+            data => {
+                var message;
+                if (data.result)
+                message = "Env Created"
+                else
+                message = "error"
+                $('<div></div>').dialog({
+                modal: true,
+                width: 700,
+                title: "Environment Update",
+                open: function() {
+                $(this).html(data.result);
+                },
+                buttons: {
+                OK: function() {
+                $( this ).dialog( "close" );
+                }
+                }
+                });
+                },
+                () => { }
+                ).then(
+                () => {
+                // Do nothing
+                },
+                () => {}
+                );
+            },
+
+            
+      userAuthentication: function() {
+      
+          $scope.callPythonDo({
+          'tabs_auth':true,
+          'ues_url': $scope.config.ues_url }).then(
+           data =>{
+            window.open(data.result)
+            $scope.callPythonDo({
+              'poll_req':true,
+              'poll_data': data.poll_data,
+              }).then(
+              data => {
+                  var message;
+                  if (data.result)
+                  message = "Authentication done"
+                  else
+                  message = "error"
+                  $('<div></div>').dialog({
+                  modal: true,
+                  width: 700,
+                  title: "Authentication Update",
+                  open: function() {
+                  $(this).html(data.result);
+                  },
+                  buttons: {
+                  OK: function() {
+                  $( this ).dialog( "close" );
+                  }
+                  }
+                  });
+                  },
+                  () => { }
+                  ).then(
+                  () => {
+                  // Do nothing
+                  },
+                  () => {}
+                  );
+        
+        },
+     
+              ).then(
+              () => {
+              // Do nothing
+              },
+              () => {}
+              );
+            },
+
+
+      installLibs: function() {
+         
+            $scope.callPythonDo({
+            'install_libs':true,
+            'envName': $scope.config.environment_name,
+            'libs': $scope.config.lib,
+            'req_lib': $scope.config.req_lib}).then(
+             data => {
+                 $scope.config.status = $scope.config.status +data.status
+                 var message;
+                 if (data.result)
+                 message = "installing"
+                 else
+                 message = "error"
+                 $('<div></div>').dialog({
+                 modal: true,
+                 width: 700,
+                 title: "Environment Update",
+                 open: function() {
+                 $(this).html(data.result);
+                 },
+                 buttons: {
+                 OK: function() {
+                 $( this ).dialog( "close" );
+                 }
+                 }
+                 });
+                 },
+                 () => { }
+                 ).then(
+                 () => {
+                 // Do nothing
+                 },
+                 () => {}
+                 );
+             },
+
+      updateLibs: function() {
+         
+            $scope.callPythonDo({
+            'update_libs':true,
+            'envName': $scope.config.environment_name,
+            'libs': $scope.config.lib_name}).then(
+             data => {
+                 $scope.config.status = $scope.config.status+data.status
+
+                 var message;
+                 if (data.result)
+                 message = "updating"
+                 else
+                 message = "error"
+                 $('<div></div>').dialog({
+                 modal: true,
+                 width: 700,
+                 title: "Environment Update",
+                 open: function() {
+                 $(this).html(data.result);
+                 },
+                 buttons: {
+                 OK: function() {
+                 $( this ).dialog( "close" );
+                 }
+                 }
+                 });
+                 },
+                 () => { }
+                 ).then(
+                 () => {
+                 // Do nothing
+                 },
+                 () => {}
+                 );
+             },
+      confirmDelete: function() {
+        $('<div></div>').dialog({
+          modal: true,
+          width: 400,
+          title: "Environment Update",
+          open: function() {
+            var markup = "You have requested to remove the remote user environment: "+$scope.config.environment_name ;
+            $(this).html(markup);
+          },
+          buttons: {
+            Confirm: function() {
+              $(this).dialog("close");
+              // Perform desired action on confirmation
+              $scope.deleteEnvironment();
+            },
+            Cancel: function() {
+              $(this).dialog("close");
+              // Perform desired action on cancellation
+            }
+          }
+        });
+      },
+
+      confirmLibuninstall: function() {
+        $('<div></div>').dialog({
+          modal: true,
+          width: 400,
+          title: "Environment Update",
+          open: function() {
+            var markup = "You have requested to uninstall the library: "+ $scope.config.lib_name+ " from the remote user environment: "+$scope.config.environment_name ;
+            $(this).html(markup);
+          },
+          buttons: {
+            Confirm: function() {
+              $(this).dialog("close");
+              // Perform desired action on confirmation
+              $scope.uninstallLibs();
+            },
+            Cancel: function() {
+              $(this).dialog("close");
+              // Perform desired action on cancellation
+            }
+          }
+        });
+      },
+
+      uninstallLibs: function() {
+         
+            $scope.callPythonDo({
+            'uninstall_libs':true,
+            'envName': $scope.config.environment_name,
+            'libs': $scope.config.lib_name }).then(
+             data => {
+                 $scope.config.status = $scope.config.status+data.status
+
+                 var message;
+                 if (data.result)
+                 message = "uninstalling"
+                 else
+                 message = "error"
+                 $('<div></div>').dialog({
+                 modal: true,
+                 width: 700,
+                 title: "Environment Update",
+                 open: function() {
+                 $(this).html(data.result);
+                 },
+                 buttons: {
+                 OK: function() {
+                 $( this ).dialog( "close" );
+                 }
+                 }
+                 });
+                 },
+                 () => { }
+                 ).then(
+                 () => {
+                 // Do nothing
+                 },
+                 () => {}
+                 );
+             },
+
+      confirmFileuninstall: function() {
+        $('<div></div>').dialog({
+          modal: true,
+          width: 400,
+          title: "Environment Update",
+          open: function() {
+            var markup = "You have requested to uninstall the file: "+ $scope.config.uninstall_file_name+ " from the remote user environment: "+$scope.config.environment_name ;
+            $(this).html(markup);
+          },
+          buttons: {
+            Confirm: function() {
+              $(this).dialog("close");
+              // Perform desired action on confirmation
+              $scope.uninstallFiles();
+            },
+            Cancel: function() {
+              $(this).dialog("close");
+              // Perform desired action on cancellation
+            }
+          }
+        });
+      },
+      uninstallFiles: function() {
+         
+            $scope.callPythonDo({
+            'uninstall_file':true,
+            'envName': $scope.config.environment_name,
+            'file': $scope.config.uninstall_file_name}).then(
+             data => {
+                 var message;
+                 if (data.result)
+                 message = "uninstalling"
+                 else
+                 message = "error"
+                 $('<div></div>').dialog({
+                 modal: true,
+                 width: 700,
+                 title: "Environment Update",
+                 open: function() {
+                 $(this).html(data.result);
+                 },
+                 buttons: {
+                 OK: function() {
+                 $( this ).dialog( "close" );
+                 }
+                 }
+                 });
+                 },
+                 () => { }
+                 ).then(
+                 () => {
+                 // Do nothing
+                 },
+                 () => {}
+                 );
+             },
+             
+      installFiles: function() {
+         
+            $scope.callPythonDo({
+            'install_file':true,
+            'envName': $scope.config.environment_name,
+            'file': $scope.config.install_file_name }).then(
+             data => {
+                 $scope.config.status = $scope.config.status+data.status
+
+                 var message;
+                 if (data.result)
+                 message = "installing"
+                 else
+                 message = "error"
+                 $('<div></div>').dialog({
+                 modal: true,
+                 width: 700,
+                 title: "Environment Update",
+                 open: function() {
+                 $(this).html(data.result);
+                 },
+                 buttons: {
+                 Ok: function() {
+                 $( this ).dialog( "close" );
+                 }
+                 }
+                 });
+                 },
+                 () => { }
+                 ).then(
+                 () => {
+                 // Do nothing
+                 },
+                 () => {}
+                 );
+             },
+      refreshEnv: function() {
+         
+            $scope.callPythonDo({
+            'refresh':true,
+            'envName': $scope.config.environment_name}).then(
+             data => {
+                 var message;
+                 if (data.result)
+                 message = "refreshing"
+                 else
+                 message = "error"
+                 $('<div></div>').dialog({
+                 modal: true,
+                 width: 700,
+                 title: "Environment Update",
+                 open: function() {
+                 $(this).html(data.result);
+                 },
+                 buttons: {
+                 OK: function() {
+                 $( this ).dialog( "close" );
+                 }
+                 }
+                 });
+                 },
+                 () => { }
+                 ).then(
+                 () => {
+                 // Do nothing
+                 },
+                 () => {}
+                 );
+             },
+             
+      checkStatus: function() {
+         
+            $scope.callPythonDo({
+            'status':true,
+            'envName': $scope.config.environment_name,
+            'claim_id': $scope.config.claim_id,
+            'all_status':$scope.config.status}).then(
+             data => {
+                 var message;
+                 if (data.result)
+                 message = "checking status"
+                 else
+                 message = "error"
+                 $('<div></div>').dialog({
+                 modal: true,
+                 width: 800,
+                 title: "Environment Update",
+                 open: function() {
+                 $(this).html(data.result);
+                 },
+                 buttons: {
+                 OK: function() {
+                 $( this ).dialog( "close" );
+                 }
+                 }
+                 });
+                 },
+                 () => { }
+                 ).then(
+                 () => {
+                 // Do nothing
+                 },
+                 () => {}
+                 );
+             },
+             
+
+      viewEnv: function() {
+         
+            $scope.callPythonDo({
+            'view':true,
+            'envName': $scope.config.environment_name
+            }).then(
+             data => {
+                 var message;
+                 if (data.result)
+                 message = "User environment detials"
+                 else
+                 message = "error"
+                 $('<div></div>').dialog({
+                 modal: true,
+                 width: 700,
+                 title: "Environment Update",
+                 open: function() {
+                 $(this).html((data.result).replaceAll("\n", "<br>"));
+                 },
+                 buttons: {
+                 OK: function() {
+                 $( this ).dialog( "close" );
+                 }
+                 }
+                 });
+                 },
+                 () => { }
+                 ).then(
+                 () => {
+                 // Do nothing
+                 },
+                 () => {}
+                 );
+             },
+             
+		
+
+      
       /**
        * Initializes this plugin.
        */
@@ -1025,11 +1637,80 @@
       }
 
     })
+    var updateEnvNames = function() {
+            // the parameter to callPythonDo() is passed to the do() method as the payload
+            // the return value of the do() method comes back as the data parameter of the fist function()
+            $scope.callPythonDo({'environment_name':true}).then(function(data) {
+                // success
+                $scope.names = data.names;
+            }, function(data) {
+                // failure
+                $scope.names = ['N/A'];
+             });
+    };
+
+
+    $scope.$watch('config.environment_name',updateEnvNames);
+    $scope.$watch('config.function.environment',updateEnvNames);
+
+
+    
+    var updateFiles = function() {
+            // the parameter to callPythonDo() is passed to the do() method as the payload
+            // the return value of the do() method comes back as the data parameter of the fist function()
+            $scope.callPythonDo({'file_name':true,
+            'envName': $scope.config.environment_name}).then(function(data) {
+                // success
+                $scope.files = data.files;
+            }, function(data) {
+                // failure
+                $scope.files = ['N/A'];
+             });
+    };
+
+    $scope.$watch('config.uninstall_file_name',updateFiles);
+    $scope.$watch('config.function.uninstall_file_name',updateFiles);
+
+
+    
+    var listLibs = function() {
+            // the parameter to callPythonDo() is passed to the do() method as the payload
+            // the return value of the do() method comes back as the data parameter of the fist function()
+            $scope.callPythonDo({'lib_name':true,
+            'envName': $scope.config.environment_name }).then(function(data) {
+                // success
+                $scope.libs = data.libs;
+            }, function(data) {
+                // failure
+                $scope.libs = ['N/A'];
+             });
+    };
+
+    $scope.$watch('config.lib_name',listLibs);
+
+    
+    var updateBaseEnv = function() {
+            // the parameter to callPythonDo() is passed to the do() method as the payload
+            // the return value of the do() method comes back as the data parameter of the fist function()
+            $scope.callPythonDo({'base_env':true}).then(function(data) {
+                // success
+                $scope.choices = data.choices;
+            }, function(data) {
+                // failure
+                $scope.choices = ['N/A'];
+             });
+    };
+    $scope.$watch('config.base_env',updateBaseEnv);
+
+    
 
     $scope.initialize();
 
+});
+  
+    
 
-  });
+
 
 
 

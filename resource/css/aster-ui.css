@@ -15,11 +15,22 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
+ input .myPassword{
+    text-security:disc;
+    -webkit-text-security:disc;
+    -mox-text-security:disc;
+}
+.hidden {
+      display: none;
+}
 .keyword1 {
     color:red;
 }
 .keyword2 {
     color:blue;
+}
+.manage-content{
+   display:none;
 }
 
 /* Color of the description */
@@ -353,6 +364,13 @@ div.inner-cell {
     padding: 14px 16px;
     transition: 0.3s;
 }
+.subtab{
+    display: none;
+}
+.subtabcontent{
+    display: none;
+}
+
 
 /* Change background color of buttons on hover */
 .tabplugin button:hover {
@@ -371,6 +389,9 @@ div.inner-cell {
     border: 1px solid #ccc;
     border-top: none;
 }
+.show {
+     display: block;
+	}
 
 /* @font-face {
   font-family: 'Glyphicons Halflings';
@@ -452,4 +473,6 @@ div.inner-cell {
     width:100px;
 }
 
-
+#function_name {
+    display: none;
+  }

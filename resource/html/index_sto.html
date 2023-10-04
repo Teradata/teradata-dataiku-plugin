@@ -1,4 +1,4 @@
-<!-- Copyright © 2018 by Teradata.
+<!-- Copyright Â© 2018 by Teradata.
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
 associated documentation files (the "Software"), to deal in the Software without restriction,
 including without limitation the rights to use, copy, modify, merge, publish, distribute,
@@ -18,7 +18,6 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SO
 <!--<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">-->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-tagsinput/1.3.6/jquery.tagsinput.min.js"></script>
 <link rel="stylesheet" href="/plugins/teradata/resource/css/glyphs.css">
-
 <script src="/plugins/teradata/resource/js/teradata_sto.js"></script>
 
 <div id="main-container">
@@ -26,11 +25,13 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SO
   <div ng-controller="TeradataControllerScriptTO">
 
     <div class="control-group">
-      <label class="control-label">Function Name</label>
-      <div class="controls">
+      <label class="control-label"  ng-if="!isVantageCloudLake">Function Name</label>
+      <label class="control-label"  ng-if="isVantageCloudLake" >Application Name</label>
+
+      <div class="controls" id="function_name">
         
         <p class="inner-label" ng-if="!isVantageCloudLake" >SCRIPT Table Operator</p>
-        <p class="inner-label" ng-if="isVantageCloudLake" >APPLY Table Operator</p>
+        <a data-placement="right" data-html="true" data-toggle="tooltip" title="Click here to know more about Open Analytics Framework" target=”_blank” style="color:#101111;" href="https://docs.teradata.com/r/Teradata-VantageCloud-Lake/Analyzing-Your-Data/Build-Scalable-Python-Analytics-with-Open-Analytics-Framework/Introduction-to-Vantage-Open-Analytics/What-is-Open-Analytics-Framework" class="inner-label" ng-if="isVantageCloudLake" ><u>Open Analytics Framework (OAF)</u></a>
 
         <a href ="https://www.dataiku.com/product/plugins/teradata" class="link1" target="_blank"><span class="glyphicon glyphicon-question-sign"></span></a>
         <!-- <a href="#" class="link1" data-toggle="modal" data-target="#basicModal"><span class="glyphicon glyphicon-question-sign"></span></a> -->
@@ -40,8 +41,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SO
     <div class="control-group">
       <label class="control-label">Description</label>
       <div class="controls" style="max-width: 40%; text-align: justify">
-        <p class="inner-label" ng-if="!isVantageCloudLake" >The SCRIPT Table Operator enables users to run Python and R scripts natively in the Advanced SQL Engine Database nodes.</p>
-        <p class="inner-label" ng-if="isVantageCloudLake" >The APPLY Table Operator ........</p>
+        <p class="inner-label" ng-if="!isVantageCloudLake" >The SCRIPT Table Operator enables users to run Python and R scripts natively in the Analytics Database nodes.</p>
+        <p class="inner-label" ng-if="isVantageCloudLake" >The APPLY Table Operator enables users to run Python scripts natively in the Analytics Database nodes.</p>
       </div>
     </div>
 
@@ -50,18 +51,255 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SO
 
         <!-- Tab links -->
         <div class="tabplugin">
-          <button class="tablinks" id="defaultOpen" ng-click="openTabs($event, 'tabs-loading')">SCRIPT Loading</button>
+          <button  class="tablinks" ng-if="isVantageCloudLake" ng-click="openTabs($event, 'tabs-auth')"data-container="body" data-html="true" data-toggle="tooltip" title="Open Analytics Framework Authentication">OAF Authentication</button>
+
+          <button  class="tablinks" id="tab2-btn" ng-if="isVantageCloudLake" ng-click="openSub($event, 'tabs-env')">User Environment</button>
+          <button class="tablinks" ng-if="!isVantageCloudLake" ng-click="openTabs($event, 'tabs-loading')">Script Loading</button>
           <button class="tablinks" ng-if="!isVantageCloudLake" ng-click="openTabs($event, 'tabs-execution')">SCRIPT Arguments</button>
-          <button class="tablinks" ng-if="isVantageCloudLake" ng-click="openTabs($event, 'tabs-execution')">APPLY Arguments</button>
+          <button  class="tablinks" id="tab3-btn" ng-if="isVantageCloudLake" ng-click="openTabs($event, 'tabs-execution')">APPLY Arguments</button>
           <button class="tablinks" ng-if="false" ng-click="openTabs($event, 'tabs-table')">Other SQL Arguments</button>
         </div>
+    
+        <div id="tabs-env" class="subtab">
+        <div class="tabplugin">
+
+                 <div class="tabplugin">
+                  <button position="sticky" class="subtablinks" ng-click="openSubTabs($event, 'create-env')">Create</button>
+                  <button position="sticky" class="subtablinks" ng-click="openSubTabs($event, 'manage-env')">Manage</button>
+                  <button position="sticky" class="subtablinks" ng-click="openSubTabs($event, 'remove-env')">Remove</button>
+
+                 </div>
+        </div>
+
+        </div>
+         <!-- Tab: user authentication -->
+
+         <div id="tabs-auth" class="plugintabcontent">
+         <label for="ues_url">
+         User Environment Service URL:
+         </label>
+  	     <input required type="text" id="ues_url" ng-model="config.ues_url"  data-placement="right" data-html="true" data-toggle="tooltip" title="Enter the ues url">
+         
+        <br>
+        <br>
+        <button data-placement="right" data-html="true" data-toggle="tooltip" ng-click="userAuthentication()" title="Click here to authenticate the user">Authenticate</button>
+          </form>
+
+         </div>
+         <!-- End Tab: user authentication -->
+
+
+        <!-- Tab: create environment -->
+
+        <div id="create-env" class="subtabcontent">
+        
+        <label for="base_env">
+        Base Environment:
+        </label>
+		    <select ng-model="config.base_env" id="base_env" dku-bs-select="{liveSearch:true}"  ng-options="v for v in choices" data-placement="right" data-html="true" data-toggle="tooltip" title="Choose from the existing base environments">
+        </select>
+
+		<br>
+		
+        <label for="env-name">
+        Environment Name:
+        </label>
+        <input required type="text" id="env-name" ng-model="config.env_name" data-html="true" data-toggle="tooltip" title="Enter the environment name">
+        <br>
+        <label for="description">
+        Description:
+        </label>
+        <input type="text" id="description" ng-model="config.des" data-placement="right" data-html="true" data-toggle="tooltip" title="Enter the purpose/description of the new environment">
+        <br>
+        <br>
+        <button data-placement="right" data-html="true" data-toggle="tooltip" ng-click="createEnvironment()" title="Click here to create a new environment">Create</button>
+
+        </div>
+        <!-- End Tab: Create environment -->
+        
+        <!-- Tab: remove environment -->
+
+        <div id="remove-env" class="subtabcontent">
+        
+        
+        <label for="environment_name">
+        Environment Name:
+        </label>
+		<select data-placement="right"  ng-model="config.environment_name" data-html="true" data-toggle="tooltip" title="Choose the environment you want to remove from the existing environmentss" id="environment_name" dku-bs-select="{liveSearch:true}" ng-options="v for v in names">
+        <option  value="" disabled selected></option>
+        </select>
+        
+		    <br><br>
+        <button data-placement="right" data-html="true" data-toggle="tooltip" ng-click="confirmDelete()" title="Click here to remove an existing environment">Delete</button>
+   
+        </div>
+        <!-- End Tab: Remove environment -->
+        
+        <!-- Tab:  Manage Environment -->
+
+        
+                
+        </div>
+        <!-- End Tab: Manage Environmment -->
+         <!-- Tab: New management Tab -->
+         <div id="manage-env" class="subtabcontent">
+         <label for="environment_name">
+         Environment Name:
+         </label>
+ 		<select ng-model="config.environment_name" id="environment_name" dku-bs-select="{liveSearch:true}" ng-options="v for v in names" data-placement="right" data-html="true" data-toggle="tooltip" title="Choose an environment from the existing environments">
+         <option  value="" disabled selected></option>
+         </select>
+         <button ng-click="viewEnv()" data-placement="right" data-html="true" data-toggle="tooltip" title="Click here to view the details(name,description,base environment,installed libraries & files) of the selected environment"> View Details</button>
+         <button ng-click="refreshEnv()" data-placement="right" data-html="true" data-toggle="tooltip" title="Click here to refresh the environment and reflect the changes(if any) done outside the scope of dataiku">Refresh</button>
+         <br><br>
+        
+  
+        <label for="claimId">Claim ID:</label>
+        <input type="text" id="claimId"  ng-model="config.claim_id" data-placement="right" data-html="true" data-toggle="tooltip" title="Enter the Claim Id of the desired operation">
+        
+        <button id="statusBtn" ng-click="checkStatus()" data-placement="right" data-html="true" data-toggle="tooltip" title="Click here to view the status of the specified Claim Id.By default, it will return all the active Claim Ids along with the operation performed.">Status</button>
+        <br><br>
+         
+        <table class="table table-condensed table-hover" ng-model-options="{ debounce: 200 }">
+
+             <thead>
+               <tr>
+                 <th>Install Libraries</th>
+                 <th>Update Libraries</th>
+                 <th>Uninstall Libraries</th>
+               </tr>
+             </thead>
+
+             <tbody>
+               <tr>
+                 <td>
+                   <div class="inner-cell">
+                         <div class="inner-label">
+                         <label  for="lib" >
+                         Library Name(s):
+                         </label>
+                         <input type="text" id="lib" ng-model="config.lib" data-placement="right" data-html="true" data-toggle="tooltip" title="Enter the library name in python format to install in the selected user environment">
+                         <br><br>
+                        <label class="inner-cell">OR Select File:</label>
+ 		             
+
+                       <select  id="FileName" ng-model="config.req_lib"  data-container="body" data-placement="right"
+                         data-html="true" data-toggle="tooltip" title="Select a requirements.txt file containing the desired library names" ng-options="inputFile as inputFile for inputFile in fileList">
+                       <option value="" disabled selected></option>
+                       </select>
+                 		<br><br>
+
+                        <button type="submit" ng-click="installLibs()">Install</button> 
+
+                        </div>
+                    
+                   </div>
+                   
+                 <td>
+                   <div class="inner-cell">
+                     <form class="inner-label">
+                     <label for="lib_name" >
+                     Library Name:
+                     </label>
+             		 <select data-placement="right" ng-model="config.lib_name" id="lib_name" dku-bs-select="{liveSearch:true}" ng-options="v for v in libs" data-placement="right" data-html="true" data-toggle="tooltip" title="Choose the library you want to remove from the select user environments">
+                     <option  value="" disabled selected></option>
+                     </select>
+                     
+             		<br><br>
+                    <button type="submit" ng-click="updateLibs()" data-placement="right" data-html="true" data-toggle="tooltip" title="Click here to update the select library from the user environment">Update</button>    
+                    </form>
+                    </div>
+                    <td>
+                      <div class="inner-cell">
+                        <form class="inner-label" onsubmit="listLibs(); return false;">
+                          <label  for="lib" >
+                            Library Name:
+                          </label>
+                            <input type="text" id="lib" ng-model="config.lib_name" data-placement="right" data-html="true" data-toggle="tooltip" title="Enter the name(s) of the library in python format to uninstall from the selected user environment">
+                          <br><br>
+                          <label for="lib_name">
+                          OR Select:
+                          </label>
+                          <select ng-model="config.lib_name" id="lib_name" dku-bs-select="{liveSearch:true}" ng-options="v for v in libs" data-placement="right"  data-html="true" data-toggle="tooltip" title="Choose the package you want to update in the selected user environments">
+                          <option value="" disabled selected></option>
+
+                          </select>
+                        
+                		   <br><br>
+                       <button type="submit" ng-click="confirmLibuninstall()">Uninstall</button>    
+                       </form>
+                       </div>
+
+                    
+                   </div>
+
+                   </div>
+                 </td>
+               </tr>
+             </tbody>
+           </table>
+           <table class="table table-condensed table-hover" ng-model-options="{ debounce: 200 }">
+             <thead>
+               <tr> 
+                 <th>Install Files</th>
+                 <th>Uninstall Files</th>
+               </tr>
+             </thead>
+             <tbody>
+               <tr>
+                 <td>
+                   <div class="inner-cell">
+                    <label class="inner-cell" for="myfile">File Name:</label>
+
+                    <select  id="FileName" ng-model="config.install_file_name"  data-container="body" data-placement="right"
+                      data-html="true" data-toggle="tooltip" title="Select a file from the DSS managed folder to install in the selected user environment" ng-options="inputFile as inputFile for inputFile in fileList">
+                      <option  value="" disabled selected></option>
+                    </select>
+             
+                       <br><br>
+                       <button type="submit" ng-click="installFiles()">Install</button>    
+                 </td>
+                 <td>
+                   <div class="inner-cell">
+                    </div>
+                    <div class="inner-cell">
+                      <form>
+                      <label for="file_name">
+                      File Name:
+                      </label>
+              		   <select  ng-model="config.uninstall_file_name" id="file_name" dku-bs-select="{liveSearch:true}" ng-options="v for v in files" data-placement="right" data-html="true" data-toggle="tooltip" title="Choose the file you want to remove from the selected user environments" >
+                      <option  value="" disabled selected></option>
+                      </select>
+              		<br><br>
+                     <button type="submit" ng-click="confirmFileuninstall()" data-placement="right" data-html="true" data-toggle="tooltip" title="Click here to remove the selected file from the user environment">Uninstall</button>    
+                     </form>
+                      
+                    </div>
+                   
+                   </div>
+                 </td>
+               </tr>
+             </tbody>
+           </table>
+           <p>
+             <br>
+             <br>
+             <br>
+           </p>
+         </div>
+
+         <!-- End Tab:  -->
+        
+
+         
+        
+        
 
         <!-- Tab: Script Loading Tab -->
         <div id="tabs-loading" class="plugintabcontent">
           <table class="table table-condensed table-hover" ng-model-options="{ debounce: 200 }">
-
             <thead>
-              <tr>
+              <tr> 
                 <th>File Name</th>
                 <th>File Details</th>
               </tr>
@@ -126,7 +364,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SO
               <em>.&#47;{{stoDatabase}}&#47;&#60;filename&#62;</em>
             </label>
             <label ng-show=" connectionErrorMessage!='' "  style="color:red;display: inline-block">
-                    {{connectionErrorMessage}}
+            {{connectionErrorMessage}}
             </label>
              <label ng-show=" stoDatabase=='' " style="color:red;display: inline-block">&emsp;&emsp;&emsp;&emsp; 
               Error: Missing database search path for SCRIPT. To use this recipe, specify first a database name for the STO_DATABASE custom property in your connection settings. 
@@ -204,7 +442,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SO
 
         <!-- End Tab: Script Loading Tab -->
 
-        <!-- Tab: STO Arguments -->
+        <!-- Tab: STO/Apply Arguments -->
 
         <div id="tabs-execution" class="plugintabcontent">
 
@@ -239,9 +477,52 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SO
                   </div>
                 </td>
               </tr>
+                <tr ng-if="isVantageCloudLake">
+                  <td>Environment Name</td>
+                  <td>
+                    <div>
+                      <label for="environment_name" data-placement="right" data-html="true" data-toggle="tooltip" title="Choose the environment from the existing environments ">
+                      </label>
+              		<select data-placement="right" ng-model="config.function.environment" data-html="true" data-toggle="tooltip" title="Choose the environment from the existing environments " id="environment_name" dku-bs-select="{liveSearch:true}" ng-options="v for v in names">
+                      <option  value="" disabled selected></option>
+                      </select>
 
+
+                    </div>
+
+                   
+                  </td>
+                </tr>
+                <tr ng-if="isVantageCloudLake">
+                  <td>Script Name</td>
+                  <td>
+                    <div>
+                     <select data-placement="right" ng-model="config.function.uninstall_file_name" data-html="true" data-toggle="tooltip" title="Choose the file you want to remove from the existing environments" id="file_name" dku-bs-select="{liveSearch:true}" ng-options="v for v in files">
+                        <option  value="" disabled selected></option>
+                        </select>
+                    </div>
+                  </td>
+                </tr>
+                <tr ng-if="isVantageCloudLake">
+                  <td>Delimiter</td>
+                  <td>
+                    <div>
+                     <input type="text" data-placement="right" ng-model="config.function.delimiter" ng-init="config.function.delimiter = ','" data-html="true" data-toggle="tooltip" title=" Specifies a delimiter to use when reading columns from a row and writing result columns. Delimiter must be a valid Unicode code point. The default value is comma (,).">
+                      
+                    </div>
+                  </td>
+                </tr>
+                <tr ng-if="isVantageCloudLake">
+                  <td>Quotechar</td>
+                  <td>
+                    <div>
+                     <input type="text" data-placement="right" ng-model="config.function.quotechar" ng-init="config.function.quotechar = '&quot'"  data-html="true" data-toggle="tooltip" title=" Specifies the character used to quote all input and output values for the script. The default value is double quote">
+                    </div>
+                  </td>
+                </tr>
+                
               <tr>
-                <td>Script Arguments &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                <td>Arguments &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                   <button style="border:none;background: none;" ng-click="addScriptArgument()" title="Add Script Argument">
                     <span class="glyphicon glyphicon-plus-sign orange"></span>
                   </button>
@@ -259,7 +540,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SO
               </tr>
 
               <tr>
-                <td>Script Input Columns
+                <td>Input Columns
                   <button style="border:none;background: none;" ng-click="addScriptInput()" title="Add Script Input">
                     <span class="glyphicon glyphicon-plus-sign orange"></span>
                   </button>
@@ -275,8 +556,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SO
                   </div>
                   <div class="inner-cell">
                     <label for="where_id" style="display: inline;">Conditions</label>
-                    <input id="where_id" type="text" ng-model="config.function.where" data-toggle="tooltip" data-placement="right"
-                      title="{{ getArgumentDescription('WHERE') }}"></input> 
+                    <input id="where_id" type="text" ng-model="config.function.where" data-toggle="tooltip" data-placement="right" title="{{ getArgumentDescription('WHERE') }}"/>
                   </div>
                 </td>
               </tr>
@@ -284,7 +564,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SO
 
 
               <tr>
-                <td>Data Partition Option</td>
+                <td>Data Partition</td>
                 <td>
                   <div class="inner-cell">
                     <select ng-model="config.function.partitionOrHash" data-toggle="tooltip" title="{{ getArgumentDescription('DATA_PARTITION_TYPE') }}"
@@ -335,16 +615,25 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SO
                       title="Remove Partition Order By Columns">
                       <span class="glyphicon glyphicon-minus-sign orange"></span>
                     </button>
-                  </div>
-                </td>
+                    </div>
+                  </td>
+              </tr>
+              <tr ng-if="config.function.partitionOrHash!=''">
+                    <td> Nulls Listing
+                     <td>
+                      <div ng-repeat="arg in config.function.partitionorderbycolumns track by $index ">
+                       
+                      <select ng-model="config.function.nulls" data-html="true" data-toggle="tooltip" data-placement="right" title="[Optional] On selecting FIRST, the null values will be listed first and on selecting LAST, all the null values will be added at the end.By default,the option is N/A and nulls listing will be ignored.">
+                      <option value=" ">N/A</option>
+                      <option value=" NULLS FIRST">FIRST</option>
+                      <option value= " NULLS LAST">LAST</option>
+                     </div>
+                      </td>
+                     </td>
               </tr>
 
-
-
-
-
               <tr>
-                <td>Script Output Variables &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                <td>Output Variables &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                   <button style="border:none;background: none;" ng-click="addReturnClause()" title="Add RETURNS column">
                     <span class="glyphicon glyphicon-plus-sign orange"></span>
                   </button>

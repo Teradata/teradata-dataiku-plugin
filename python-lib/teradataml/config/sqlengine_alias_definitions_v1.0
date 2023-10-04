@@ -1,0 +1,14 @@
+functionName:aliasName
+attribution:Attribution
+decisionforestpredict:DecisionForestPredict
+decisiontreepredict:DecisionTreePredict
+glmpredict:GLMPredict
+h2opredict:H2OPredict
+naivebayespredict:NaiveBayesPredict
+naivebayestextclassifierpredict:NaiveBayesTextClassifierPredict
+npath:nPath
+pmmlpredict:PMMLPredict
+sessionize:Sessionize
+svmsparsepredict:SVMSparsePredict
+script:Script
+apply:Apply

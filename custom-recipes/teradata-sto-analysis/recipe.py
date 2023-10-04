@@ -29,7 +29,6 @@ import dataiku
 # Import the helpers for custom recipes
 from dataiku.customrecipe import *
 import logging
-
 #CALL Subprocess for BTEQ script
 from subprocess import call
 
@@ -67,12 +66,11 @@ if not input_B_names:
     script_role = 'sto_scripts'
     input_B_names = get_input_names_for_role(script_role)
 
-# Get the name of the folder from the inputd rather than assuming its 'language_scripts'
 if input_B_names:
-    script_role = input_B_names[0]
+    script_role=input_B_names[0]
 
 # The dataset objects themselves can then be created like this:
-# input_B_datasets = [dataiku.Dataset(name) for name in input_B_names]
+input_B_datasets = [dataiku.Dataset(name) for name in input_B_names]
 
 # For outputs, the process is the same:
 output_A_names = get_output_names_for_role('main')
@@ -115,14 +113,46 @@ from dataiku.core.sql import SQLExecutor2
 from verifyTableColumns import *
 import auth
 
+logging.info('Getting vantage version')
+# Find Vantage Version
+vantage_version = ""
+is_vantage_cloud = False
+'''
+print("snigdha")
+from teradataml.scriptmgmt import set_auth_token1
+from teradataml.options import configure
+
+
+uri = set_auth_token1("https://peinternal1.staging.innovationlabs.teradata.com/api/accounts/233872c0-d72c-47e7-817f-f839be4d7b6c/open-analytics")
+
+print(uri)
+print(configure._auth_token_expiry_time)
+'''
+if input_A_datasets[0]:
+        # Execute query to find out the version and establish if it is Vantage Cloud or not
+        executor = dataiku.core.sql.SQLExecutor2(dataset=input_A_datasets[0]) 
+        query_string = "SELECT InfoData FROM DBC.DBCInfoV where InfoKey = 'VERSION'"
+        query_results = executor.query_to_df(query_string)
+        for row in query_results.iterrows():
+            vantage_version = row[1]["InfoData"]
+            # This code should be made more robust
+            logging.info("teradata_analytic_lib: the pm.versionInfo table returns", vantage_version)
+            break
+# Find if Vantage Cloud based on vantage version
+if vantage_version.count(".") == 3:
+            major_version = vantage_version[-2:]
+            minor_version = vantage_version[0:2]
+            vantage_version = major_version + '.'+ minor_version
+            if int(minor_version) >= 20:
+                is_vantage_cloud = True
 
 def executor_query(executor, query_string):
-    print('Query : ' + query_string)
+    logging.info('Query : ' + query_string)
     return executor.query_to_df(query_string)
 
 def executor_query2(executor, query_string, pre_queries):
-    print('PreQuery : ', pre_queries)
-    print('Query : ', query_string)
+    logging.info('PreQuery : ', pre_queries)
+    logging.info('Query : ', query_string)
     return executor.query_to_df(query_string, pre_queries)
 
 
@@ -130,7 +160,7 @@ def executor_query2(executor, query_string, pre_queries):
 handle = dataiku.Folder(script_role) if input_B_names else None
 
 
-print('Getting STO Database')
+logging.info('Getting STO Database')
 def sto_database():
     #result =  getConnectionParamsFromDataset(output_A_datasets[0]).get('defaultDatabase', "");
     connections = {}
@@ -169,14 +199,14 @@ tmode = ''
 for prop in properties:
     if prop['name'] == 'TMODE' and prop['value'] == 'TERA':
         #Detected TERA
-        print('I am in TERA MODE')
+        logging.info('I am in TERA MODE')
         tmode = 'TERA'
         stTxn = 'BEGIN TRANSACTION;'
         edTxn = 'END TRANSACTION;'
 
     elif prop['name'] == 'TMODE' and prop['value'] == 'ANSI':
         #Detected ANSI
-        print('I am in ANSI MODE')
+        logging.info('I am in ANSI MODE')
         tmode = 'ANSI'
         stTxn = ';'
         edTxn = 'COMMIT WORK;'
@@ -185,26 +215,35 @@ empty_table = input_A_datasets[0]
 #SQL Executor
 executor = SQLExecutor2(dataset=empty_table)
 
+if not is_vantage_cloud:
+    defaultDB = sto_database()
+    searchPath = sto_database()
 
-defaultDB = sto_database()
+
+
 #if sto_database(input_A_datasets[0]) != sto_database():
 #    raise RuntimeError('Input dataset and output dataset have different connection details')
 
 output_location = output_A_datasets[0].get_location_info()['info']
 
-print('Getting Function Config')
+logging.info('Getting Function Config')
 scriptAlias = function_config.get('script_alias', '')
-scriptFileName = function_config.get('script_filename', '')
 scriptLocation = function_config.get('script_location', '')
-searchPath = sto_database()
 outputTable = output_A_datasets[0].get_location_info()['info'].get('table', '')
 partitionOrHash = function_config.get('partitionOrHash', '')
+scriptFileName = function_config.get('script_filename', '')
+if is_vantage_cloud:
+    env_name=function_config.get('environment','')
+    scriptFileName = function_config.get('uninstall_file_name', '')
+    delimiter = function_config.get('delimiter', '')
+    nullsClause = function_config.get('nulls', '')
+    quotechar = function_config.get('quotechar', '')
+    
 
 
 performFileLoad = True
 
 cleanupFiles = []
-
 #Script Location for main script
 if(scriptLocation == 'sz'):
     scriptFileLocation = function_config.get('script_filelocation')
@@ -220,13 +259,13 @@ elif 'cz' == scriptLocation:
     scriptFileLocation = handle.file_path(scriptFileName)
     # We do not support python notebooks in this release
     #    if scriptFileLocation.endswith(".ipynb"):
-    #        print("Convert Notebook to Python Script")  
-    #        print("Input Notebook", scriptFileName, scriptFileLocation)  
+    #        logging.info("Convert Notebook to Python Script")  
+    #        logging.info("Input Notebook", scriptFileName, scriptFileLocation)  
     #        pythonScript = scriptFileLocation.replace(".ipynb", ".py")
     #        convertNotebook(scriptFileLocation, pythonScript)
     #        scriptFileLocation = pythonScript
     #        scriptFileName = scriptFileName.replace(".ipynb", ".py")
-    #        print("Output Python", scriptFileName, scriptFileLocation)  
+    #        logging.info("Output Python", scriptFileName, scriptFileLocation)  
     #        cleanupFiles.append(scriptFileLocation)
 else:
     performFileLoad = False
@@ -404,80 +443,117 @@ def verifyScriptCommand():
         script_command = """'R --vanilla ./"""+searchPath+"""/"""+scriptFileName+""" """+scriptArguments+"""'"""
     return script_command
 
+'''
 
+def verifyEnvName(env_name):
+    if env_name not in list_env():
+        raise Exception("environment not present")
+
+'''
+def verifyApplyCommand():
+             apply_command = ''
+             
+             # script file name should have no quotes
+             if ('"' in scriptFileName) or ("'" in scriptFileName):
+                 raise Exception('Illegal Script File Name', scriptFileName)
+             if commandType != 'r':
+                apply_command = """'python3 ./"""+scriptFileName+""" '"""
+           
+             return apply_command
+
+def verifyEnvName(envName):
+    # return clause should not have any quotes
+    if envName and ('"' not in envName) and ("'" not in envName):
+        return envName
+    else:
+        raise Exception('Illegal Env name', envName)
 
 partitionbycolumns = function_config.get('partitionbycolumns', '')
 partitionorderbycolumns = function_config.get('partitionorderbycolumns', '')
 
+if not is_vantage_cloud:
+    logging.info('Building STO Script Command')
 
-print('Building STO Script Command')
+    logging.info("""Script Command: """+verifyScriptCommand())
+else:
 
-print("""Script Command: """+verifyScriptCommand())
+    logging.info('Building Apply Command')
 
-# select query
-print('Building Database Query')
-databaseQuery = 'DATABASE {};'.format(verifyAttribute(sto_database()))
-print("""Database Query: """+databaseQuery)
-executor_query(executor, databaseQuery)
-print('Build Session SearchUIFDBPath Query')
-setSessionQuery = 'SET SESSION SEARCHUIFDBPATH = {};'.format(verifyAttribute(searchPath))
-print("""Set Session Query: """ + setSessionQuery)
-etQuery = 'COMMIT WORK;'
-
-#File Related:
-
-removeFileQuery = "CALL SYSUIF.REMOVE_FILE({},1);".format(verifyLocation(scriptAlias))
-print('Building Script installation query')
-installFileQuery = "CALL SYSUIF.INSTALL_FILE({},{},{});".format(verifyLocation(scriptAlias), verifyLocation(scriptFileName), verifyLocation(scriptLocation + "!" + scriptFileName))
-replaceFileQuery = "CALL SYSUIF.REPLACE_FILE({},{},{}, 0);".format(verifyLocation(scriptAlias), verifyLocation(scriptFileName), verifyLocation(scriptLocation + "!" + scriptFileName))
-scriptDoesExist = "select * from dbc.tables where databasename = {} and TableKind = 'Z';".format(verifyTableName(searchPath, True))
-
-#File Copy to DIST
-dkuinstalldir = os.environ['DKUINSTALLDIR']
-newPath = dkuinstalldir + """/dist/"""+scriptFileName
-print(newPath)
-# print(replaceFileQuery)
-#COPY FILE TEST
-if(performFileLoad):
-    copyfile(escape(scriptFileLocation.rstrip()), newPath)
-
-#ADDITIONAL FILES
-#INSTALL Additional files
-print('Building Additional File INSTALLATION/REPLACEMENT')
-# installAdditionalFiles = """"""
-installAdditionalFilesArray = []
-for item in additionalFiles:
-    address = item.get('file_address', '').rstrip() if\
-        ('s' == item.get('file_location', '')) else handle.file_path(item.get('filename', ''))
-    newPath = dkuinstalldir + """/dist/"""+item.get('filename')
-    print(newPath)
-    # print(replaceFileQuery)
-    print(address)
-    #COPY FILE TEST
-    copyfile(address, newPath)
-    if item.get('replace_file'):
-        # installAdditionalFiles = installAdditionalFiles + """\nCALL SYSUIF.REPLACE_FILE('""" + item.get('file_alias') + """','""" + item.get('filename') + """','"""+item.get('file_location')+item.get('file_format')+"""!"""+address+"""',0);"""
-        query_check = getSelectInstalledFileQuery(defaultDB,item.get('file_alias'))
+    logging.info("""Apply Command: """+verifyApplyCommand())
     
-        tableCheck = executor_query(executor, query_check)
-        print(tableCheck)
-        print(tableCheck.shape)
-        if(tableCheck.shape[0] < 1):
-            print("""File Alias:"""+ item.get('file_alias'))
-            print('Was not able to find the file in the table list. Attempting to use INSTALL_FILE')        
+
+if not is_vantage_cloud:
+    # select query
+    logging.info('Building Database Query')
+    databaseQuery = 'DATABASE {};'.format(verifyAttribute(sto_database()))
+    print("""Database Query: """+databaseQuery)
+    executor_query(executor, databaseQuery)
+    logging.info('Build Session SearchUIFDBPath Query')
+    setSessionQuery = 'SET SESSION SEARCHUIFDBPATH = {};'.format(verifyAttribute(searchPath))
+
+    logging.info("""Set Session Query: """ + setSessionQuery)
+    etQuery = 'COMMIT WORK;'
+    
+
+    #File Related:
+    removeFileQuery = "CALL SYSUIF.REMOVE_FILE({},1);".format(verifyLocation(scriptAlias))
+    logging.info('Building Script installation query')
+
+    installFileQuery = "CALL SYSUIF.INSTALL_FILE({},{},{});".format(verifyLocation(scriptAlias), verifyLocation(scriptFileName), verifyLocation(scriptLocation + "!" + scriptFileName))
+
+    replaceFileQuery = "CALL SYSUIF.REPLACE_FILE({},{},{}, 0);".format(verifyLocation(scriptAlias), verifyLocation(scriptFileName), verifyLocation(scriptLocation + "!" + scriptFileName))
+    scriptDoesExist = "select * from dbc.tables where databasename = {} and TableKind = 'Z';".format(verifyTableName(searchPath, True))
+
+    #File Copy to DIST
+    dkuinstalldir = os.environ['DKUINSTALLDIR']
+    newPath = dkuinstalldir + """/dist/"""+scriptFileName
+    logging.info(newPath)
+    # logging.info(replaceFileQuery)
+    #COPY FILE TEST
+    if(performFileLoad):
+        copyfile(escape(scriptFileLocation.rstrip()), newPath)
+
+    #ADDITIONAL FILES
+    #INSTALL Additional files
+    logging.info('Building Additional File INSTALLATION/REPLACEMENT')
+    # installAdditionalFiles = """"""
+    installAdditionalFilesArray = []
+    for item in additionalFiles:
+        address = item.get('file_address', '').rstrip() if\
+            ('s' == item.get('file_location', '')) else handle.file_path(item.get('filename', ''))
+        newPath = dkuinstalldir + """/dist/"""+item.get('filename')
+        logging.info(newPath)
+        # logging.info(replaceFileQuery)
+        logging.info(address)
+        #COPY FILE TEST
+        copyfile(address, newPath)
+        if item.get('replace_file'):
+            # installAdditionalFiles = installAdditionalFiles + """\nCALL SYSUIF.REPLACE_FILE('""" + item.get('file_alias') + """','""" + item.get('filename') + """','"""+item.get('file_location')+item.get('file_format')+"""!"""+address+"""',0);"""
+            query_check = getSelectInstalledFileQuery(defaultDB,item.get('file_alias'))
+        
+            tableCheck = executor_query(executor, query_check)
+            logging.info(tableCheck)
+            logging.info(tableCheck.shape)
+            if(tableCheck.shape[0] < 1):
+                logging.info("""File Alias:"""+ item.get('file_alias'))
+                logging.info('Was not able to find the file in the table list. Attempting to use INSTALL_FILE')
+
+                installAdditionalFilesArray.append("\n CALL SYSUIF.INSTALL_FILE({},{},{});".format(verifyLocation(item.get('file_alias')), verifyLocation(item.get('filename')), verifyLocation(item.get('file_location')+item.get('file_format') + "!" + item.get('filename'))))
+            else:    
+                logging.info("""File Alias:"""+ item.get('file_alias'))
+
+                installAdditionalFilesArray.append("\nCALL SYSUIF.REPLACE_FILE({},{},{},0);".format(verifyLocation(item.get('file_alias')), verifyLocation(item.get('filename')), verifyLocation(item.get('file_location')+item.get('file_format') + "!" + item.get('filename'))))
+        else:
+
             installAdditionalFilesArray.append("\nCALL SYSUIF.INSTALL_FILE({},{},{});".format(verifyLocation(item.get('file_alias')), verifyLocation(item.get('filename')), verifyLocation(item.get('file_location')+item.get('file_format') + "!" + item.get('filename'))))
-        else:    
-            print("""File Alias:"""+ item.get('file_alias'))
-            installAdditionalFilesArray.append("\nCALL SYSUIF.REPLACE_FILE({},{},{},0);".format(verifyLocation(item.get('file_alias')), verifyLocation(item.get('filename')), verifyLocation(item.get('file_location')+item.get('file_format') + "!" + item.get('filename'))))
-    else:
-        installAdditionalFilesArray.append("\nCALL SYSUIF.INSTALL_FILE({},{},{});".format(verifyLocation(item.get('file_alias')), verifyLocation(item.get('filename')), verifyLocation(item.get('file_location')+item.get('file_format') + "!" + item.get('filename'))))
-print("""Additional Files Installation Query/ies: """)
-print(installAdditionalFilesArray)
+    logging.info("""Additional Files Installation Query/ies: """)
+    logging.info(installAdditionalFilesArray)
+    
 
 #MOVE ADDITIONAL FILES
 
 
-print(output_A_names[0])
+logging.info(output_A_names[0])
 
 # Gather inputs to generate onClause
 inputs = function_config.get('inputs', "")
@@ -489,77 +565,100 @@ whereClause = function_config.get('where', "")
 return_clause = function_config.get('return_clause', "")
 output_all = function_config.get('outputAll', True)
 
-
 # Prefix the input table with the correct database
 inputTable = function_config.get('input_table')
 
 
 
-STOQuery = """SELECT {selectClause}
-FROM SCRIPT (ON (SELECT {onClause} FROM {inputTable} {whereClause}){hashClause}{localOrderClause}{partitionClause}{orderClause}
-             SCRIPT_COMMAND({script_command})
-             RETURNS ('{returnClause}')
-            );""".format(inputTable=verifyInputTable(inputTable), selectClause=verifySelectClause(output_all, return_clause), onClause=verifyOnClause(inputs), whereClause=verifyWhereClause(whereClause), script_command=verifyScriptCommand(),hashClause=verifyHashClause(partitionbycolumns), partitionClause=verifyPartitionClause(partitionbycolumns), orderClause=verifyOrderClause(partitionorderbycolumns), localOrderClause=verifyLocalOrderClause(partitionorderbycolumns),returnClause=verifyReturnClause(returnClause))
+if is_vantage_cloud:
+    
+    ApplyQuery = """SELECT {selectClause}
+    FROM APPLY (ON (SELECT {onClause} FROM {inputTable} AS "input" {whereClause}){hashClause}{localOrderClause}{partitionClause}{orderClause}{nullsClause}
+                 RETURNS ({returnClause})
+                 USING
+                 APPLY_COMMAND({apply_command})
+                 ENVIRONMENT ('{env_name}')
+                 delimiter('{delimiter}')
+                 quotechar('{quotechar}')
+                 STYLE('csv')
+                )as sqlmr;""".format(inputTable=verifyInputTable(inputTable),selectClause=verifySelectClause(output_all, return_clause), onClause=verifyOnClause(inputs), whereClause=verifyWhereClause(whereClause),hashClause=verifyHashClause(partitionbycolumns), partitionClause=verifyPartitionClause(partitionbycolumns), orderClause=verifyOrderClause(partitionorderbycolumns), localOrderClause=verifyLocalOrderClause(partitionorderbycolumns),nullsClause= nullsClause,returnClause=verifyReturnClause(returnClause), apply_command=verifyApplyCommand(),env_name=env_name,delimiter=delimiter,quotechar=quotechar)
 
+else:
+    
+    STOQuery = """SELECT {selectClause}
+    FROM SCRIPT (ON (SELECT {onClause} FROM {inputTable} {whereClause}){hashClause}{localOrderClause}{partitionClause}{orderClause}
+                 SCRIPT_COMMAND({script_command})
+                 RETURNS ('{returnClause}')
+                );""".format(inputTable=verifyInputTable(inputTable), selectClause=verifySelectClause(output_all, return_clause), onClause=verifyOnClause(inputs), whereClause=verifyWhereClause(whereClause), script_command=verifyScriptCommand(),hashClause=verifyHashClause(partitionbycolumns), partitionClause=verifyPartitionClause(partitionbycolumns), orderClause=verifyOrderClause(partitionorderbycolumns), localOrderClause=verifyLocalOrderClause(partitionorderbycolumns),returnClause=verifyReturnClause(returnClause))
 
+    
 def database():
     # for now, database name = db user name
     return sto_database()
     
 
-#File Loading
-if(performFileLoad):
-    if function_config.get("replace_script"):
-        print('performing replacefile')
-        query_check = getSelectInstalledFileQuery(defaultDB, scriptAlias)
-  
-        tableCheck = executor_query(executor, query_check)
-        print('Checking table list for previously installed files')
-        print(tableCheck)
-        print(tableCheck.shape)
-        if(tableCheck.shape[0] < 1):
-            print('Was not able to find the file in the table list. Attempting to use INSTALL_FILE')
-            if autocommit:
-                print('Auto commit is true')
-                executor_query2(executor, installFileQuery, [databaseQuery, setSessionQuery])
-            else:
-                print('Auto commit is false')
-                executor_query2(executor, edTxn, [stTxn, databaseQuery, setSessionQuery, installFileQuery])
-        else:    
-            print('Was able to find the file in the table list. Attempting to use REPLACE_FILE')
-            if autocommit:
-                print('Auto commit is true')
-                executor_query2(executor, replaceFileQuery,[databaseQuery, setSessionQuery])
-            else:
-                print('Auto commit is false')
-                executor_query2(executor, edTxn,[stTxn, databaseQuery, setSessionQuery, replaceFileQuery])
-    else:
-        print('performing installfile')
-        executor_query2(executor, edTxn,[stTxn, databaseQuery, setSessionQuery, installFileQuery])
+if not is_vantage_cloud:
+    #File Loading
+    if(performFileLoad):
+        if function_config.get("replace_script"):
+            logging.info('performing replacefile')
+            query_check = getSelectInstalledFileQuery(defaultDB, scriptAlias)
+      
+            tableCheck = executor_query(executor, query_check)
+            logging.info('Checking table list for previously installed files')
+            logging.info(tableCheck)
+            logging.info(tableCheck.shape)
+            if(tableCheck.shape[0] < 1):
+                logging.info('Was not able to find the file in the table list. Attempting to use INSTALL_FILE')
+                if autocommit:
+                    logging.info('Auto commit is true')
+                    executor_query2(executor, installFileQuery, [databaseQuery, setSessionQuery])
+                else:
+                    logging.info('Auto commit is false')
+                    executor_query2(executor, edTxn, [stTxn, databaseQuery, setSessionQuery, installFileQuery])
+            else:    
+                logging.info('Was able to find the file in the table list. Attempting to use REPLACE_FILE')
+                if autocommit:
+                    logging.info('Auto commit is true')
+                    executor_query2(executor, replaceFileQuery,[databaseQuery, setSessionQuery])
+                else:
+                    logging.info('Auto commit is false')
+                    executor_query2(executor, edTxn,[stTxn, databaseQuery, setSessionQuery, replaceFileQuery])
+        else:
+            logging.info('performing installfile')
+            executor_query2(executor, edTxn,[stTxn, databaseQuery, setSessionQuery, installFileQuery])
 
-if(installAdditionalFilesArray != []):
-    print('Installing additional files...')
-    if autocommit:
-        placeholderQuery = "SELECT 1;" #Placeholder so that a query is still executed.
-        executor_query2(executor, placeholderQuery,[databaseQuery,setSessionQuery]+installAdditionalFilesArray);
-    else:
-        executor_query2(executor, edTxn,[stTxn, databaseQuery, setSessionQuery]+installAdditionalFilesArray)
+    if(installAdditionalFilesArray != []):
+        logging.info('Installing additional files...')
+        if autocommit:
+            placeholderQuery = "SELECT 1;" #Placeholder so that a query is still executed.
+            executor_query2(executor, placeholderQuery,[databaseQuery,setSessionQuery]+installAdditionalFilesArray);
+        else:
+            executor_query2(executor, edTxn,[stTxn, databaseQuery, setSessionQuery]+installAdditionalFilesArray)
 
 
-    
+
 # Recipe outputs                                                          
-print('setSessionQuery')
-print(setSessionQuery)
-print('replaceFileQuery')
-print(replaceFileQuery)
-print('Executing SELECT Query...')
-print(STOQuery)
-selectResult = executor_query2(executor, STOQuery,[databaseQuery, setSessionQuery])
-print('Moving results to output...')
+
+logging.info('Executing SELECT Query...')
+
+if is_vantage_cloud:
+    logging.info(ApplyQuery)
+    selectResult = executor_query(executor, ApplyQuery)
+    
+else:
+    logging.info('setSessionQuery')
+    logging.info(setSessionQuery)
+    logging.info('replaceFileQuery')
+    logging.info(replaceFileQuery)
+    logging.info(STOQuery)
+    selectResult = executor_query2(executor, STOQuery,[databaseQuery, setSessionQuery])
+    
+logging.info('Moving results to output...')
 pythonrecipe_out = output_A_datasets[0]
 pythonrecipe_out.write_with_schema(selectResult)
 if cleanupFiles:
     # deleting autogenerated files
     for filePath in cleanupFiles:
         os.remove(filePath)
-print('Complete!')  
+logging.info('Complete!')  
