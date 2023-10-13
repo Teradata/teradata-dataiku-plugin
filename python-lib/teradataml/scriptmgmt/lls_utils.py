@@ -714,8 +714,7 @@ def set_auth_token(ues_url, client_id=None):
 
     if client_id is None:
         netloc = url_parser.netloc
-        # client_id = "tdpub-" + netloc.split('.')[0]  # -->  client_id='tdpub-peshared'
-        client_id = "{}-udf-device".format(netloc.split('.')[0])
+        client_id = "{}-oaf-device".format(netloc.split('.')[0])
 
     da_wf = _DAWorkflow(base_url, client_id)
     poll_data = da_wf._get_token_data()

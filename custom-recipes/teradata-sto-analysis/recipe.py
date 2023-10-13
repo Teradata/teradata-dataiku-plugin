@@ -117,17 +117,7 @@ logging.info('Getting vantage version')
 # Find Vantage Version
 vantage_version = ""
 is_vantage_cloud = False
-'''
-print("snigdha")
-from teradataml.scriptmgmt import set_auth_token1
-from teradataml.options import configure
 
-
-uri = set_auth_token1("https://peinternal1.staging.innovationlabs.teradata.com/api/accounts/233872c0-d72c-47e7-817f-f839be4d7b6c/open-analytics")
-
-print(uri)
-print(configure._auth_token_expiry_time)
-'''
 if input_A_datasets[0]:
         # Execute query to find out the version and establish if it is Vantage Cloud or not
         executor = dataiku.core.sql.SQLExecutor2(dataset=input_A_datasets[0]) 
