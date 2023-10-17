@@ -15,18 +15,14 @@ from concurrent.futures import ThreadPoolExecutor, wait
 
 from teradataml.options import configure
 from teradataml.clients.pkce_client import _PKCEClient, _DAWorkflow
-#from teradataml.context.context import _get_user
 from teradataml.common.exceptions import TeradataMlException
 from teradataml.common.messages import Messages
 from teradataml.common.messagecodes import MessageCodes
 from teradataml.common.utils import UtilFuncs
 from teradataml.utils.validators import _Validators
 
-
-
+import warnings
 from urllib.parse import urlparse
-#from query_engine_wrapper import QueryEngineWrapper
-
 from enum import Enum
 
 def get_user_name(query_engine_wrapper):
@@ -161,6 +157,8 @@ def _process_ues_response(api_name, response, success_status_code=None):
     """
     try:
         # Success status code ranges between 200-300.
+        warnings.filterwarnings("ignore", category=DeprecationWarning)
+
         if (success_status_code is None and 200 <= response.status_code < 300) or \
                 (success_status_code == response.status_code):
             return response
