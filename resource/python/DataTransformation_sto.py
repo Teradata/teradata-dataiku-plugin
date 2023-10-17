@@ -13,6 +13,7 @@ NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FO
 DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 '''
+
 import platform
 import dataiku
 import json
@@ -22,7 +23,6 @@ import sys
 import httpx as requests
 from time import time, sleep
 import keyring as kr 
-from keyrings.cryptfile.cryptfile import CryptFileKeyring
 sys.path.append('../../python-lib')
 
 from teradataml.scriptmgmt import list_base_envs, list_user_envs, create_env, remove_env,get_env
@@ -36,46 +36,53 @@ from teradataml.datetime_helpers import (
 from query_engine_wrapper import QueryEngineWrapper
 import auth
 import jwt
-
-
+from keyrings.cryptfile.cryptfile import CryptFileKeyring 
+import warnings
 
 
 def get_access_token():
+    
         """
         Sets the access token
         """
-        jwt_first_half=kr.get_password("openAF", "jwt_first_half")
-        jwt_second_half=kr.get_password("openAF", "jwt_second_half")
-        jwt_expiry=kr.get_password("openAF", "jwt_expiry")
-        if jwt_first_half and jwt_second_half:
-                jwt = jwt_first_half + jwt_second_half
-        # if JWT is not expired setting it to CONFIGURE and use it in OPENAF service calls
-                if (
-                    jwt 
-                    and jwt_expiry
-                    and now_datetime() < datetime_from_iso_string(jwt_expiry)
-                ):
-                    configure.auth_token=jwt
+        warnings.simplefilter('error')
+        try:
+            jwt_first_half=kr.get_password("openAF", "jwt_first_half")
+            jwt_second_half=kr.get_password("openAF", "jwt_second_half")
+            jwt_expiry=kr.get_password("openAF", "jwt_expiry")
+            if jwt_first_half and jwt_second_half:
+                    jwt = jwt_first_half + jwt_second_half
+            # if JWT is not expired setting it to CONFIGURE and use it in OPENAF service calls
+                    if (
+                        jwt 
+                        and jwt_expiry
+                        and now_datetime() < datetime_from_iso_string(jwt_expiry)
+                    ):
+                        configure.auth_token=jwt
 
-                else:
-                    # if JWT is expired deleting JWT and JWT_EXPIRY from key ring
-                    if jwt_first_half:
-                        kr.delete_password(
-                            "openAF", "jwt_first_half"
-                        )
-                    if jwt_second_half:
-                        kr.delete_password(
-                            "openAF", "jwt_second_half"
-                        )
-                    if jwt_expiry:
-                        kr.delete_password(
-                            "openAF", "jwt_expiry"
-                        )
-                    jwt = None
-                # Decode and verify the JWT, and print the subject claim
-                if not jwt:
-                    raise Exception("Authentication Error.Please Try again!")
-                jwt="0000"
+                    else:
+                        # if JWT is expired deleting JWT and JWT_EXPIRY from key ring
+                        if jwt_first_half:
+                            kr.delete_password(
+                                "openAF", "jwt_first_half"
+                            )
+                        if jwt_second_half:
+                            kr.delete_password(
+                                "openAF", "jwt_second_half"
+                            )
+                        if jwt_expiry:
+                            kr.delete_password(
+                                "openAF", "jwt_expiry"
+                            )
+                        jwt = None
+                    # Decode and verify the JWT, and print the subject claim
+                    if not jwt:
+                        raise Exception("Authentication Error.Please Try again!")
+                
+                    jwt="0000"
+        except:
+            pass
+        
                     
 
 
@@ -136,6 +143,7 @@ def getConnectionParamsFromDataset(inputDataset):
 # config and plugin_config are the recipe/dataset and plugin configured values
 # inputs is the list of input roles (in case of a recipe)
 def do_execute(payload, config, plugin_config, inputs):
+
     inputDataSets = []
     # print(inputtablename)
     connection = {}
@@ -166,16 +174,22 @@ def do_execute(payload, config, plugin_config, inputs):
     # executor = dataiku.core.sql.SQLExecutor2(dataset=input_dataset) 
     # Acessing username using DBC table present in every connection
     def get_username():
-        jwt_first_half=kr.get_password("openAF", "jwt_first_half")
-        jwt_second_half=kr.get_password("openAF", "jwt_second_half")
-        jwt_expiry=kr.get_password("openAF", "jwt_expiry")
-        if jwt_first_half and jwt_second_half:
-                jwt_token = jwt_first_half + jwt_second_half
+        try:
+            warnings.simplefilter('error')
 
-        decoded_token = jwt.decode(jwt=jwt_token, verify=False, options={'verify_signature': False})
-        user_name = decoded_token['given_name']
-        return user_name
-       
+            jwt_first_half=kr.get_password("openAF", "jwt_first_half")
+            jwt_second_half=kr.get_password("openAF", "jwt_second_half")
+            jwt_expiry=kr.get_password("openAF", "jwt_expiry")
+            if jwt_first_half and jwt_second_half:
+                    jwt_token = jwt_first_half + jwt_second_half
+
+            decoded_token = jwt.decode(jwt=jwt_token, verify=False, options={'verify_signature': False})
+            user_name = decoded_token['given_name']
+            
+            return user_name
+        except:
+            return None
+    
     if "tabs_auth" in payload:
        try:
            
@@ -270,7 +284,7 @@ def do_execute(payload, config, plugin_config, inputs):
     
     if "base_env" in payload:
        try:
-           
+        
            get_access_token()
            a = list_base_envs()
            a=a.to_dict('split')
@@ -279,8 +293,6 @@ def do_execute(payload, config, plugin_config, inputs):
                result.append(l[0])
            result.append("Click to refresh list")
            configure.auth_token="0000"
-
-
            return {'choices' : result}
        
        except:
@@ -293,7 +305,12 @@ def do_execute(payload, config, plugin_config, inputs):
            a=a.to_dict('split')
            result =[]
            for l in a['data']:
+            env_version=platform.python_version()
+            if float(env_version[:3]) <= 3.7:
                result.append(l[2])
+            else:
+                result.append(l[0])
+
            result.append("Click to refresh list")
            configure.auth_token="0000"
 
@@ -336,7 +353,12 @@ def do_execute(payload, config, plugin_config, inputs):
            result =[]
            
            for l in a:
+               
+            env_version=platform.python_version()
+            if float(env_version[:3]) <= 3.7:
                result.append(l[1])
+            else:
+                result.append(l[0])
            result.append("Click to refresh list")
            
            configure.auth_token="0000"
@@ -607,7 +629,11 @@ def do_execute(payload, config, plugin_config, inputs):
                     a=a.values.tolist() 
 
                     for l in a:
-                        File.append(l[1])
+                        env_version=platform.python_version()
+                        if float(env_version[:3]) <= 3.7:
+                            File.append(l[1])
+                        else:
+                            File.append(l[0])
                     File_str=" , "
                     File_str=File_str.join(File)
                 except:
