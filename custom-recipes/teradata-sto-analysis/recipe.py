@@ -433,13 +433,7 @@ def verifyScriptCommand():
         script_command = """'R --vanilla ./"""+searchPath+"""/"""+scriptFileName+""" """+scriptArguments+"""'"""
     return script_command
 
-'''
 
-def verifyEnvName(env_name):
-    if env_name not in list_env():
-        raise Exception("environment not present")
-
-'''
 def verifyApplyCommand():
              apply_command = ''
              
@@ -451,12 +445,19 @@ def verifyApplyCommand():
            
              return apply_command
 
-def verifyEnvName(envName):
-    # return clause should not have any quotes
-    if envName and ('"' not in envName) and ("'" not in envName):
-        return envName
-    else:
-        raise Exception('Illegal Env name', envName)
+def verifyDelimiter():             
+             # delimiter length should be 1
+             if len(delimiter)!=1:
+                 raise Exception('Illegal delimiter value', delimiter)
+           
+             return delimiter
+
+def verifyQuotechar():
+    if len(quotechar)!=1:
+        raise Exception('Illegal quotechar value', quotechar)
+           
+    return quotechar
+        
 
 partitionbycolumns = function_config.get('partitionbycolumns', '')
 partitionorderbycolumns = function_config.get('partitionorderbycolumns', '')
@@ -571,7 +572,7 @@ if is_vantage_cloud:
                  delimiter('{delimiter}')
                  quotechar('{quotechar}')
                  STYLE('csv')
-                )as sqlmr;""".format(inputTable=verifyInputTable(inputTable),selectClause=verifySelectClause(output_all, return_clause), onClause=verifyOnClause(inputs), whereClause=verifyWhereClause(whereClause),hashClause=verifyHashClause(partitionbycolumns), partitionClause=verifyPartitionClause(partitionbycolumns), orderClause=verifyOrderClause(partitionorderbycolumns), localOrderClause=verifyLocalOrderClause(partitionorderbycolumns),nullsClause= nullsClause,returnClause=verifyReturnClause(returnClause), apply_command=verifyApplyCommand(),env_name=env_name,delimiter=delimiter,quotechar=quotechar)
+                )as sqlmr;""".format(inputTable=verifyInputTable(inputTable),selectClause=verifySelectClause(output_all, return_clause), onClause=verifyOnClause(inputs), whereClause=verifyWhereClause(whereClause),hashClause=verifyHashClause(partitionbycolumns), partitionClause=verifyPartitionClause(partitionbycolumns), orderClause=verifyOrderClause(partitionorderbycolumns), localOrderClause=verifyLocalOrderClause(partitionorderbycolumns),nullsClause= nullsClause,returnClause=verifyReturnClause(returnClause), apply_command=verifyApplyCommand(),env_name=env_name,delimiter=verifyDelimiter(),quotechar=verifyQuotechar())
 
 else:
     

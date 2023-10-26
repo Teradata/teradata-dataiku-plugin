@@ -49,7 +49,7 @@ def execute_transform(recipe_config, function_name, function_list, unique_name="
     if delayquery:
         select = ""
         for i in range(len(function_list)):
-            select += "INSERT INTO {} ( DELAYTRANSFORM ) VALUES  ('{}={}');".format(verifyQualifiedTableName(output_database_name,main_output_name), function_name, function_list[i])
+            select += "INSERT INTO {} ( DELAYTRANSFORM ) VALUES  ('{}={}');".format(verifyQualifiedTableName(output_database_name,main_output_name), verifyAttribute(function_name), verifyAttribute(function_list[i]))
         query = "CREATE TABLE {} (DELAYTRANSFORM varchar(255));\n".format(verifyQualifiedTableName(output_database_name,main_output_name))
         if not valib_query_wrapper:
             return query + "<br>" + select
