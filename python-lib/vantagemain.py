@@ -225,7 +225,7 @@ def vantageDo():
         for tableIndex in range(1, len(output_table_names)):
             output_table_todrop = output_table_names[tableIndex]["table"]
             logging.info('Drop Additional Output Query:' + output_table_todrop)
-            drop_query = DROP_QUERY.format(outputTablename=output_table_todrop)
+            drop_query = DROP_QUERY.format(outputTablename=verifyTableName(output_table_todrop))
             try:
                 if not autocommit: 
                     executor.query_to_df(pre_query)
