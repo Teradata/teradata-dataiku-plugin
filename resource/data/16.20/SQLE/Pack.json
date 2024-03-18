@@ -6,6 +6,7 @@
   "function_version": "1.0",
   "function_alias_name": "Pack",
   "function_type": "fastpath",
+  "function_category" : "Data Cleaning",
   "function_r_name": "aa.pack",
   "short_description": "Packs data across several columns into a single data column.",
   "long_description": "Reverse of the unpack function.  Packs data across several columns into a single data column.",

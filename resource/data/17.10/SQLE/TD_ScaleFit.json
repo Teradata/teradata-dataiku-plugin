@@ -5,6 +5,7 @@
   "function_name": "TD_ScaleFit",
   "function_version": "1.0",
   "function_type": "fastpath",
+  "function_category": "Feature Engineering Transform",
   "function_alias_name": "TD_ScaleFit",
   "function_r_name": "aa.td_scale.fit",
   "short_description": "fastpath function to generate required statistics and scaling parameters to be used by TD_ScaleTransform for scaling the input data.",

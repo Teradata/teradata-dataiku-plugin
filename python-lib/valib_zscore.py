@@ -31,11 +31,13 @@ def execute(recipe_config, valib_query_wrapper=None):
 
     for i in range(1, 1+num_of_zscorebounds):
         nullstyle = recipe_config['zscore_nullstyle'+str(i)]
-        fillna_value = recipe_config['zscore_fillna_value'+str(i)]
+        fillna_value = recipe_config.get('zscore_fillna_value'+str(i),0)
         fillna = {'nullstyle' : nullstyle, 'fillna_value' : fillna_value}
         
         columns = []
         map_dict = recipe_config['zscore_map']
+        if type(map_dict) == str:
+            map_dict = string_param_to_dict(map_dict)
         for key in map_dict:
             # No quotes in key or value
             if ("'" in key) or ('"' in key):

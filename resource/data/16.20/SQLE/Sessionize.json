@@ -5,6 +5,7 @@
   "function_name": "Sessionize",
   "function_version": "1.0",
   "function_type": "fastpath",
+  "function_category": "Path and Pattern Analysis",
   "function_alias_name": "Sessionize",
   "function_r_name": "aa.sessionize",
   "short_description": "Creates sessions for a clickstream data.",

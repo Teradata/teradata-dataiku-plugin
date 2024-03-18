@@ -28,12 +28,21 @@ def execute(recipe_config, valib_query_wrapper=None):
 
     for i in range(1, 1+num_of_designcodebounds):
         columns = []
-        style = recipe_config['onehotencoder_style'+str(i)]
-        value = recipe_config['onehotencoder_value'+str(i)]
+        style = recipe_config.get('onehotencoder_style'+str(i),'dummycode')
+        value = recipe_config.get('onehotencoder_value'+str(i),10)
         
         style = {'style': style, 'value': value}
         
         map_dict = recipe_config['onehotencoder_map']
+
+        # If string, convert string to dictionary
+        if type(map_dict)==str:
+            map_lst = map_dict.split(",")
+            map_dict = {}
+            for item in map_lst:
+                split = item.split(":")
+                map_dict[split[0].strip(" ")] = split[1] 
+
         for key in map_dict:
             # No quotes in key or value
             if ("'" in key) or ('"' in key):
@@ -43,7 +52,13 @@ def execute(recipe_config, valib_query_wrapper=None):
             columns.append({'column_from': key, 'column_to': map_dict[key]})
 
         designvalues = recipe_config['onehotencoder_values']
-        print("SKS designvalues", designvalues, type(designvalues))
+        # If string convert to list
+        if type(designvalues) == str:
+            designvalues_lst = designvalues.split(",")
+            designvalues = []
+            for item in designvalues_lst:
+                designvalues.append(item.strip(' '))
+        #print("SKS designvalues", designvalues, type(designvalues))
         for design_value in designvalues:
             # No quotes in key or value
             if ("'" in design_value) or ('"' in design_value):

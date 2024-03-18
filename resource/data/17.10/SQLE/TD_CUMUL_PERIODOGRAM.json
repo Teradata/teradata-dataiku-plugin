@@ -1,6 +1,7 @@
 {
+    "FunctionCategory": "Diagnostic Statistical Test",
     "JSONVersion": "1",
-    "FuncRName": "...",
+    "FuncRName": "td_Cumul_Periodogram",
     "MaxInputFiles": 1,
     "IsPlottable": true,
     "InputFmt": false,

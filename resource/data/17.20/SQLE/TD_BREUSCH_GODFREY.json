@@ -1,6 +1,7 @@
 {
+    "FunctionCategory": "Diagnostic Statistical Test",
     "JSONVersion": "1",
-    "FuncRName": "...",
+    "FuncRName": "td_Breusch_Godfrey",
     "MaxInputFiles": 1,
     "IsPlottable": false,
     "InputFmt": false,
@@ -99,10 +100,10 @@
     "argument_clauses": [
         {
             "name": "RESIDUAL_MAXLAGS",
-            "defaultValue": "",
             "lowerBound": 1,
             "lowerBoundType": "INCLUSIVE",
             "allowNaN": false,
+            "langName": "residual_max_lags",
             "allowsLists": false,
             "Type": "integer",
             "datatype": "INTEGER",
@@ -112,14 +113,13 @@
         },
         {
             "name": "EXPLANATORY_COUNT",
-            "defaultValue": "",
             "lowerBound": 0,
             "lowerBoundType": "INCLUSIVE",
             "allowNaN": false,
             "allowsLists": false,
             "Type": "integer",
             "datatype": "INTEGER",
-            "description": "The number of explanatory variables that were present in the original regression; plus '1' if a constant was present: Example: the FORMULA('Y = B0 + B1*X1') has a VARIABLES_COUNT of '2'; '1' for 'X1' and '1' for the constant 'B0' ",
+            "description": "The number of explanatory variables that were present in the original regression; plus '1' if a constant was present: Example: the FORMULA('Y = B0 + B1*X1') has a EXPLANATORY_COUNT of '2'; '1' for 'X1' and '1' for the constant 'B0' ",
             "isRequired": true,
             "rOrderNum": 4
         },
@@ -134,7 +134,7 @@
             "Type": "double",
             "datatype": "DOUBLE",
             "description": "The desired significance level for the test. Set to 0.01 or 0.05. ",
-            "isRequired": true,
+            "isRequired": false,
             "rOrderNum": 5
         }
     ]

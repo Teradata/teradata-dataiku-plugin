@@ -964,11 +964,11 @@
         try 
         {
           if($scope['isVantageCloudLake']==true) {
-            doc_link = 'https://docs.teradata.com/r/Teradata-VantageCloud-Lake/Analyzing-Your-Data/Build-Scalable-Python-Analytics-with-Open-Analytics-Framework/User-Environments-and-the-APPLY-Table-Operator';
+            doc_link = 'https://docs.teradata.com/r/Teradata-VantageCloud-Lake/Analyzing-Your-Data/Build-Scalable-Analytics-with-Open-Analytics-Framework/APPLY-Table-Operator';
             title ="Learn more about Vantage APPLY Table Operator";
           }
           else{
-            doc_link = 'https://docs.teradata.com/r/Teradata-VantageTM-SQL-Operators-and-User-Defined-Functions/July-2021/Table-Operators/SCRIPT';
+            doc_link = 'https://docs.teradata.com/r/SQL-Operators-and-User-Defined-Functions/July-2021/Table-Operators/SCRIPT';
             title = "Learn more about Teradata Vantage SCRIPT Table Operator";
           }
 

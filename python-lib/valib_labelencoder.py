@@ -32,11 +32,18 @@ def execute(recipe_config, valib_query_wrapper=None):
         
         map_dict = recipe_config['labelencoder_map']
 
-        recodeother = recipe_config['labelencoder_recodeother']
+        recodeother = recipe_config.get('labelencoder_recodeother', 'NULL')
         # Santize user specified string: No double quotes or odd number of single quotes
         if ('"' in recodeother) or (recodeother.count("'") % 2 == 1):
             raise Exception('Illegal Recode Other', recodeother)
         
+        # If string, convert string to dictionary
+        if type(map_dict)==str:
+            map_lst = map_dict.split(",")
+            map_dict = {}
+            for item in map_lst:
+                split = item.split(":")
+                map_dict[split[0].strip(" ")] = split[1] 
         
         for key in map_dict:
             # No quotes in key or value
@@ -47,7 +54,7 @@ def execute(recipe_config, valib_query_wrapper=None):
             
             lst.append({'recodevalues_from': key, 'recodevalues_to': map_dict[key], 'recodeother': recodeother})
 
-        nullstyle = recipe_config['labelencoder_nullstyle'+str(i)+'']
+        nullstyle = recipe_config.get('labelencoder_nullstyle'+str(i)+'', 'None')
         if nullstyle == "literal":
             fillna_value = recipe_config['labelencoder_fillna_value'+str(i)+'']
         else:

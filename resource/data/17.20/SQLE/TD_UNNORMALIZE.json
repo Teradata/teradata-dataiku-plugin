@@ -1,10 +1,43 @@
 {
+    "FunctionCategory": "Model Preparation and Parameter Estimation",
     "JSONVersion": "1",
-    "FuncRName": "...",
+    "FuncRName": "td_Unnormalize",
     "MaxInputFiles": 1,
     "IsPlottable": false,
-    "InputFmt": true,
-    "OutputFmt": true,
+    "InputFmt": [
+        {
+            "name": "InputFormat",
+            "permittedValues": [
+                "INPUT_MODE(MANY2ONE)",
+                "INPUT_MODE(ONE2ONE)",
+                "INPUT_MODE(MATCH)"
+            ],
+            "langName": "input_fmt_input_mode",
+            "allowsLists": false,
+            "Type": "string",
+            "datatype": "STRING",
+            "description": "Specifies the input mode supported by the function.",
+            "isRequired": true,
+            "rOrderNum": 5
+        }
+    ],
+    "OutputFmt": [
+        {
+            "name": "OutputFormat",
+            "defaultValue": "INDEX_STYLE(NUMERICAL_SEQUENCE)",
+            "permittedValues": [
+                "INDEX_STYLE(NUMERICAL_SEQUENCE)",
+                "INDEX_STYLE(FLOW_THROUGH)"
+            ],
+            "langName": "output_fmt_index_style",
+            "allowsLists": false,
+            "Type": "string",
+            "datatype": "STRING",
+            "description": "Specifies the INDEX_STYLE of the output format.",
+            "isRequired": false,
+            "rOrderNum": 4
+        }
+    ],
     "function_type": "uaf",
     "json_schema_major_version": "1",
     "json_schema_minor_version": "2",
@@ -143,26 +176,27 @@
                 "INDEX_STYLE(NUMERICAL_SEQUENCE)",
                 "INDEX_STYLE(FLOW_THROUGH)"
             ],
+            "langName": "output_fmt_index_style",
             "allowsLists": false,
             "Type": "string",
             "datatype": "STRING",
-            "description": "Output format",
+            "description": "Specifies the INDEX_STYLE of the output format.",
             "isRequired": false,
             "rOrderNum": 4
         },
         {
             "name": "InputFormat",
-            "defaultValue": "",
             "permittedValues": [
-                "INPUT_MODE(ONE2ONE)",
                 "INPUT_MODE(MANY2ONE)",
+                "INPUT_MODE(ONE2ONE)",
                 "INPUT_MODE(MATCH)"
             ],
+            "langName": "input_fmt_input_mode",
             "allowsLists": false,
             "Type": "string",
             "datatype": "STRING",
-            "description": "Input format",
-            "isRequired": false,
+            "description": "Specifies the input mode supported by the function.",
+            "isRequired": true,
             "rOrderNum": 5
         },
         {
@@ -174,7 +208,7 @@
             "Type": "integer",
             "datatype": "INTEGER",
             "description": "If FIELDS is not specified, all payload fields of the first input needs to be unnormalized.  If it is specified, only the payload fields in the list are unnormalized.The integer values should be 0 or positive values.  The payload field indexes start from 1.",
-            "isRequired": true,
+            "isRequired": false,
             "rOrderNum": 6
         }
     ]

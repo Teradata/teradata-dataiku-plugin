@@ -1,6 +1,7 @@
 {
+    "FunctionCategory": "Model Preparation and Parameter Estimation",
     "JSONVersion": "1",
-    "FuncRName": "...",
+    "FuncRName": "td_PACF",
     "MaxInputFiles": 1,
     "IsPlottable": true,
     "InputFmt": false,
@@ -95,13 +96,12 @@
     "argument_clauses": [
         {
             "name": "INPUT_TYPE",
-            "defaultValue": "DATA_SERIES",
             "permittedValues": [
                 "DATA_SERIES",
                 "ACF"
             ],
             "allowsLists": false,
-            "Type": "enumeration",
+            "Type": "string",
             "datatype": "STRING",
             "description": "Optional parameter. Specifies whether to source 1D array contains a data series or contains previously generated ACF results.  Default is DATA_SERIES, meaning a data series is being passed in.DATA_SERIES - 1D input array contains time or spatial seriesACF - 1D input array is indexed by LAG and contains previously generated  ACF magnitudes",
             "isRequired": false,
@@ -109,13 +109,12 @@
         },
         {
             "name": "ALGORITHM",
-            "defaultValue": "DATA_SERIES",
             "permittedValues": [
                 "LEVINSON_DURBIN",
                 "OLS"
             ],
             "allowsLists": false,
-            "Type": "enumeration",
+            "Type": "string",
             "datatype": "STRING",
             "description": "Specifies algorithm that data scientist wishes to use to generate the PACF coefficientsLEVINSON_DURBIN - Uses the set of recursive formulas devised by Levinson-Durbin to solve for PACF coefficientsOLS - Solves incremental series of regression equations to determine the PACF coefficients",
             "isRequired": true,
@@ -126,6 +125,7 @@
             "lowerBound": 1,
             "lowerBoundType": "INCLUSIVE",
             "allowNaN": false,
+            "langName": "max_lags",
             "allowsLists": false,
             "Type": "integer",
             "datatype": "INTEGER",
@@ -149,7 +149,6 @@
         },
         {
             "name": "ALPHA",
-            "defaultValue": 0,
             "lowerBound": 0,
             "lowerBoundType": "INCLUSIVE",
             "allowNaN": false,

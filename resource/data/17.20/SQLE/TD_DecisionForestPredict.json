@@ -25,7 +25,7 @@
       "description": "Specifies the table containing the input test data.",
       "datatype": "TABLE_ALIAS",
       "allowsLists": false,
-      "rName": "data",
+      "rName": "newdata",
       "useInR": true,
       "rOrderNum": 1
     },
@@ -109,7 +109,7 @@
       "description": "Specifies responses for which to output probabilitites.",
       "datatype": "STRING",
       "allowsLists": true,
-      "rName": "responses",
+      "rName": "output.responses",
       "useInR": true,
       "rOrderNum": 6
     },

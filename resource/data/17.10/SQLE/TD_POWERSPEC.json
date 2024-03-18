@@ -1,6 +1,7 @@
 {
+    "FunctionCategory": "Temporal and Spatial",
     "JSONVersion": "1",
-    "FuncRName": "...",
+    "FuncRName": "td_Power_Spec",
     "MaxInputFiles": 1,
     "IsPlottable": true,
     "InputFmt": false,
@@ -78,8 +79,8 @@
             "partitionByOne": false,
             "alternateNames": [],
             "isRequired": false,
-            "description": "The TD_POWERSPEC function returns only a primary result set.   There are no secondary or tertiary result sets produced by this function.  The primary result set can be retrieved by issuing a SELECT against the analytical table containing the results.The scaled frequency, ROW_AXIS.  Depends on passed in value of FREQ_STYLE. FREQ_STYLE(\u201cK_RADIANS) means the ROW_AXIS is the angular frequency, 2\u03c0k/N, which varies from 0 to \u03c0. FREQ_STYLE (\u201cK_SAMPLE_RATE) means the ROW_AXIS is the frequency k/N, which varies from 0 to 1/2.  FREQ_STYLE (\u201cPERIODICITY\u201d) means the ROW_AXIS is the Periodicity.",
-            "rDescription": "The TD_POWERSPEC function returns only a primary result set.   There are no secondary or tertiary result sets produced by this function.  The primary result set can be retrieved by issuing a SELECT against the analytical table containing the results.The scaled frequency, ROW_AXIS.  Depends on passed in value of FREQ_STYLE. FREQ_STYLE(\u201cK_RADIANS) means the ROW_AXIS is the angular frequency, 2\u03c0k/N, which varies from 0 to \u03c0. FREQ_STYLE (\u201cK_SAMPLE_RATE) means the ROW_AXIS is the frequency k/N, which varies from 0 to 1/2.  FREQ_STYLE (\u201cPERIODICITY\u201d) means the ROW_AXIS is the Periodicity.",
+            "description": "The TD_POWERSPEC function returns only a primary result set.   There are no secondary or tertiary result sets produced by this function.  The primary result set can be retrieved by issuing a SELECT against the analytical table containing the results.The scaled frequency, ROW_AXIS.  Depends on passed in value of FREQ_STYLE. FREQ_STYLE('K_RADIANS) means the ROW_AXIS is the angular frequency, 2\u03c0k/N, which varies from 0 to \u03c0. FREQ_STYLE ('K_SAMPLE_RATE) means the ROW_AXIS is the frequency k/N, which varies from 0 to 1/2.  FREQ_STYLE ('PERIODICITY') means the ROW_AXIS is the Periodicity.",
+            "rDescription": "The TD_POWERSPEC function returns only a primary result set.   There are no secondary or tertiary result sets produced by this function.  The primary result set can be retrieved by issuing a SELECT against the analytical table containing the results.The scaled frequency, ROW_AXIS.  Depends on passed in value of FREQ_STYLE. FREQ_STYLE('K_RADIANS) means the ROW_AXIS is the angular frequency, 2\u03c0k/N, which varies from 0 to \u03c0. FREQ_STYLE ('K_SAMPLE_RATE) means the ROW_AXIS is the frequency k/N, which varies from 0 to 1/2.  FREQ_STYLE ('PERIODICITY') means the ROW_AXIS is the Periodicity.",
             "datatype": "TABLE_NAME",
             "allowsLists": false,
             "name": "OutputTable1",
@@ -141,12 +142,12 @@
             "allowsLists": false,
             "Type": "string",
             "datatype": "STRING",
-            "description": "ALGORITHM(\u201cAUTOCOV\u201c) - Use the Fourier Cosine of the Auto covariance approach to calculate power spectrumALGORITHM(\u201cAUTOCORR\u201c) - Use the Fourier Cosine of the Auto correlation approach to calculate power spectrumALGORITHM(\u201cFOURIER\u201c) - Use the Fourier Transform approach to calculate power spectrumALGORITHM(\u201cINCRFOURIER\u201c) - Use the Incremental Fourier Transform approach to calculate power spectrum",
+            "description": "ALGORITHM('AUTOCOV') - Use the Fourier Cosine of the Auto covariance approach to calculate power spectrumALGORITHM('AUTOCORR') - Use the Fourier Cosine of the Auto correlation approach to calculate power spectrumALGORITHM('FOURIER') - Use the Fourier Transform approach to calculate power spectrumALGORITHM('INCRFOURIER') - Use the Incremental Fourier Transform approach to calculate power spectrum",
             "isRequired": false,
             "rOrderNum": 6
         },
         {
-            "name": "INCRFOURIER",
+            "name": "INCRFOURIER_PARAM",
             "allowsLists": false,
             "Type": "GROUPSTART",
             "datatype": "GROUPSTART",
@@ -155,7 +156,7 @@
             "rOrderNum": 7
         },
         {
-            "name": "INCRFOURIER.INTERVAL_LENGTH",
+            "name": "INCRFOURIER_PARAM.INTERVAL_LENGTH",
             "lowerBound": 0,
             "lowerBoundType": "INCLUSIVE",
             "allowsLists": false,
@@ -166,7 +167,7 @@
             "rOrderNum": 8
         },
         {
-            "name": "INCRFOURIER.SPACING_INTERVAL",
+            "name": "INCRFOURIER_PARAM.SPACING_INTERVAL",
             "lowerBound": 0,
             "lowerBoundType": "INCLUSIVE",
             "allowsLists": false,
@@ -177,7 +178,7 @@
             "rOrderNum": 9
         },
         {
-            "name": "INCRFOURIER_GROUPEND",
+            "name": "INCRFOURIER_PARAM_GROUPEND",
             "allowsLists": false,
             "Type": "GROUPEND",
             "datatype": "GROUPEND",
@@ -203,10 +204,11 @@
                 "PARZEN",
                 "WELCH"
             ],
+            "langName": "window_name",
             "allowsLists": false,
             "Type": "string",
             "datatype": "STRING",
-            "description": "WINDOW(\u201cNONE\u201c) - Do not apply a smoothing window.  Theoretically this translates into the application of a square wave window, which has a magnitude of '1.0' for the whole duration of the window.WINDOW_NAME(\u201cTUKEY\u201c) - Apply a Tukey smoothing window with the supplied alpha valueWINDOW_NAME (\u201cBARTLETT\u201c) - Apply a Bartlett smoothing windowWINDOW_NAME (\u201cPARZEN\u201c) - Apply a Parzen smoothing windowWINDOW_NAME (\u201cWELCH\u201c) - Apply a Welch smoothing window",
+            "description": "WINDOW('NONE') - Do not apply a smoothing window.  Theoretically this translates into the application of a square wave window, which has a magnitude of '1.0' for the whole duration of the window.WINDOW_NAME('TUKEY') - Apply a Tukey smoothing window with the supplied alpha valueWINDOW_NAME ('BARTLETT') - Apply a Bartlett smoothing windowWINDOW_NAME ('PARZEN') - Apply a Parzen smoothing windowWINDOW_NAME ('WELCH') - Apply a Welch smoothing window",
             "isRequired": false,
             "rOrderNum": 12
         },
@@ -214,6 +216,7 @@
             "name": "WINDOW.WINDOW_PARAM",
             "lowerBound": 0,
             "lowerBoundType": "INCLUSIVE",
+            "langName": "window_param",
             "allowsLists": false,
             "Type": "float",
             "datatype": "DOUBLE",

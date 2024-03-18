@@ -1,6 +1,7 @@
 {
+    "FunctionCategory": "General Utility",
     "JSONVersion": "1",
-    "FuncRName": "...",
+    "FuncRName": "td_Input_Validator",
     "MaxInputFiles": 1,
     "IsPlottable": true,
     "InputFmt": false,

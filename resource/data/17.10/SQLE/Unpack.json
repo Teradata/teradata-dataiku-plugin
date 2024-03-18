@@ -6,6 +6,7 @@
   "function_version": "1.0",
   "function_alias_name": "Unpack",
   "function_type": "fastpath",
+  "function_category" : "Data Cleaning",
   "function_r_name": "aa.unpack",
   "short_description": "Utility for unpacking data that has been put into a single column.",
   "long_description": "Takes a single column with packed data and transforms it into a table with multiple columns, as specified by the user's parameters.",

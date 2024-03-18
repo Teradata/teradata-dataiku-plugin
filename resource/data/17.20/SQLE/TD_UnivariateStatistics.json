@@ -8,7 +8,6 @@
   "function_type": "fastpath",
   "function_category" : "Data Exploration",
   "function_r_name": "aa.td.univariate.statistics",
-  "ref_function_r_name": "aa.td.univariate.statistics",
   "short_description": "This function generates set of univariate statistics for numeric target columns.",
   "long_description": "This function takes a input table partitioned by ANY and a set of numeric target columns and generates a set of statistics for each target columns.",
   "input_tables": [

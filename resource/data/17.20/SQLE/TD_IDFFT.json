@@ -1,6 +1,7 @@
 {
+    "FunctionCategory": "Temporal and Spatial",
     "JSONVersion": "1",
-    "FuncRName": "...",
+    "FuncRName": "td_IDFFT",
     "MaxInputFiles": 1,
     "IsPlottable": true,
     "InputFmt": false,

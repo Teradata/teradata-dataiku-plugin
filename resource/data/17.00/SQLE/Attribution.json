@@ -5,6 +5,7 @@
   "function_name": "Attribution",
   "function_version": "1.0",
   "function_type": "fastpath",
+  "function_category": "Path and Pattern Analysis",
   "function_alias_name": "Attribution",
   "function_r_name": "aa.attribution",
   "short_description": "This function is used to perform click stream analysis.",
@@ -242,7 +243,7 @@
       "allowsLists": false,
       "rName": "window.size",
       "useInR": true,
-      "rOrderNum": 10
+      "rOrderNum": 13
     }
   ]
 }

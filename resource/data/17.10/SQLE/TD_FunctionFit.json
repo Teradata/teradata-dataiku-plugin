@@ -5,6 +5,7 @@
   "function_name": "TD_FunctionFit",
   "function_version": "1.0",
   "function_type": "fastpath",
+  "function_category": "Feature Engineering Transform",
   "function_alias_name": "TD_FunctionFit",
   "function_r_name": "aa.td_functionfit",
   "short_description": "fastpath function that validates and outputs a transformation table that should go into FuncitonTransform.",

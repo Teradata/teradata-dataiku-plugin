@@ -8,7 +8,6 @@
   "function_type": "fastpath",
   "function_category": "Feature Engineering Transform",
   "function_r_name": "aa.td.ordinal.encoding.fit",
-  "ref_function_r_name": "aa.td.ordinal.encoding.fit",
   "short_description": "This function generates encoded ordinal integer values for each category in a target column.",
   "long_description": "This function takes a input table partitioned by ANY and a optional category table in case of LIST approach as Dimension and generates integer ordinal values for unique category in each of the target columns.",
   "input_tables": [

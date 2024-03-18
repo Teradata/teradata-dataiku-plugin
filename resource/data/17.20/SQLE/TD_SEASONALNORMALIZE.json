@@ -1,10 +1,27 @@
 {
+    "FunctionCategory": "Model Preparation and Parameter Estimation",
     "JSONVersion": "1",
-    "FuncRName": "...",
+    "FuncRName": "td_Seasonal_Normalize",
     "MaxInputFiles": 1,
     "IsPlottable": false,
     "InputFmt": false,
-    "OutputFmt": true,
+    "OutputFmt": [
+        {
+            "name": "OutputFormat",
+            "defaultValue": "INDEX_STYLE(NUMERICAL_SEQUENCE)",
+            "permittedValues": [
+                "INDEX_STYLE(NUMERICAL_SEQUENCE)",
+                "INDEX_STYLE(FLOW_THROUGH)"
+            ],
+            "langName": "output_fmt_index_style",
+            "allowsLists": false,
+            "Type": "string",
+            "datatype": "STRING",
+            "description": "Specifies the index style of the output format.",
+            "isRequired": false,
+            "rOrderNum": 4
+        }
+    ],
     "function_type": "uaf",
     "json_schema_major_version": "1",
     "json_schema_minor_version": "2",
@@ -14,7 +31,7 @@
     "ref_function_r_name": "aa.td_seasonalnormalize",
     "function_version": "...",
     "short_description": "Generates a series has been normalized with respect to its internal period as a season and interval cycles",
-    "long_description": "This section outlines the syntax associated with invoking the TD_SEASONALNORMALIZE, 'Seasonal Normalize' table function.    The TD_SEASONALNORMALIZE function takes a logical-runtime series, with real number elements (containing the original series, Xt), as an input, with a SERIES_SPEC(INTERVAL()) and a FUNC_PARAMS(SEASON_CYCLE()) declaration, specifying the season and cycle duration respectively for data normalization.  The function then generates a series having the same number of sample points as the input series, where the generated series has been normalized with respect to its internal period as a season and interval cycles.  The data scientist can then perform a statistical test to see whether or not the generated series is stationary and thus ready to model.",
+    "long_description": "The function SeasonalNormalize() takes a non-stationary series and normalizes the series by removing the unit roots. The function can be used with any cyclic data that can be subdivided into a collection of logical periods, in which each period can be further subdivided into a collection of logical intervals.",
     "input_tables": [
         {
             "LangName": "data or object or newdata or ... --> Langauges team can work with UAF team to come up with this field",
@@ -25,8 +42,8 @@
             "partitionByOne": false,
             "alternateNames": [],
             "isRequired": true,
-            "description": "It takes a logical-runtime series, with real number elements (containing the original series, Xt), as an input",
-            "rDescription": "It takes a logical-runtime series, with real number elements (containing the original series, Xt), as an input",
+            "description": "Specifies a logical-runtime series, with real number elements.",
+            "rDescription": "Specifies a logical-runtime series, with real number elements.",
             "datatype": "TABLE_ALIAS",
             "allowsLists": false,
             "name": "Input",
@@ -91,7 +108,7 @@
         {
             "Type": "ART",
             "PrimaryLayer": false,
-            "LayerName": "ARTFITMETADATA",
+            "LayerName": "ARTMETADATA",
             "ResultTableColumnTypes": [
                 "<varies>",
                 "float",
@@ -121,10 +138,11 @@
                 "INDEX_STYLE(NUMERICAL_SEQUENCE)",
                 "INDEX_STYLE(FLOW_THROUGH)"
             ],
+            "langName": "output_fmt_index_style",
             "allowsLists": false,
             "Type": "string",
             "datatype": "STRING",
-            "description": "Output format",
+            "description": "Specifies the index style of the output format.",
             "isRequired": false,
             "rOrderNum": 4
         },
@@ -151,8 +169,9 @@
                 "MILLISECONDS",
                 "MICROSECONDS"
             ],
+            "langName": "season_cycle",
             "allowsLists": false,
-            "Type": "enumeration<time-unit>",
+            "Type": "string",
             "datatype": "STRING",
             "description": "The CYCLE is a logical time-unit with one of the enum values: TS_CAL_YEARS, TS_CAL_MONTHS, TS_CAL_DAYS, TS_WEEKS, TS_DAYS,  TS_HOURS, TS_MINUTES, TS_SECONDS,  TS_MILLISECONDS, TS_MICROSECONDS.",
             "isRequired": true,
@@ -163,10 +182,11 @@
             "lowerBound": 1,
             "lowerBoundType": "INCLUSIVE",
             "allowNaN": false,
+            "langName": "cycle_duration",
             "allowsLists": false,
             "Type": "integer",
             "datatype": "INTEGER",
-            "description": "duration - positive INTEGERThe duration is the number of the time-units as the duration of each seasonal cycle.",
+            "description": "duration - positive INTEGERSpecifies the number of time-units as the duration of each seasonal cycle.",
             "isRequired": true,
             "rOrderNum": 7
         },
@@ -181,6 +201,7 @@
         },
         {
             "name": "SEASON_INFO",
+            "defaultValue": 0,
             "permittedValues": [
                 0,
                 1,
@@ -190,8 +211,8 @@
             "allowsLists": false,
             "Type": "integer",
             "datatype": "INTEGER",
-            "description": "This flag is used to generate additional columns CYCLE_NO and SEASON_NO.SEASON_NO is the season for the data.  The value starts from 1.CYCLE_NO is the n-th cycle of the season.  The value starts from 1.The flag value is between 0 and 3.0 - indicates no extra columns being generated.1 - indicates SEASON_NO column being generated.2 - indicates CYCLE_NO column being generated.3 - indicates both SEASON_NO and CYCLE_NO columns being generated.",
-            "isRequired": true,
+            "description": "Specifies whether to generate additional columns CYCLE_NO and SEASON_NO. CYCLE_NO is the n-th cycle of the season. SEASON_NO is the season for the data.",
+            "isRequired": false,
             "rOrderNum": 9
         }
     ]

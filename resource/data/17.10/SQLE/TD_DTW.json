@@ -1,9 +1,26 @@
 {
+    "FunctionCategory": "Series Forecasting",
     "JSONVersion": "1",
-    "FuncRName": "...",
+    "FuncRName": "td_DTW",
     "MaxInputFiles": 2,
     "IsPlottable": true,
-    "InputFmt": true,
+    "InputFmt": [
+        {
+            "name": "InputFormat",
+            "permittedValues": [
+                "INPUT_MODE(MANY2ONE)",
+                "INPUT_MODE(ONE2ONE)",
+                "INPUT_MODE(MATCH)"
+            ],
+            "langName": "input_fmt_input_mode",
+            "allowsLists": false,
+            "Type": "string",
+            "datatype": "STRING",
+            "description": "Specifies the input mode supported by the function.",
+            "isRequired": true,
+            "rOrderNum": 4
+        }
+    ],
     "OutputFmt": false,
     "function_type": "uaf",
     "json_schema_major_version": "1",
@@ -141,17 +158,17 @@
     "argument_clauses": [
         {
             "name": "InputFormat",
-            "defaultValue": "",
             "permittedValues": [
-                "INPUT_MODE(ONE2ONE)",
                 "INPUT_MODE(MANY2ONE)",
+                "INPUT_MODE(ONE2ONE)",
                 "INPUT_MODE(MATCH)"
             ],
+            "langName": "input_fmt_input_mode",
             "allowsLists": false,
             "Type": "string",
             "datatype": "STRING",
-            "description": "Input format",
-            "isRequired": false,
+            "description": "Specifies the input mode supported by the function.",
+            "isRequired": true,
             "rOrderNum": 4
         },
         {
@@ -170,9 +187,9 @@
         {
             "name": "DISTANCE",
             "permittedValues": [
-                "euclidean",
-                "manhattan",
-                "binary"
+                "EUCLIDEAN",
+                "MANHATTAN",
+                "BINARY"
             ],
             "allowsLists": false,
             "Type": "string",
@@ -187,6 +204,7 @@
             "upperBound": 3,
             "lowerBoundType": "INCLUSIVE",
             "upperBoundType": "INCLUSIVE",
+            "langName": "warp_path",
             "allowsLists": false,
             "Type": "integer",
             "datatype": "INTEGER",

@@ -5,6 +5,7 @@
   "function_name": "TD_StrApply",
   "function_version": "1.0",
   "function_type": "fastpath",
+  "function_category": "Feature Engineering Utility",
   "function_alias_name": "TD_StrApply",
   "function_r_name": "aa.td_str.apply",
   "short_description": "fastpath function used to apply predefined string operation on a specified target column range.",

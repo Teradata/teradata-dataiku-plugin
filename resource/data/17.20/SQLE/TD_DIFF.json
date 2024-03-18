@@ -1,10 +1,26 @@
 {
+    "FunctionCategory": "Model Preparation and Parameter Estimation",
     "JSONVersion": "1",
-    "FuncRName": "...",
+    "FuncRName": "td_DIFF",
     "MaxInputFiles": 1,
     "IsPlottable": true,
     "InputFmt": false,
-    "OutputFmt": false,
+    "OutputFmt": [
+        {
+            "name": "OutputFormat",
+            "defaultValue": "INDEX_STYLE(NUMERICAL_SEQUENCE)",
+            "permittedValues": [
+                "INDEX_STYLE(NUMERICAL_SEQUENCE)"
+            ],
+            "langName": "output_fmt_index_style",
+            "allowsLists": false,
+            "Type": "string",
+            "datatype": "STRING",
+            "description": "Specifies the INDEX_STYLE of the output format.",
+            "isRequired": false,
+            "rOrderNum": 3
+        }
+    ],
     "function_type": "uaf",
     "json_schema_major_version": "1",
     "json_schema_minor_version": "2",
@@ -35,6 +51,7 @@
             "rOrderNum": 1,
             "uaf": {
                 "requiredUafKind": [
+                    "ART",
                     "SERIES"
                 ],
                 "is_row_sequence": "SEQUENCE",
@@ -60,7 +77,7 @@
                 "payload_num_entries": "",
                 "index": 0
             },
-            "uafType": "SERIES"
+            "uafType": ""
         }
     ],
     "output_tables": [
@@ -90,6 +107,20 @@
     ],
     "argument_clauses": [
         {
+            "name": "OutputFormat",
+            "defaultValue": "INDEX_STYLE(NUMERICAL_SEQUENCE)",
+            "permittedValues": [
+                "INDEX_STYLE(NUMERICAL_SEQUENCE)"
+            ],
+            "langName": "output_fmt_index_style",
+            "allowsLists": false,
+            "Type": "string",
+            "datatype": "STRING",
+            "description": "Specifies the INDEX_STYLE of the output format.",
+            "isRequired": false,
+            "rOrderNum": 3
+        },
+        {
             "name": "LAG",
             "lowerBound": 0,
             "lowerBoundType": "INCLUSIVE",
@@ -99,7 +130,7 @@
             "datatype": "INTEGER",
             "description": "Zero or Positive Integer value.  References, relative to any time series element, Y_t, another time series element located at Y_{t-LAG}.",
             "isRequired": true,
-            "rOrderNum": 3
+            "rOrderNum": 4
         },
         {
             "name": "DIFFERENCES",
@@ -111,7 +142,7 @@
             "datatype": "INTEGER",
             "description": "Zero or Positive Integer value.  Used in formula as (1-B^LAG)^DIFFERENCES * Y_t",
             "isRequired": true,
-            "rOrderNum": 4
+            "rOrderNum": 5
         },
         {
             "name": "SEASONAL_MULTIPLIER",
@@ -123,7 +154,7 @@
             "datatype": "INTEGER",
             "description": "Zero or Positive Integer value.  Compute diff according to if SEASONAL_MULTIPLIER is 0 then result is (1-B^LAG)^DIFFERENCES * Y_t, otherwise multiply same result by (1-B)^SEASONAL_MULTIPLIER",
             "isRequired": true,
-            "rOrderNum": 5
+            "rOrderNum": 6
         }
     ]
 }

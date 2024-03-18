@@ -5,6 +5,7 @@
   "function_name": "TD_ZTest",
   "function_version": "1.0",
   "function_type": "fastpath",
+  "function_category": "Hypothesis Testing",
   "supports_view": false,
   "function_alias_name": "TD_ZTest",
   "function_r_name": "aa.td_ztest",

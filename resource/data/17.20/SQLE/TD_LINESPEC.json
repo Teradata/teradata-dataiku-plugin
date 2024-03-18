@@ -1,6 +1,7 @@
 {
+    "FunctionCategory": "Temporal and Spatial",
     "JSONVersion": "1",
-    "FuncRName": "...",
+    "FuncRName": "td_Line_Spec",
     "MaxInputFiles": 1,
     "IsPlottable": true,
     "InputFmt": false,
@@ -93,6 +94,7 @@
     "argument_clauses": [
         {
             "name": "FREQ_STYLE",
+            "defaultValue": "K_INTEGRAL",
             "permittedValues": [
                 "K_INTEGRAL",
                 "K_SAMPLE_RATE",
@@ -109,6 +111,7 @@
         },
         {
             "name": "INCLUDE_COEFF",
+            "defaultValue": 0,
             "permittedValues": [
                 0,
                 1

@@ -1,6 +1,7 @@
 {
+    "FunctionCategory": "Model Preparation and Parameter Estimation",
     "JSONVersion": "1",
-    "FuncRName": "...",
+    "FuncRName": "td_Linear_Regr",
     "MaxInputFiles": 1,
     "IsPlottable": true,
     "InputFmt": false,
@@ -167,7 +168,6 @@
         },
         {
             "name": "WEIGHTS",
-            "defaultValue": "",
             "permittedValues": [
                 0,
                 1
@@ -176,7 +176,7 @@
             "Type": "integer",
             "datatype": "INTEGER",
             "description": "A zero (0) or one (1) integer value.  A flag indicating that a third series is present in the <multivar-series-specification>.  The third series is to be interpreted as a series of weights that can be used to perform a weighted least squares regression solution.",
-            "isRequired": false,
+            "isRequired": true,
             "rOrderNum": 6
         },
         {
@@ -212,6 +212,21 @@
             "rOrderNum": 9
         },
         {
+            "name": "CONF_INT_LEVEL",
+            "defaultValue": 0.9,
+            "lowerBound": 0,
+            "upperBound": 1,
+            "lowerBoundType": "EXCLUSIVE",
+            "upperBoundType": "EXCLUSIVE",
+            "allowNaN": false,
+            "allowsLists": false,
+            "Type": "double",
+            "datatype": "DOUBLE",
+            "description": "A positive float between 0 and 1 exclusive. Only valid when COEFF_STATS(1).This is the confidence interval level value used for coefficient statistics calculation. Default value: 0.9.",
+            "isRequired": false,
+            "rOrderNum": 10
+        },
+        {
             "name": "MODEL_STATS",
             "defaultValue": 0,
             "permittedValues": [
@@ -223,7 +238,7 @@
             "datatype": "INTEGER",
             "description": " A zero (0) or one (1) integer value.  A flag indicating that the optional model statistics are to be generated, and made available for retrieval via the TD_EXTRACT_RESULTS function. See the RETURNS TABLE section below, in particular the Secondary Model Statistics Result Set, to acquire more information on the extra columns returned.   So MODEL_STATS(0), the default, means no stats are requested, whereas MODEL_STATS(1) means that stats are being requested.",
             "isRequired": false,
-            "rOrderNum": 10
+            "rOrderNum": 11
         },
         {
             "name": "RESIDUALS",
@@ -237,7 +252,7 @@
             "datatype": "INTEGER",
             "description": "A zero (0) or one (1) integer value.   A flag indicating that the optional residual statistics are to be generated, and made available for retrieval via the TD_EXTRACT_RESULTS function. See the RETURNS TABLE section below, in particular the Tertiary Residuals Result Set, to acquire more information on the extra columns returned.    So RESIDUALS(0), the default, means no stats are requested, whereas RESIDUALS(1) means that stats are being requested.",
             "isRequired": false,
-            "rOrderNum": 11
+            "rOrderNum": 12
         }
     ]
 }

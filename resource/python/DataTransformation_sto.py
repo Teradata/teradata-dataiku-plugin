@@ -307,10 +307,9 @@ def do_execute(payload, config, plugin_config, inputs):
            for l in a['data']:
             env_version=platform.python_version()
             if float(env_version[:3]) <= 3.7:
-               result.append(l[2])
+               result.append(l[3])
             else:
                 result.append(l[0])
-
            result.append("Click to refresh list")
            configure.auth_token="0000"
 
@@ -356,7 +355,7 @@ def do_execute(payload, config, plugin_config, inputs):
                
             env_version=platform.python_version()
             if float(env_version[:3]) <= 3.7:
-               result.append(l[1])
+               result.append(l[2])
             else:
                 result.append(l[0])
            result.append("Click to refresh list")
@@ -631,7 +630,7 @@ def do_execute(payload, config, plugin_config, inputs):
                     for l in a:
                         env_version=platform.python_version()
                         if float(env_version[:3]) <= 3.7:
-                            File.append(l[1])
+                            File.append(l[2])
                         else:
                             File.append(l[0])
                     File_str=" , "

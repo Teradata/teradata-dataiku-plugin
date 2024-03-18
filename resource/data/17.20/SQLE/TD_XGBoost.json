@@ -169,7 +169,7 @@
         "REGRESSION", 
         "CLASSIFICATION"
       ],
-      "defaultValue": "REGRESSION",
+      "defaultValue": "",
       "isOutputColumn": false,
       "name": "ModelType",
       "alternateNames": [],

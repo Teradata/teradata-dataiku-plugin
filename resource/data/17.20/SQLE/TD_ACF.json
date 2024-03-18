@@ -1,12 +1,9 @@
 {
+    "FunctionCategory": "Model Preparation and Parameter Estimation",
     "JSONVersion": "1.0",
-    "FuncRName": "To be investigated",
-    "Stages": 1,
+    "FuncRName": "td_ACF",
     "MaxInputFiles": 1,
-    "InvokesOther": false,
     "IsPlottable": true,
-    "HasCostFunction": true,
-    "NeedSeriesMatrixMetadata": true,
     "InputFmt": false,
     "OutputFmt": false,
     "function_type": "uaf",
@@ -21,10 +18,7 @@
     "long_description": "The auto-covariance and auto-correlation function compute how a time series covaries or correlates with itself, when delayed by a particular lag. Example:For a lag equal to 1, we calculate the covariance or correlation between time series Yt  and time series Yt-1 . for lag equal to 2, we calculate the covariance or correlation between time series Yt  and time series Yt-2 ",
     "input_tables": [
         {
-            "Stage": 1,
-            "File": 1,
             "LangName": "data",
-            "Strategy": "UAF_DISTRIB_WHOLE_SERIES",
             "requiredInputKind": [
                 "PartitionByNone"
             ],
@@ -42,8 +36,7 @@
             "rOrderNum": 1,
             "uaf": {
                 "requiredUafKind": [
-                    "SERIES",
-                    "GENSERIES"
+                    "SERIES"
                 ],
                 "is_row_sequence": "SEQUENCE",
                 "is_col_sequence": "SEQUENCE",
@@ -68,18 +61,30 @@
                 "payload_num_entries": "",
                 "index": 0
             },
-            "uafType": ""
+            "uafType": "SERIES"
         }
     ],
     "output_tables": [
         {
-            "Stage": 1,
-            "Strategy": "UAF_DISTRIB_WHOLE_SERIES",
+            "Type": "ART",
+            "PrimaryLayer": true,
+            "LayerName": "ARTPRIMARY",
+            "ResultTableColumnTypes": [
+                "integer",
+                "float",
+                "float",
+                "float",
+                "float",
+                "float"
+            ],
+            "LangName": "data or object or newdata or ... --> Langauges team can work with UAF team to come up with this field",
             "isOutputTable": true,
             "omitPossible": true,
             "partitionByOne": false,
             "alternateNames": [],
             "isRequired": false,
+            "description": "Specifies the result in an ART table",
+            "rDescription": "Specifies the result in an ART table",
             "datatype": "TABLE_NAME",
             "allowsLists": false,
             "name": "OutputTable1",
@@ -120,10 +125,14 @@
         {
             "name": "UNBIASED",
             "defaultValue": 0,
+            "permittedValues": [
+                0,
+                1
+            ],
             "allowNaN": false,
             "allowsLists": false,
-            "Type": "boolean",
-            "datatype": "BOOLEAN",
+            "Type": "integer",
+            "datatype": "INTEGER",
             "description": "If 0, then denominator for autocovariance is n-k (Jenkins & Watts formula)otherwise if 1, denominator for autocovariance is n (Box & Jenkins formula). ",
             "isRequired": false,
             "rOrderNum": 5
@@ -131,10 +140,14 @@
         {
             "name": "DEMEAN",
             "defaultValue": 1,
+            "permittedValues": [
+                0,
+                1
+            ],
             "allowNaN": false,
             "allowsLists": false,
-            "Type": "boolean",
-            "datatype": "BOOLEAN",
+            "Type": "integer",
+            "datatype": "INTEGER",
             "description": "If 1 (default), then subtract the mean x from each element of x, as specified in the formulas for autocorrelation or autocovariance.If 0, then we do NOT do the subtraction on each element before computing the autocorrelation or autocovariance.",
             "isRequired": false,
             "rOrderNum": 6
@@ -142,10 +155,14 @@
         {
             "name": "QSTAT",
             "defaultValue": 0,
+            "permittedValues": [
+                0,
+                1
+            ],
             "allowNaN": false,
             "allowsLists": false,
-            "Type": "boolean",
-            "datatype": "BOOLEAN",
+            "Type": "integer",
+            "datatype": "INTEGER",
             "description": "1 means provide Ljung-Box q statistic for each autocorrelation coefficient.0 (default) means do not provide.   Requesting a QSTAT results in a QSTATVAL and PVALUE set of result columns being returned.",
             "isRequired": false,
             "rOrderNum": 7
@@ -163,24 +180,18 @@
         {
             "name": "RoundResults",
             "defaultValue": 0,
+            "permittedValues": [
+                0,
+                1
+            ],
             "allowNaN": false,
+            "langName": "round_results",
             "allowsLists": false,
-            "Type": "boolean",
-            "datatype": "BOOLEAN",
-            "description": "Determines whether rounding should be done or not.Passing in a value of \u201c1\u201d turns it ON.Passing in a value of \u201c0\u201d turns it OFF.If RoundResults(1), then results in the output row are rounded before inserting the row into the destination table (ART or response spool). ",
+            "Type": "integer",
+            "datatype": "INTEGER",
+            "description": "Determines whether rounding should be done or not. Passing in a value of '1' turns it ON.Passing in a value of '0' turns it OFF.If RoundResults(1), then results in the output row are rounded before inserting the row into the destination table (ART or response spool). ",
             "isRequired": false,
             "rOrderNum": 9
-        },
-        {
-            "name": "UAF_DIAGNOSTIC",
-            "defaultValue": 0,
-            "allowNaN": false,
-            "allowsLists": false,
-            "Type": "boolean",
-            "datatype": "BOOLEAN",
-            "description": "Bypasses the logic which plans out how much of the available PDE SEG memory is to be used for the purposes of: initial reading of series; proportioning of memory for the Xn and XnLag cache; as well as for the IV cache.Passing in a value of \u201c1\u201d turns it ON.  Passing in a value of \u201c0\u201d turns it OFF.",
-            "isRequired": false,
-            "rOrderNum": 10
         }
     ]
 }

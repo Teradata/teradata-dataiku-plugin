@@ -29,11 +29,13 @@ def execute(recipe_config, valib_query_wrapper=None):
     for i in range(1, 1+num_of_rescalebounds):
         columns = []
         rescale_bound_mode = recipe_config['minmaxscalar_rescale'+str(i)+'_bound_mode']
-        rescale_upper_value = recipe_config['minmaxscalar_rescale'+str(i)+'_upper_value']
-        rescale_lower_value = recipe_config['minmaxscalar_rescale'+str(i)+'_lower_value']
+        rescale_upper_value = recipe_config.get('minmaxscalar_rescale'+str(i)+'_upper_value',1)
+        rescale_lower_value = recipe_config.get('minmaxscalar_rescale'+str(i)+'_lower_value',0)
         bound = {'rescale_bound_mode' : rescale_bound_mode, 'rescale_upper_value' : rescale_upper_value, 'rescale_lower_value': rescale_lower_value}
         
         map_dict = recipe_config['minmaxscalar_map']
+        if type(map_dict) == str:
+            map_dict = string_param_to_dict(map_dict)
         for key in map_dict:
             # No quotes in key or value
             if ("'" in key) or ('"' in key):

@@ -1,6 +1,7 @@
 {
+    "FunctionCategory": "Diagnostic Statistical Test",
     "JSONVersion": "1",
-    "FuncRName": "...",
+    "FuncRName": "td_Whites_General",
     "MaxInputFiles": 1,
     "IsPlottable": false,
     "InputFmt": false,
@@ -100,7 +101,6 @@
     "argument_clauses": [
         {
             "name": "VARIABLES_COUNT",
-            "defaultValue": 1,
             "lowerBound": 0,
             "lowerBoundType": "INCLUSIVE",
             "allowNaN": false,

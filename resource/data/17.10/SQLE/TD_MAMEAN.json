@@ -1,10 +1,26 @@
 {
+    "FunctionCategory": "Series Forecasting",
     "JSONVersion": "1",
-    "FuncRName": "...",
+    "FuncRName": "td_MAMean",
     "MaxInputFiles": 1,
     "IsPlottable": true,
     "InputFmt": false,
-    "OutputFmt": true,
+    "OutputFmt": [
+        {
+            "name": "OutputFormat",
+            "defaultValue": "INDEX_STYLE(NUMERICAL_SEQUENCE)",
+            "permittedValues": [
+                "INDEX_STYLE(NUMERICAL_SEQUENCE)"
+            ],
+            "langName": "output_fmt_index_style",
+            "allowsLists": false,
+            "Type": "string",
+            "datatype": "STRING",
+            "description": "Specifies the INDEX_STYLE of the output format.",
+            "isRequired": false,
+            "rOrderNum": 5
+        }
+    ],
     "function_type": "uaf",
     "json_schema_major_version": "1",
     "json_schema_minor_version": "2",
@@ -160,19 +176,18 @@
             "name": "OutputFormat",
             "defaultValue": "INDEX_STYLE(NUMERICAL_SEQUENCE)",
             "permittedValues": [
-                "INDEX_STYLE(NUMERICAL_SEQUENCE)",
-                "INDEX_STYLE(FLOW_THROUGH)"
+                "INDEX_STYLE(NUMERICAL_SEQUENCE)"
             ],
+            "langName": "output_fmt_index_style",
             "allowsLists": false,
             "Type": "string",
             "datatype": "STRING",
-            "description": "Output format",
+            "description": "Specifies the INDEX_STYLE of the output format.",
             "isRequired": false,
             "rOrderNum": 5
         },
         {
             "name": "FORECAST_PERIODS",
-            "defaultValue": 1,
             "lowerBound": 1,
             "lowerBoundType": "INCLUSIVE",
             "allowNaN": false,
@@ -191,7 +206,7 @@
                 "NAIVE"
             ],
             "allowsLists": false,
-            "Type": "enumeration",
+            "Type": "string",
             "datatype": "STRING",
             "description": "Set to either of: MA : perform Moving Average style of forecasting; MEAN : perform Mean style of forecasting; NA\u00cfVE: perform Na\u00efve forecasting ",
             "isRequired": true,
@@ -207,15 +222,14 @@
             ],
             "defaultValue": "BOTH",
             "allowsLists": false,
-            "Type": "enumeration",
+            "Type": "string",
             "datatype": "STRING",
             "description": "Set to either of: 'NONE' or '80' or 95' or 'BOTH'; default is 'BOTH'",
-            "isRequired": true,
+            "isRequired": false,
             "rOrderNum": 8
         },
         {
             "name": "K_ORDER",
-            "defaultValue": 1,
             "lowerBound": 1,
             "lowerBoundType": "INCLUSIVE",
             "allowNaN": false,
@@ -223,11 +237,12 @@
             "Type": "integer",
             "datatype": "INTEGER",
             "description": "Only apply to MA, moving average forecast.  must be between 1 to 32000.",
-            "isRequired": true,
+            "isRequired": false,
             "rOrderNum": 9
         },
         {
             "name": "FIT_METRICS",
+            "defaultValue": 0,
             "permittedValues": [
                 0,
                 1
@@ -236,11 +251,12 @@
             "Type": "integer",
             "datatype": "INTEGER",
             "description": "Flag indicating whether or not to generate the secondary result set that contains the model metadata statistics.  A value of FIT_METRICS(1) means generate the secondary result set.   A value of FIT_METRICS(0) means do not generate the secondary result set.  Default is FIT_METRICS(0).  The generated result set can be retrieved by issuing a TD_EXTRACT_RESULTS against the analytical result table containing the results.",
-            "isRequired": true,
+            "isRequired": false,
             "rOrderNum": 10
         },
         {
             "name": "RESIDUALS",
+            "defaultValue": 0,
             "permittedValues": [
                 0,
                 1
@@ -249,7 +265,7 @@
             "Type": "integer",
             "datatype": "INTEGER",
             "description": "Flag indicating whether or not to generate the tertiary result set that contains the model residuals.  A value of RESIDUALS(1) means generate the tertiary result set.   A value of RESIDUALS(0) means do not generate the tertiary result set.  Default is RESIDUALS(0).  The generated result set can be retrieved by issuing a TD_EXTRACT_RESULTS against the analytical result table containing the results.",
-            "isRequired": true,
+            "isRequired": false,
             "rOrderNum": 11
         }
     ]

@@ -35,11 +35,10 @@ class ValibQueryEngineWrapper(QueryEngineWrapper):
     def __init__(self, executor, autocommit, pre_query, post_query):
         self.executor = executor
         self.autocommit = autocommit
-        self.pre_query = None
+        self.pre_query = pre_query
         self.post_query = post_query
     def execute(self, query_string):
-        if not self.autocommit:
-            self.executor.query_to_df(self.pre_query)
+        self.executor.query_to_df(self.pre_query)
         logging.info("VAL QUERY=", query_string)
         return self.executor.query_to_df(query = query_string, post_queries=self.post_query)
     def iteratable(self, result):

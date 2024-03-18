@@ -152,6 +152,9 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SO
       <label ng-show=" config.function.name.includes('VAL') && defaultDatabase=='' " style="color:orange;display: inline-block">
               Warning: To avoid errors, you must either (a) specify a default database in your connection, or (b) specify schema(s) in the input Dataset(s) settings.
       </label>
+      <label ng-show=" !config.function.name.includes('VAL') && defaultDatabase=='' " style="color:#839192;display: inline-block">
+              As a good practice you should either (a) specify a default database in your connection, or (b) specify schema(s) in the input Dataset(s) settings.
+      </label>
     </div>
 
 
@@ -453,11 +456,11 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SO
                 </div>
                 <!-- Aliased Input Table Order isOrdered-->
                 <div ng-hide="item.kind=='PartitionByNone'" class="inner-cell">
-                  <p class="inner-label" ng-show="item.kind.includes('ByKey')">Order by
+                  <p class="inner-label" ng-show="item.kind.includes('ByKey') || item.kind.includes('Dimension')">Order by
                       <button style="border:none;background:none;" ng-init="item.orderByColumn = initializeColumnArray(item.orderByColumn); item.orderByColumnDirection = initializeColumnArray(item.orderByColumnDirection)" ng-click="addOrderByColumn_WITHDIR(item.orderByColumn, item.orderByColumnDirection)" title="Add Order BY Column"><span class="glyphicon glyphicon-plus-sign orange"></span></button>
                   </p> 
                   <!-- IS Ordered -->
-                    <div ng-if="item.isOrdered && item.kind.includes('ByKey')" ng-repeat="col in item.orderByColumn track by $index ">
+                    <div ng-if="item.isOrdered && item.kind.includes('ByKey') || item.kind.includes('Dimension')" ng-repeat="col in item.orderByColumn track by $index ">
                         <span ng-show="item.isOrdered">Column {{$index+1}}</span>          
                         <div >
                             <select required ng-model="item.orderByColumn[$index]"

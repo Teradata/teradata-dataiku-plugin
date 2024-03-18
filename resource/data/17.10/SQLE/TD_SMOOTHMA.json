@@ -1,10 +1,27 @@
 {
+    "FunctionCategory": "Model Preparation and Parameter Estimation",
     "JSONVersion": "1",
-    "FuncRName": "...",
+    "FuncRName": "td_Smoothma",
     "MaxInputFiles": 1,
     "IsPlottable": true,
     "InputFmt": false,
-    "OutputFmt": true,
+    "OutputFmt": [
+        {
+            "name": "OutputFormat",
+            "defaultValue": "INDEX_STYLE(NUMERICAL_SEQUENCE)",
+            "permittedValues": [
+                "INDEX_STYLE(NUMERICAL_SEQUENCE)",
+                "INDEX_STYLE(FLOW_THROUGH)"
+            ],
+            "langName": "output_fmt_index_style",
+            "allowsLists": false,
+            "Type": "string",
+            "datatype": "STRING",
+            "description": "Specifies the INDEX_STYLE of the output format.",
+            "isRequired": false,
+            "rOrderNum": 3
+        }
+    ],
     "function_type": "uaf",
     "json_schema_major_version": "1",
     "json_schema_minor_version": "2",
@@ -96,10 +113,11 @@
                 "INDEX_STYLE(NUMERICAL_SEQUENCE)",
                 "INDEX_STYLE(FLOW_THROUGH)"
             ],
+            "langName": "output_fmt_index_style",
             "allowsLists": false,
             "Type": "string",
             "datatype": "STRING",
-            "description": "Output format",
+            "description": "Specifies the INDEX_STYLE of the output format.",
             "isRequired": false,
             "rOrderNum": 3
         },
@@ -112,7 +130,7 @@
                 "EXPONENTIAL"
             ],
             "allowsLists": false,
-            "Type": "enumeration",
+            "Type": "string",
             "datatype": "STRING",
             "description": "enum( CUMULATIVE, MEAN, MEDIAN, EXPONENTIAL) moving average type.  The enumerated value instructs the TD_SMOOTHMA function the type of moving average algorithms to be performed.  Only one MA type can be specified per TD_SMOOTHMA invocation.   It is a required parameter.   CUMULATIVE - Cumulative Moving Average  - other applicable parameters to CMA: NoneMEAN - Simple Moving Average -  applicable parameters: M_WINDOW, ONE_SIDED, PAD, WELL_KNOWN,  WEIGHTS.MEDIAN - Simple Moving Median - applicable parameters: WINDOW, PAD.EXPONENTIAL - Exponential Moving Average - applicable parameters: ",
             "isRequired": true,
@@ -120,7 +138,6 @@
         },
         {
             "name": "WINDOW",
-            "defaultValue": 1,
             "lowerBound": 1,
             "lowerBoundType": "INCLUSIVE",
             "allowNaN": false,
@@ -147,15 +164,15 @@
         },
         {
             "name": "LAMBDA",
-            "defaultValue": 0,
             "lowerBound": 0,
             "upperBound": 1,
             "lowerBoundType": "INCLUSIVE",
             "upperBoundType": "INCLUSIVE",
+            "langName": "lambda1",
             "allowsLists": false,
             "Type": "float",
             "datatype": "DOUBLE",
-            "description": "LAMDA is a float value between 0 and 1, which represents the degree of weighting decrease.  A higher LAMBDA :  \u03bb  has the effect of discounting older observations faster.  LAMBDA  - only applicable to MA('EXPONENTIAL').",
+            "description": "LAMBDA is a float value between 0 and 1, which represents the degree of weighting decrease.  A higher LAMBDA :  \u03bb  has the effect of discounting older observations faster.  LAMBDA  - only applicable to MA('EXPONENTIAL').",
             "isRequired": false,
             "rOrderNum": 7
         },
@@ -187,10 +204,10 @@
                 "H23MA"
             ],
             "allowsLists": false,
-            "Type": "enum<string>",
+            "Type": "string",
             "datatype": "STRING",
             "description": "Enum ('3MA',  '5MA',  '2x12MA','3x3MA', '3x5MA', 'S15MA',  'S21MA', 'H5MA', 'H9MA', 'H13MA',  'H23MA' ) : enumerated value selecting one of the valid supported well known weighted MA combinations to be applied to the input series.  WELL_KNOWN and WEIGHTS must be used in a mutually exclusive fashion.  See Well Known Weighted MA table for details. WELL_KNOWN - only applicable to SMA only.   WELL_KNOWN type must have the following WINDOW.   If WINDOW is not specified, TD_SMOOTHMA() provides the value in the chart below.WELLKNOWN -> WINDOW; 3MA, 3X3MA, H5MA -> 5; 3X5MA -> 7; H9MA -> 9; 2X12MA, H13MA -> 13; S15MA -> 15; S21MA -> 21; H23MA -> 23",
-            "isRequired": true,
+            "isRequired": false,
             "rOrderNum": 9
         },
         {
@@ -199,7 +216,7 @@
             "Type": "float",
             "datatype": "DOUBLE",
             "description": "The produced output series has their magnitudes set to this value for element less than WINDOW.   For example PAD(4.5) is to output a pad value of 4.5 for the series less than WINDOW.PAD - only applicable to MA('MEAN') and MA('MEDIAN').",
-            "isRequired": true,
+            "isRequired": false,
             "rOrderNum": 10
         }
     ]

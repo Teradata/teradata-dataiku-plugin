@@ -5,6 +5,7 @@
   "function_name": "TD_OutlierFilterTransform",
   "function_version": "1.0",
   "function_type": "fastpath",
+  "function_category" : "Data Cleaning",
   "function_alias_name": "TD_OutlierFilterTransform",
   "function_r_name": "aa.td_OutlierFilterTransform",
   "short_description": "OutlierFilterTransform Analytical function filters the outliers from the input table. It uses the FitTable from the OutlierFilterFit function to get statistics like median, count of rows, lower_percentile & upper_percentile for every column specified in TargetColumns argument and filters the outliers in the input table.",

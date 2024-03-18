@@ -8,7 +8,6 @@
   "function_category": "Model Training",
   "function_alias_name": "TD_GLM",
   "function_r_name": "aa.td_glm",
-  "ref_function_r_name": "aa.td_glm",
   "short_description": "This function gives score according to generalized linear model.",
   "long_description": "This function gives score according to generalized linear model.",
   "input_tables": [

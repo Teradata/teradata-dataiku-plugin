@@ -1,9 +1,16 @@
 # Teradata Plugin Changelog
 
-# Versions 3.0.11, 3.0.12 (October 2023)
+# Versions 3.1.11, 3.1.12 (eFix - March 2024)
+
+* Bug fix: In-Vantage Scripting: Now correctly populates the dropdowns in 'User Environment' tab.
+* Support for monitoring telemetry data to enhance tracking capabilities.
+* Analytic Functions now allow 'Order By' functionality for Dimension type.
+* The Analytic Functions recipe UI now includes a note in the Decription field. For select functions, the note highlights a best-practice reminder about specifying the schema or database name for the input table.
+
+## Versions 3.0.11, 3.0.12 (October 2023)
 
 * This version fully supports connections to all Teradata Vantage systems (VantageCloud Lake, VantageCloud Enterprise, and Vantage Core.)
-* New feature: The in-database scripting recipe has been expanded to include using the Open Analytics Framework and the APPLY Table Operator in VantageCloud Lake systems. The recipe adjusts to the corresponding suitable interface depending on the Teradata Vantage system type where the inputs reside.
+* New feature: The In-Vantage Scripting recipe has been expanded to include using the Open Analytics Framework and the APPLY Table Operator in VantageCloud Lake systems. The recipe adjusts to the corresponding suitable interface depending on the Teradata Vantage system type where the inputs reside.
 * Support for ONNX and Dataiku native model formats in BYOM recipes.
 * Minor updates to some of the Analytic Functions definition JSON files.
 

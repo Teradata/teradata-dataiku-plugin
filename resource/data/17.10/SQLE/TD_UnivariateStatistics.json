@@ -6,6 +6,7 @@
   "function_version": "1.0",
   "function_alias_name": "TD_UnivariateStatistics",
   "function_type": "fastpath",
+  "function_category" : "Data Exploration",
   "supports_view": false,
   "function_r_name": "aa.td.univariate.statistics",
   "ref_function_r_name": "aa.td.univariate.statistics",
@@ -99,7 +100,7 @@
       "allowsLists": true,
       "rName": "centiles",
       "useInR": true,
-      "rOrderNum": 4
+      "rOrderNum": 5
     },
 	{
       "defaultValue": 20,
@@ -112,7 +113,7 @@
       "allowsLists": false,
       "rName": "trim.percentile",
       "useInR": true,
-      "rOrderNum": 4
+      "rOrderNum": 6
     }
   ]
 }

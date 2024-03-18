@@ -5,6 +5,7 @@
   "function_name": "TD_PolynomialFeaturesTransform",
   "function_version": "1.0",
   "function_type": "fastpath",
+  "function_category": "Feature Engineering Transform",
   "function_alias_name": "TD_PolynomialFeaturesTransform",
   "function_r_name": "aa.td_polynomialfeaturestransform",
   "short_description": "All polynomial combinations of the features with degree less than or equal to the specified degree are generated.",

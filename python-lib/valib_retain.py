@@ -33,6 +33,8 @@ def execute(recipe_config, valib_query_wrapper=None):
         
         columns = []
         map_dict = recipe_config['retain_map']
+        if type(map_dict) == str:
+            map_dict = string_param_to_dict(map_dict)
         for key in map_dict:
             # No quotes in key or value
             if ("'" in key) or ('"' in key):

@@ -1,6 +1,7 @@
 {
+    "FunctionCategory": "Diagnostic Statistical Test",
     "JSONVersion": "1",
-    "FuncRName": "...",
+    "FuncRName": "td_Selection_Criteria",
     "MaxInputFiles": 1,
     "IsPlottable": false,
     "InputFmt": false,
@@ -109,7 +110,6 @@
         },
         {
             "name": "CONSTANT",
-            "defaultValue": 0,
             "permittedValues": [
                 0,
                 1
@@ -132,7 +132,7 @@
             "Type": "integer",
             "datatype": "INTEGER",
             "description": "If the calculation of those selection criteria values like AIC are based on the max log-likelihood provided during the model fitting stage. Only available when input table is art generated from TD_ARIMAESTIMATE.If throwing regular input or art from TD_ARIMAVALIDATE, function will error out.0 is using RSS, and 1 is using log-likelihood. Default value is 0 - using residuals.",
-            "isRequired": true,
+            "isRequired": false,
             "rOrderNum": 5
         }
     ]

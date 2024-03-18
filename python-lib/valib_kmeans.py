@@ -48,7 +48,7 @@ def execute(recipe_config, valib_query_wrapper=None):
 
 
     columns = ",".join(recipe_config['kmeans_columns'])
-    centers = recipe_config['kmeans_centers']
+    centers = recipe_config.get('kmeans_centers','3')
 
     optional_args = ""
 
