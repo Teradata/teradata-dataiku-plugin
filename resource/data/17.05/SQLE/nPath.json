@@ -5,6 +5,7 @@
   "function_name": "nPath",
   "function_version": "1.1",
   "function_type": "fastpath",
+  "function_category": "Path and Pattern Analysis",
   "function_alias_name": "nPath",
   "function_r_name": "aa.npath",
   "short_description": "The nPath function matches specified patterns in a sequence of rows from one or more input tables and extracts information from the matched rows.",

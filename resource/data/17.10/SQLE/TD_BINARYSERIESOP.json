@@ -1,10 +1,43 @@
 {
+    "FunctionCategory": "Data Preparation",
     "JSONVersion": "1",
-    "FuncRName": "...",
+    "FuncRName": "td_Binary_Series_Op",
     "MaxInputFiles": 1,
     "IsPlottable": true,
-    "InputFmt": true,
-    "OutputFmt": true,
+    "InputFmt": [
+        {
+            "name": "InputFormat",
+            "permittedValues": [
+                "INPUT_MODE(ONE2ONE)",
+                "INPUT_MODE(MANY2ONE)",
+                "INPUT_MODE(MATCH)"
+            ],
+            "langName": "input_fmt_input_mode",
+            "allowsLists": false,
+            "Type": "string",
+            "datatype": "STRING",
+            "description": "Specifies the input mode supported by the function.",
+            "isRequired": true,
+            "rOrderNum": 5
+        }
+    ],
+    "OutputFmt": [
+        {
+            "name": "OutputFormat",
+            "defaultValue": "INDEX_STYLE(NUMERICAL_SEQUENCE)",
+            "permittedValues": [
+                "INDEX_STYLE(NUMERICAL_SEQUENCE)",
+                "INDEX_STYLE(FLOW_THROUGH)"
+            ],
+            "langName": "output_fmt_index_style",
+            "allowsLists": false,
+            "Type": "string",
+            "datatype": "STRING",
+            "description": "Specifies the INDEX_STYLE of the output format.",
+            "isRequired": false,
+            "rOrderNum": 4
+        }
+    ],
     "function_type": "uaf",
     "json_schema_major_version": "1",
     "json_schema_minor_version": "2",
@@ -142,25 +175,26 @@
                 "INDEX_STYLE(NUMERICAL_SEQUENCE)",
                 "INDEX_STYLE(FLOW_THROUGH)"
             ],
+            "langName": "output_fmt_index_style",
             "allowsLists": false,
             "Type": "string",
             "datatype": "STRING",
-            "description": "Output format",
+            "description": "Specifies the INDEX_STYLE of the output format.",
             "isRequired": false,
             "rOrderNum": 4
         },
         {
             "name": "InputFormat",
-            "defaultValue": "",
             "permittedValues": [
                 "INPUT_MODE(ONE2ONE)",
                 "INPUT_MODE(MANY2ONE)",
                 "INPUT_MODE(MATCH)"
             ],
+            "langName": "input_fmt_input_mode",
             "allowsLists": false,
             "Type": "string",
             "datatype": "STRING",
-            "description": "Input format",
+            "description": "Specifies the input mode supported by the function.",
             "isRequired": true,
             "rOrderNum": 5
         },
@@ -172,8 +206,9 @@
                 "MUL",
                 "DIV"
             ],
+            "langName": "math_op",
             "allowsLists": false,
-            "Type": "enumeration",
+            "Type": "string",
             "datatype": "STRING",
             "description": "Dictates mathematical operation to be performed between the passed in primary and secondary series.  It is an operation, where:  result-series = primary-series MATHOP secondary-series.   Specifics of the operation depend on the passed in PAYLOAD(CONTENT(); meaning that the operation will be a real operation, a multivariate real operation, a complex number operation, or an amplitude phase operation. ",
             "isRequired": true,

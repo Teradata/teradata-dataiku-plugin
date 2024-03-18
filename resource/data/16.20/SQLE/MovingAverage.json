@@ -5,6 +5,7 @@
   "function_name": "MovingAverage",
   "function_version": "1.0",
   "function_type": "fastpath",
+  "function_category" : "Data Exploration",
   "function_alias_name": "MovingAverage",
   "function_r_name": "aa.mavg",
   "short_description": "Computes Simple Moving Averages",

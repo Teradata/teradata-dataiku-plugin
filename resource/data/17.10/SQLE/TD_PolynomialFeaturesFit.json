@@ -5,6 +5,7 @@
   "function_name": "TD_PolynomialFeaturesFit",
   "function_version": "1.0",
   "function_type": "fastpath",
+  "function_category": "Feature Engineering Transform",
   "function_alias_name": "TD_PolynomialFeaturesFit",
   "function_r_name": "aa.td_polynomialfeaturesfit",
   "short_description": "fastpath function with an intermediate step to polynomialfeaturestransform, which helps the user to store all the values provided in the argument in the form of a table.",

@@ -1,9 +1,26 @@
 {
+    "FunctionCategory": "Model Preparation and Parameter Estimation",
     "JSONVersion": "1",
-    "FuncRName": "...",
+    "FuncRName": "td_UNDIFF",
     "MaxInputFiles": 1,
     "IsPlottable": true,
-    "InputFmt": true,
+    "InputFmt": [
+        {
+            "name": "InputFormat",
+            "permittedValues": [
+                "INPUT_MODE(MANY2ONE)",
+                "INPUT_MODE(ONE2ONE)",
+                "INPUT_MODE(MATCH)"
+            ],
+            "langName": "input_fmt_input_mode",
+            "allowsLists": false,
+            "Type": "string",
+            "datatype": "STRING",
+            "description": "Specifies the input mode supported by the function.",
+            "isRequired": false,
+            "rOrderNum": 4
+        }
+    ],
     "OutputFmt": false,
     "function_type": "uaf",
     "json_schema_major_version": "1",
@@ -35,6 +52,7 @@
             "rOrderNum": 1,
             "uaf": {
                 "requiredUafKind": [
+                    "ART",
                     "SERIES"
                 ],
                 "is_row_sequence": "SEQUENCE",
@@ -60,7 +78,7 @@
                 "payload_num_entries": "",
                 "index": 0
             },
-            "uafType": "SERIES"
+            "uafType": ""
         },
         {
             "LangName": "data or object or newdata or ... --> Langauges team can work with UAF team to come up with this field",
@@ -70,7 +88,7 @@
             "isOrdered": false,
             "partitionByOne": false,
             "alternateNames": [],
-            "isRequired": true,
+            "isRequired": false,
             "description": "Pass in the undiff series and let function compute initial values",
             "rDescription": "Pass in the undiff series and let function compute initial values",
             "datatype": "TABLE_ALIAS",
@@ -137,22 +155,21 @@
     "argument_clauses": [
         {
             "name": "InputFormat",
-            "defaultValue": "",
             "permittedValues": [
-                "INPUT_MODE(ONE2ONE)",
                 "INPUT_MODE(MANY2ONE)",
+                "INPUT_MODE(ONE2ONE)",
                 "INPUT_MODE(MATCH)"
             ],
+            "langName": "input_fmt_input_mode",
             "allowsLists": false,
             "Type": "string",
             "datatype": "STRING",
-            "description": "Input format",
+            "description": "Specifies the input mode supported by the function.",
             "isRequired": false,
             "rOrderNum": 4
         },
         {
             "name": "LAG",
-            "defaultValue": 0,
             "lowerBound": 0,
             "lowerBoundType": "INCLUSIVE",
             "allowNaN": false,
@@ -165,7 +182,6 @@
         },
         {
             "name": "DIFFERENCES",
-            "defaultValue": 0,
             "lowerBound": 0,
             "lowerBoundType": "INCLUSIVE",
             "allowNaN": false,
@@ -178,7 +194,6 @@
         },
         {
             "name": "SEASONAL_MULTIPLIER",
-            "defaultValue": "",
             "lowerBound": 0,
             "lowerBoundType": "INCLUSIVE",
             "allowNaN": false,
@@ -186,7 +201,7 @@
             "Type": "integer",
             "datatype": "INTEGER",
             "description": "Zero or Positive Integer value.  Computed diff according to it as if SEASONAL_MULTIPLIER is 0 then result is (1-B^LAG)^DIFFERENCES * Y_t, otherwise multiply same result by (1-B)^SEASONAL_MULTIPLIER",
-            "isRequired": false,
+            "isRequired": true,
             "rOrderNum": 7
         },
         {

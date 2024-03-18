@@ -1,6 +1,7 @@
 {
+    "FunctionCategory": "Diagnostic Statistical Test",
     "JSONVersion": "1",
-    "FuncRName": "...",
+    "FuncRName": "td_Signif_Periodicities",
     "MaxInputFiles": 1,
     "IsPlottable": true,
     "InputFmt": false,

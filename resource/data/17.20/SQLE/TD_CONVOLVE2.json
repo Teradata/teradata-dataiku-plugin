@@ -1,9 +1,26 @@
 {
+    "FunctionCategory": "Temporal and Spatial",
     "JSONVersion": "1",
-    "FuncRName": "...",
+    "FuncRName": "td_Convolve2",
     "MaxInputFiles": 2,
     "IsPlottable": true,
-    "InputFmt": true,
+    "InputFmt": [
+        {
+            "name": "InputFormat",
+            "permittedValues": [
+                "INPUT_MODE(ONE2ONE)",
+                "INPUT_MODE(MANY2ONE)",
+                "INPUT_MODE(MATCH)"
+            ],
+            "langName": "input_fmt_input_mode",
+            "allowsLists": false,
+            "Type": "string",
+            "datatype": "STRING",
+            "description": "Specifies the input mode supported by the function.",
+            "isRequired": true,
+            "rOrderNum": 4
+        }
+    ],
     "OutputFmt": false,
     "function_type": "uaf",
     "json_schema_major_version": "1",
@@ -139,31 +156,18 @@
     "argument_clauses": [
         {
             "name": "InputFormat",
-            "defaultValue": "",
             "permittedValues": [
                 "INPUT_MODE(ONE2ONE)",
                 "INPUT_MODE(MANY2ONE)",
                 "INPUT_MODE(MATCH)"
             ],
+            "langName": "input_fmt_input_mode",
             "allowsLists": false,
             "Type": "string",
             "datatype": "STRING",
-            "description": "Input format",
+            "description": "Specifies the input mode supported by the function.",
             "isRequired": true,
             "rOrderNum": 4
-        },
-        {
-            "name": "ALGORITHM",
-            "permittedValues": [
-                "CONV_SUMMATION",
-                "CONV_DFFT"
-            ],
-            "allowsLists": false,
-            "Type": "string",
-            "datatype": "STRING",
-            "description": "Optional Parameter.  Mainly a feature intended for testing.   Bypasses the internal planning and  forces a particular convolution algorithm to be applied.     Choices are: 'CONV_SUMMATION', or 'CONV_DFFT'.  If an attempt is made to force the CONV_SUMMATION approach when either matrix has greater than 128 by 128 entries, a SQL error is returned to the caller.     When this parameter is NOT PRESENT, the internal planning logic will select the best option, dependent upon the number of entries in the source input matrix.    ",
-            "isRequired": false,
-            "rOrderNum": 5
         }
     ]
 }

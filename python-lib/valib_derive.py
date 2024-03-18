@@ -36,7 +36,7 @@ def execute(recipe_config, valib_query_wrapper=None):
 
     arguments_columns_1 = ",".join(recipe_config['derive_arguments_columns'])
     nullstyle_1 = recipe_config['derive_nullstyle1']
-    fillna_value_1 = recipe_config['derive_fillna_value1']
+    fillna_value_1 = recipe_config.get('derive_fillna_value1',0)
 
     first_dict = {'formula': formula_1, 'arguments_columns': arguments_columns_1, 'outputname': outputname_1,'nullstyle': nullstyle_1, 'fillna_value': fillna_value_1}
     lst.append(first_dict)

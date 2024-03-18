@@ -1,6 +1,7 @@
 {
+    "FunctionCategory": "Diagnostic Statistical Test",
     "JSONVersion": "1",
-    "FuncRName": "...",
+    "FuncRName": "td_Fit_Metrics",
     "MaxInputFiles": 1,
     "IsPlottable": false,
     "InputFmt": false,
@@ -130,7 +131,7 @@
             "Type": "integer",
             "datatype": "INTEGER",
             "description": "Flag indicating whether to calculate an F-Statistic for the regression.",
-            "isRequired": true,
+            "isRequired": false,
             "rOrderNum": 4
         },
         {

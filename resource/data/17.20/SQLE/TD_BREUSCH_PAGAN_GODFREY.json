@@ -1,6 +1,7 @@
 {
+    "FunctionCategory": "Diagnostic Statistical Test",
     "JSONVersion": "1",
-    "FuncRName": "...",
+    "FuncRName": "td_Breusch_Pagan_Godfrey",
     "MaxInputFiles": 1,
     "IsPlottable": false,
     "InputFmt": false,
@@ -102,7 +103,6 @@
     "argument_clauses": [
         {
             "name": "VARIABLES_COUNT",
-            "defaultValue": 1,
             "lowerBound": 0,
             "lowerBoundType": "INCLUSIVE",
             "allowNaN": false,
@@ -110,11 +110,11 @@
             "Type": "integer",
             "datatype": "INTEGER",
             "description": "An integer indicating how many explanatory variables (N) are referenced within the PAYLOAD() declaration embedded within the original series specification.  These N explanatory variable are the variables that are to be fed into the auxiliary regression.",
-            "isRequired": false,
+            "isRequired": true,
             "rOrderNum": 3
         },
         {
-            "name": "AUX_FORMULA",
+            "name": "FORMULA",
             "allowsLists": false,
             "Type": "<td_formula>",
             "datatype": "STRING",
@@ -133,11 +133,12 @@
             "Type": "integer",
             "datatype": "INTEGER",
             "description": "Flag indicating whether the Koenker 'studentized version' of the BPG test is to be executed.   A value of '0' indicates that the standard BPG test is to be run.    A value of '1' indicates that the Koenker studentized version is to be run.  Default is 0. ",
-            "isRequired": true,
+            "isRequired": false,
             "rOrderNum": 5
         },
         {
             "name": "SIGNIFICANCE_LEVEL",
+            "defaultValue": 0.05,
             "lowerBound": 0,
             "upperBound": 1,
             "lowerBoundType": "EXCLUSIVE",
@@ -147,7 +148,7 @@
             "Type": "double",
             "datatype": "DOUBLE",
             "description": "The desired significance level for the test.",
-            "isRequired": true,
+            "isRequired": false,
             "rOrderNum": 6
         }
     ]

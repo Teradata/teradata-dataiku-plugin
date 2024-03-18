@@ -1,6 +1,7 @@
 {
+    "FunctionCategory": "Diagnostic Statistical Test",
     "JSONVersion": "1",
-    "FuncRName": "...",
+    "FuncRName": "td_Durbin_Watson",
     "MaxInputFiles": 1,
     "IsPlottable": false,
     "InputFmt": false,
@@ -99,7 +100,6 @@
     "argument_clauses": [
         {
             "name": "EXPLANATORY_COUNT",
-            "defaultValue": "",
             "lowerBound": 1,
             "lowerBoundType": "INCLUSIVE",
             "allowNaN": false,
@@ -112,6 +112,7 @@
         },
         {
             "name": "INCLUDE_CONSTANT",
+            "defaultValue": 0,
             "permittedValues": [
                 0,
                 1
@@ -120,7 +121,7 @@
             "Type": "integer",
             "datatype": "INTEGER",
             "description": "Flag indicating whether the original regression equation contained a 'constant' (an 'intercept').  A value of '0' indicates that no constant was present.  A value of '1' indicates that a constant was present.  Default is 0.  ",
-            "isRequired": true,
+            "isRequired": false,
             "rOrderNum": 4
         },
         {
@@ -130,7 +131,7 @@
                 "ACR_LAG1"
             ],
             "allowsLists": false,
-            "Type": "enumeration",
+            "Type": "string",
             "datatype": "STRING",
             "description": "Enumerated value specifying the formula the data scientist wishes to use to calculate the DW test statistic value.  A value of 'DW_FORMULA' means use the full summation formula to calculate the value.  A value of ACR_LAG1, means execute the regression, '\u03bct =  \u03c1 (\u03bct-1) + \u03bdt ';  where  '\u03c1' is the estimate of the autocorrelation at lag 1, and serves the role of the DW statistic.",
             "isRequired": true,

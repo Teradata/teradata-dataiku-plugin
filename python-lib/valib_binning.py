@@ -29,8 +29,8 @@ def execute(recipe_config, valib_query_wrapper=None):
 
     for i in range(1, 1+num_of_bincodebounds):
         columns = []
-        style = recipe_config['binning_style'+str(i)]
-        value = recipe_config['binning_value'+str(i)]
+        style = recipe_config.get('binning_style'+str(i),"bins")
+        value = recipe_config.get('binning_value'+str(i), 10)
         try:
             boundaries_option = recipe_config['binning_boundaries_option'+str(i)]
             style = {'style': style, 'boundaries_option': boundaries_option, 'value': value}
@@ -39,11 +39,14 @@ def execute(recipe_config, valib_query_wrapper=None):
             style = {'style': style, 'value': value}
         
         bincode_bound_mode = recipe_config['binning_bincode'+str(i)+'_bound_mode']
-        bincode_upper_value = recipe_config['binning_bincode'+str(i)+'_upper_value']
-        bincode_lower_value = recipe_config['binning_bincode'+str(i)+'_lower_value']
+        bincode_upper_value = recipe_config.get('binning_bincode'+str(i)+'_upper_value', 1)
+        bincode_lower_value = recipe_config.get('binning_bincode'+str(i)+'_lower_value',0)
         bound = {'bincode_bound_mode' : bincode_bound_mode, 'bincode_upper_value' : bincode_upper_value, 'bincode_lower_value': bincode_lower_value}
         
         map_dict = recipe_config['binning_map']
+        if type(map_dict) == str:
+            map_dict = string_param_to_dict(map_dict)
+
         for key in map_dict:
             # No quotes in key or value
             if ("'" in key) or ('"' in key):

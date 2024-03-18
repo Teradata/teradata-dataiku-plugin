@@ -6,6 +6,7 @@
   "function_version": "1.0",
   "function_alias_name": "Pack",
   "function_type": "fastpath",
+  "function_category" : "Data Cleaning",
   "function_r_name": "aa.pack",
   "short_description": "Packs data across several columns into a single data column.",
   "long_description": "Reverse of the unpack function.  Packs data across several columns into a single data column.",
@@ -89,7 +90,7 @@
       "description": " Specifies whether to label each virtual column value with its column name (making the virtual column 'input_column:value'). The default value is 'true'.",
       "datatype": "BOOLEAN",
       "allowsLists": false,
-      "rName": " include.column.name",
+      "rName": "include.column.name",
       "useInR": true,
       "rOrderNum": 5
     },
@@ -102,7 +103,7 @@
       "description": "Used to get better elapsed times with use cases involving numeric columns to be packed.",
       "datatype": "BOOLEAN",
       "allowsLists": false,
-      "rName": " col.cast",
+      "rName": "col.cast",
       "useInR": true,
       "rOrderNum": 6
     },

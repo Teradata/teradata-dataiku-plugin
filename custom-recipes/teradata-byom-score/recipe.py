@@ -67,7 +67,7 @@ testing_dataset = input_dataset.get_location_info()['info']['table']
 output_dataset_name = get_output_names_for_role('output_dataset')[0]
 output_dataset = dataiku.Dataset(output_dataset_name) 
 
-from dataiku import SQLExecutor2
+from dataiku.core.sql import SQLExecutor2
 
 scoring_type = str(get_recipe_config()["scoring_type"])
 userDBInputChoice = str(get_recipe_config()["user_DBInput_Choice"])
@@ -224,12 +224,16 @@ if scoring_type == 'onnx':
 
 logging.info(f"Prediction Query ==> {query}")
 
+
+query_band = "SET QUERY_BAND='appname=dataiku;version=3.1;" + "function= BYOM Scoring"  + ";' FOR SESSION;"
 # Execute the query
 try:
     # dataiku's query_to_df's pre_query parameter seems to not work. This is a work-around to ensure that the 
     # "START TRANSACTION;" block applies for non-autocommit TERA mode connections.
     if not autocommit:
         executor.query_to_df(pre_query)
+    logging.info('Setting queryband')
+    executor.query_to_df(query_band)
     executor.query_to_df(query, post_queries=post_query)
 except Exception as error:
     err_str = str(error)

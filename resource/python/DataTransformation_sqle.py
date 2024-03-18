@@ -126,7 +126,8 @@ def load_json(json_dict, inputs):
                 required_input_dict['isRequired'] = table.get('isRequired', True) # Assume required unless specified False.
                 required_input_dict['isOrdered'] = table.get('isOrdered', False) # Assume unordered unless specified True.
                 required_input_dict['alternateNames'] = table.get('alternateNames', []) # Assume no alternate names unless specified.
-                
+                if d["name"] == "TD_XGBoostPredict":
+                    required_input_dict['alternateNames'] = []
                 requiredInputKind = table.get("requiredInputKind", [])
                 if (type(requiredInputKind) == list and len(requiredInputKind) == 1 and requiredInputKind[0] == "PartitionByKey") or requiredInputKind == []:
                     requiredInputKind = ["PartitionByKey", "HashByKey", "None"]

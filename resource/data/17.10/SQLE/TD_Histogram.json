@@ -5,6 +5,7 @@
   "function_name": "TD_Histogram",
   "function_version": "1.0",
   "function_type": "fastpath",
+  "function_category" : "Data Exploration",
   "supports_view": false,
   "function_alias_name": "TD_Histogram",
   "function_r_name": "aa.td_histogram",

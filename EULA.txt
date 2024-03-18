@@ -1,6 +1,6 @@
 Teradata Plugin For Dataiku
-Version 3.0.11, 3.0.12
-Copyright (c) 2023 Teradata.  All rights reserved.
+Version 3.1.11, 3.1.12
+Copyright (c) 2024 Teradata.  All rights reserved.
 
 LICENSE AGREEMENT
 

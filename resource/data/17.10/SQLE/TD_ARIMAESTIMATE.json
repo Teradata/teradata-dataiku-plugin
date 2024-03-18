@@ -1,10 +1,43 @@
 {
+    "FunctionCategory": "Model Preparation and Parameter Estimation",
     "JSONVersion": "1",
-    "FuncRName": "...",
-    "MaxInputFiles": 1,
+    "FuncRName": "td_Arima_Estimate",
+    "MaxInputFiles": 2,
     "IsPlottable": true,
-    "InputFmt": false,
-    "OutputFmt": true,
+    "InputFmt": [
+        {
+            "name": "InputFormat",
+            "permittedValues": [
+                "INPUT_MODE(MANY2ONE)",
+                "INPUT_MODE(ONE2ONE)",
+                "INPUT_MODE(MATCH)"
+            ],
+            "langName": "input_fmt_input_mode",
+            "allowsLists": false,
+            "Type": "string",
+            "datatype": "STRING",
+            "description": "Specifies the input mode supported by the function.",
+            "isRequired": false,
+            "rOrderNum": 9
+        }
+    ],
+    "OutputFmt": [
+        {
+            "name": "OutputFormat",
+            "defaultValue": "INDEX_STYLE(NUMERICAL_SEQUENCE)",
+            "permittedValues": [
+                "INDEX_STYLE(NUMERICAL_SEQUENCE)",
+                "INDEX_STYLE(FLOW_THROUGH)"
+            ],
+            "langName": "output_fmt_index_style",
+            "allowsLists": false,
+            "Type": "string",
+            "datatype": "STRING",
+            "description": "Specifies the INDEX_STYLE of the output format.",
+            "isRequired": false,
+            "rOrderNum": 8
+        }
+    ],
     "function_type": "uaf",
     "json_schema_major_version": "1",
     "json_schema_minor_version": "2",
@@ -61,6 +94,53 @@
                 "index": 0
             },
             "uafType": "SERIES"
+        },
+        {
+            "LangName": "data or object or newdata or ... --> Langauges team can work with UAF team to come up with this field",
+            "requiredInputKind": [
+                "PartitionByNone"
+            ],
+            "isOrdered": false,
+            "partitionByOne": false,
+            "alternateNames": [],
+            "isRequired": false,
+            "description": "Passed in a logical univariate series, this function estimates the coefficients corresponding to the ARMA model ",
+            "rDescription": "Passed in a logical univariate series, this function estimates the coefficients corresponding to the ARMA model ",
+            "datatype": "TABLE_ALIAS",
+            "allowsLists": false,
+            "name": "Input2",
+            "rName": "Input2",
+            "useInR": true,
+            "rOrderNum": 2,
+            "uaf": {
+                "requiredUafKind": [
+                    "SERIES",
+                    "ART"
+                ],
+                "is_row_sequence": "SEQUENCE",
+                "is_col_sequence": "SEQUENCE",
+                "row_axis_name": "",
+                "column_axis_name": "",
+                "id_name": "",
+                "id_sequence": "",
+                "payload_fields": "",
+                "payload_content": "",
+                "layer": "",
+                "where": "",
+                "time_duration": "",
+                "time_zero": "",
+                "time_type": "",
+                "seq_zero": "",
+                "interval": "Off",
+                "details": true,
+                "instance_names": "",
+                "data_type": "",
+                "payload_start_value": "",
+                "payload_offset_value": "",
+                "payload_num_entries": "",
+                "index": 1
+            },
+            "uafType": ""
         }
     ],
     "output_tables": [
@@ -89,7 +169,7 @@
             "name": "OutputTable1",
             "rName": "OutputTable1",
             "useInR": true,
-            "rOrderNum": 2
+            "rOrderNum": 3
         },
         {
             "Type": "ART",
@@ -129,7 +209,7 @@
             "name": "OutputTable2",
             "rName": "OutputTable2",
             "useInR": true,
-            "rOrderNum": 3
+            "rOrderNum": 4
         },
         {
             "Type": "ART",
@@ -154,7 +234,7 @@
             "name": "OutputTable3",
             "rName": "OutputTable3",
             "useInR": true,
-            "rOrderNum": 4
+            "rOrderNum": 5
         },
         {
             "Type": "ART",
@@ -178,12 +258,12 @@
             "name": "OutputTable4",
             "rName": "OutputTable4",
             "useInR": true,
-            "rOrderNum": 5
+            "rOrderNum": 6
         },
         {
             "Type": "ART",
             "PrimaryLayer": false,
-            "LayerName": "ARTMODEL",
+            "LayerName": "ARTVALDATA",
             "ResultTableColumnTypes": [
                 "integer",
                 "float",
@@ -203,7 +283,7 @@
             "name": "OutputTable5",
             "rName": "OutputTable5",
             "useInR": true,
-            "rOrderNum": 6
+            "rOrderNum": 7
         }
     ],
     "argument_clauses": [
@@ -214,12 +294,28 @@
                 "INDEX_STYLE(NUMERICAL_SEQUENCE)",
                 "INDEX_STYLE(FLOW_THROUGH)"
             ],
+            "langName": "output_fmt_index_style",
             "allowsLists": false,
             "Type": "string",
             "datatype": "STRING",
-            "description": "Output format",
+            "description": "Specifies the INDEX_STYLE of the output format.",
             "isRequired": false,
-            "rOrderNum": 7
+            "rOrderNum": 8
+        },
+        {
+            "name": "InputFormat",
+            "permittedValues": [
+                "INPUT_MODE(MANY2ONE)",
+                "INPUT_MODE(ONE2ONE)",
+                "INPUT_MODE(MATCH)"
+            ],
+            "langName": "input_fmt_input_mode",
+            "allowsLists": false,
+            "Type": "string",
+            "datatype": "STRING",
+            "description": "Specifies the input mode supported by the function.",
+            "isRequired": false,
+            "rOrderNum": 9
         },
         {
             "name": "NONSEASONAL",
@@ -228,7 +324,7 @@
             "datatype": "GROUPSTART",
             "description": "Multiple plots can be specified.  It contains an array of plot entries, separated by comma.",
             "isRequired": true,
-            "rOrderNum": 8
+            "rOrderNum": 10
         },
         {
             "name": "NONSEASONAL.MODEL_ORDER",
@@ -240,7 +336,7 @@
             "datatype": "INTEGER",
             "description": "The non-seasonal 'p,  d and q' values.  A list containing three integer values, which are each greater than or equal to 0:First value is 'p', the non-seasonal auto-regressive order, AR(p)Second value is 'd', the non-seasonal differencing order Third value is 'q', the non-seasonal moving average order, MA(q) ",
             "isRequired": true,
-            "rOrderNum": 9
+            "rOrderNum": 11
         },
         {
             "name": "NONSEASONAL_GROUPEND",
@@ -249,7 +345,111 @@
             "datatype": "GROUPEND",
             "description": "Multiple plots can be specified.  It contains an array of plot entries, separated by comma.",
             "isRequired": true,
-            "rOrderNum": 10
+            "rOrderNum": 12
+        },
+        {
+            "name": "SEASONAL",
+            "allowsLists": false,
+            "Type": "GROUPSTART",
+            "datatype": "GROUPSTART",
+            "description": "Multiple plots can be specified.  It contains an array of plot entries, separated by comma.",
+            "isRequired": false,
+            "rOrderNum": 13
+        },
+        {
+            "name": "SEASONAL.MODEL_ORDER",
+            "listType": "integer",
+            "listSize": 3,
+            "checkDuplicates": false,
+            "allowsLists": true,
+            "Type": "integer",
+            "datatype": "INTEGER",
+            "description": "The seasonal 'P, D and Q' values.  A list containing three integer values, which are each greater than or equal to 0:First value is 'P', the seasonal auto-regressive orderSecond value is 'D', the seasonal differencing orderThird value is 'Q', the seasonal moving average order ",
+            "isRequired": false,
+            "rOrderNum": 14
+        },
+        {
+            "name": "SEASONAL.PERIOD",
+            "lowerBound": 1,
+            "lowerBoundType": "INCLUSIVE",
+            "allowNaN": false,
+            "allowsLists": false,
+            "Type": "integer",
+            "datatype": "INTEGER",
+            "description": "SEASONAL parameter.   The number of periods per season, 'S'.",
+            "isRequired": false,
+            "rOrderNum": 15
+        },
+        {
+            "name": "SEASONAL_GROUPEND",
+            "allowsLists": false,
+            "Type": "GROUPEND",
+            "datatype": "GROUPEND",
+            "description": "Multiple plots can be specified.  It contains an array of plot entries, separated by comma.",
+            "isRequired": true,
+            "rOrderNum": 16
+        },
+        {
+            "name": "LAGS",
+            "allowsLists": false,
+            "Type": "GROUPSTART",
+            "datatype": "GROUPSTART",
+            "description": "It is used to specify a data series for a plot.  It contains an array of series entries, separate by comma.",
+            "isRequired": false,
+            "rOrderNum": 17
+        },
+        {
+            "name": "LAGS.AR",
+            "listType": "integer",
+            "checkDuplicates": false,
+            "allowsLists": true,
+            "Type": "integer",
+            "datatype": "INTEGER",
+            "description": "p-length list.  Position sensitive  list that specifies the lags to be associated with the 'p' non-seasonal AR regression terms.  Default is LAGS( AR(1,2,3,...p)).",
+            "isRequired": false,
+            "rOrderNum": 18
+        },
+        {
+            "name": "LAGS.SAR",
+            "listType": "integer",
+            "checkDuplicates": false,
+            "allowsLists": true,
+            "Type": "integer",
+            "datatype": "INTEGER",
+            "description": "P-length list.  Position sensitive  list that specifies the lags associated with the 'P' seasonal AR regression terms.  Default is LAGS(SAR(1xS, 2xS, ...., PxS))",
+            "isRequired": false,
+            "rOrderNum": 19
+        },
+        {
+            "name": "LAGS.MA",
+            "listType": "integer",
+            "checkDuplicates": false,
+            "allowsLists": true,
+            "Type": "integer",
+            "datatype": "INTEGER",
+            "description": "q-length list.  Position sensitive  list that specifies the lags associated with the 'q' non-seasonal MA terms. Default is LAGS(MA(1,2,3,...q)).",
+            "isRequired": false,
+            "rOrderNum": 20
+        },
+        {
+            "name": "LAGS.SMA",
+            "listType": "integer",
+            "checkDuplicates": false,
+            "allowsLists": true,
+            "Type": "integer",
+            "datatype": "INTEGER",
+            "description": "Q-length list. Position sensitive  list that specifies the lags associated with the 'Q' seasonal MA terms. Default is LAGS(SMA(1xS, 2xS, ..., PxS)).",
+            "isRequired": false,
+            "rOrderNum": 21
+        },
+        {
+            "name": "LAGS_GROUPEND",
+            "allowsLists": false,
+            "Type": "GROUPEND",
+            "datatype": "GROUPEND",
+            "description": "It is used to specify a data series for a plot.  It contains an array of series entries, separate by comma.",
+            "isRequired": true,
+            "rOrderNum": 22
         },
         {
             "name": "INIT",
@@ -259,8 +459,8 @@
             "Type": "float",
             "datatype": "DOUBLE",
             "description": "p+q+P+Q length list if CONSTANT(0). p+q+P+Q+1 length list if CONSTANT(1).Position sensitive list that specifies the initial values to be associated with the 'p' non-seasonal AR regression coefficients, followed by 'q' non-seasonal MA coefficients, and 'P' seasonal SAR regression coefficients and 'Q' seasonal SMA coefficients. If intercept needed, one more value at the end to specify if intercept coefficient initial value. Associating a particular coefficient to a value of  0 should be used to indicate that the TD_ARIMAESTIMATE function is to use 0 as the initial value when calculate the coefficient. If some of the coefficients specified particular value as the initial values, the rest should be filled by 0 as well.If any specified init value at the same time provided in FIXED, provided init value will be ignored (overwrite) by FIXED.Only for MLE / CSS_MLE method.",
-            "isRequired": true,
-            "rOrderNum": 11
+            "isRequired": false,
+            "rOrderNum": 23
         },
         {
             "name": "FIXED",
@@ -270,8 +470,8 @@
             "Type": "float",
             "datatype": "DOUBLE",
             "description": "p+q+P+Q length list if CONSTANT(0). p+q+P+Q+1 length list if CONSTANT(1).Position sensitive list that specifies the fixed values to be associated with the 'p' non-seasonal AR regression coefficients, followed by 'q' non-seasonal MA coefficients, and 'P' seasonal SAR regression coefficients and 'Q' seasonal SMA coefficients. If intercept needed, one more value at the end to specify if intercept coefficient needs to be fixed value or not. Associating a particular coefficient to a value of NULL, means that the TD_ARIMAESTIMATE function is to determine/calculate the coefficient. Otherwise, the coefficient will be fixed on the given values.   Default is FIXED(NULL, NULL\u2026 NULL).Only for MLE / CSS_MLE method.",
-            "isRequired": true,
-            "rOrderNum": 12
+            "isRequired": false,
+            "rOrderNum": 24
         },
         {
             "name": "CONSTANT",
@@ -284,21 +484,22 @@
             "datatype": "INTEGER",
             "description": " Flag indicating whether or not the TD_ARIMAESTIMATE function should calculate an intercept. A value of '1' indicates CONSTANT/intercept should be calculated.  A value of '0' indicated no CONSTANT/intercept should be calculated.",
             "isRequired": true,
-            "rOrderNum": 13
+            "rOrderNum": 25
         },
         {
             "name": "ALGORITHM",
             "permittedValues": [
                 "OLE",
                 "MLE",
-                "CSS_MLE"
+                "CSS_MLE",
+                "CSS"
             ],
             "allowsLists": false,
-            "Type": "enumeration",
+            "Type": "string",
             "datatype": "STRING",
-            "description": "Specifies the approach used by TD_ARIMAESTIMATE to estimate the coefficients.  ALGORITHM (OLE) means the sum of least squares approach should be applied.  Then, FIXED, INIT will be disabled. ALGORITHM (MLE) means the maximum likelihood approach should be pursued. ALGORITHM (CSS_MLE) means to use conditional sum-of-squares to find a start value and then do maximum likelihood.",
+            "description": "Specifies the approach used by TD_ARIMAESTIMATE to estimate the coefficients. ALGORITHM (OLE) means the sum of least squares approach should be applied. Then, FIXED, INIT will be disabled. ALGORITHM (MLE) means the maximum likelihood approach should be pursued. ALGORITHM (CSS_MLE) means to use conditional sum-of-squares to find a start value and then do maximum likelihood. ALGORITHM (CSS) means conditional sum-of-squares approach should be applied.",
             "isRequired": true,
-            "rOrderNum": 14
+            "rOrderNum": 26
         },
         {
             "name": "MAX_ITERATIONS",
@@ -310,7 +511,21 @@
             "datatype": "INTEGER",
             "description": "This is an optional parameter.  Places a cap on the maximum number of iterations that can be employed to estimate the ARMA parameters. Only relevant for MLE processing.  If not present, then default is 100 iterations. ",
             "isRequired": false,
-            "rOrderNum": 15
+            "rOrderNum": 27
+        },
+        {
+            "name": "COEFF_STATS",
+            "defaultValue": 0,
+            "permittedValues": [
+                0,
+                1
+            ],
+            "allowsLists": false,
+            "Type": "integer",
+            "datatype": "INTEGER",
+            "description": "Flag indicating whether or not to return coefficient statistical columns TSTAT_VALUE and TSTAT_PROB.  A value of COEFF_STATS(1) means return the columns.   A value of COEFF_STATS(0) means do not return the columns.  Default is COEFF_STATS(0).",
+            "isRequired": false,
+            "rOrderNum": 28
         },
         {
             "name": "FIT_PERCENTAGE",
@@ -323,11 +538,12 @@
             "Type": "integer",
             "datatype": "INTEGER",
             "description": "Percentage of passed in sample points that will be used for the model fitting / parameter estimation exercise.  The default is 100, meaning 100%.",
-            "isRequired": true,
-            "rOrderNum": 16
+            "isRequired": false,
+            "rOrderNum": 29
         },
         {
             "name": "FIT_METRICS",
+            "defaultValue": 0,
             "permittedValues": [
                 0,
                 1
@@ -337,10 +553,11 @@
             "datatype": "INTEGER",
             "description": "Flag indicating whether or not to generate the secondary result set that contains the model metadata statistics.  A value of FIT_METRICS(1) means generate the secondary result set.   A value of FIT_METRICS(0) means do not generate the secondary result set.  Default is FIT_METRICS(0).  The generated result set can be retrieved by issuing a TD_EXTRACT_RESULTS against the analytical result table containing the results.",
             "isRequired": false,
-            "rOrderNum": 17
+            "rOrderNum": 30
         },
         {
             "name": "RESIDUALS",
+            "defaultValue": 0,
             "permittedValues": [
                 0,
                 1
@@ -350,111 +567,7 @@
             "datatype": "INTEGER",
             "description": "Flag indicating whether or not to generate the tertiary result set that contains the model residuals.  A value of RESIDUALS(1) means generate the tertiary result set.   A value of RESIDUALS(0) means do not generate the tertiary result set.  Default is RESIDUALS(0).  The generated result set can be retrieved by issuing a TD_EXTRACT_RESULTS against the analytical result table containing the results.",
             "isRequired": false,
-            "rOrderNum": 18
-        },
-        {
-            "name": "SEASONAL",
-            "allowsLists": false,
-            "Type": "GROUPSTART",
-            "datatype": "GROUPSTART",
-            "description": "Multiple plots can be specified.  It contains an array of plot entries, separated by comma.",
-            "isRequired": true,
-            "rOrderNum": 19
-        },
-        {
-            "name": "SEASONAL.MODEL_ORDER",
-            "listType": "integer",
-            "listSize": 3,
-            "checkDuplicates": false,
-            "allowsLists": true,
-            "Type": "integer",
-            "datatype": "INTEGER",
-            "description": "The seasonal 'P, D and Q' values.  A list containing three integer values, which are each greater than or equal to 0:First value is 'P', the seasonal auto-regressive orderSecond value is 'D', the seasonal differencing orderThird value is 'Q', the seasonal moving average order ",
-            "isRequired": true,
-            "rOrderNum": 20
-        },
-        {
-            "name": "SEASONAL.PERIOD",
-            "lowerBound": 1,
-            "lowerBoundType": "INCLUSIVE",
-            "allowNaN": false,
-            "allowsLists": false,
-            "Type": "integer",
-            "datatype": "INTEGER",
-            "description": "SEASONAL parameter.   The number of periods per season, 'S'.",
-            "isRequired": true,
-            "rOrderNum": 21
-        },
-        {
-            "name": "SEASONAL.LAGS",
-            "allowsLists": false,
-            "Type": "GROUPSTART",
-            "datatype": "GROUPSTART",
-            "description": "It is used to specify a data series for a plot.  It contains an array of series entries, separate by comma.",
-            "isRequired": true,
-            "rOrderNum": 22
-        },
-        {
-            "name": "SEASONAL.LAGS.AR",
-            "listType": "integer",
-            "checkDuplicates": false,
-            "allowsLists": true,
-            "Type": "integer",
-            "datatype": "INTEGER",
-            "description": "p-length list.  Position sensitive  list that specifies the lags to be associated with the 'p' non-seasonal AR regression terms.  Default is LAGS( AR(1,2,3,...p)).",
-            "isRequired": true,
-            "rOrderNum": 23
-        },
-        {
-            "name": "SEASONAL.LAGS.SAR",
-            "listType": "integer",
-            "checkDuplicates": false,
-            "allowsLists": true,
-            "Type": "integer",
-            "datatype": "INTEGER",
-            "description": "P-length list.  Position sensitive  list that specifies the lags associated with the 'P' seasonal AR regression terms.  Default is LAGS(SAR(1xS, 2xS, ...., PxS))",
-            "isRequired": true,
-            "rOrderNum": 24
-        },
-        {
-            "name": "SEASONAL.LAGS.MA",
-            "listType": "integer",
-            "checkDuplicates": false,
-            "allowsLists": true,
-            "Type": "integer",
-            "datatype": "INTEGER",
-            "description": "q-length list.  Position sensitive  list that specifies the lags associated with the 'q' non-seasonal MA terms. Default is LAGS(MA(1,2,3,...q)).",
-            "isRequired": true,
-            "rOrderNum": 25
-        },
-        {
-            "name": "SEASONAL.LAGS.SMA",
-            "listType": "integer",
-            "checkDuplicates": false,
-            "allowsLists": true,
-            "Type": "integer",
-            "datatype": "INTEGER",
-            "description": "Q-length list. Position sensitive  list that specifies the lags associated with the 'Q' seasonal MA terms. Default is LAGS(SMA(1xS, 2xS, ..., PxS)).",
-            "isRequired": true,
-            "rOrderNum": 26
-        },
-        {
-            "name": "SEASONAL.LAGS_GROUPEND",
-            "allowsLists": false,
-            "Type": "GROUPEND",
-            "datatype": "GROUPEND",
-            "description": "It is used to specify a data series for a plot.  It contains an array of series entries, separate by comma.",
-            "isRequired": true,
-            "rOrderNum": 27
-        },
-        {
-            "name": "SEASONAL_GROUPEND",
-            "allowsLists": false,
-            "Type": "GROUPEND",
-            "datatype": "GROUPEND",
-            "description": "Multiple plots can be specified.  It contains an array of plot entries, separated by comma.",
-            "isRequired": true,
-            "rOrderNum": 28
+            "rOrderNum": 31
         }
     ]
 }

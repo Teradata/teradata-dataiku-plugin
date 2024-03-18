@@ -8,7 +8,6 @@
    "function_type":"fastpath",
    "function_category": "Model Evaluation",
    "function_r_name":"aa.td.CLASSIFICATION.EVALUATOR",
-   "ref_function_r_name":"aa.td.CLASSIFICATION.EVALUATOR",
    "short_description":"This function evaluate and emits various metrics of classification model based on it's predictions on the data",
    "long_description":"This function evaluate and emits various metrics of classification model based on it's predictions on the data",
    "input_tables":[

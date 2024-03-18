@@ -144,7 +144,8 @@ class OpenEndedQueryGenerator():
                 order_by.append(order_info)
 
             # Dimension or None should never have order/local order by
-            if req_input['kind'].lower() == 'dimension' or req_input['kind'].lower() == 'none':
+            #if req_input['kind'].lower() == 'dimension' or req_input['kind'].lower() == 'none':
+            if req_input['kind'].lower() == 'none':
                 order_by = []
 
             if len(order_by)>0:

@@ -193,10 +193,17 @@ def vantageDo():
     logging.info(pp.pformat(recipe_config))
     logging.info(SEP)
 
+    # Add Query Band
+    query_band = "SET QUERY_BAND='appname=dataiku;version=3.1;" + "function=" +  recipe_config.get('function', {}).get('name','')  + ";' FOR SESSION;"
 
+    
     # VALIB     
     dss_function = recipe_config.get('function', None)
     if dss_function and 'function_type' in dss_function and dss_function['function_type'] == "valib":
+        if pre_query:
+            pre_query = [query_band] + pre_query
+        else:
+            pre_query = [query_band]
         dataiku_valib_execution(dss_function, connections, inputConnectionName, executor, autocommit, pre_query, post_query, output_table_names)
         return
 
@@ -250,7 +257,7 @@ def vantageDo():
         # "START TRANSACTION;" block applies for non-autocommit TERA mode connections.
         if not autocommit:
             executor.query_to_df(pre_query)
-        executor.query_to_df(my_query, post_queries=post_query)
+        executor.query_to_df(my_query, pre_queries=[query_band], post_queries=post_query)
     except pd.errors.EmptyDataError:
         # Ignore error
         pass

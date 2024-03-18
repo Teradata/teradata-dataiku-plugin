@@ -1,6 +1,7 @@
 {
+    "FunctionCategory": "General Utility",
     "JSONVersion": "1",
-    "FuncRName": "...",
+    "FuncRName": "td_MInfo",
     "MaxInputFiles": 1,
     "IsPlottable": false,
     "InputFmt": false,
@@ -35,7 +36,6 @@
             "rOrderNum": 1,
             "uaf": {
                 "requiredUafKind": [
-                    "SERIES",
                     "MATRIX"
                 ],
                 "is_row_sequence": "SEQUENCE",
@@ -61,7 +61,7 @@
                 "payload_num_entries": "",
                 "index": 0
             },
-            "uafType": ""
+            "uafType": "MATRIX"
         }
     ],
     "output_tables": [

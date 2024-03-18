@@ -137,6 +137,8 @@ def valib_execution(json_contents, dss_function, dropIfExists=False, valib_query
     elif function_name == "Rank Test VAL":
         result = valib_rankTest.execute(correct_json, valib_query_wrapper=valib_query_wrapper)
     
+    elif function_name == "Histogram VAL":
+        result = valib_histogram.execute(correct_json, valib_query_wrapper=valib_query_wrapper)
     elif function_name == "Adaptive Histogram VAL":
         result = valib_adaptive_histogram.execute(correct_json, valib_query_wrapper=valib_query_wrapper)
     elif function_name == "Association VAL":
@@ -150,8 +152,6 @@ def valib_execution(json_contents, dss_function, dropIfExists=False, valib_query
 
     elif function_name == "Frequency VAL":
         result = valib_frequency.execute(correct_json, valib_query_wrapper=valib_query_wrapper)
-    elif function_name == "Histogram VAL":
-        result = valib_histogram.execute(correct_json, valib_query_wrapper=valib_query_wrapper)
     elif function_name == "K Means VAL":
         result = valib_kmeans.execute(correct_json, valib_query_wrapper=valib_query_wrapper)
     elif function_name == "KS Test VAL":

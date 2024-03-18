@@ -19,6 +19,24 @@ import logging
 from query_engine_wrapper import QueryEngineWrapper
 from verifyTableColumns import *
 
+
+# for parameter type where user enters a string and it should be treated as a dict, change so that it is dict format
+def string_param_to_dict(map_dict):
+    if type(map_dict) == str:
+        my_dict = {}
+    
+        # split
+        entries = map_dict.split(",")
+        # for loop
+        for entry in entries:
+            key,value = entry.split(":")
+            my_dict[key.strip()] = value.strip()
+    
+        map_dict = my_dict
+    
+    return map_dict
+
+
 def execute_transform(recipe_config, function_name, function_list, unique_name="", valib_query_wrapper=None):
 
     if not valib_query_wrapper:
@@ -44,7 +62,10 @@ def execute_transform(recipe_config, function_name, function_list, unique_name="
             except Exception as e:
                 pass
 
-    delayquery = recipe_config.get(unique_name + 'delayquery', True)
+    if recipe_config.get('immediatequery', False):
+        delayquery = False
+    else:
+        delayquery = recipe_config.get(unique_name + 'delayquery', True)
 
     if delayquery:
         select = ""

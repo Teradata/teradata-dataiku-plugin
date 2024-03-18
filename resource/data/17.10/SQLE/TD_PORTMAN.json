@@ -1,6 +1,7 @@
 {
+    "FunctionCategory": "Diagnostic Statistical Test",
     "JSONVersion": "1",
-    "FuncRName": "...",
+    "FuncRName": "td_Portman",
     "MaxInputFiles": 1,
     "IsPlottable": true,
     "InputFmt": false,
@@ -101,6 +102,7 @@
             "lowerBound": 0,
             "lowerBoundType": "INCLUSIVE",
             "allowNaN": false,
+            "langName": "max_lags",
             "allowsLists": false,
             "Type": "integer",
             "datatype": "INTEGER",
@@ -118,7 +120,7 @@
                 "ML"
             ],
             "allowsLists": false,
-            "Type": "enumeration",
+            "Type": "string",
             "datatype": "STRING",
             "description": "Chooses the desired Portmanteau diagnostic; BP : Box-Pierce Q test; LB : Ljung-Box Q test; LM : Li-McLeod Q test; MQ : Monti\u2019s Q test; ML : McLeod-Li Q test",
             "isRequired": true,
@@ -139,12 +141,11 @@
         {
             "name": "PACF_METHOD",
             "permittedValues": [
-                "YULE_WALKER",
                 "LEVINSON_DURBIN",
                 "OLS"
             ],
             "allowsLists": false,
-            "Type": "enumeration",
+            "Type": "string",
             "datatype": "STRING",
             "description": "Only valid when the TEST(MQ), Monti\u2019s Q test, is chosen.Chooses underlying algorithm that will be employed to calculate the partial auto-correlation coefficients.LEVINSON_DURBIN - Uses the set of recursive formulas devised by Levinson-Durbin to solve for PACF coefficientsOLS - Solves incremental series of regression equations to determine the PACF coefficients",
             "isRequired": false,

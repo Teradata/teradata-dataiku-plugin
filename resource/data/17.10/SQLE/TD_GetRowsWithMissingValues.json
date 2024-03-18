@@ -5,6 +5,7 @@
   "function_name": "TD_GetRowsWithMissingValues",
   "function_version": "1.0",
   "function_type": "fastpath",
+  "function_category" : "Data Exploration",
   "function_alias_name": "TD_GetRowsWithMissingValues",
   "function_r_name": "aa.td_getrows.withmissingvalues",
   "short_description": "fastpath function to get rows with NULL values.",

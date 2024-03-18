@@ -1,6 +1,7 @@
 {
+    "FunctionCategory": "Diagnostic Statistical Test",
     "JSONVersion": "1",
-    "FuncRName": "...",
+    "FuncRName": "td_Signif_Residmean",
     "MaxInputFiles": 1,
     "IsPlottable": false,
     "InputFmt": false,

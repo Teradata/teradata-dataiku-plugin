@@ -5,6 +5,7 @@
   "function_name": "TD_ConvertTo",
   "function_version": "1.0",
   "function_type": "fastpath",
+  "function_category" : "Data Cleaning",
   "function_alias_name": "TD_ConvertTo",
   "function_r_name": "aa.td_convert.to",
   "short_description": "fastpath function to cast/convert columns from one datatype to another.",

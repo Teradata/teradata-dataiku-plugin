@@ -403,7 +403,7 @@ def verifyInputTable(inputTable):
 
 
 def verifySelectClause(output_all, return_clause):
-    # Vverify all column names are valid
+    # Verify all column names are valid
     selectClause = "*"
     if not output_all:
         selectClause = []
@@ -440,8 +440,10 @@ def verifyApplyCommand():
              # script file name should have no quotes
              if ('"' in scriptFileName) or ("'" in scriptFileName):
                  raise Exception('Illegal Script File Name', scriptFileName)
+             if ('"' in scriptArguments) or ("'" in scriptArguments):
+                raise Exception('Illegal Script Arguments', scriptArguments)
              if commandType != 'r':
-                apply_command = """'python3 ./"""+scriptFileName+""" '"""
+                apply_command = """'python3 ./"""+scriptFileName+""" """+scriptArguments+"""'"""
            
              return apply_command
 
@@ -557,7 +559,7 @@ return_clause = function_config.get('return_clause', "")
 output_all = function_config.get('outputAll', True)
 
 # Prefix the input table with the correct database
-inputTable = function_config.get('input_table')
+inputTable = function_config.get('input_table')         
 
 
 
@@ -634,6 +636,10 @@ if not is_vantage_cloud:
 logging.info('Executing SELECT Query...')
 
 if is_vantage_cloud:
+    # setting QUERYBAND
+    query_band = "SET QUERY_BAND='appname=dataiku;version=3.1;" + "function= In Vantage Scripting(APPLY)"  + ";' FOR SESSION;"
+    logging.info('setQUERYBAND')  
+    qb = executor_query(executor, query_band)
     logging.info(ApplyQuery)
     selectResult = executor_query(executor, ApplyQuery)
     
@@ -642,8 +648,12 @@ else:
     logging.info(setSessionQuery)
     logging.info('replaceFileQuery')
     logging.info(replaceFileQuery)
+    logging.info('setQUERYBAND')
+    # setting QUERYBAND
+    query_band = "SET QUERY_BAND='appname=dataiku;version=3.1;" + "function= In Vantage Scripting(STO)"  + ";' FOR SESSION;"
+    logging.info(query_band)
     logging.info(STOQuery)
-    selectResult = executor_query2(executor, STOQuery,[databaseQuery, setSessionQuery])
+    selectResult = executor_query2(executor, STOQuery,[databaseQuery, setSessionQuery,query_band])
     
 logging.info('Moving results to output...')
 pythonrecipe_out = output_A_datasets[0]

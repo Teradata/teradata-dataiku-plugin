@@ -1,6 +1,7 @@
 {
+    "FunctionCategory": "Diagnostic Statistical Test",
     "JSONVersion": "1",
-    "FuncRName": "...",
+    "FuncRName": "td_Dickey_Fuller",
     "MaxInputFiles": 1,
     "IsPlottable": false,
     "InputFmt": false,
@@ -103,7 +104,7 @@
                 "FORMULA"
             ],
             "allowsLists": false,
-            "Type": "enum<string>",
+            "Type": "string",
             "datatype": "STRING",
             "description": "An enumerated type with values of:  NONE, DRIFT, TREND, DRIFTNTREND, or FORMULA, which influences the type of regression that will be run for the test.NONE - Random WalkDRIFT - Random Walk with DriftTREND - Random Walk with Linear TrendDRIFTNTREND - Random Walk with Drift and TrendDRIFTNTREND & MAXLAGS - Random Walk with Drift and Trend and auxiliary lagsFORMULA & MAXLAGS - Random Walk with roll-your-own on Drift and Trend; plus auxiliary lags",
             "isRequired": true,
@@ -114,11 +115,12 @@
             "lowerBound": 0,
             "lowerBoundType": "INCLUSIVE",
             "allowNaN": false,
+            "langName": "max_lags",
             "allowsLists": false,
             "Type": "integer",
             "datatype": "INTEGER",
             "description": "The presence of the MAXLAGS parameter means the data scientist wishes to run the augmented Dickey-Fuller test. This is the maximum number of lags that will be used to form the regression equation. ",
-            "isRequired": true,
+            "isRequired": false,
             "rOrderNum": 4
         },
         {
@@ -129,20 +131,6 @@
             "description": "A Teradata formula string that stores the formula used to represent the drift and trend portions of the regression.  The formula is only valid when used in conjunction with ALGORITHM (FORMULA).    It uses the Teradata formula syntax and is expected to be of the form:  b_1 + b_2X_1 + b_3X_1^2 + \u2026 etc; which the UAF function interprets as: :  b_1 + b_2t + b_3t^2 + \u2026 etc   ",
             "isRequired": false,
             "rOrderNum": 5
-        },
-        {
-            "name": "SIGNIFICANCE_LEVEL",
-            "lowerBound": 0,
-            "upperBound": 1,
-            "lowerBoundType": "EXCLUSIVE",
-            "upperBoundType": "EXCLUSIVE",
-            "allowNaN": false,
-            "allowsLists": false,
-            "Type": "double",
-            "datatype": "DOUBLE",
-            "description": "The desired significance level for the test.",
-            "isRequired": true,
-            "rOrderNum": 6
         }
     ]
 }

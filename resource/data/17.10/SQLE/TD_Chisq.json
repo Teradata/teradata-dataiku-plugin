@@ -5,6 +5,7 @@
   "function_name": "TD_ChiSq",
   "function_version": "1.0",
   "function_type": "fastpath",
+  "function_category": "Hypothesis Testing",
   "function_alias_name": "TD_ChiSq",
   "function_r_name": "aa.td_chisq",
   "short_description": "hypothesis test function to perform chisquare analysis on a data set.",

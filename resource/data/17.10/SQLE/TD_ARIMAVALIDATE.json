@@ -1,10 +1,27 @@
 {
+    "FunctionCategory": "Model Preparation and Parameter Estimation",
     "JSONVersion": "1",
-    "FuncRName": "...",
+    "FuncRName": "td_Arima_Validate",
     "MaxInputFiles": 1,
     "IsPlottable": true,
     "InputFmt": false,
-    "OutputFmt": true,
+    "OutputFmt": [
+        {
+            "name": "OutputFormat",
+            "defaultValue": "INDEX_STYLE(NUMERICAL_SEQUENCE)",
+            "permittedValues": [
+                "INDEX_STYLE(NUMERICAL_SEQUENCE)",
+                "INDEX_STYLE(FLOW_THROUGH)"
+            ],
+            "langName": "output_fmt_index_style",
+            "allowsLists": false,
+            "Type": "string",
+            "datatype": "STRING",
+            "description": "Specifies the INDEX_STYLE of the output format.",
+            "isRequired": false,
+            "rOrderNum": 6
+        }
+    ],
     "function_type": "uaf",
     "json_schema_major_version": "1",
     "json_schema_minor_version": "2",
@@ -190,15 +207,17 @@
                 "INDEX_STYLE(NUMERICAL_SEQUENCE)",
                 "INDEX_STYLE(FLOW_THROUGH)"
             ],
+            "langName": "output_fmt_index_style",
             "allowsLists": false,
             "Type": "string",
             "datatype": "STRING",
-            "description": "Output format",
+            "description": "Specifies the INDEX_STYLE of the output format.",
             "isRequired": false,
             "rOrderNum": 6
         },
         {
             "name": "FIT_METRICS",
+            "defaultValue": 0,
             "permittedValues": [
                 0,
                 1
@@ -207,11 +226,12 @@
             "Type": "integer",
             "datatype": "INTEGER",
             "description": "Flag indicating whether or not to generate the secondary result set that contains the model metadata statistics.  A value of FIT_METRICS(1) means generate the secondary result set.   A value of FIT_METRICS(0) means do not generate the secondary result set.  Default is FIT_METRICS(0).  The generated result set can be retrieved by issuing a TD_EXTRACT_RESULTS against the analytical result table containing the results.",
-            "isRequired": true,
+            "isRequired": false,
             "rOrderNum": 7
         },
         {
             "name": "RESIDUALS",
+            "defaultValue": 0,
             "permittedValues": [
                 0,
                 1
@@ -220,19 +240,8 @@
             "Type": "integer",
             "datatype": "INTEGER",
             "description": "Flag indicating whether or not to generate the tertiary result set that contains the model residuals.  A value of RESIDUALS(1) means generate the tertiary result set.   A value of RESIDUALS(0) means do not generate the tertiary result set.  Default is RESIDUALS(0).  The generated result set can be retrieved by issuing a TD_EXTRACT_RESULTS against the analytical result table containing the results.",
-            "isRequired": true,
-            "rOrderNum": 8
-        },
-        {
-            "name": "MODEL_NUMBER",
-            "defaultValue": 0,
-            "allowNaN": false,
-            "allowsLists": false,
-            "Type": "integer",
-            "datatype": "INTEGER",
-            "description": "OPTIONAL: Data Scientist assigned model number for this model. If not present, then default is '0'.",
             "isRequired": false,
-            "rOrderNum": 9
+            "rOrderNum": 8
         }
     ]
 }

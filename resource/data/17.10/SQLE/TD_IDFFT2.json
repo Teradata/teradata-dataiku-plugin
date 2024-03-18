@@ -1,10 +1,46 @@
 {
+    "FunctionCategory": "Temporal and Spatial",
     "JSONVersion": "1",
-    "FuncRName": "...",
+    "FuncRName": "td_IDFFT2",
     "MaxInputFiles": 1,
     "IsPlottable": true,
     "InputFmt": false,
-    "OutputFmt": true,
+    "OutputFmt": [
+        {
+            "name": "OutputFormat",
+            "permittedValues": [
+                "CONTENT(COMPLEX)",
+                "CONTENT(AMPL_PHASE_RADIANS)",
+                "CONTENT(AMPL_PHASE_DEGREES)",
+                "CONTENT(AMPL_PHASE)",
+                "CONTENT(MULTIVAR_COMPLEX)",
+                "CONTENT(MULTIVAR_AMPL_PHASE_RADIANS)",
+                "CONTENT(MULTIVAR_AMPL_PHASE_DEGREES)",
+                "CONTENT(MULTIVAR_AMPL_PHASE)"
+            ],
+            "langName": "output_fmt_content",
+            "allowsLists": false,
+            "Type": "string",
+            "datatype": "STRING",
+            "description": "The OUTPUT_FMT (CONTENT()) construct can be used by the data scientist to choose how they would like their Fourier coefficients to be output.  The can use CONTENT(COMPLEX) or CONTENT(MULTIVAR_COMPLEX) to request the Fourier coefficients in rectangular form.  Alternatively, they can use CONTENT(AMPL_PHASE_RADIANS), CONTENT(AMPL_PHASE_DEGREES), CONTENT(AMPL_PHASE), CONTENT(MULTIVAR_AMPL_PHASE_RADIANS), CONTENT(MULTIVAR_AMPL_PHASE), or CONTENT(MULTIVAR_AMPL_PHASE_DEGREES) to request that the Fourier coefficients be output in the polar form; and to further request the phase to be output in radians or degrees. AMPL_PHASE is one of the permitted values, it is synonymous with AMPL_PHASE_RADIANS. Similarly MULTIVAR_AMPL_PHASE is equivalent to MULTIVAR_AMPL_PHASE_RADIANS.The default value is dependent on the datatype of the input series; a single var input will generate COMPLEX output CONTENT by default; a multi var input will generate MULTIVAR_COMPLEX output CONTENT by default.",
+            "isRequired": false,
+            "rOrderNum": 3
+        },
+        {
+            "Name": "ROW_MAJOR",
+            "Type": "integer",
+            "Optional": true,
+            "DefaultValue": 1,
+            "PermittedValues": [
+                0,
+                1
+            ],
+            "Description": [
+                "The data scientist may explicity declare whether they want the matrix output in a row-major-centric or column-major-centric manner, via the OUTPUT_FMT(ROW_MAJOR()) construct."
+            ],
+            "LangName": "output_fmt_row_major"
+        }
+    ],
     "function_type": "uaf",
     "json_schema_major_version": "1",
     "json_schema_minor_version": "2",
@@ -35,6 +71,7 @@
             "rOrderNum": 1,
             "uaf": {
                 "requiredUafKind": [
+                    "ART",
                     "MATRIX"
                 ],
                 "is_row_sequence": "SEQUENCE",
@@ -60,7 +97,7 @@
                 "payload_num_entries": "",
                 "index": 0
             },
-            "uafType": "MATRIX"
+            "uafType": ""
         }
     ],
     "output_tables": [
@@ -93,15 +130,21 @@
     "argument_clauses": [
         {
             "name": "OutputFormat",
-            "defaultValue": "INDEX_STYLE(NUMERICAL_SEQUENCE)",
             "permittedValues": [
-                "INDEX_STYLE(NUMERICAL_SEQUENCE)",
-                "INDEX_STYLE(FLOW_THROUGH)"
+                "CONTENT(COMPLEX)",
+                "CONTENT(AMPL_PHASE_RADIANS)",
+                "CONTENT(AMPL_PHASE_DEGREES)",
+                "CONTENT(AMPL_PHASE)",
+                "CONTENT(MULTIVAR_COMPLEX)",
+                "CONTENT(MULTIVAR_AMPL_PHASE_RADIANS)",
+                "CONTENT(MULTIVAR_AMPL_PHASE_DEGREES)",
+                "CONTENT(MULTIVAR_AMPL_PHASE)"
             ],
+            "langName": "output_fmt_content",
             "allowsLists": false,
             "Type": "string",
             "datatype": "STRING",
-            "description": "Output format",
+            "description": "The OUTPUT_FMT (CONTENT()) construct can be used by the data scientist to choose how they would like their Fourier coefficients to be output.  The can use CONTENT(COMPLEX) or CONTENT(MULTIVAR_COMPLEX) to request the Fourier coefficients in rectangular form.  Alternatively, they can use CONTENT(AMPL_PHASE_RADIANS), CONTENT(AMPL_PHASE_DEGREES), CONTENT(AMPL_PHASE), CONTENT(MULTIVAR_AMPL_PHASE_RADIANS), CONTENT(MULTIVAR_AMPL_PHASE), or CONTENT(MULTIVAR_AMPL_PHASE_DEGREES) to request that the Fourier coefficients be output in the polar form; and to further request the phase to be output in radians or degrees. AMPL_PHASE is one of the permitted values, it is synonymous with AMPL_PHASE_RADIANS. Similarly MULTIVAR_AMPL_PHASE is equivalent to MULTIVAR_AMPL_PHASE_RADIANS.The default value is dependent on the datatype of the input series; a single var input will generate COMPLEX output CONTENT by default; a multi var input will generate MULTIVAR_COMPLEX output CONTENT by default.",
             "isRequired": false,
             "rOrderNum": 3
         },
