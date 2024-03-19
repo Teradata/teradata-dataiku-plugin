@@ -103,7 +103,7 @@
             "name": "TIMECODE.START_VALUE",
             "allowsLists": false,
             "Type": "timestampwz",
-            "datatype": "TIMESTAMPWZ",
+            "datatype": "STRING",
             "description": "Specifies the first sampling index to interpolate.",
             "isRequired": false,
             "rOrderNum": 4
