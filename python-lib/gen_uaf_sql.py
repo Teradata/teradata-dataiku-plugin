@@ -593,10 +593,29 @@ def gen_uaf_query(outputTable, config_json, outputDB = ""):
                     stmts[-1] += ",{}".format(verifyAttribute(split_list[index]))
         else:
             if add_quotes:
-                stmts[-1] += "'{}'".format(verifyAttribute(value))
+                value = str(value)
+                if name == "START_VALUE" and "TIMESTAMP" in value:
+                    value = value.replace("TIMESTAMP", "")
+                    value = value.strip()
+                    value = value.replace("'", "")
+                    stmts[-1] += "TIMESTAMP '{}'".format(verifyAttribute(value))
+                elif name == "DURATION":
+                    value = value.replace("'", "")
+                    stmts[-1] += "{}".format(value)
+                else:
+                    stmts[-1] += "'{}'".format(verifyAttribute(value))
             else:
                 value = str(value)
-                stmts[-1] += "{}".format(verifyAttribute(value))
+                if name == "START_VALUE" and "TIMESTAMP" in value:
+                    value = value.replace("TIMESTAMP", "")
+                    value = value.strip()
+                    value = value.replace("'", "")
+                    stmts[-1] += "TIMESTAMP '{}'".format(verifyAttribute(value))
+                elif name == "DURATION":
+                    value = value.replace("'", "")
+                    stmts[-1] += "{}".format(value)
+                else:    
+                    stmts[-1] += "{}".format(verifyAttribute(value))
         stmts[-1] += "),"
 
 
