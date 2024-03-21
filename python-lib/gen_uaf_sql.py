@@ -593,6 +593,8 @@ def gen_uaf_query(outputTable, config_json, outputDB = ""):
                     stmts[-1] += ",{}".format(verifyAttribute(split_list[index]))
         else:
             if add_quotes:
+                # For Resample, start time allows timestamp, it needs to follow TIMESTAMP 'YYY-MM-DD 00:00:00'
+                # For Resample, duration needs to not have quotes in query should be for example DAYS(1)
                 value = str(value)
                 if name == "START_VALUE" and "TIMESTAMP" in value:
                     value = value.replace("TIMESTAMP", "")
