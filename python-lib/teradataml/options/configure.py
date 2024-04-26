@@ -214,6 +214,9 @@ class _Configure(_ConfigureSuper):
         # Internal parameter, that is used for specifying the refresh token to be used
         # in UES REST calls
         super().__setattr__('_pf_token_password_label', "pf.pass")
+        
+        # Internal parameter, that is used for specifying the PAT token state in _AuthWorkflow.
+        super().__setattr__('_state_dict', None)
 
     def __setattr__(self, name, value):
         if hasattr(self, name):

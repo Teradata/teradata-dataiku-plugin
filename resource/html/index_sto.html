@@ -74,11 +74,31 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SO
          <!-- Tab: user authentication -->
 
          <div id="tabs-auth" class="plugintabcontent">
-         <label for="ues_url">
-         User Environment Service URL:
-         </label>
-  	     <input required type="text" id="ues_url" ng-model="config.ues_url"  data-placement="right" data-html="true" data-toggle="tooltip" title="Enter the ues url">
          
+         <label for="ues_url">
+          User Environment Service URL:
+          </label>
+          <input required type="text" id="ues_url" ng-model="config.ues_url"  data-placement="right" data-html="true" data-toggle="tooltip" title="Enter the UES URL">
+         <br><br>
+         <label for="pat_token">
+          Personal Access Token:
+          </label>
+          <input required type="text" id="pat-token" ng-model="config.pat_token"  data-placement="right" data-html="true" data-toggle="tooltip" title="Enter the PAT token generated through the CCP UI">
+          <br><br>
+          <label for="pvt_key">
+          Private Key:
+          </label>
+            <select  id="pvt_key" ng-model="config.pvt_key"  data-container="body" data-placement="right"
+            data-html="true" data-toggle="tooltip" title="Select a file from the DSS managed folder which contains the private key associated with the PAT token" ng-options="inputFile as inputFile for inputFile in fileList">
+            <option  value="" disabled selected></option>
+          </select>
+          <br><br>
+
+          <label for="exp_time">
+           Expiration Time (sec):
+           </label>
+           <input required type="text" id="exp_time" ng-model="config.exp_time" ng-init="config.exp_time = '3600'" data-placement="right" data-html="true" data-toggle="tooltip" title="Enter the expiration time in seconds.By default, you will need to re-authenticate after 1 hour.">
+           
         <br>
         <br>
         <button data-placement="right" data-html="true" data-toggle="tooltip" ng-click="userAuthentication()" title="Click here to authenticate the user">Authenticate</button>
@@ -98,13 +118,13 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SO
 		    <select ng-model="config.base_env" id="base_env" dku-bs-select="{liveSearch:true}"  ng-options="v for v in choices" data-placement="right" data-html="true" data-toggle="tooltip" title="Choose from the existing base environments">
         </select>
 
-		<br>
+		<br><br>
 		
         <label for="env-name">
         Environment Name:
         </label>
         <input required type="text" id="env-name" ng-model="config.env_name" data-html="true" data-toggle="tooltip" title="Enter the environment name">
-        <br>
+        <br><br>
         <label for="description">
         Description:
         </label>

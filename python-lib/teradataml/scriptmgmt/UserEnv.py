@@ -14,7 +14,9 @@ import pandas as pd
 from concurrent.futures import ThreadPoolExecutor, wait
 
 from teradataml.options import configure
-from teradataml.clients.pkce_client import _PKCEClient, _DAWorkflow
+from teradataml.clients.pkce_client import _PKCEClient,_AuthWorkflow
+#from teradataml.clients.auth_client import _AuthWorkflow
+
 from teradataml.common.exceptions import TeradataMlException
 from teradataml.common.messages import Messages
 from teradataml.common.messagecodes import MessageCodes
@@ -218,17 +220,25 @@ def _get_auth_token():
         # Extract the base URL from "ues_url".
         ues_url = configure.ues_url
         client_id = configure._oauth_client_id
+        #client_id = configure._oauth_client_id
 
         url_parser = urlparse(ues_url)
         base_url = "{}://{}".format(url_parser.scheme, url_parser.netloc)
+        #url_parser = urlparse(ues_url)
+        #base_url = "{}://{}".format(url_parser.scheme, url_parser.netloc)
 
-        # Get the access token.
+        state_dict = configure._state_dict
+
+        # Get the JWT Token details.
         da_wf = _DAWorkflow(base_url, client_id)
         token_data = da_wf._get_token_data()
+        auth_wf = _AuthWorkflow(state_dict)
+        token_data = auth_wf._proxy_jwt()
 
         # Replace the options with new values.
-        configure.auth_token = token_data["access_token"]
         configure._auth_token_expiry_time = time.time() + token_data["expires_in"] - 15
+        configure._auth_token_expiry_time = auth_wf._get_epoch_time()
+
     '''
     return {"Authorization": "Bearer {}".format(configure.auth_token)}
 

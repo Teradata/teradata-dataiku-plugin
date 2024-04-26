@@ -15,6 +15,13 @@ from urllib.parse import parse_qs, urlparse
 import httpx as requests
 from time import time, sleep
 
+import jwt
+import time
+import threading
+import pathlib
+from pathlib import Path
+
+
 class _PKCEClient:
     """
     Proof Key for Code Exchange Client to get the Authorization code from any server which implements
@@ -312,87 +319,119 @@ class _PKCEClient:
         _Validators._validate_http_response(response, 200, "get the JWT Token")
 
         return response.json()
-    
-class _DAWorkflow:
+
+class _AuthWorkflow:
     """
-    Get the Authorization code from any server which support Device Authorization.
+    Get the JWT token for requested user.
     """
-    def __init__(self, base_url, client_id):
+    def __init__(self, state):
         """
         DESCRIPTION:
-            Constructor to initiate Device Authentication work flow.
+            Constructor to initiate Authentication work flow.
+
         PARAMETERS:
-            base_url:
+            state:
                 Required Argument.
-                Specifies the base URL of OAuth Server.
-                Types: str
-            client_id:
-                Required Argument.
-                Specifies the client id of OAuth Server. One should get the client id from OAuth server.
-                Types: str
+                Specifies the dictionary containing base url, token, ip address, username, org_id, token, pem file.
+                Types: dict
+
         RETURNS:
-            Instance of _PKCEClient.
+            Instance of _AuthWorkflow.
+
         RAISES:
             None
+
         EXAMPLES :
-            >>> _DAWorkflow("client_id", "base_url")
+            >>> _AuthWorkflow(state)
         """
-        self.__base_url = base_url
-        self.__client_id = client_id
-        self.verification_uri= None
+        self.state = state
 
-        self.device_auth_end_point = None
-        self.__token_endpoint = None
-        self.__open_id_configuration_resource = "/auth/.well-known/openid-configuration"
+    def _get_epoch_time(self):
+        """
+        DESCRIPTION:
+            Generate expiry epoch time.
 
-    def _get_token_data(self):
-        metadata = self.__get_issuer_metadata()
-        self.device_auth_end_point = metadata["device_authorization_endpoint"]
-        self.__token_endpoint = metadata["token_endpoint"]
+        RETURNS:
+            float representing the expiry epoch time.
+        """
+        current_epoch_time = time.time()
+        expiry_epoch_time = current_epoch_time + self.state.get('jwt_expiration')
+        return current_epoch_time, expiry_epoch_time
 
+    def _generate_header(self):
+        """
+        DESCRIPTION:
+            Generate JWT header.
 
-        device_metadata = self.__get_device_metadata()
+        Returns:
+            dict: A dictionary representing the JWT header.
+        """
+        kid = kid = pathlib.Path(self.state.get('pem_file_name')).stem
 
-        token_data = self.__get_access_token_data(device_metadata)
-        return token_data
-
-    def __get_issuer_metadata(self):
-        # Fetch the metadata to get the DA details.
-        metadata_response = requests.get(
-            url="{}{}".format(self.__base_url, self.__open_id_configuration_resource))
-
-        # Check the status. If response is not 200, raise error.
-        _Validators._validate_http_response(metadata_response, 200, "get the configuration")
-
-        return metadata_response.json()
-
-    def __get_device_metadata(self):
-        device_metadata = requests.post(
-            url=self.device_auth_end_point,
-            data={'client_id': self.__client_id},
-            verify=True)
-
-        # Check the status. If response is not 200, raise error.
-        _Validators._validate_http_response(device_metadata, 200, "get the device metadata")
-
-        return device_metadata.json()
-
-    def __get_access_token_data(self, device_metadata):
-        self.verification_uri=device_metadata['verification_uri_complete']
-        
-        # Poll the token endpoint at the specified interval for an access token.
-        token_data = {
-            'client_id': self.__client_id,
-            'grant_type': 'urn:ietf:params:oauth:grant-type:device_code',
-            'device_code': device_metadata['device_code'],
+        header = {
+            "alg": "RS256",
+            "kid": kid,
+            "typ": "JWT"
         }
-        # Get the maximum time for polling the token endpoint.
-        max_wait = time() + device_metadata['expires_in']
-        
-        poll_data=[max_wait,self.__token_endpoint,
-               token_data,
-               device_metadata['interval']
-                ]
-        
-        return poll_data
-        
+        return header
+
+    def _generate_payload(self):
+        """
+        DESCRIPTION:
+            Generate JWT payload.
+
+        RETURNS:
+            A dictionary with the JWT payload.
+        """
+        iat, exp= self._get_epoch_time()
+        payload = {
+            "aud": [
+                "td:service:authentication"
+            ],
+            "iat": iat,
+            "exp": exp,
+            "iss": "dataiku",
+            "multi-use": True,
+            "org_id": self.state['org_id'],
+            "pat": self.state['token'],
+            "sub": self.state['username']
+        }
+        return payload
+
+    def _sign_jwt(self, payload, header):
+        """
+        DESCRIPTION:
+            Sign JWT using private key.
+
+        PARAMETERS:
+            payload:
+                Required Argument.
+                Specifies a dictionary with the JWT payload.
+                Types: dict
+
+        RETURNS:
+            str
+
+        """
+        #with open(self.state["pem_file"], "r") as f:
+        #private_key = f.read()
+        return jwt.encode(payload=payload, key=self.state["pem_file"], algorithm="RS256", headers=header)
+
+    def _proxy_jwt(self):
+        """
+        DESCRIPTION:
+            Generate JWT token and update the state.
+
+        PARAMETERS:
+            state:
+                Required Argument.
+                Specifies a dictionary containing the state information.
+                Types: dict
+
+        RETURNS:
+            str
+
+        """
+        jwt = self._sign_jwt(self._generate_payload(), self._generate_header())
+        self.state["jwt"] = jwt
+        return(jwt)
