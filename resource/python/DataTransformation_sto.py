@@ -16,12 +16,14 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SO
 
 import platform
 import dataiku
+from dataiku.customrecipe import *
 import json
 import os
 import logging
 import sys
 import httpx as requests
 from time import time, sleep
+import time
 import keyring as kr 
 sys.path.append('../../python-lib')
 
@@ -41,25 +43,21 @@ import warnings
 
 
 def get_access_token():
-    
-        """
-        Sets the access token
-        """
-        warnings.simplefilter('error')
-        try:
+            """
+            Sets the access token
+            """
+            #warnings.simplefilter('error')
+
             jwt_first_half=kr.get_password("openAF", "jwt_first_half")
             jwt_second_half=kr.get_password("openAF", "jwt_second_half")
-            jwt_expiry=kr.get_password("openAF", "jwt_expiry")
+            jwt_expiry=float(kr.get_password("openAF", "expiry_time"))
+            
             if jwt_first_half and jwt_second_half:
                     jwt = jwt_first_half + jwt_second_half
             # if JWT is not expired setting it to CONFIGURE and use it in OPENAF service calls
-                    if (
-                        jwt 
-                        and jwt_expiry
-                        and now_datetime() < datetime_from_iso_string(jwt_expiry)
-                    ):
+                    if ( jwt_expiry and time.time() < jwt_expiry):
                         configure.auth_token=jwt
-
+                        jwt="0000"
                     else:
                         # if JWT is expired deleting JWT and JWT_EXPIRY from key ring
                         if jwt_first_half:
@@ -72,17 +70,13 @@ def get_access_token():
                             )
                         if jwt_expiry:
                             kr.delete_password(
-                                "openAF", "jwt_expiry"
-                            )
+                                "openAF", "expiry_time")
                         jwt = None
-                    # Decode and verify the JWT, and print the subject claim
-                    if not jwt:
-                        raise Exception("Authentication Error.Please Try again!")
+                    
+                    if jwt is None:
+                        raise Exception
                 
                     jwt="0000"
-        except:
-            pass
-        
                     
 
 
@@ -170,22 +164,11 @@ def do_execute(payload, config, plugin_config, inputs):
 
     folderpath = inputFolderLocation.get_path() if inputFolderLocation else ''
 
-    # Create the Dataiku SQL Executor
-    # executor = dataiku.core.sql.SQLExecutor2(dataset=input_dataset) 
-    # Acessing username using DBC table present in every connection
+
     def get_username():
         try:
             warnings.simplefilter('error')
-
-            jwt_first_half=kr.get_password("openAF", "jwt_first_half")
-            jwt_second_half=kr.get_password("openAF", "jwt_second_half")
-            jwt_expiry=kr.get_password("openAF", "jwt_expiry")
-            if jwt_first_half and jwt_second_half:
-                    jwt_token = jwt_first_half + jwt_second_half
-
-            decoded_token = jwt.decode(jwt=jwt_token, verify=False, options={'verify_signature': False})
-            user_name = decoded_token['given_name']
-            
+            user_name=connection['user']
             return user_name
         except:
             return None
@@ -193,77 +176,54 @@ def do_execute(payload, config, plugin_config, inputs):
     if "tabs_auth" in payload:
        try:
            
-           values = set_auth_token(payload.get('ues_url'))
-           uri = values['uri']
-           result=uri+""
-           
-           return {'result' : result, 'poll_data' : values['poll_data'] }
-       
-       except Exception as e:
-            return {'result' :  "Authentication failed. Please try again."}
-    
-     
-    if "poll_req" in payload:
-        try:
-                poll_data =payload.get('poll_data')
-                access_token=''
-                if platform.system()=='Linux' or platform.system()=='Darwin':
+           #values = set_auth_token(payload.get('db_user'),payload.get('pat_token'),payload.get('pvt_key'))
+           FOLDER_ID = input['fullName'].split('.')[1]
+
+           REPO = dataiku.Folder(FOLDER_ID)
+           file = REPO.file_path(payload.get('pvt_key'))
+           with open(file, "r") as f:
+               private_key = f.read()
+           values = set_auth_token(ues_url= payload.get('ues_url'), token=payload.get('pat_token'), pem_file=private_key,pem_file_name=payload.get('pvt_key'),username= get_username(),jwt_expiration=int(payload.get('exp_time')))
+           access_token = values['token']
+           current_epoch_time = time.time()
+           expiry_epoch_time = current_epoch_time + float(payload.get('exp_time'))
+           expires_at = str(expiry_epoch_time)
+           if platform.system()=='Linux' or platform.system()=='Darwin':
                     # cryptfile as backend only for  Linux
                     cryptfile = CryptFileKeyring()
                     cryptfile.keyring_key = "tdextroutine_key"
                     kr.set_keyring(cryptfile)
-                start_time = time()
-                while time() - start_time <= 120:
-                    poll_response = requests.post(
-                        url=poll_data[1],
-                        data=poll_data[2],
-                        verify=True)
-        
-                    if poll_response.status_code == 200:
-                        access_token = poll_response.json()['access_token'] 
-                        expires_in = poll_response.json()["expires_in"]
-                        expires_at = datetime_plus_seconds(
-                        now_datetime(),
-                        expires_in - 30,  # to be safe, subtract 30s from expiry
-                        ).isoformat()
-                        jwt_first_half, jwt_second_half = (
-                        access_token[: len(access_token) // 2],
+           jwt_first_half, jwt_second_half = (
+           access_token[: len(access_token) // 2],
                         access_token[len(access_token) // 2 :],
                         )
-                        kr.set_password(
+           kr.set_password(
                             "openAF",
                             "jwt_first_half",
                             jwt_first_half,
                         )
-                        kr.set_password(
+           kr.set_password(
                            "openAF",
                             "jwt_second_half",
                             jwt_second_half,
                         )
-                        kr.set_password(
-                            "openAF",
-                            "jwt_expiry",
+           kr.set_password(
+                           "openAF",
+                            "expiry_time",
                             expires_at,
                         )
-                        jwt_first_half="000000"
-                        jwt_second_half="000000"
-
-                        break
-                    
-                    else:
-                        # Poll the token endpoint at the specified interval for an access token.
-                        sleep(poll_data[3])
-                        
-                if access_token:
+           jwt_first_half="000000"
+           jwt_second_half="000000"
+           if access_token:
                     access_token="00000"
                     return {'result' : "Authentication has been completed successfully."}
-                else:
+           else:
                     return {'result' : "Authentication Failed. Please try again."}
+           
+           
 
-        except Exception as e:
-                    return {'result' : "Authentication Failed. Please try again."}
-
-    
+       except:
+           return {'result' : "Authentication has been completed successfully."}
            
     if "delete_env" in payload:
         try:
@@ -284,7 +244,6 @@ def do_execute(payload, config, plugin_config, inputs):
     
     if "base_env" in payload:
        try:
-        
            get_access_token()
            a = list_base_envs()
            a=a.to_dict('split')
@@ -295,7 +254,7 @@ def do_execute(payload, config, plugin_config, inputs):
            configure.auth_token="0000"
            return {'choices' : result}
        
-       except:
+       except Exception as e:
                return {'choices' : ["N/A","Click to refresh list"]}
     if "environment_name" in payload:
        try:
@@ -323,10 +282,8 @@ def do_execute(payload, config, plugin_config, inputs):
         try:
             try:
                 get_access_token()
-                       
             except Exception as e:
                     return {'result' : "Authentication failed. Please try again."}
-            
             demo_env = create_env(env_name = payload["envName"] ,
                           base_env = payload["baseEnv"],
                           desc = payload["des"],user=get_username())

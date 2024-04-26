@@ -17,7 +17,7 @@ from teradataml.options import configure
 from teradataml.common.exceptions import TeradataMlException
 from teradataml.common.messages import Messages
 from teradataml.common.messagecodes import MessageCodes
-from teradataml.clients.pkce_client import _PKCEClient, _DAWorkflow
+from teradataml.clients.pkce_client import _AuthWorkflow
 from teradataml.scriptmgmt.UserEnv import UserEnv, _get_auth_token, _process_ues_response, _get_ues_url
 from teradataml.utils.validators import _Validators
 from time import time, sleep
@@ -699,30 +699,116 @@ def get_user_env():
 
 
 
+def set_auth_token(ues_url, token, pem_file,pem_file_name, org_id=None, **kwargs):
+    """
+    DESCRIPTION:
+        Function to set the Authentication token to connect to User Environment Service
+        in VantageCloud Lake.
+        Note:
+            User must have a privilege to login with a NULL password to use set_auth_token().
+            Please refer to GRANT LOGON section in Teradata Documentation for more details.
 
-def set_auth_token(ues_url, client_id=None):
+
+    PARAMETERS:
+        ues_url:
+            Required Argument.
+            Specifies the URL for User Environment Service in VantageCloud Lake.
+            Types: str
+
+        token:
+            Required Argument.
+            Specifies the PAT token generated from ccp.
+            Types: str
+
+        pem_file:
+            Required Argument.
+            Specifies the path to Private Key file.
+            Types: str
+
+        org_id:
+            Required Argument.
+            Specifies the organization id.
+            Default Value: None
+            Types: str
+
+        **kwargs:
+            username:
+            Specifies the user for which authentication is to be requested.
+            Types: str
+
+    RETURNS:
+        True, if the operation is successful.
+
+    RAISES:
+        TeradataMlException, RuntimeError.
+
+    EXAMPLES:
+
+        # Example 1: Set the Authentication token for database username associated with the current context.
+        >>> import getpass
+        >>> set_auth_token(ues_url=getpass.getpass("ues_url : "),
+        token=getpass.getpass("token : "),
+        pem_file=getpass.getpass("pem_file : "),
+
+        # Example 1: Set the Authentication token for user "alice".
+        >>> import getpass
+        >>> set_auth_token(ues_url=getpass.getpass("ues_url : "),
+        token=getpass.getpass("token : "),
+        pem_file=getpass.getpass("pem_file : "),
+        username = "alice")
+
+    """
     __arg_info_matrix = []
     __arg_info_matrix.append(["ues_url", ues_url, False, (str), True])
-    __arg_info_matrix.append(["client_id", client_id, True, (str), True])
+    __arg_info_matrix.append(["org_id", org_id, True, (str), True])
+    __arg_info_matrix.append(["token", token, True, (str), True])
+    __arg_info_matrix.append(["pem_file", pem_file, True, (str), True])
+    __arg_info_matrix.append(["pem_file_name", pem_file_name, True, (str), True])
 
-    # Validate arguments
+    
+    username = kwargs.get("username")
+    jwt_expiration = kwargs.get("jwt_expiration")
+
+    # If username is specified then the database username associated with the current context will be considered.
+    if username is None:
+        username = _get_user().lower()
+
+    # Validate arguments.
     _Validators._validate_function_arguments(__arg_info_matrix)
+
+    # Check if pem file exists.
+    #_Validators._validate_file_exists(pem_file)
 
     # Extract the base URL from "ues_url".
     url_parser = urlparse(ues_url)
     base_url = "{}://{}".format(url_parser.scheme, url_parser.netloc)
 
-    if client_id is None:
+    if org_id is None:
         netloc = url_parser.netloc
-        client_id = "{}-oaf-device".format(netloc.split('.')[0])
+        org_id = netloc.split('.')[0]
 
-    da_wf = _DAWorkflow(base_url, client_id)
-    poll_data = da_wf._get_token_data()
-    # Set Open AF configuration parameters.
-    configure._oauth_client_id = client_id
+    # Construct a dictionary to be passed to _AuthWorkflow().
+    state_dict = {}
+    state_dict["base_url"] = base_url
+    state_dict["org_id"] = org_id
+    state_dict["username"] = username
+    state_dict["token"] = token
+    state_dict["pem_file"] = pem_file
+    state_dict["pem_file_name"] = pem_file_name
+    state_dict["jwt_expiration"] = jwt_expiration
+
+
+    
+
+    configure._state_dict = state_dict
+
+    auth_wf = _AuthWorkflow(state_dict)
+    token_data = auth_wf._proxy_jwt()
+
+    #print("token: {}".format(token_data))
+
+    #values={'uri':'hello', 'poll_data': token_data}
+    values={'token':token_data}
+    # Set Open AF parameters.
     configure.ues_url = ues_url
-    configure._oauth_end_point = da_wf.device_auth_end_point
-    # = token_data["access_token"]
-    #configure._auth_token_expiry_time = time() + token_data["expires_in"] - 15
-    values={'uri':da_wf.verification_uri, 'poll_data': poll_data}
     return values

@@ -1193,42 +1193,32 @@
       
           $scope.callPythonDo({
           'tabs_auth':true,
-          'ues_url': $scope.config.ues_url }).then(
+          'ues_url': $scope.config.ues_url, 
+          'pat_token': $scope.config.pat_token,
+          'pvt_key': $scope.config.pvt_key,
+          'exp_time':  $scope.config.exp_time
+          }).then(
            data =>{
-            window.open(data.result)
-            $scope.callPythonDo({
-              'poll_req':true,
-              'poll_data': data.poll_data,
-              }).then(
-              data => {
-                  var message;
-                  if (data.result)
-                  message = "Authentication done"
-                  else
-                  message = "error"
-                  $('<div></div>').dialog({
-                  modal: true,
-                  width: 700,
-                  title: "Authentication Update",
-                  open: function() {
-                  $(this).html(data.result);
-                  },
-                  buttons: {
-                  OK: function() {
-                  $( this ).dialog( "close" );
-                  }
-                  }
-                  });
-                  },
-                  () => { }
-                  ).then(
-                  () => {
-                  // Do nothing
-                  },
-                  () => {}
-                  );
-        
-        },
+            var message;
+                 if (data.result)
+                 message = "authentication done"
+                 else
+                 message = "error"
+                 $('<div></div>').dialog({
+                 modal: true,
+                 width: 700,
+                 title: "Authentication Update",
+                 open: function() {
+                 $(this).html(data.result);
+                 },
+                 buttons: {
+                 OK: function() {
+                 $( this ).dialog( "close" );
+                 }
+                 }
+                 });
+                 },
+                 () => { }
      
               ).then(
               () => {
