@@ -83,7 +83,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SO
          <label for="pat_token">
           Personal Access Token:
           </label>
-          <input required type="text" id="pat-token" ng-model="config.pat_token"  data-placement="right" data-html="true" data-toggle="tooltip" title="Enter the PAT token generated through the CCP UI">
+          <input required type="text" id="pat-token"  ng-required="config.ues_url" ng-model="config.pat_token"  data-placement="right" data-html="true" data-toggle="tooltip" title="Enter the PAT token generated through the CCP UI">
           <br><br>
           <label for="pvt_key">
           Private Key:
@@ -97,11 +97,11 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SO
           <label for="exp_time">
            Expiration Time (sec):
            </label>
-           <input required type="text" id="exp_time" ng-model="config.exp_time" ng-init="config.exp_time = '3600'" data-placement="right" data-html="true" data-toggle="tooltip" title="Enter the expiration time in seconds.By default, you will need to re-authenticate after 1 hour.">
+           <input required type="text" ng-required ="config.pat_token" id="exp_time" ng-model="config.exp_time" ng-init="config.exp_time = '3600'" data-placement="right" data-html="true" data-toggle="tooltip" title="Enter the expiration time in seconds.By default, you will need to re-authenticate after 1 hour.">
            
         <br>
         <br>
-        <button data-placement="right" data-html="true" data-toggle="tooltip" ng-click="userAuthentication()" title="Click here to authenticate the user">Authenticate</button>
+        <button data-placement="right" data-html="true" data-toggle="tooltip" ng-disabled="!config.exp_time || !config.pvt_key || !config.ues_url || !config.pat_token" ng-click="userAuthentication()" title="Click here to authenticate the user">Authenticate</button>
           </form>
 
          </div>
