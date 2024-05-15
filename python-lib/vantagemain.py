@@ -195,7 +195,6 @@ def vantageDo():
 
     # Add Query Band
     query_band = "SET QUERY_BAND='appname=dataiku;version=3.1;" + "function=" +  verifyAttribute(recipe_config.get('function', {}).get('name',''))  + ";' FOR SESSION;"
-    print("sks", query_band)
     
     # VALIB     
     dss_function = recipe_config.get('function', None)
