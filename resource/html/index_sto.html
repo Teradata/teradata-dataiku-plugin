@@ -165,7 +165,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SO
          <label for="environment_name">
          Environment Name:
          </label>
- 		<select ng-model="config.environment_name" id="environment_name" dku-bs-select="{liveSearch:true}" ng-options="v for v in names" data-placement="right" data-html="true" data-toggle="tooltip" title="Choose an environment from the existing environments">
+ 		<select required ng-model="config.environment_name" id="environment_name" dku-bs-select="{liveSearch:true}" ng-options="v for v in names" data-placement="right" data-html="true" data-toggle="tooltip" title="Choose an environment from the existing environments">
          <option  value="" disabled selected></option>
          </select>
          <button ng-click="viewEnv()" data-placement="right" data-html="true" data-toggle="tooltip" title="Click here to view the details(name,description,base environment,installed libraries & files) of the selected environment"> View Details</button>
