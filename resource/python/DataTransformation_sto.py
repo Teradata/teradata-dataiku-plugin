@@ -46,37 +46,39 @@ def get_access_token():
             """
             Sets the access token
             """
-            #warnings.simplefilter('error')
-
-            jwt_first_half=kr.get_password("openAF", "jwt_first_half")
-            jwt_second_half=kr.get_password("openAF", "jwt_second_half")
-            jwt_expiry=float(kr.get_password("openAF", "expiry_time"))
-            
-            if jwt_first_half and jwt_second_half:
-                    jwt = jwt_first_half + jwt_second_half
-            # if JWT is not expired setting it to CONFIGURE and use it in OPENAF service calls
-                    if ( jwt_expiry and time.time() < jwt_expiry):
-                        configure.auth_token=jwt
-                        jwt="0000"
-                    else:
-                        # if JWT is expired deleting JWT and JWT_EXPIRY from key ring
-                        if jwt_first_half:
-                            kr.delete_password(
-                                "openAF", "jwt_first_half"
-                            )
-                        if jwt_second_half:
-                            kr.delete_password(
-                                "openAF", "jwt_second_half"
-                            )
-                        if jwt_expiry:
-                            kr.delete_password(
-                                "openAF", "expiry_time")
-                        jwt = None
-                    
-                    if jwt is None:
-                        raise Exception
+            warnings.simplefilter('error')
+            try: 
+                jwt_first_half=kr.get_password("openAF", "jwt_first_half")
+                jwt_second_half=kr.get_password("openAF", "jwt_second_half")
+                jwt_expiry=float(kr.get_password("openAF", "expiry_time"))
                 
-                    jwt="0000"
+                if jwt_first_half and jwt_second_half:
+                        jwt = jwt_first_half + jwt_second_half
+                # if JWT is not expired setting it to CONFIGURE and use it in OPENAF service calls
+                        if ( jwt_expiry and time.time() < jwt_expiry):
+                            configure.auth_token=jwt
+                            jwt="0000"
+                        else:
+                            # if JWT is expired deleting JWT and JWT_EXPIRY from key ring
+                            if jwt_first_half:
+                                kr.delete_password(
+                                    "openAF", "jwt_first_half"
+                                )
+                            if jwt_second_half:
+                                kr.delete_password(
+                                    "openAF", "jwt_second_half"
+                                )
+                            if jwt_expiry:
+                                kr.delete_password(
+                                    "openAF", "expiry_time")
+                            jwt = None
+                        
+                        if jwt is None:
+                            raise Exception
+                    
+                        jwt="0000"
+            except:
+                pass
                     
 
 
@@ -184,6 +186,7 @@ def do_execute(payload, config, plugin_config, inputs):
            with open(file, "r") as f:
                private_key = f.read()
            values = set_auth_token(ues_url= payload.get('ues_url'), token=payload.get('pat_token'), pem_file=private_key,pem_file_name=payload.get('pvt_key'),username= get_username(),jwt_expiration=int(payload.get('exp_time')))
+           
            access_token = values['token']
            current_epoch_time = time.time()
            expiry_epoch_time = current_epoch_time + float(payload.get('exp_time'))
@@ -216,6 +219,9 @@ def do_execute(payload, config, plugin_config, inputs):
            jwt_second_half="000000"
            if access_token:
                     access_token="00000"
+                    # Calling api to check if authentication was succesfull 
+                    get_access_token()
+                    a = list_base_envs()
                     return {'result' : "Authentication has been completed successfully."}
            else:
                     return {'result' : "Authentication Failed. Please try again."}
@@ -223,7 +229,7 @@ def do_execute(payload, config, plugin_config, inputs):
            
 
        except:
-           return {'result' : "Authentication has been completed successfully."}
+           return {'result' : "Authentication Failed. Please try again."}
            
     if "delete_env" in payload:
         try:
@@ -507,7 +513,7 @@ def do_execute(payload, config, plugin_config, inputs):
                        
                 except Exception as e:
                     return {'result' : "Authentication failed. Please try again."}                
-                env=get_env(env_name=payload["envName"],user=get_username())
+                env=get_env(env_name=payload.get('envName'),user=get_username())
                 env.refresh()
                 result="User environment: " + payload.get('envName') + " has been refreshed"
                 configure.auth_token="0000"

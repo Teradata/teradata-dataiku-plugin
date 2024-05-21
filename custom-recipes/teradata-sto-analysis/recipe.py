@@ -171,7 +171,7 @@ def sto_database():
 
 
 def getConnectionDetails(dataset=input_A_datasets[0]):
-    return getConnectionParamsFromDataset(input_A_datasets[0]);
+    return getConnectionParamsFromDataset(input_A_datasets[0])
 
 
 # Connection properties.
