@@ -640,13 +640,11 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SO
               <tr ng-if="config.function.partitionOrHash!=''">
                     <td> Nulls Listing
                      <td>
-                      <div ng-repeat="arg in config.function.partitionorderbycolumns track by $index ">
                        
                       <select ng-model="config.function.nulls" data-html="true" data-toggle="tooltip" data-placement="right" title="[Optional] On selecting FIRST, the null values will be listed first and on selecting LAST, all the null values will be added at the end.By default,the option is N/A and nulls listing will be ignored.">
                       <option value=" ">N/A</option>
                       <option value=" NULLS FIRST">FIRST</option>
                       <option value= " NULLS LAST">LAST</option>
-                     </div>
                       </td>
                      </td>
               </tr>

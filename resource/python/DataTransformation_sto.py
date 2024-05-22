@@ -272,7 +272,7 @@ def do_execute(payload, config, plugin_config, inputs):
            for l in a['data']:
             env_version=platform.python_version()
             if float(env_version[:3]) <= 3.7:
-               result.append(l[3])
+               result.append(l[0])
             else:
                 result.append(l[0])
            result.append("Click to refresh list")
@@ -593,7 +593,7 @@ def do_execute(payload, config, plugin_config, inputs):
                     for l in a:
                         env_version=platform.python_version()
                         if float(env_version[:3]) <= 3.7:
-                            File.append(l[2])
+                            File.append(l[0])
                         else:
                             File.append(l[0])
                     File_str=" , "

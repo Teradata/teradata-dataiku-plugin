@@ -151,7 +151,7 @@
       // RETURNS_NAME: 'Specifies the name of the column(s) to be returned by the STO',
       RETURNS_NAME: 'Specify a name for each output argument returned by your script.',
       // RETURNS_TYPE: 'Specifies the data type of the column(s) to be returned by the STO',
-      RETURNS_TYPE:'Check the box to include this variable in the Dataiku output dataset.',
+      RETURNS_TYPE:'Specify the data type of the column(s) to be returned',
       // SELECT_CUSTOM: 'Determines whether the SELECT (output) columns (data to be returned by the query) should be modified. Default is to SELECT all column(s) in the RETURNS clause',
       SELECT_CUSTOM: 'The default SELECT clause used by the plugin selects all output arguments of your script. Use this option determines whether to modify the default SELECT behavior.',
       // SELECT_COLUMNS: 'Specifies the contents of a user customized SELECT statement (data to be returned by the query)',
