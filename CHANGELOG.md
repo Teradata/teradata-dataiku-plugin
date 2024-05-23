@@ -1,10 +1,16 @@
 # Teradata Plugin Changelog
 
+# Versions 3.2.11, 3.2.12 (eFix - May 2024)
+
+* Bug fix: In-Vantage Scripting (VantageCLoud Lake): Dropdown menus are no longer affected by the user choice of Python interpreter version for the environment the plugin operates in.
+* Bug fix: In-Vantage Scripting (VantageCLoud Lake): On the APPLY Arguments screen, variable type field tooltip in the Output Variables section now displays correctly.
+* Bug fix: In-Vantage Scripting (VantageCLoud Lake): On the APPLY Arguments screen, the Nulls Listing field now correctly appears once regardless the number of partitioning columns.
+
 # Versions 3.1.11, 3.1.12 (eFix - April 2024)
 
-* Bug fix: In-Vantage Scripting: Now correctly populates the dropdowns in 'User Environment' tab.
+* Bug fix: In-Vantage Scripting (VantageCLoud Lake): Now correctly populates the dropdowns in 'User Environment' tab.
 * Bug fix: Analytic functions recipe: The TD_RESAMPLE function fields reflect correctly the latest changes in the function definition. 
-* The OAF authentication method has been upgraded to utilize PAT authentication. To authenticate, users now require a UES URL, a private key PEM file, and a PAT token.
+* In-Vantage Scripting (VantageCLoud Lake): The OAF authentication method has been upgraded to utilize PAT authentication. To authenticate, users now require a UES URL, a private key PEM file, and a PAT token.
 * Support for monitoring telemetry data to enhance tracking capabilities.
 * Analytic Functions now allow 'Order By' functionality for Dimension type.
 * The Analytic Functions recipe UI now includes a note in the Decription field. For select functions, the note highlights a best-practice reminder about specifying the schema or database name for the input table.
