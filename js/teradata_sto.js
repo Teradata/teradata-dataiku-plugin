@@ -1593,6 +1593,7 @@
       initialize: function () {
         console.log('Start initialize()')
         $scope.config.function = $scope.config.function || {};
+        $scope.config.function.script_location = $scope.config.function.script_location || "";
         $scope.config.function.files = $scope.config.function.files || [];
         $scope.config.function.arguments = $scope.config.function.arguments || [{'value':''}];
         $scope.config.function.return_clause = $scope.config.function.return_clause || [{'name':'','type':'', 'output' : false}];

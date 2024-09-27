@@ -270,11 +270,7 @@ def do_execute(payload, config, plugin_config, inputs):
            a=a.to_dict('split')
            result =[]
            for l in a['data']:
-            env_version=platform.python_version()
-            if float(env_version[:3]) <= 3.7:
-               result.append(l[0])
-            else:
-                result.append(l[0])
+            result.append(l[0])
            result.append("Click to refresh list")
            configure.auth_token="0000"
 
@@ -315,12 +311,8 @@ def do_execute(payload, config, plugin_config, inputs):
            result =[]
            
            for l in a:
-               
-            env_version=platform.python_version()
-            if float(env_version[:3]) <= 3.7:
-               result.append(l[2])
-            else:
-                result.append(l[0])
+            result.append(l[0])
+
            result.append("Click to refresh list")
            
            configure.auth_token="0000"
@@ -591,11 +583,8 @@ def do_execute(payload, config, plugin_config, inputs):
                     a=a.values.tolist() 
 
                     for l in a:
-                        env_version=platform.python_version()
-                        if float(env_version[:3]) <= 3.7:
-                            File.append(l[0])
-                        else:
-                            File.append(l[0])
+                        File.append(l[0])
+
                     File_str=" , "
                     File_str=File_str.join(File)
                 except:

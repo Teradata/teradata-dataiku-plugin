@@ -65,14 +65,19 @@ if sourcetype == 'folder':
 connection_name = str(get_recipe_config()["connection_name"][0])
 dss_connection_prams = client.get_connection(name=connection_name).get_info().get_params()
 
-user_param = str(dss_connection_prams['user'])
+connection_info = client.get_connection(name=connection_name).get_info()
+# reverted back to previous way of accessing user and password param
+# fixes accessing connection credentials for “per-user” credentials mode 
+user_param = str(connection_info.get_basic_credential()['user'])
+#user_param = str(dss_connection_prams['user'])
 logging.info(user_param)
     
 host_param = str(dss_connection_prams['host'])
 logging.info(host_param)
     
-password_param = str(dss_connection_prams['password'])
- 
+#password_param = str(dss_connection_prams['password'])
+password_param = str(connection_info.get_basic_credential()['password']) 
+
 database_param_by_user = str(get_recipe_config()["database_existing"])
 if database_param_by_user == "":
    database_param = str(dss_connection_prams['defaultDatabase'])
@@ -131,15 +136,18 @@ if valid_connection == 1:
         create_table = f"CREATE SET TABLE {verifyDatabaseName(database_param)}.{verifyTableName(table_name_param)} (model_id VARCHAR (30), model BLOB ) PRIMARY INDEX (model_id);"
         delete_table_if_exists = f"DROP TABLE {verifyDatabaseName(database_param)}.{verifyTableName(table_name_param)};"
         try:
-            eng.execute(create_table);
+            with eng.connect() as conn:
+                conn.execute(create_table)
         except:
-            eng.execute(delete_table_if_exists);
-            eng.execute(create_table);
+            with eng.connect() as conn:
+                conn.execute(delete_table_if_exists)
+                conn.execute(create_table)
 
         delete_record_if_exists = f"delete from {verifyDatabaseName(database_param)}.{verifyTableName(table_name_param)} where model_id = {verifyModelName(modelname_param)};"
     else:
         delete_record_if_exists = f"delete from {verifyDatabaseName(database_param)}.{verifyTableName(table_name_param)} where model_id = {verifyModelName(modelname_param[0:30])};"
-        eng.execute(delete_record_if_exists)
+        with eng.connect() as conn:
+                conn.execute(delete_record_if_exists)
 
 
 
@@ -157,7 +165,8 @@ elif modeltype_param=='onnx' or modeltype_param=='h2o':
     file = str(get_recipe_config()["files"])
     with folder.get_download_stream(file) as stream:
             model_data = stream.read()
-eng.execute(insert_model, modelname_param, model_data)
+with eng.connect() as conn:
+    conn.execute(insert_model, modelname_param, model_data)
 
 
 output_dataset_name = get_output_names_for_role('output_dataset')[0]

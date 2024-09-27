@@ -36,10 +36,9 @@ from auth import *
 from pynbExtractor import *
 from re import search
 from shutil import copyfile
-
+import pwd,os
 #import nbformat
 #from nbconvert import PythonExporter
-
 
 #def convertNotebook(notebookPath, modulePath):
 #    with open(notebookPath) as fh:
@@ -75,8 +74,6 @@ input_B_datasets = [dataiku.Dataset(name) for name in input_B_names]
 # For outputs, the process is the same:
 output_A_names = get_output_names_for_role('main')
 output_A_datasets = [dataiku.Dataset(name) for name in output_A_names]
-
-
 
 
 # The configuration consists of the parameters set up by the user in the recipe Settings tab.
@@ -145,10 +142,8 @@ def executor_query2(executor, query_string, pre_queries):
     logging.info('Query : ', query_string)
     return executor.query_to_df(query_string, pre_queries)
 
-
 #DataIku Managed Folder Handler (Specifically language_scripts as of now)
 handle = dataiku.Folder(script_role) if input_B_names else None
-
 
 logging.info('Getting STO Database')
 def sto_database():
@@ -168,21 +163,25 @@ def sto_database():
         raise Exception('Error: Missing database search path for SCRIPT. To use this recipe, specify first a database name for the STO_DATABASE custom property in your connection settings. ')
     return result
 
-
-
 def getConnectionDetails(dataset=input_A_datasets[0]):
     return getConnectionParamsFromDataset(input_A_datasets[0])
 
 
 # Connection properties.
 try:
+    logging.info('Getting Connection Properties')
     properties = getConnectionDetails(input_A_datasets[0]).get('properties')
     autocommit = getConnectionDetails(input_A_datasets[0]).get('autocommitMode')
 except:
+    # If the user is not an admin, the connection properties will not be accessible
+    # In this case, we will attempt to get the connection properties from the input dataset
+    logging.info('Unable to get connection properties')
+    logging.info('Attempting to get connection properties from input dataset')
     connections = {}
     inputConnectionName = input_A_datasets[0].get_location_info()['info']['connectionName']
     connections = auth.addConnection(connections, inputConnectionName)
-
+    properties = connections[inputConnectionName]['params']['properties']
+    autocommit = connections[inputConnectionName]['params']['autocommitMode']
 
 tmode = ''
 
@@ -209,8 +208,6 @@ if not is_vantage_cloud:
     defaultDB = sto_database()
     searchPath = sto_database()
 
-
-
 #if sto_database(input_A_datasets[0]) != sto_database():
 #    raise RuntimeError('Input dataset and output dataset have different connection details')
 
@@ -228,24 +225,12 @@ if is_vantage_cloud:
     delimiter = function_config.get('delimiter', '')
     nullsClause = function_config.get('nulls', '')
     quotechar = function_config.get('quotechar', '')
-    
-
 
 performFileLoad = True
 
 cleanupFiles = []
-#Script Location for main script
-if(scriptLocation == 'sz'):
-    scriptFileLocation = function_config.get('script_filelocation')
-elif 'czp' == scriptLocation:
-    if '..' in scriptLocation:
-        raise Exception("Illegal Path", scriptLocation)
-    scriptFileLocation = pynbDestinationPath(scriptFileName)
-    writePythonNotebookToResourceFolder(output_A_names[0].split('.')[0], scriptFileName)
-    scriptFileName = scriptFileName.replace("'", "")
-    scriptFileName = scriptFileName.replace(" ", "")
-# notebook conversion will be available in a future release
-elif 'cz' == scriptLocation:
+
+if 'cz' == scriptLocation:
     scriptFileLocation = handle.file_path(scriptFileName)
     # We do not support python notebooks in this release
     #    if scriptFileLocation.endswith(".ipynb"):
@@ -259,7 +244,6 @@ elif 'cz' == scriptLocation:
     #        cleanupFiles.append(scriptFileLocation)
 else:
     performFileLoad = False
-    
 
 
 scriptLocation = scriptLocation[:2]
@@ -270,9 +254,6 @@ returnClause = ', '.join((x.get('name', '') + ' ' + x.get('type', ''))
 scriptArguments = ', '.join(x.get('value', '')
                             for x in function_config.get('arguments', []))
 additionalFiles = function_config.get('files')
-
-
-
 
 def getHashClause(hasharg):
     return hasharg and ('\n             HASH BY {hasharg}'.format(hasharg=hasharg))
@@ -391,12 +372,26 @@ def verifyOnClause(inputs):
 
 def verifyInputTable(inputTable):
     inputTable = verifyTableName(inputTable)
-    inputSchema = input_A_datasets[0].get_config()['params']['schema']
+    
+    # if schema is selected, then use that to join with table name
+    try:
+        inputSchema = input_A_datasets[0].get_config()['params']['schema']
+    except:
+        inputSchema = ''
+
     if inputSchema != "":
         inputTable = inputSchema + "." + inputTable
     else:
-        # now check if there is a default database
-        defaultDatabase =  getConnectionParamsFromDataset(input_A_datasets[0]).get('defaultDatabase', "");
+        # if no schema, then now check if there is a default database
+        # the try except block is to handle the non-admin users
+        try:
+            defaultDatabase =  getConnectionParamsFromDataset(input_A_datasets[0]).get('defaultDatabase', "")
+        except:
+            connections = {}
+            inputConnectionName = input_A_datasets[0].get_location_info()['info']['connectionName']
+            connections = auth.addConnection(connections, inputConnectionName)
+            defaultDatabase = connections[inputConnectionName]['params']['defaultDatabase']
+        
         if defaultDatabase != "":
             inputTable = defaultDatabase + "." + inputTable
     return inputTable
@@ -432,7 +427,6 @@ def verifyScriptCommand():
     elif commandType == 'r':
         script_command = """'R --vanilla ./"""+searchPath+"""/"""+scriptFileName+""" """+scriptArguments+"""'"""
     return script_command
-
 
 def verifyApplyCommand():
              apply_command = ''
@@ -487,26 +481,43 @@ if not is_vantage_cloud:
     logging.info("""Set Session Query: """ + setSessionQuery)
     etQuery = 'COMMIT WORK;'
     
+    #Acessing user's home directory ( home/<username>)
+    dkuinstalldir = os.environ['DKUINSTALLDIR']
+
+    try:
+        newPath = dkuinstalldir + """/dist/"""+scriptFileName
+        logging.info(newPath)
+        if(performFileLoad):
+            copyfile(escape(scriptFileLocation.rstrip()), newPath)
+    except Exception as e:
+        logging.info("Access to Java classpath denied.")
+        logging.info(e, "Attempting to create temporary directory.")
+        # in this case the system is a UIF-enabled system
+        dkuinstalldir = pwd.getpwuid(os.getuid()).pw_dir
+
+        # Create a new directory "teradata-plugin-tmp" under dkuinstalldir(home/<username>) if it doesn't exist
+        tmp_dir = os.path.join(dkuinstalldir, 'teradata-plugin-tmp')
+        os.makedirs(tmp_dir, mode=0o711,exist_ok=True)
+        # Update newPath to point to the "teradata-plugin-tmp" directory
+        newPath = os.path.join(tmp_dir, scriptFileName)
+        logging.info(newPath)
+        #COPY FILE TEST
+        if(performFileLoad):
+            copyfile(escape(scriptFileLocation.rstrip()), newPath)
+    
+    
 
     #File Related:
-    removeFileQuery = "CALL SYSUIF.REMOVE_FILE({},1);".format(verifyLocation(scriptAlias))
-    logging.info('Building Script installation query')
-
-    installFileQuery = "CALL SYSUIF.INSTALL_FILE({},{},{});".format(verifyLocation(scriptAlias), verifyLocation(scriptFileName), verifyLocation(scriptLocation + "!" + scriptFileName))
-
-    replaceFileQuery = "CALL SYSUIF.REPLACE_FILE({},{},{}, 0);".format(verifyLocation(scriptAlias), verifyLocation(scriptFileName), verifyLocation(scriptLocation + "!" + scriptFileName))
+    if performFileLoad:
+        removeFileQuery = "CALL SYSUIF.REMOVE_FILE({},1);".format(verifyLocation(scriptFileName))
+    
+        logging.info('Building Script installation query')
+    
+        installFileQuery = "CALL SYSUIF.INSTALL_FILE({},{},{});".format(verifyLocation(scriptAlias), verifyLocation(scriptFileName), verifyLocation(scriptLocation + "!" + scriptFileName))
+        replaceFileQuery = "CALL SYSUIF.REPLACE_FILE({},{},{}, 0);".format(verifyLocation(scriptAlias), verifyLocation(scriptFileName), verifyLocation(scriptLocation + "!" + scriptFileName))
+    
     scriptDoesExist = "select * from dbc.tables where databasename = {} and TableKind = 'Z';".format(verifyTableName(searchPath, True))
 
-    #File Copy to DIST
-    dkuinstalldir = os.environ['DKUINSTALLDIR']
-    newPath = dkuinstalldir + """/dist/"""+scriptFileName
-    logging.info(newPath)
-    # logging.info(replaceFileQuery)
-    #COPY FILE TEST
-    if(performFileLoad):
-        copyfile(escape(scriptFileLocation.rstrip()), newPath)
-
-    #ADDITIONAL FILES
     #INSTALL Additional files
     logging.info('Building Additional File INSTALLATION/REPLACEMENT')
     # installAdditionalFiles = """"""
@@ -514,7 +525,13 @@ if not is_vantage_cloud:
     for item in additionalFiles:
         address = item.get('file_address', '').rstrip() if\
             ('s' == item.get('file_location', '')) else handle.file_path(item.get('filename', ''))
-        newPath = dkuinstalldir + """/dist/"""+item.get('filename')
+        try:
+            # for UIF -enabled system
+            newPath = os.path.join(tmp_dir, item.get('filename'))
+        except:
+            logging.info("Accessing Dataiku Java classpath.")
+            newPath = dkuinstalldir + """/dist/"""+item.get('filename')
+
         logging.info(newPath)
         # logging.info(replaceFileQuery)
         logging.info(address)
@@ -531,27 +548,22 @@ if not is_vantage_cloud:
                 logging.info("""File Alias:"""+ item.get('file_alias'))
                 logging.info('Was not able to find the file in the table list. Attempting to use INSTALL_FILE')
 
-                installAdditionalFilesArray.append("\n CALL SYSUIF.INSTALL_FILE({},{},{});".format(verifyLocation(item.get('file_alias')), verifyLocation(item.get('filename')), verifyLocation(item.get('file_location')+item.get('file_format') + "!" + item.get('filename'))))
+                installAdditionalFilesArray.append("\n CALL SYSUIF.INSTALL_FILE({},{},{});".format(verifyLocation(item.get('file_alias')), verifyLocation(item.get('filename')), verifyLocation(item.get('file_location')+item.get('file_format') + "!" + scriptFileName)))
             else:    
                 logging.info("""File Alias:"""+ item.get('file_alias'))
 
-                installAdditionalFilesArray.append("\nCALL SYSUIF.REPLACE_FILE({},{},{},0);".format(verifyLocation(item.get('file_alias')), verifyLocation(item.get('filename')), verifyLocation(item.get('file_location')+item.get('file_format') + "!" + item.get('filename'))))
+                installAdditionalFilesArray.append("\nCALL SYSUIF.REPLACE_FILE({},{},{},0);".format(verifyLocation(item.get('file_alias')), verifyLocation(item.get('filename')), verifyLocation(item.get('file_location')+item.get('file_format') + "!" + scriptFileName)))
         else:
 
-            installAdditionalFilesArray.append("\nCALL SYSUIF.INSTALL_FILE({},{},{});".format(verifyLocation(item.get('file_alias')), verifyLocation(item.get('filename')), verifyLocation(item.get('file_location')+item.get('file_format') + "!" + item.get('filename'))))
+            installAdditionalFilesArray.append("\nCALL SYSUIF.INSTALL_FILE({},{},{});".format(verifyLocation(item.get('file_alias')), verifyLocation(item.get('filename')), verifyLocation(item.get('file_location')+item.get('file_format') + "!" + scriptFileName)))
     logging.info("""Additional Files Installation Query/ies: """)
     logging.info(installAdditionalFilesArray)
-    
 
 #MOVE ADDITIONAL FILES
-
-
 logging.info(output_A_names[0])
 
 # Gather inputs to generate onClause
 inputs = function_config.get('inputs', "")
-
-
 whereClause = function_config.get('where', "")
 
 # gather ouputs to build selectClause
@@ -560,8 +572,6 @@ output_all = function_config.get('outputAll', True)
 
 # Prefix the input table with the correct database
 inputTable = function_config.get('input_table')         
-
-
 
 if is_vantage_cloud:
     
@@ -584,12 +594,10 @@ else:
                  RETURNS ('{returnClause}')
                 );""".format(inputTable=verifyInputTable(inputTable), selectClause=verifySelectClause(output_all, return_clause), onClause=verifyOnClause(inputs), whereClause=verifyWhereClause(whereClause), script_command=verifyScriptCommand(),hashClause=verifyHashClause(partitionbycolumns), partitionClause=verifyPartitionClause(partitionbycolumns), orderClause=verifyOrderClause(partitionorderbycolumns), localOrderClause=verifyLocalOrderClause(partitionorderbycolumns),returnClause=verifyReturnClause(returnClause))
 
-    
 def database():
     # for now, database name = db user name
     return sto_database()
     
-
 if not is_vantage_cloud:
     #File Loading
     if(performFileLoad):
@@ -625,19 +633,16 @@ if not is_vantage_cloud:
         logging.info('Installing additional files...')
         if autocommit:
             placeholderQuery = "SELECT 1;" #Placeholder so that a query is still executed.
-            executor_query2(executor, placeholderQuery,[databaseQuery,setSessionQuery]+installAdditionalFilesArray);
+            executor_query2(executor, placeholderQuery,[databaseQuery,setSessionQuery]+installAdditionalFilesArray)
         else:
             executor_query2(executor, edTxn,[stTxn, databaseQuery, setSessionQuery]+installAdditionalFilesArray)
 
-
-
 # Recipe outputs                                                          
-
 logging.info('Executing SELECT Query...')
 
 if is_vantage_cloud:
     # setting QUERYBAND
-    query_band = "SET QUERY_BAND='appname=dataiku;version=3.2;" + "function= In Vantage Scripting(APPLY)"  + ";' FOR SESSION;"
+    query_band = "SET QUERY_BAND='appname=dataiku;version=3.3;" + "function= In Vantage Scripting(APPLY)"  + ";' FOR SESSION;"
     logging.info('setQUERYBAND')  
     qb = executor_query(executor, query_band)
     logging.info(ApplyQuery)
@@ -646,11 +651,12 @@ if is_vantage_cloud:
 else:
     logging.info('setSessionQuery')
     logging.info(setSessionQuery)
-    logging.info('replaceFileQuery')
-    logging.info(replaceFileQuery)
+    if performFileLoad:
+        logging.info('replaceFileQuery')
+        logging.info(replaceFileQuery)
     logging.info('setQUERYBAND')
     # setting QUERYBAND
-    query_band = "SET QUERY_BAND='appname=dataiku;version=3.2;" + "function= In Vantage Scripting(STO)"  + ";' FOR SESSION;"
+    query_band = "SET QUERY_BAND='appname=dataiku;version=3.3;" + "function= In Vantage Scripting(STO)"  + ";' FOR SESSION;"
     logging.info(query_band)
     logging.info(STOQuery)
     selectResult = executor_query2(executor, STOQuery,[databaseQuery, setSessionQuery,query_band])
