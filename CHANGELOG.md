@@ -1,5 +1,15 @@
 # Teradata Plugin Changelog
 
+# Versions 3.3.11, 3.3.12 (eFix - September 2024)
+
+* Removed Python version 3.6 and 3.7, plugin supports Python version 3.8 to 3.11.
+* Bug fix: In-Vantage Scripting (for VantageCloud Lake connections): On the APPLY Arguments screen, in “View details”, file names now displays correctly.
+* Bug fix: In-Vantage Scripting: In arguments tab, the script language dropdown is now populated correctly.
+* Bug fix: In-Vantage Scripting (for VantageCloud Enterprise and Vantage Core connections): UIF enabled systems now work correctly with new JDBC parameter ELICIT_FILE_PATH.
+* Bug fix: In-Vantage Scripting: Non-admin users are now able to execute the recipe correctly.
+* Bug fix: BYOM export: Accessing connection credentials for per-user credentials is fixed.
+* In-Vantage Scripting (for VantageCloud Enterprise and Vantage Core connections), we no longer support uploading files through Vantage servers, only option is through Dataiku Managed Folder.
+
 # Versions 3.2.11, 3.2.12 (eFix - May 2024)
 
 * Bug fix: In-Vantage Scripting (VantageCLoud Lake): Dropdown menus are no longer affected by the user choice of Python interpreter version for the environment the plugin operates in.

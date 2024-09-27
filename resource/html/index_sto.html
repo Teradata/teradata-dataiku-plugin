@@ -144,7 +144,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SO
         <label for="environment_name">
         Environment Name:
         </label>
-		<select data-placement="right"  ng-model="config.environment_name" data-html="true" data-toggle="tooltip" title="Choose the environment you want to remove from the existing environmentss" id="environment_name" dku-bs-select="{liveSearch:true}" ng-options="v for v in names">
+		<select data-placement="right"  ng-model="config.environment_name" data-html="true" data-toggle="tooltip" title="Choose the environment you want to remove from the existing environments" id="environment_name" dku-bs-select="{liveSearch:true}" ng-options="v for v in names">
         <option  value="" disabled selected></option>
         </select>
         
@@ -335,12 +335,6 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SO
                       <option value="" selected>--No Selection--</option>
                     </select>
                   </div>
-                  <div class="inner-cell" ng-if="config.function.script_location == 'sz'">
-                    <p class="inner-label">Script File Name</p>
-                    <input required id="ScriptFileName" ng-model="config.function.script_filename" type="text" ng-change="onFilenameChange()" data-container="body"
-                      data-html="true" data-toggle="tooltip" title="{{ getArgumentDescription('FILE_NAME') }}" data-placement="right"
-                    />
-                  </div>
                 </td>
                 <td>
                   <div class="inner-cell">
@@ -348,19 +342,13 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SO
                     <select id="ScriptFileLocation" ng-model="config.function.script_location" data-container="body" ng-change="onFileLocationChange()" data-placement="right"
                       data-html="true" data-toggle="tooltip" title="{{ getArgumentDescription('FILE_LOCATION') }}">
                       <option value="" selected>No file to upload</option>
-                      <option value="sz" selected>Teradata Vantage Server</option>
-                      <option value="cz" selected>Dataiku Managed Folder</option>
+                      <option value="cz">Dataiku Managed Folder</option>
                     </select>
                   </div>
                   <div class="inner-cell" ng-if="config.function.script_location!=''" >
                     <p class="inner-label">Script File Alias</p>
                     <input required id="ScriptFileAlias" ng-model="config.function.script_alias" type="text" data-container="body" data-html="true" data-placement="right"
                       data-toggle="tooltip" title="{{ getArgumentDescription('FILE_ALIAS') }}" />
-                  </div>
-                  <div class="inner-cell" ng-if="'sz'===config.function.script_location">
-                    <p class="inner-label">Script File Address</p>
-                    <input required id="ScriptFileAlias" ng-model="config.function.script_filelocation" type="text" data-container="body" data-html="true" data-placement="right"
-                      data-toggle="tooltip" title="{{ getArgumentDescription('FILE_ADDRESS') }}" />
                   </div>
                   <div class="inner-cell" ng-if="config.function.script_location!=''" >
                     <div class="inner-cell">
@@ -424,7 +412,6 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SO
                     <p class="inner-label">File Location</p>
                     <select required id="AdditionalFileLocation" ng-model="file.file_location" data-container="body" ng-change="onAdditionalFileLocationChange($index)" data-placement="right"
                       data-html="true" data-toggle="tooltip" title="{{ getArgumentDescription('FILE_LOCATION') }}">
-                      <option value="s" selected>Vantage Server</option>
                       <option value="c" selected>DSS Managed Folder</option>
                     </select>
                   </div>
@@ -432,11 +419,6 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SO
                     <p class="inner-label">File Alias</p>
                     <input required id="AdditionalFileAlias" ng-model="file.file_alias" type="text" data-container="body" data-html="true" data-placement="right" data-toggle="tooltip"
                       title="{{ getArgumentDescription('FILE_ALIAS') }}" />
-                  </div>
-                  <div class="inner-cell" ng-if="'s'===file.file_location">
-                    <p class="inner-label">File Address</p>
-                    <input required id="AdditionalFileAddress" ng-model="file.file_address" type="text" data-container="body" data-html="true" title="File Location" data-placement="right"
-                      data-toggle="tooltip" title="{{ getArgumentDescription('FILE_ADDRESS') }}" />
                   </div>
                   <div class="inner-cell">
                     <div class="inner-cell">
@@ -481,8 +463,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SO
                 <td>Script Language</td>
                 <td>
                   <div>
-                    <select required id="ScriptType" ng-model="config.function.command_type" data-toggle="tooltip" title="{{ getArgumentDescription('SCRIPT_TYPE') }}"
-                      data-container="body" data-placement="right" data-html="true" ng-disabled="config.function.script_location==''">
+                    <select required id="ScriptType" ng-model="config.function.script_type" data-toggle="tooltip" title="{{ getArgumentDescription('SCRIPT_TYPE') }}"
+                      data-container="body" data-placement="right" data-html="true">
                       <option value="" selected>--No Selection--</option>
                       <option value="python" selected>Python</option>
                       <option value="r" selected>R</option>
