@@ -1,6 +1,6 @@
 {
     "id" : "teradata",
-    "version" :"3.2.12",
+    "version" :"3.3.12",
     "meta" : {
         "label" : "Teradata",
         "description" : "Enables pushing a variety of tasks and operations into the Teradata Vantage Data and Analytics Platform for SQL-less, scaled Analytics.",
