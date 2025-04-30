@@ -194,7 +194,7 @@ def vantageDo():
     logging.info(SEP)
 
     # Add Query Band
-    query_band = "SET QUERY_BAND='appname=dataiku;version=3.3;" + "function=" +  verifyAttribute(recipe_config.get('function', {}).get('name',''))  + ";' FOR SESSION;"
+    query_band = "SET QUERY_BAND='appname=dataiku;version=3.4;" + "function=" +  verifyAttribute(recipe_config.get('function', {}).get('name',''))  + ";' FOR SESSION;"
     
     # VALIB     
     dss_function = recipe_config.get('function', None)

@@ -1,5 +1,11 @@
 # Teradata Plugin Changelog
 
+# Versions 3.4.11, 3.4.12 (eFix - May 2025)
+
+* Removed Python version 3.8, plugin supports Python version 3.9 to 3.11.
+* Bug fix: In-Vantage Scripting: Recipe uses the underlying table name regardless of what the overhead name of input table is called.
+* Bug fix: BYOM export: Fix to support latest SQLAlchemy version.
+
 # Versions 3.3.11, 3.3.12 (eFix - September 2024)
 
 * Removed Python version 3.6 and 3.7, plugin supports Python version 3.8 to 3.11.

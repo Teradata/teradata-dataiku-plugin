@@ -154,6 +154,12 @@ def do_execute(payload, config, plugin_config, inputs):
 
     for input in inputs:
         if(input.get('role') == 'main'):
+            try:
+              actual_table_name = input_dataset.get_location_info()['info']['table']
+              if actual_table_name:
+                inputtablename = actual_table_name
+            except:
+              inputtablename = input['fullName'].split('.')[1]
             inputtablename = input['fullName'].split('.')[1]
             project = input['fullName'].split('.')[0]
             inputDataSets.append(inputtablename)
