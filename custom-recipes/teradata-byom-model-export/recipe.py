@@ -137,21 +137,27 @@ if valid_connection == 1:
         delete_table_if_exists = f"DROP TABLE {verifyDatabaseName(database_param)}.{verifyTableName(table_name_param)};"
         try:
             with eng.connect() as conn:
-                conn.execute(create_table)
-        except:
+                conn.execute(sqlalchemy.text(create_table))
+        except Exception as e:
+            logging.info("FAIL " + create_table)
             with eng.connect() as conn:
-                conn.execute(delete_table_if_exists)
-                conn.execute(create_table)
+                try:
+                    conn.execute(sqlalchemy.text(delete_table_if_exists))
+                except Exception as e:
+                    logging.info("FAIL " + delete_table_if_exists)
+                conn.execute(sqlalchemy.text(create_table))
 
         delete_record_if_exists = f"delete from {verifyDatabaseName(database_param)}.{verifyTableName(table_name_param)} where model_id = {verifyModelName(modelname_param)};"
     else:
         delete_record_if_exists = f"delete from {verifyDatabaseName(database_param)}.{verifyTableName(table_name_param)} where model_id = {verifyModelName(modelname_param[0:30])};"
-        with eng.connect() as conn:
-                conn.execute(delete_record_if_exists)
+        try:
+            with eng.connect() as conn:
+                conn.execute(sqlalchemy.text(delete_record_if_exists))
+        except Exception as e:
+            logging.info("FAIL " + delete_record_if_exists)
 
 
-
-insert_model = f"insert into {verifyDatabaseName(database_param)}.{verifyTableName(table_name_param)} (model_id, model) values(?,?);"
+insert_model = f"insert into {verifyDatabaseName(database_param)}.{verifyTableName(table_name_param)} (model_id, model) values(:model_id,:model);"
 
 if modeltype_param=='pmml':
     model_data = client.get_project(project_key).get_saved_model(saved_model_id).get_version_details(version_id).get_scoring_pmml_stream().content    
@@ -165,9 +171,13 @@ elif modeltype_param=='onnx' or modeltype_param=='h2o':
     file = str(get_recipe_config()["files"])
     with folder.get_download_stream(file) as stream:
             model_data = stream.read()
-with eng.connect() as conn:
-    conn.execute(insert_model, modelname_param, model_data)
 
+parameters = {"model_id": modelname_param, "model": model_data}
+try:
+    with eng.connect() as conn:
+        conn.execute(sqlalchemy.text(insert_model), parameters)
+except Exception as e:
+    print(str(e))
 
 output_dataset_name = get_output_names_for_role('output_dataset')[0]
 output_dataset = dataiku.Dataset(output_dataset_name) 

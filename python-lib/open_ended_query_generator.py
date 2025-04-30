@@ -2,7 +2,7 @@
 """This file take the input JSON file and outputs the SQL string query."""
 
 '''
-Copyright © 2019 by Teradata.
+Copyright © 2025 by Teradata.
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
 associated documentation files (the "Software"), to deal in the Software without restriction,
 including without limitation the rights to use, copy, modify, merge, publish, distribute,
@@ -17,7 +17,6 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 '''
 
-# SKS : Import 
 from base_analytic_query_generator import BaseAnalyticQueryGenerator
 from gen_uaf_sql import gen_uaf_query
 from verifyTableColumns import *
@@ -209,7 +208,10 @@ class OpenEndedQueryGenerator():
                 # SKS : we need to account for the different types of arguments and in order for the arguments to appear the same 
                 # as the original sql query, we need to accordingly change to fit this criteria 
                 if arg['datatype'] == 'INTEGER' and ((type(arg['value']) == str or type(arg['value']) == list) and ('\x00' in arg['value']) or arg.get("allowsLists", False)):
-                    numbers = ",".join(arg['value'].split('\x00'))
+                    if type(arg['value']) == list:
+                        numbers = ",".join(arg['value'])
+                    else:
+                        numbers = ",".join(arg['value'].split('\x00'))
                     func_other_args_values.append(numbers)
                     continue
                 elif arg['datatype'] == 'INTEGER' :
