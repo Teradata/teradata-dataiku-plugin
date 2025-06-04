@@ -1,6 +1,6 @@
 # Teradata Plugin Changelog
 
-# Versions 3.4.11, 3.4.12 (eFix - May 2025)
+# Versions 3.4.12, 3.4.14 (eFix - May 2025)
 
 * Removed Python version 3.8, plugin supports Python version 3.9 to 3.11.
 * Bug fix: In-Vantage Scripting: Recipe uses the underlying table name regardless of what the overhead name of input table is called.
